@@ -1,0 +1,817 @@
+<apex:page controller="NPD_ProjectEditPageController"  sidebar="false">
+<apex:stylesheet value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+<apex:stylesheet value="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+<link href='https://fonts.googleapis.com/css?family=Mako' rel='stylesheet' type='text/css'/>
+<style>
+.requiredInput select {
+    width: 100%;
+}
+.date-design textarea {
+    border: medium none;
+    width: 100%;
+}
+.btn {
+    background-color: #095d80 !important;
+    background-image: none !important;
+    border: medium none !important;
+    color: #fff !important;
+    padding: 5px 10px !important;
+}
+.pbSubheader {
+    margin-top: 0!important;
+}
+.marginbottom15 {
+    margin-bottom: 15px;
+}
+.clearfix {
+    clear: both;
+}
+.date-design {
+    background: #cae5e4 none repeat scroll 0 0;
+    border: 1px solid #00B6B0;
+    display: inline-block;
+    margin-bottom: 15px;
+    width: 100%;
+    font-family: 'Mako', sans-serif;
+}
+.date-design label {
+    font-size: 13px;
+    padding: 0;
+    font-family: 'Mako', sans-serif;
+    font-weight: normal;
+}
+.date-design .text {
+    background-color: #fff;
+    border-radius: 5px;
+    color: #444;
+    min-height: 25px;
+    padding: 2px 5px;
+    font-family: 'Mako', sans-serif;
+}
+.heading-title {
+    background-color: #00b6b0;
+    color: #fff;
+    font-size: 16px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+}
+.lookupimg {
+    position: absolute;
+    top: 3px;
+    right: 5px;
+}
+.zen .zen-tabMenu a {
+    font-size: 12px;
+}
+.project_bg {
+    background: #cae5e4 none repeat scroll 0 0;
+    border: 1px solid #00B6B0;
+}
+.pbSubheader {
+    margin-top: 0!important;
+}
+.homeTab .tertiaryPalette, .individualPalette .homeBlock .tertiaryPalette, .layoutEdit .individualPalette .homeBlock .tertiaryPalette {
+    background-color: #00b6b0;
+    border-color: #00b6b0;
+}
+</style>
+
+
+<apex:form enctype="multipart/form-data" id="form1">
+  <apex:actionRegion id="actionreg" >
+    <apex:pageBlock id="imageblock" >
+      <div class="project_bg">
+        <apex:pageBlockSection title="Project Information" columns="1"  id="block1">
+          <apex:inputFile value="{!attch.body}" filename="{!attch.name}" id="file"/>
+         
+      <!--   <apex:image url="{!imageURL}" id="image"  width="10%" height="10%" />-->
+            <!--<apex:outputField value="{!currProjRec.ImageUpload__c}" id="image1" ></apex:outputField> -->
+     
+          <apex:image value="{!imagepiclink}" width="50px" height="50" />
+
+        </apex:pageBlockSection>
+      </div>
+      <div class="text-center marginbottom15"><apex:commandButton value="UploadImage"   action="{!upload}"  /></div>
+      <apex:pageBlockButtons ><!--<apex:commandButton value="UploadImage"  onclick="doUiCheck(); return false;" /> -->
+      <!--   <apex:commandButton value="UploadImage"   action="{!upload}"  />
+       <apex:commandButton value="Save"  action="{!SaveProject}"   />    -->
+      </apex:pageBlockButtons>
+    </apex:pageBlock>
+  </apex:actionRegion>
+</apex:form>
+ <apex:form >
+  <apex:pageBlock rendered="{!if(((event=false)),true,false)}" >
+  
+  <div class="row">
+      <div class="date-design">
+      <div class="text-center"> <apex:commandButton Value="Edit"  action="{!EditRec}"></apex:commandButton> </div>
+        <div class="heading-title">Project Information</div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Model No</label>
+            <div class="col-md-6 text">
+             <apex:outputField value="{!currProjRec.Model_No__c}" id="model"></apex:outputField>
+                <!--<apex:image styleClass="lookupimg" url="{!$Resource.LookupIcon}" width="20" height="20"  onclick="openModelPopup('{!$Component.model}','{!actid}','{!stage.Source__c}')"/>
+                <script>document.getElementById('{!$Component.model}').disabled = true;</script> </apex:outputField > -->
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Case Material</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Case_Material__c}"/>
+            </div>
+          </div>
+          <!--<div class="form-group clearfix">
+            <label class="col-md-6">Movement/Function</label>
+            <div class="col-md-5 multipicklist"><c:MultiselectCounsellorComponent leftLabel="Available Fields" leftOptions1="{!options}" rightLabel="Selected Fields" rightOptions1="{!lstSelectedValue}" size="8" width="150px"> </c:MultiselectCounsellorComponent></div>
+            </div>-->
+    
+          <div class="form-group clearfix">
+            <label class="col-md-6">Project Owner</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Project_Owner__c}" />
+            </div>
+          </div>
+        <div class="form-group clearfix">
+            <label class="col-md-6">Case Source</label>
+            <div class="col-md-6 text">
+            <apex:outputField value="{!currProjRec.Case_Source__c}" styleClass="casesrc" id="cssrc"/>
+              <script>document.getElementById('{!$Component.cssrc}').disabled = true;</script> 
+            </div>
+          </div>
+          
+        </div>
+        <div class="col-md-3">
+       
+          <div class="form-group clearfix">
+           
+            <label class="col-md-6">Project Type</label>
+            <div class="col-md-6 text">
+           
+              <apex:outputField value="{!currProjRec.Project_Type__c}" />
+              
+     
+            </div>
+          </div>
+          
+            
+         
+          <div class="form-group clearfix">
+           
+            <label class="col-md-6">PSY No</label>
+            <div class="col-md-6 text">
+           
+             <apex:outputField value="{!currProjRec.PSY_No__c}" styleClass="psyno" id="psyn" />
+              <script>document.getElementById('{!$Component.psyn}').disabled = true;</script>
+     
+            </div>
+          </div>
+                 
+                 
+         
+            <div class="form-group clearfix">
+            <label class="col-md-6">Vendor Reference No </label>
+            <div class="col-md-6 text">
+            <apex:outputField value="{!currProjRec.Vendor_Ref_No__c}" styleClass="venno" id="vendrefno" />
+              <script>document.getElementById('{!$Component.vendrefno}').disabled = true;</script> 
+              
+            </div>
+          </div>
+         
+          
+          
+          <div class="form-group clearfix">
+            <label class="col-md-6">Strap Material</label>
+            <div class="col-md-6 text">
+           <apex:outputField value="{!currProjRec.Strap_Material__c}" />
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Project Complexity</label>
+            <div class="col-md-6 text">
+             <apex:outputField value="{!currProjRec.Project_Complexity__c}" />
+            </div>
+          </div>
+ <!--         <div class="form-group clearfix">
+            <label class="col-md-6">Movement/Function</label>
+            <div class="col-md-6 ">
+              <div class="col-md-5 multipicklist"><c:MultiselectCounsellorComponent leftLabel="Available Fields" leftOptions1="{!options}" rightLabel="Selected Fields" rightOptions1="{!lstSelectedValue}" size="8" width="150px"> </c:MultiselectCounsellorComponent></div>
+            </div>
+          </div>
+      <!--    <div class="form-group clearfix">
+            <label class="col-md-6">Development Route</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Development_Route__c}" />
+            </div>
+          </div>-->
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Project Category</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Project_Category__c}"  />
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Strap Source</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Strap_Source__c}"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Project Status</label>
+            <div class="col-md-6 text">
+            <apex:outputField value="{!currProjRec.Project_Status__c}" />
+            </div>
+          </div>
+          
+          
+           <div class="form-group clearfix">
+            <label class="col-md-6">Movement/Function</label>
+            <div class="col-md-6 ">
+            <apex:outputField value="{!currProjRec.Momentfuntionvalue__c}" />
+             <!-- <div class="col-md-5 multipicklist"><c:MultiselectCounsellorComponent leftLabel="Available Fields" leftOptions1="{!options}" rightLabel="Selected Fields" rightOptions1="{!lstSelectedValue}" size="8" width="150px"> </c:MultiselectCounsellorComponent></div>-->
+            </div>
+          </div>
+        <!--<div class="form-group clearfix">
+            <label class="col-md-6">Case Material</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Case_Material__c}" />
+            </div>
+          </div>-->
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Development Route</label>
+            <div class="col-md-6 text">
+             <apex:outputField value="{!currProjRec.Development_Route__c}" />
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Strap Type</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Strap_Type__c}" />
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Reasons for Drop</label>
+            <div class="col-md-6 text">
+           <apex:outputField value="{!currProjRec.Reasons_for_Drop__c}" />
+            </div>
+          </div>
+         <!-- <div class="form-group clearfix">
+            <label class="col-md-6">Case Source</label>
+            <div class="col-md-6 text">
+             <apex:outputField value="{!currProjRec.Case_Source__c}" styleClass="casesrc" id="cssrc"/>
+              <script>document.getElementById('{!$Component.cssrc}').disabled = true;</script> 
+            </div>
+          </div>-->
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+    
+     <div class="row">
+      <div class="date-design">
+        <div class="heading-title">Schedule/Status</div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Planned Project End Date</label>
+            <div class="col-md-6 text">
+          <apex:outputField value="{!currProjRec.Planned_Project_End_Date1__c}"/> 
+                
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Planned Project Lead Time</label>
+            <div class="col-md-6 text">
+             <apex:outputField value="{!currProjRec.Planned_Project_Lead_Time__c}"/>
+            </div>
+          </div>
+          
+    
+          
+        
+      
+          
+        </div>
+        <div class="col-md-3">
+       
+          <div class="form-group clearfix">
+           
+            <label class="col-md-6">Actual Project Start Date</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Actual_Project_Start_Date__c}"/>
+             
+     
+            </div>
+          </div>
+                  
+            
+          
+          
+          <div class="form-group clearfix">
+            <label class="col-md-6">Actual Project End Date</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Actual_Project_End_Date__c}"/>
+            </div>
+          </div>
+          
+      <!--    <div class="form-group clearfix">
+            <label class="col-md-6">Development Route</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Development_Route__c}" />
+            </div>
+          </div>-->
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Actual Project Lead Time</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Actual_Project_Lead_Time__c}"/>
+            </div>
+          </div>
+          
+         
+        <!--<div class="form-group clearfix">
+            <label class="col-md-6">Case Material</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Case_Material__c}" />
+            </div>
+          </div>-->
+        </div>
+        
+      </div>
+    </div>
+  
+  
+       
+    
+    
+    
+    
+    
+    <div class="clearfix marginbottom15"></div>
+    <div class="row">
+      <div class="date-design">
+        <div class="heading-title">Marketing Information</div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Collection</label>
+            <div class="col-md-6 text">
+               <apex:outputField value="{!currProjRec.NPD_Collections__c}" id="coll"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Marketing brief/concept Ref Num</label>
+            <div class="col-md-6 text">
+               <apex:outputField value="{!currProjRec.Marketing_brief_concept_reference_number__c}"  id="markting1"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Comments/Remarks</label>
+            <div class="col-md-6 text">
+             <apex:outputField value="{!currProjRec.Comments_Remarks__c}"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Brand</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Brand1__c}" id="brand"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Sub Brand</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Sub_Brand__c}" id="Subbrand"/>
+            </div>
+          </div>
+          
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Gender</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Gender__c}" />
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Design Source</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Source__c}" styleClass="Source" />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Market</label>
+            <div class="col-md-6 text">
+             <apex:outputField value="{!currProjRec.Market__c}" />
+            </div>
+          </div>
+          
+          
+      <!--    <apex:outputPanel rendered="{!if((stage.Source__c='IDS'),true,false)}" >
+          <div class="form-group clearfix">
+           
+            <label class="col-md-6">Project Type</label>
+            <div class="col-md-6 text">
+           
+              <apex:inputField value="{!currProjRec.PSY_No__c}" styleClass="psyno" id="psyn" rendered="{!if((stage.Source__c='IDS'),true,false)}"/>
+              <script>document.getElementById('{!$Component.psyn}').disabled = true;</script>
+     
+            </div>
+          </div>
+                  </apex:outputPanel> 
+            <apex:outputPanel rendered="{!if((stage.Source__c='OSD'),true,false)}">
+            <div class="form-group clearfix">
+            <label class="col-md-6">Vendor Reference No </label>
+            <div class="col-md-6 text">
+             <apex:inputField value="{!currProjRec.Vendor_Ref_No__c}" styleClass="venno" id="vendrefno" rendered="{!if((stage.Source__c='OSD'),true,false)}"/>
+              <script>document.getElementById('{!$Component.vendrefno}').disabled = true;</script> 
+              
+            </div>
+          </div>
+          </apex:outputPanel>-->
+          
+        </div>
+        
+      </div>
+      
+    </div>
+    
+  </apex:pageBlock>
+ 
+ 
+
+   <apex:pageBlock rendered="{!if(((event=true)),true,false)}"> 
+    <div class="row">
+    <div  class="text-center marginbottom15">
+         
+          <apex:commandButton value="Save"  action="{!SaveProject}"  />     
+         <apex:commandButton Value="Cancel"  action="{!Cancle}"   />
+        
+        </div> 
+   
+    
+      <div class="date-design">
+        <div class="heading-title">Project Information</div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Model No</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Model_No__c}" required="true" id="model"></apex:inputField>
+                <!--<apex:image styleClass="lookupimg" url="{!$Resource.LookupIcon}" width="20" height="20"  onclick="openModelPopup('{!$Component.model}','{!actid}','{!stage.Source__c}')"/>
+                <script>document.getElementById('{!$Component.model}').disabled = true;</script> </apex:inputField> -->
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Case Material</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Case_Material__c}" required="true"/>
+            </div>
+          </div>
+          <!--<div class="form-group clearfix">
+            <label class="col-md-6">Movement/Function</label>
+            <div class="col-md-5 multipicklist"><c:MultiselectCounsellorComponent leftLabel="Available Fields" leftOptions1="{!options}" rightLabel="Selected Fields" rightOptions1="{!lstSelectedValue}" size="8" width="150px"> </c:MultiselectCounsellorComponent></div>
+            </div>-->
+    
+          <div class="form-group clearfix">
+            <label class="col-md-6">Project Owner</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Project_Owner__c}" />
+            </div>
+          </div>
+        <div class="form-group clearfix">
+            <label class="col-md-6">Case Source</label>
+            <div class="col-md-6 text">
+             <apex:inputField value="{!currProjRec.Case_Source__c}" styleClass="casesrc" id="cssrc"/>
+              <script>document.getElementById('{!$Component.cssrc}').disabled = true;</script> 
+            </div>
+          </div>
+          
+        </div>
+        <div class="col-md-3">
+       
+          <div class="form-group clearfix">
+           
+            <label class="col-md-6">Project Type</label>
+            <div class="col-md-6 text">
+           
+              <apex:inputField value="{!currProjRec.Project_Type__c}" required="true"/>
+              
+     
+            </div>
+          </div>
+          
+            
+         
+          <div class="form-group clearfix">
+           
+            <label class="col-md-6">PSY No</label>
+            <div class="col-md-6 text">
+           
+              <apex:inputField value="{!currProjRec.PSY_No__c}" styleClass="psyno" id="psyn" />
+              <script>document.getElementById('{!$Component.psyn}').disabled = true;</script>
+     
+            </div>
+          </div>
+                 
+                 
+         
+            <div class="form-group clearfix">
+            <label class="col-md-6">Vendor Reference No </label>
+            <div class="col-md-6 text">
+             <apex:inputField value="{!currProjRec.Vendor_Ref_No__c}" styleClass="venno" id="vendrefno" />
+              <script>document.getElementById('{!$Component.vendrefno}').disabled = true;</script> 
+              
+            </div>
+          </div>
+         
+          
+          
+          <div class="form-group clearfix">
+            <label class="col-md-6">Strap Material</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Strap_Material__c}" required="true"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Project Complexity</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Project_Complexity__c}" required="true" />
+            </div>
+          </div>
+ <!--         <div class="form-group clearfix">
+            <label class="col-md-6">Movement/Function</label>
+            <div class="col-md-6 ">
+              <div class="col-md-5 multipicklist"><c:MultiselectCounsellorComponent leftLabel="Available Fields" leftOptions1="{!options}" rightLabel="Selected Fields" rightOptions1="{!lstSelectedValue}" size="8" width="150px"> </c:MultiselectCounsellorComponent></div>
+            </div>
+          </div>
+      <!--    <div class="form-group clearfix">
+            <label class="col-md-6">Development Route</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Development_Route__c}" required="true"/>
+            </div>
+          </div>-->
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Project Category</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Project_Category__c}"  required="true"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Strap Source</label>
+            <div class="col-md-6 text">
+               <apex:inputField value="{!currProjRec.Strap_Source__c}" required="true"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Project Status</label>
+            <div class="col-md-6 text">
+             <apex:inputField value="{!currProjRec.Project_Status__c}" required="true"/>
+            </div>
+          </div>
+          
+          
+           <div class="form-group clearfix">
+            <label class="col-md-6">Movement/Function</label>
+            <div class="col-md-6 ">
+              <div class="col-md-5 multipicklist">
+              
+            <!--  <c:MultiselectCounsellorComponent leftLabel="Available Fields" leftOptions1="{!options}" rightLabel="Selected Fields" rightOptions1="{!lstSelectedValue}" size="8" width="150px"> </c:MultiselectCounsellorComponent>   -->
+            
+            <c:MultiselectPicklist leftLabel="Available Values"
+    leftOptions="{!allmovementlist}"
+    rightLabel="Selected Values"
+    rightOptions="{!SelectedMovementlist}"
+    size="14"
+    width="150px"/>
+              
+              
+              </div>
+            </div>
+          </div>
+        <!--<div class="form-group clearfix">
+            <label class="col-md-6">Case Material</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Case_Material__c}" required="true"/>
+            </div>
+          </div>-->
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Development Route</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Development_Route__c}" required="true"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Strap Type</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Strap_Type__c}" required="true"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Reasons for Drop</label>
+            <div class="col-md-6 text">
+             <apex:inputField value="{!currProjRec.Reasons_for_Drop__c}" />
+            </div>
+          </div>
+         <!-- <div class="form-group clearfix">
+            <label class="col-md-6">Case Source</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Case_Source__c}" styleClass="casesrc" id="cssrc"/>
+              <script>document.getElementById('{!$Component.cssrc}').disabled = true;</script> 
+            </div>
+          </div>-->
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+    
+     <div class="row">
+      <div class="date-design">
+        <div class="heading-title">Schedule/Status</div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Planned Project End Date</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Planned_Project_End_Date1__c}"/>
+                
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Planned Project Lead Time</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Planned_Project_Lead_Time__c}"/>
+            </div>
+          </div>
+          
+    
+          
+        
+      
+          
+        </div>
+        <div class="col-md-3">
+       
+          <div class="form-group clearfix">
+           
+            <label class="col-md-6">Actual Project Start Date</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Actual_Project_Start_Date__c}"/>
+             
+     
+            </div>
+          </div>
+                  
+            
+          
+          
+          <div class="form-group clearfix">
+            <label class="col-md-6">Actual Project End Date</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Actual_Project_End_Date__c}"/>
+            </div>
+          </div>
+          
+      <!--    <div class="form-group clearfix">
+            <label class="col-md-6">Development Route</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Development_Route__c}" required="true"/>
+            </div>
+          </div>-->
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Actual Project Lead Time</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Actual_Project_Lead_Time__c}"/>
+            </div>
+          </div>
+          
+         
+        <!--<div class="form-group clearfix">
+            <label class="col-md-6">Case Material</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Case_Material__c}" required="true"/>
+            </div>
+          </div>-->
+        </div>
+        
+      </div>
+    </div>
+  
+  
+       
+    
+    
+    
+    
+    
+    <div class="clearfix marginbottom15"></div>
+    <div class="row">
+      <div class="date-design">
+        <div class="heading-title">Marketing Information</div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Collection</label>
+            <div class="col-md-6 text">
+               <apex:outputField value="{!currProjRec.NPD_Collections__c}" id="coll"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Marketing brief/concept Ref Num</label>
+            <div class="col-md-6 text">
+               <apex:outputField value="{!currProjRec.Marketing_brief_concept_reference_number__c}"  id="markting1"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Comments/Remarks</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Comments_Remarks__c}"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Brand</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Brand1__c}" id="brand"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Sub Brand</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Sub_Brand__c}" id="Subbrand"/>
+            </div>
+          </div>
+          
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Gender</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Gender__c}" required="true"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Design Source</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Source__c}" styleClass="Source" />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Market</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Market__c}" required="true"/>
+            </div>
+          </div>
+          
+          
+      <!--    <apex:outputPanel rendered="{!if((stage.Source__c='IDS'),true,false)}" >
+          <div class="form-group clearfix">
+           
+            <label class="col-md-6">Project Type</label>
+            <div class="col-md-6 text">
+           
+              <apex:inputField value="{!currProjRec.PSY_No__c}" styleClass="psyno" id="psyn" rendered="{!if((stage.Source__c='IDS'),true,false)}"/>
+              <script>document.getElementById('{!$Component.psyn}').disabled = true;</script>
+     
+            </div>
+          </div>
+                  </apex:outputPanel> 
+            <apex:outputPanel rendered="{!if((stage.Source__c='OSD'),true,false)}">
+            <div class="form-group clearfix">
+            <label class="col-md-6">Vendor Reference No </label>
+            <div class="col-md-6 text">
+             <apex:inputField value="{!currProjRec.Vendor_Ref_No__c}" styleClass="venno" id="vendrefno" rendered="{!if((stage.Source__c='OSD'),true,false)}"/>
+              <script>document.getElementById('{!$Component.vendrefno}').disabled = true;</script> 
+              
+            </div>
+          </div>
+          </apex:outputPanel>-->
+          
+        </div>
+        
+      </div>
+      </div> 
+   
+      
+  
+  </apex:pageBlock>
+ </apex:form>
+</apex:page>

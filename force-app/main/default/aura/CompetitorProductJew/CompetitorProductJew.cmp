@@ -1,0 +1,49 @@
+<aura:component controller="CompetitorProductJewController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,lightning:actionOverride" access="global" >
+   <aura:attribute name="recordId" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.doinit}" /> 
+    <aura:attribute type="list" name="recTypeList"/>
+    <aura:attribute name="selectedRecType" type="String"/>
+    <div class="slds-show" aura:id="radioDiv"> 
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_x-small" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1"  style="overflow-y:hidden !important;
+        height:unset !important;
+        max-height:unset !important;">
+            <div class="slds-modal__container ">
+                
+                <header class="slds-modal__header">
+                    
+                    <h2 id="modal-heading-01" class="slds-modal__title slds-hyphenate ">Select Competitor Product type</h2>
+                </header>
+                
+                <div class="slds-modal__content slds-p-around_medium " style="padding-left: 220px;" id="modal-content-id-1">
+                    
+                    <lightning:radioGroup name="radioGroup"
+                                          label="Select Record Type"
+                                          options="{! v.recTypeList }"
+                                          value="{! v.selectedRecType }"
+                                          
+                                          type="radio"/>
+                    
+                    
+                    
+                </div>
+                <footer class="slds-modal__footer">
+                    <button onclick="{!c.cancel}" class="slds-button slds-button_neutral">Cancel</button>
+                    <button onclick="{!c.clickNext}" class="slds-button slds-button_brand">Next</button>
+                </footer>
+            </div>
+        </section>
+        
+        <div class="slds-backdrop slds-backdrop_open"></div> 
+    </div>
+    
+    <div class="slds-hide" aura:id="detailDiv" style="background-color: white;">
+        <aura:if isTrue="{!equals(v.selectedRecType,'Plain')}">
+            
+            <c:competitorProductPlain isNew="true" showDetail="false" recTypeName="{!v.selectedRecType}"/>
+            
+        </aura:if>
+        <aura:if isTrue="{!equals(v.selectedRecType,'Studded')}">
+           <c:competitotProductStudded isNew="true" showDetail="false" recTypeName="{!v.selectedRecType}"/>
+        </aura:if>
+    </div>
+</aura:component>

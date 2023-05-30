@@ -1,0 +1,51 @@
+<apex:page standardController="Quote" extensions="IndentGvExcelAttachmentController" action="{!fetchingDataForExcel}" renderAs="pdf">
+    <!-- <flow:interview name="Indent_Gv_Approval_status_Update"/> -->
+    <table  border="1px" width="100%" height="80%" style="page-break-inside:auto;">
+        <tr>
+            <th>Product</th>
+            <th>Designation</th>
+            <th>Shipping City</th>
+            <th>Denomination</th>
+            <th>Quantity</th>
+            <th>Amount</th>
+            <th>Purchase Order</th>
+            <th> Recipient Email ID</th>
+        </tr>
+        
+            <apex:variable var="totQuantity" value="{!0.00}" />
+            <apex:variable var="totAmount" value="{!0.0000}" />
+            <apex:repeat value="{!qliList}" var="f">
+                <tr>
+                    <td>{!f.Product2.Name}</td>
+                    <td>{!us.UserRole.Name}</td>
+                    <td>{!qc.Opportunity.Owner.City}</td>
+                    
+                    <td>{!f.Sales_Price_c__c}</td>
+                    <td>{!f.Quantity}
+                    <apex:variable value="{!f.Quantity + totQuantity}" var="totQuantity"/>
+                    </td>
+                    <td>{!f.TotalPrice}
+                    <apex:variable value="{!f.TotalPrice + totAmount}" var="totAmount"/>
+                    </td>
+                    
+                    <td>{!opp.PO_No__c}</td>
+                    <td>{!qc.Recipient_Email_ID__c}</td>
+                </tr>
+            </apex:repeat>
+        <tr>
+            <td colspan="4" align="right"> TOTAL</td>
+            <td><apex:outputText value="{0, number, 0.00}" style="color:black;" >
+                        <apex:param value="{!totQuantity}" />
+                        </apex:outputText>
+            </td>
+            <td><apex:outputText value="{0, number, 0.0000}" style="color:black;" >
+                        <apex:param value="{!totAmount}" />
+                        </apex:outputText>
+            </td>
+            <td colspan="2"></td>
+            
+        </tr>
+            
+        
+    </table>
+</apex:page>

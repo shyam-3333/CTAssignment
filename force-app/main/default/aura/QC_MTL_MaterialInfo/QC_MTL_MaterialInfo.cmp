@@ -1,0 +1,132 @@
+<aura:component controller="QC_MTL_MaterialInfo" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+		<aura:attribute name ="mtlReportReferValue" type="String"/>
+		<aura:attribute name="mtlRecordStatusValue" type="String"/>
+		<aura:attribute name="materialTestType" type="String"/>
+		<aura:attribute name="rawMaterialType" type="String"/>
+		<aura:attribute name="documentStatusValue" type="String"/>
+		<aura:attribute name="sampleSize" type="String"/>
+		<aura:attribute name="sampleDate" type="Date"/>
+		<aura:attribute name="sampleRecvdFrom" type="String"/>
+    	<aura:attribute name="referencedReportId" type="sObject"/> <!-- fetch the Material reference value from parent -->
+		<aura:attribute name="selectedLookUpRecordForVendor" type="sObject" default="{}"/>
+		<aura:attribute name="selectedLookUpRecordForBrand" type="sObject" default="{}"/>
+    	<aura:attribute name="callSaveFromParent" type="integer" default="0" />
+    	<aura:attribute name="isReadonly" type="Boolean" default="true"/>
+    	<aura:attribute name="VerdictStatusValue" type="String"/>
+    	<aura:attribute name="qcMtlCompRecordId" type="String"/>
+        <aura:attribute name="isRawMaterialTesting" type="boolean" default="false"/>
+    	<aura:attribute name="mtlUserEmail" type="String"/>
+    	<aura:attribute name="changeChckboxStatus" type="boolean" default="false"/>
+    	<aura:attribute name="prepopulateBrandCount" type="integer" default="0"/> <!-- counter variable for Brand -->
+    	<aura:attribute name="finalverCounter" type="Integer" default="0" /> <!-- fetch the final verdict counter var to check if the verdict is not null -->
+    	<aura:attribute name="finalVerdict" type="List" default="[{'label': 'None', 'value': 'None', 'selected': true},
+                                                            {'label': 'Accept', 'value': 'Accept', 'selected': false},
+                                                            {'label': 'Reject', 'value': 'Reject', 'selected': false},
+                                                             {'label':'Provisionally Accept', 'value' : 'Provisionally Accept', 'selected' :false}
+                                                            ]"/>
+															
+		<!--Handlers -->
+    	<aura:handler name="init" value="{!this}" action="{!c.myAction}" />
+    	<aura:handler name="change" value="{!v.callSaveFromParent}" action="{!c.saveData}"/>
+    	<aura:handler name="change" value="{!v.finalverCounter}" action="{!c.fetchVerdictStatus}" /> <!-- this is the onchange event handler which will fire after verdict status changes from parent -->
+    	<!--<aura:registerEvent name="uncheckGenTestCounterEvnt" type="c:UncheckGenTestCheckbox"/> <created in order to check if we can uncheck the Gentest checkbox after record save-->
+    	<aura:registerEvent name="QcMtlComponentSavedEvent" type="c:QcMtlComponentSaved"/><!-- this event set the Component Id which will pass to the test parameter while saving the data -->
+    	<!--<aura:registerEvent name="QCMtlSamplQtySizeEvent" type="c:QCMTLSampleSizeEvent"/>--><!-- this event set the Component Id which will pass to the sample size for creating dynamic rows in test parameter -->
+    	<!--<aura:registerEvent name="updateInpParamData" type="c:UpdateInputParamAgainEvent"/>  -->  
+    	<aura:registerEvent name="ChangedSampleSizeEvnt" type="c:ChangeSamplpeSizeEvent"/>
+    	<aura:registerEvent name ="FinalVerdStatEvnt" type="c:QC_MTL_FinalVerdictEvent"/>
+    
+		<div class="slds-section slds-is-open">
+           <h3 class="slds-section__title slds-theme_success" >
+               <span class="slds-truncate slds-p-horizontal_small" title="Section Title" style="font-weight: bold;">Material Information</span>
+           </h3>
+                 <div aria-hidden="false" class="slds-section__content">
+               <form class="slds-form slds-form_compound" >
+                   <div class="slds-form-element__control">
+                       <fieldset class="slds-form-element"> 
+        					<div class="slds-form-element__group"> 
+            					<div class="slds-form-element__row"> 
+                       				<div class="slds-form-element slds-size_1-of-2 ">
+                                        <span class="slds-form-element__label">Report Reference No</span>
+                                        <span class="slds-form-element__static">{!v.mtlReportReferValue}</span>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                        <span class="slds-form-element__label">Record Status</span>
+                                        <span class="slds-form-element__static">{!v.mtlRecordStatusValue}</span>  
+                                    </div>
+                                </div> 
+                           </div> 
+                       </fieldset>
+                       <fieldset class="slds-form-element"> 
+        					<div class="slds-form-element__group"> 
+            					<div class="slds-form-element__row"> 
+                       				<div class="slds-form-element slds-size_1-of-2">
+                                        <span class="slds-form-element__label">Material Testing Type</span>
+                                         <span class="slds-form-element__static">{!v.materialTestType}</span>
+                                    </div>
+                                    <div class="slds-form-element slds-size_1-of-2">
+                                        <span class="slds-form-element__label">MTL User Email</span>
+                                        <span class="slds-form-element__static">{!v.mtlUserEmail}</span>
+                                </div> 
+                                </div> 
+                           </div> 
+                       </fieldset>
+                       <fieldset class="slds-form-element"> 
+        					<div class="slds-form-element__group"> 
+            					<div class="slds-form-element__row"> 
+    								<div class="slds-form-element slds-size_1-of-2">
+                                    	<span class="slds-form-element__label">Raw Material Type</span>
+                                        <span class="slds-form-element__static">{!v.rawMaterialType}</span>    
+                                    </div> 
+                                    <div class="slds-form-element slds-size_1-of-2">
+                                    	<span class="slds-form-element__label">Document Status</span>
+                                        <span class="slds-form-element__static">{!v.documentStatusValue}</span>    
+                                    </div> 
+                                </div>
+                           </div>
+                       </fieldset>   
+                       <fieldset class="slds-form-element"> 
+        					<div class="slds-form-element__group"> 
+            					<div class="slds-form-element__row"> 
+    								
+                       				<div class="slds-form-element slds-size_1-of-2">
+                                    	<lightning:input  aura:id="NoSampleRecvdId" label="Sample Size" type="number" value="{!v.sampleSize}" disabled="{!v.isReadonly}" placeholder="Enter number of samples!" onchange="{!c.changeSampleSize}"/>
+                       				</div>
+									<div class="slds-form-element slds-size_1-of-2">     
+                                    	<lightning:input aura:id="sampleDateId" label="Sample Received Date" type="Date" value="{!v.sampleDate}" disabled="{!v.isReadonly}"/>
+                       				</div>  
+                                </div>
+                           </div>
+                       </fieldset>
+					    <fieldset class="slds-form-element"> 
+        					<div class="slds-form-element__group"> 
+            					<div class="slds-form-element__row"> 
+                       			
+                                    <div class="slds-form-element slds-size_1-of-2">
+                                   <lightning:select name="Verdict" aura:id="verdictId" label="Final Verdict" disabled="{!v.isReadonly}" value="{!v.VerdictStatusValue}">
+                                       <aura:iteration items="{!v.finalVerdict}" var="finalVerd">
+                                           <option text="{!finalVerd.label}" value="{!finalVerd.value}" selected="{!finalVerd.selected}"></option>
+                                       </aura:iteration>
+                                   </lightning:select>	
+                        		</div>
+                                <div class="slds-form-element slds-size_1-of-2">
+									<lightning:input type="email" aura:id="sampleRecvFrmId" label="Sample Received From" value="{!v.sampleRecvdFrom}" disabled="{!v.isReadonly}" placeholder="Enter an email!"/>
+									</div>	
+                   			</div>
+                          </div>
+                       </fieldset>                      
+                       <fieldset class="slds-form-element"> 
+        					<div class="slds-form-element__group"> 
+            					<div class="slds-form-element__row"> 
+                       			
+
+                   			</div>
+                          </div>
+                       </fieldset>
+                   </div>
+                                
+               </form>
+            </div>
+        </div>
+        
+</aura:component>

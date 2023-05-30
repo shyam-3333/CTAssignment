@@ -1,0 +1,92 @@
+<apex:page standardController="Quote" sidebar="false" showHeader="false" renderAs="PDF">
+
+<P>To,<br/>M/S.{!Quote.Contact.Account.Name} , ---</p><p align='right'>Date :&nbsp;&nbsp;<apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+     <apex:param value="{!Today()}" />
+</apex:outputText></p><br/>
+ <b>Sub : {!Quote.Subject__c}</b><br/><br/>
+Dear sir {!Quote.Contact.Name},<br/><br/>
+I would like to thank you for showing interest in Tanishq Products. I am pleased to offer
+the following special rate on the Purchase of 24KT Tanishq Gold coins.<br/><br/>
+
+
+
+<table border="1" cellspacing="0">
+    <tr>
+        <td><b>Product</b></td>
+        <td><b>Weight</b></td>
+        <td><b>Unit Price</b></td>
+    </tr>
+   <apex:repeat value="{!Quote.QuoteLineItems}" var="line"> 
+    <tr>
+            
+            <td> 
+                       
+                <apex:outputLabel value="{!line.PricebookEntry.Product2.Name}"/> 
+            </td>
+              
+    
+            <td>          
+            <apex:outputLabel value="{!line.Weight_of_the_product__c}"/> 
+            </td> 
+        
+            <td>
+            <apex:outputLabel value="{!line.UnitPrice}"/> 
+            </td>
+         
+    </tr>
+     </apex:repeat>
+         
+
+          
+</table>
+
+<b>Customization Charges –  (One Time Die Charges)</b><br/><br/>
+
+
+
+
+
+
+<b>Payment Terms:</b> {!Quote.Payment_Terms__c}-------- A 100% advance payment of the order value will need to be made
+along with the issue of the Purchase Order. The Draft / Cheque will need to be
+addressed to 'Titan Industries Limited'.<br/><br/>
+<b>Delivery :</b>  {!Quote.Delivery__c} ---------- Within 15-20 working days of issue of Purchase Order and 100% advance
+Payment Pls arrange for the dispatch details for us to revert on delivery charges.<br/><br/>
+<b>Packaging :</b> Each coin will be packaged separately in Tanishq pouch packaging and
+will carry a certificate of authenticity.<br/><br/>
+<b>Please Also Note:</b><br/>
+1] The above quotation is an indicative rate based on the prevailing Gold Rate for
+the day of Rs1488.50/- per gram for 24KT 02nd Feb -.2009 as per Reuters. The
+rate of gold applicable for the entire order shall depend on the rate prevailing on
+the day of receipt of the order and advance.<br/><br/>
+2] The Rate given above includes all costs towards material cost, manufacturing,
+GST, customization, packaging and delivery. Cost towards
+any other levies etc. would need to be paid extra in actual where ever applicable
+by the purchaser<br/><br/>
+3] Incase of customization of the coin the die/tool used for the manufacturing of the
+coin will not be returned, the same can be re-used for future orders of the same
+design.<br/><br/>
+4] Due to the manufacturing process there may be a variation of (+/-) 0.05 Gms per
+coin.<br/><br/>
+5] Exchange / Buy Back of the Gold Coins will be done as per the Tanishq
+Exchange Policy.<br/><br/>
+Force Majeure : Adherence to these commitments might not be possible in case of any
+prevention or hindrance in consequence of any act of god or state, or any other
+extraneous circumstances beyond the anticipation or control of either parties.<br/><br/>
+I hope the above meets with your requirements.<br/><br/>
+Yours Sincerely,<br/>
+For Titan Industries Limited,<Br/><Br/><Br/><Br/><Br/><Br/>
+Pls sent the PO and payments to :<Br/><Br/>
+TITAN INDUSTRIES LTD<Br/><Br/><Br/>
+N.B: In the event of the order being placed on Titan Industries Limited the following
+information needs to be provided by M/s. {!Quote.Contact.Account.Name} . in
+the Purchase Order.<Br/><Br/>
+- Reference to the Quotation No. and date of Titan Industries Limited on which
+the order is based.<Br/>
+-Finalised (with details as to whether the rate is inclusive or exclusive of
+GST)<Br/>
+<Br/>
+- Packaging details<Br/><Br/>
+
+Delivery schedule, delivery address (es) and name (s) of the contact person
+</apex:page>

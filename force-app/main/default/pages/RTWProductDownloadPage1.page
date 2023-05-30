@@ -1,0 +1,19 @@
+<apex:page controller="RTWProductViewController" id="MainPage"
+          showHeader="false" 
+           cache="true"
+           contentType="application/x-pdf#{!param}.pdf">
+
+    <!-- Here comes another page with a content to be converted to PDF -->
+    <apex:outputPanel rendered="{! ProdType =='BLOUSE' || ProdType == 'KURTA' || ProdType == 'SHORT TOP' || ProdType == 'DRESS' || ProdType == 'TROUSER' || ProdType == 'KURTA SET' || ProdType == 'SLIP' || ProdType == 'TUNIC'}">
+        <apex:include pageName="RTWProductBlouseTypePage"/>
+    </apex:outputPanel>
+    
+    <apex:outputPanel rendered="{! ProdType =='LEHENGA' }">
+        <apex:include pageName="RTWProductLehengaTypePage"/>
+    </apex:outputPanel>
+    
+    <apex:outputPanel rendered="{! ProdType !='LEHENGA' && ProdType !='BLOUSE' && ProdType !='KURTA' && ProdType !='SHORT TOP' && ProdType !='DRESS'  && ProdType != 'TROUSER' && ProdType != 'KURTA SET' && ProdType != 'SLIP' && ProdType != 'TUNIC'}">
+        <apex:include pageName="RTWProductDownldPDF"/>
+    </apex:outputPanel>
+    
+</apex:page>

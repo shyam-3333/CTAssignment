@@ -1,0 +1,442 @@
+<!--**************************************************************************************************************************************************
+**Created By    : Vijayavardan reddy.
+**Modified By   : Vijayavardan Reddy,Avinash.
+**CreatedDate   : 7-5-2014.
+**Description   : Collects the search information and give it to the controller, and also provides the advanced search which contains Brands and Gender values.
+************************************************************************************************************************************************************--> 
+
+<apex:page controller="CustomLanding" action="{!sessionManagement}"  docType="html-5.0"   showHeader="false" sidebar="false" id="MainPage" standardStylesheets="false" >
+   <head>
+            <title> Search </title>
+            <meta charset="utf-8"/>
+           
+            <apex:includeScript value="{!URLFOR($Resource.JqueryA, 'js/jquery-1.6.2.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.JqueryA, 'js/jquery-ui-1.8.16.custom.min.js')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.JqueryA, 'css/ui-lightness/jquery-ui-1.8.16.custom.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.blueopal.min.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.common.min.css')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.rtl.min.css')}"/>
+    </head>
+    
+    <script>  
+        $(document).ready(function() {
+
+            var popupStatus = 0;
+            $("#Login_PopUp_Link").click(function() {
+
+                //Aligning our box in the middle
+                var windowWidth = document.documentElement.clientWidth;
+                var windowHeight = document.documentElement.clientHeight;
+                var popupHeight = $("#popupLogin").height();
+                var popupWidth = $("#popupLogin").width();
+                
+                //centering
+                $("#popupLogin").css({
+                    "position": "absolute",
+                    "top": windowHeight / 2 - popupHeight / 2,
+                    "left": windowWidth / 2 - popupWidth / 2
+                });
+
+                //aligning our full bg 
+                $("#LoginBackgroundPopup").css({
+                    "height": windowHeight
+                });
+
+                // Pop up the div and Bg
+                if (popupStatus == 0) {
+                    $("#LoginBackgroundPopup").css({
+                        "opacity": "0.7"
+                    });
+                    $("#LoginBackgroundPopup").fadeIn("slow");
+                    $("#popupLogin").fadeIn("slow");
+                    popupStatus = 1;
+                }
+            });
+
+
+            //Close Them
+            $("#popupLoginClose").click(function() {
+                if (popupStatus == 1) {
+                    $("#LoginBackgroundPopup").fadeOut("slow");
+                    $("#popupLogin").fadeOut("slow");
+                    popupStatus = 0;
+                }
+            });
+
+        });
+        
+        function textBoxKeyPress(pressedElement){
+        
+            var key;
+            if(window.event){ 
+                           
+                key = window.event.keyCode;     //IE    
+                 
+            }else{            
+                    
+                key =window.event.which;     //firefox
+                
+            }       
+            
+            if(key == 13){ 
+            
+                var ele='';
+                if( pressedElement == 'advancesearch'){  
+                                       
+                    ele=document.getElementById('MainPage:form1:pblk:Login_PopUp_Link'); 
+                    
+                }else{
+                     
+                      
+                        ele=advanceSearchDisplay?document.getElementById('MainPage:form1:pblk:seachbuttonId'):document.getElementById('MainPage:form1:pblk:seachbuttonId1');
+                                        
+                }     
+                    window.event.preventDefault();                                                     
+                    ele.click(); 
+                
+            } 
+        }
+        
+        $(function(){
+        
+            $(".k-button1").click(function(){
+                $(".popup").hide();
+                
+                var lengtOffields=document.getElementsByClassName("advancesearch").length;
+                
+                for(var i=0;i<lengtOffields;i++){
+                
+                    document.getElementsByClassName("advancesearch")[i].checked=false;
+                }
+            }); 
+            $(".k-button").click(function(){
+                $(".popup").hide();
+                
+                var lengtOffields=document.getElementsByClassName("advancesearch").length;
+                
+                for(var i=0;i<lengtOffields;i++){
+                
+                    document.getElementsByClassName("advancesearch")[i].checked=false;
+                }
+            });
+             
+            $(".AdvancesearchButton").click(function(){
+                $(".popup").show();
+                $( ".popup" ).draggable();
+                return false;
+            });    
+            
+        });
+        
+        function advanceSearch(){
+        
+            var brandString="";
+            if(document.getElementById("MainPage:Filterspop:SF").checked){
+                brandString=brandString+"SFKVP";
+            } if(document.getElementById("MainPage:Filterspop:Fastrack").checked){
+                brandString+="FastrackKVP";
+            } if(document.getElementById("MainPage:Filterspop:SONATA").checked){
+                brandString+="SONATAKVP";
+            } if(document.getElementById("MainPage:Filterspop:TEES").checked){
+                brandString+="TEESKVP";
+            } if(document.getElementById("MainPage:Filterspop:TITAN").checked){
+                brandString+="TITANKVP";
+            } if(document.getElementById("MainPage:Filterspop:Xylys").checked){
+                brandString+="XylysKVP";
+            } if(document.getElementById("MainPage:Filterspop:Zoop").checked){
+                brandString+="ZoopKVP";
+            }
+            
+            document.getElementById("MainPage:Filterspop:brandsId").value=brandString;
+            
+        }
+        
+        
+    </script> 
+   
+    <style>
+
+        #LoginBackgroundPopup{  
+        
+            display:none;  
+            position:fixed;  
+            _position:absolute; /* hack for internet explorer 6*/  
+            height:100%;  
+            width:100%;  
+            top:0;  
+            left:0;  
+            background:#000000;  
+            border:1px solid #cecece;  
+            z-index:1;  
+            
+        } 
+        
+        #popupLogin{  
+        
+            display:none;  
+            position:fixed;  
+            _position:absolute; /* hack for internet explorer 6*/  
+            height:300px;  
+            width:408px; 
+            top:50%;
+            left:50%;      
+            background:#FFFFFF;  
+            border:2px solid #cecece;  
+            z-index:2;  
+            padding:12px;  
+            font-size:13px;  
+            font-family:Arial;
+            
+        }  
+
+    </style> 
+    <style type="text/css">    
+        .content a{
+            text-decoration: none;
+        }
+        
+        .popup{
+        
+            font-family:'Arial';
+            width: 100%;
+            margin-top: 18%;
+            display: none;
+            position: fixed;
+            z-index: 101;
+        }
+        .content{
+        
+            min-width: 600px;
+            width: 600px;
+            min-height: 150px;
+            margin: 2% auto;
+            background: white solid;
+            position: relative;
+            z-index: 103;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px #000;
+            
+        }
+        
+        .content p a{
+            color: #d91900;
+            font-weight: bold;
+        }   
+        .searchtextbox{
+        
+          width:400px;
+          
+        }
+        
+        .k-button,.seachbutton,.AdvancesearchButton{
+        
+            font-family: 'Arial';
+            font-weight: 300;
+            font-size: 16px;
+            color: #fff;
+            background: #56c2e1;
+            border: 1px solid #46b3d3;
+            cursor: pointer;
+        }
+        body { 
+        
+          background: url('{!$Resource.SearchWallpaper}') no-repeat center center fixed; 
+          -webkit-background-size: cover;
+          -moz-background-size: cover;
+          -o-background-size: cover;
+          background-size: cover;
+          
+        }
+            
+        #centersearch{
+        
+             position:absolute;
+             top:50%;
+             left:35%;
+            
+        }   
+        .logoutbutton {
+        
+            background-color:#050505;
+            -moz-border-radius:42px;
+            -webkit-border-radius:42px;
+            border-radius:42px;
+            display:inline-block;
+            cursor:pointer;
+            color:#ffffff;
+            font-family:Arial;
+            font-size:12px;
+            font-weight:bold;
+            padding:22px 10px;
+            text-decoration:none;
+            
+        }
+        
+        .logoutbutton:hover {
+        
+            background-color:#d11414;
+            
+        }
+        
+        .logoutbutton:active {
+        
+            position:relative;
+            top:1px;
+        }
+        .myButton {
+    
+        font-family: 'Arial';
+        font-weight: 300;
+        font-size: 16px;
+        color: #fff;
+        background: #56c2e1;
+        border: 1px solid #46b3d3;
+        cursor: pointer;
+        padding:1px 10px !important;
+        width: 75%;
+        text-align:center;
+
+    }
+    </style>
+    
+    <apex:form id="form1" >
+    
+        <body>
+            <apex:pageBlock id="pblk"  >
+            
+                <table  width="100%">
+                    <tr>
+                        <td algn="left">
+                        
+                            <apex:image value="{!$Resource.New_titan_logo}"  height="80px" width="80px"/>
+                        
+                        </td>
+                        <td align="right" colspan="3" padding-top="50px" valign="top">
+                        
+                               <apex:commandLink title="Click to sign out" action="{!logout}">
+                                      <apex:image value="{!$Resource.LogOut}"  height="32px" width="32px" />                     
+                               </apex:commandlink>
+                               
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <div id="centersearch">
+        
+                                <apex:inputText id="SearchWord"  onkeypress="textBoxKeyPress('search');" style="padding: 10px 0px; border-radius:5px; margin-bottom:2%" html-placeholder="e.g:1621SM01"  value="{!seachKeyWord}" styleClass="searchtextbox"/>
+                                <br/>
+                                
+                                <table width="100%">
+                                    <tr  width="100%">
+                                        <td  width="100%" >
+                                        
+                                            <apex:panelGroup rendered="{!advanceSearchDisplay}">
+                                                 <apex:commandButton value="Search"   id="seachbuttonId" onkeypress="textBoxKeyPress('search');"   Action="{!searchTitan}" styleClass="seachbutton" style="width:45%;margin-left:1%;"/>
+                                                 <div id="Login_PopUp_Link" style="margin-top:-6.2%;margin-left:47%;width:45%; "  class="myButton">Advanced Search</div>
+                                             </apex:panelGroup>
+                                             
+                                            <apex:panelGroup rendered="{!if(advanceSearchDisplay,false,true)}">
+                                                <apex:commandButton value="Search"   id="seachbuttonId1" onkeypress="textBoxKeyPress('search');"   Action="{!searchTitan}" styleClass="seachbutton" style="width:80%;margin-left:10%;"/>
+                                            </apex:panelGroup>
+                                            
+                                        </td>
+                                    </tr>
+                                </table>
+                            
+                            </div> 
+                        </td>
+                    </tr>
+                </table>
+                
+                <script type="text/javascript">
+                    $( ".searchtextbox" ).autocomplete({
+                            source: function( request, response ) {
+                                     var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                                     var arr = $.grep( {!jsonDescriptionData}, function( item ){  return matcher.test( item );    })
+                                     if(arr.length == 0)
+                                     arr[0] = '';
+                                     response( arr );
+                            },
+                        minLength:1,
+                    });
+                </script>
+                
+            </apex:pageblock>
+            
+        </body>
+        
+    </apex:form> 
+    
+    <div id="popupLogin">
+        <apex:form id="Filterspop" >
+            <apex:inputtext id="brandsId" value="{!brands}" style="display:none;"/>
+                   
+            <table    style="background-color:#FFFFFF" width="100%" height="100%">
+                
+                <tr>
+                    <td >
+                         <div  >
+                            <table width="100%" height="100%">
+                                <tr>
+                                    <td width="50%" align="left">
+                                        <b><apex:outputtext value="Advanced Search"  style="font-size:15px"/></b>
+                                    </td>
+                                    <td width="50%" align="right">
+                                          <a href="#" id="popupLoginClose"> <apex:image value="{!$Resource.Close}" styleClass="k-button1" style="cursor:pointer;" height="20px" width="20px"/> </a> 
+                                    </td>
+                                </tr>
+                            </table>
+                          </div> 
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center">
+                        <table width="100%">
+                            <tr  width="100%">
+                                <td  width="50%" align="center" valign="top">
+                                    <table>
+                                        <tr><td><b>Brands</b><br/></td></tr>
+                                        <tr><td></td></tr>
+                                        <tr align="Left"> <td><apex:inputcheckbox id="SF" styleclass="advancesearch"/>SF</td></tr>
+                                        <tr align="Left"> <td> <apex:inputcheckbox id="Fastrack" styleclass="advancesearch"/>Fastrack</td></tr>
+                                        <tr align="Left"> <td><apex:inputcheckbox id="SONATA" styleclass="advancesearch"/>Sonata</td> </tr>
+                                        <tr align="Left"> <td><apex:inputcheckbox id="TEES" styleclass="advancesearch"/>Tees</td> </tr>
+                                        <tr align="Left"> <td><apex:inputcheckbox id="TITAN" styleclass="advancesearch"/>Titan </td></tr>
+                                        <tr align="Left"> <td><apex:inputcheckbox id="Xylys" styleclass="advancesearch"/>Xylys </td></tr>
+                                        <tr align="Left"> <td><apex:inputcheckbox id="Zoop" styleclass="advancesearch"/>Zoop </td></tr>
+                                    </table>
+                                </td>
+                                <td  width="50%" valign="top">
+                                    <table>
+                                        <tr><td><b>Gender</b></td></tr>
+                                        <tr><td></td></tr>
+                                        <tr>
+                                            <td rowspan="7">
+                                                <apex:selectList value="{!genderSelectedValues}" multiselect="true" size="4">
+                                                <apex:selectOptions value="{!genderPickListvalues}"/>
+                                                </apex:selectList>
+                                            </td>
+                                        </tr>
+                                    </table>     
+                                </td>
+                            </tr>  
+                            <tr>
+                                <td align="center" colspan="2">
+                                    <apex:commandButton styleClass="k-button" value="Go" onclick="advanceSearch();" Action="{!searchTitan}" style="border-radius:2px;padding-left:12px;padding-right:12px;"/>
+                                </td>   
+                            </tr>
+                        </table>  
+                    </td>
+                </tr>
+            </table> 
+
+        </apex:form> 
+    </div>
+    
+    <div id="LoginBackgroundPopup"></div>
+    <div style="position: relative">
+      <p style="position: fixed; bottom: 0; width:100%; text-align: center;font-family:Arial;font-size:12px;"> Copyright © 2014 Under Titan Company. All Rights Reserved. No imagery or logos contained within this site may be used without the express permission of Titan Company</p>
+    </div>
+</apex:page>

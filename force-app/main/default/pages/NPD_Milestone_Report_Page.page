@@ -1,0 +1,429 @@
+<apex:page controller="NPD_Milestone_Report" sidebar="false" id="mypage" docType="HTML-5.0">
+    <apex:form id="myForm">
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        /* This is for the full screen DIV */
+        
+        .popupBackground {
+            /* Background color */
+            background-color: black;
+            opacity: 0.20;
+            filter: alpha(opacity=20);
+            /* Dimensions */
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 998;
+            position: absolute;
+            /* Mouse */
+            cursor: wait;
+        }
+        /* This is for the message DIV */
+        
+        .PopupPanel {
+            /* Background color */
+            /* border: solid 2px blue;*/
+            left: 50%;
+            width: 200px;
+            margin-left: -100px;
+            top: 50%;
+            height: 250px;
+            margin-top: -25px;
+            z-index: 999;
+            position: fixed;
+            /* Mouse */
+            cursor: pointer;
+        }
+        .table_design td{
+            white-space: nowrap;
+        }
+         .table_design1 td{
+            white-space: nowrap;
+        }
+        
+    </style>
+        <apex:actionStatus id="actStatusId" stopText="">
+            <apex:facet name="start">
+                <div>
+                    <div class="popupBackground" />
+                    <div class="PopupPanel">
+                        <table border="0" width="100%" height="100%">
+                            <tr>
+                                <td align="center"><img src="/img/loading.gif" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionStatus>
+        <table class="table_design1" border="1" align="center" width="1200" style="background-color:#1DD8EB;">
+            <tr align="center">
+                <td colspan="3" style="color:#4c76ad;font-weight:bold;font-size:16px;"><b>Basic Search</b></td>   
+                <td colspan="3" style="color:#4c76ad;font-weight:bold;font-size:16px;"><b>Advance Search</b></td>    
+            </tr>
+            <td style="font-size:12px;">
+                <apex:outputPanel id="brandId"> <b>Brand:</b>
+                        <apex:selectList size="1" value="{!selectedBrandName}">
+                            <apex:selectoptions value="{!npdBrandOption}" />
+                            <apex:actionSupport event="onchange" action="{!selectCollection}" reRender="collectionId,modelId,TableRecordId" status="actStatusId"/>
+                        </apex:selectList>
+                </apex:outputPanel>
+            </td>
+            <td style="font-size:12px;">
+                <apex:outputPanel id="collectionId"> <b>Collections:</b> &nbsp;
+                    <apex:selectList size="1" value="{!selectedCollectionName}">
+                        <apex:selectoptions value="{!npdCollectionOption}" />
+                        <apex:actionSupport event="onchange" action="{!selectModel}" reRender="modelId,TableRecordId" status="actStatusId"/>
+                    </apex:selectList>
+                </apex:outputPanel>
+            </td>
+            <td style="font-size:12px;">
+                <apex:outputPanel id="modelId"> <b>Model:</b> &nbsp;
+                    <apex:selectList size="1" value="{!selectedModelName}">
+                        <apex:selectoptions value="{!npdModelOption}" />
+                    </apex:selectList>
+                </apex:outputPanel>
+            </td>
+            <td style="font-size:12px;"><b>From Date</b> &nbsp;
+                <apex:input type="date" id="fromDates" value="{!fromDate}">
+                    <apex:actionSupport event="onchange" action="{!selectCollection}" reRender="collectionId,TableRecordId" status="actStatusId"/>
+                </apex:input>
+            </td>
+            <td style="font-size:12px;"><b>To Date</b> &nbsp;
+                <apex:input type="date" id="toDates" value="{!toDate}">
+                    <apex:actionSupport event="onchange" action="{!selectCollection}" reRender="collectionId,TableRecordId" status="actStatusId"/>
+                </apex:input>
+            </td>
+            <td style="font-size:12px;"> &nbsp;
+                <apex:outputPanel id="fiscalYearId"> <b>Year:</b> &nbsp;
+                    <apex:selectList size="1" value="{!selectedYear}">
+                        <apex:selectoptions value="{!npdfiscalYearOption}" />
+                        <apex:actionSupport event="onchange" action="{!selectCollection}" reRender="collectionId,TableRecordId" status="actStatusId" />
+                    </apex:selectList>
+                </apex:outputPanel>
+            </td>
+        </table>
+        <table class="table_design1" border="0" align="center" width="100" style="">
+            <tr align="center">
+                <td style="color:#ff9f80;font-weight:bold;font-size:14px;">
+                    <apex:commandButton value="Run Report"  action="{!displayMilestoneTable}" reRender="TableRecordId"  status="actStatusId" /><br/><br/>
+                </td>
+            </tr>
+        </table> 
+        <div class="scrollmenu">
+            <apex:outputPanel id="TableRecordId" >
+                <apex:outputPanel id="innerTableDataId" rendered="{!isDisplayTable}" > 
+                    <table class="table_design" width="100%" border="1" cellspacing="0" cellpadding="1" align="center" style=" border-bottom-style: none;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;"> 
+                        <apex:repeat value="{!lWrapperList}" var="projctValue">
+                            <tr style="background:#008fb3;font-weight:bold;font-size:13pt;" align="center">
+                                <td colspan = "8"><font color="white"><apex:outputText value="{!projctValue.projObj.Name}" /></font></td>
+                            </tr>
+                            <tr align="center">
+                                <td colspan = "8" style="text-align: center;">
+                                    <apex:outputField value="{!projctValue.projObj.ImageUpload__c}" rendered="{!NOT(ISBLANK(projctValue.projObj.ImageUpload__c))}"/>
+                                    <apex:image value="{!$Resource.No_Image}" width="300" height="400" rendered="{!ISBLANK(projctValue.projObj.ImageUpload__c)}"/>
+                                </td>
+                            </tr>
+                            <tr style="background:#D3D3D3;font-weight:bold;" align="center">
+                                <td>
+                                    <apex:outputText value="Sl. No." />
+                                </td>
+                                <td>
+                                    <apex:outputText value="MileStone" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="Plan Start" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="Plan End" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="Plan Lead Time" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="Actual Start" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="Actual End" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="LT" />
+                                </td>
+                            </tr>
+                            
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="1" /></td>
+                                <td><apex:outputText value="{!projctValue.marketComponentName}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.marketingBriefPSD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.marketingBriefPED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.marketingBriefPLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.marketingBriefASD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.marketingBriefAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.marketingBriefLT}" /></td>
+                            </tr>
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="2" /></td>
+                                <td><apex:outputText value="{!projctValue.conceptComponentName}" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="{!projctValue.conceptDesignPLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.conceptDesignASD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.conceptDesignAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.conceptDesignLT}" /></td>
+                            </tr>
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="3" /></td>
+                                <td><apex:outputText value="{!projctValue.engineerComponentName}" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="{!projctValue.engineerDesignPLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.engineerDesignASD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.engineerDesignAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.engineerDesignLT}" /></td>
+                            </tr>
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="4" /></td>
+                                <td><apex:outputText value="{!projctValue.briefComponentName}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.conceptBriefingPSD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.conceptBriefingPED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.conceptBriefingPLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.conceptBriefingASD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.conceptBriefingAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.conceptBriefingLT}" /></td>
+                            </tr>
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="5" /></td>
+                                <td><apex:outputText value="{!projctValue.protoDesComponentName}" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="{!projctValue.protoDesignInputPLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.protoDesignInputASD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.protoDesignInputAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.protoDesignInputLT}" /></td>
+                            </tr>
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="6" /></td>
+                                <td><apex:outputText value="{!projctValue.costEstComponentName}" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="{!projctValue.costEstimationPLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.costEstimationASD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.costEstimationAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.costEstimationLT}" /></td>
+                            </tr>
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="7" /></td>
+                                <td><apex:outputText value="{!projctValue.protoRelComponentName}" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="{!projctValue.protoDesgnRelsPLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.protoDesgnRelsASD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.protoDesgnRelsAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.protoDesgnRelsLT}" /></td>
+                            </tr>
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="8" /></td>
+                                <td><apex:outputText value="{!projctValue.protoManfComponentName}" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="{!projctValue.protoManufacturingPLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.protoManufacturingASD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.protoManufacturingAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.protoManufacturingLT}" /></td>
+                            </tr>
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="9" /></td>
+                                <td><apex:outputText value="{!projctValue.protoAppComponentName}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.protoApprovalPSD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.protoApprovalPED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.protoApprovalPLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.protoApprovalASD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.protoApprovalAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.protoApprovalLT}" /></td>
+                            </tr>
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="10" /></td>
+                                <td><apex:outputText value="{!projctValue.inputComponentName}" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="{!projctValue.inputFinalProdPLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.inputFinalProdASD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.inputFinalProdAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.inputFinalProdLT}" /></td>
+                            </tr>
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="11" /></td>
+                                <td><apex:outputText value="{!projctValue.finalComponentName}" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="{!projctValue.finalProdDrawPLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.finalProdDrawASD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.finalProdDrawAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.finalProdDrawLT}" /></td>
+                            </tr>
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="12" /></td>
+                                <td><apex:outputText value="{!projctValue.watchBOComponentName}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.watchBOCompPSD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.watchBOCompPED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.watchBOCompPLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.watchBOCompASD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.watchBOCompAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.watchBOCompLT}" /></td>
+                            </tr>
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="13" /></td>
+                                <td><apex:outputText value="{!projctValue.plannedComponentName}" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="{!projctValue.plannedOrderPLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.plannedOrderASD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.plannedOrderAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.plannedOrderLT}" /></td>
+                            </tr>
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="14" /></td>
+                                <td><apex:outputText value="{!projctValue.watchComponentName}" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="{!projctValue.watchDepositionPLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.watchDepositionASD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.watchDepositionAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.watchDepositionLT}" /></td>
+                            </tr>
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="15" /></td>
+                                <td><apex:outputText value="{!projctValue.prodComponentName}" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="NA" /></td>
+                                <td><apex:outputText value="{!projctValue.prodCertificatePLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.prodCertificateASD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!projctValue.prodCertificateAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!projctValue.prodCertificateLT}" /></td>
+                            </tr>
+                            
+                        </apex:repeat>
+                    </table>
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </div>
+        
+    </apex:form>
+</apex:page>

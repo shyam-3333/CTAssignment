@@ -1,0 +1,64 @@
+<apex:page controller="VendorEmailAttachmentPageController" cache="true" contentType="application/vnd.ms-Excel#SalesForceExport.xls" standardStylesheets="false" applyHtmlTag="false" showHeader="false" sidebar="false">
+    <style>
+        th{
+            width: 250px;
+            height: 50px;
+            overflow:hidden;
+            //background-color:; 
+        }
+    </style>   
+         <table border="1" style="font-family: Arial; border-collapse: collapse; width:100%">
+            <tr>
+                <th><b>Vendor Name</b></th>
+                <th ><b>Vendor Code </b></th>
+                <th ><b>Type</b></th>
+                <th ><b>Category</b></th>
+                <th ><b>Account Owner</b></th>
+                <th ><b>Title</b></th>
+                <th ><b>Name1</b></th>
+                <th ><b>Name2</b></th>
+                <th ><b>Mobile/Phone</b></th>
+                <th ><b>Country</b></th>
+                <th ><b>Postal Code</b></th>
+                <th ><b>PAN Number</b></th>
+                <th ><b>TIN/CST Number</b></th>
+                <th ><b>Payment Term</b></th>
+                <th ><b>Payment Methods</b></th>
+                <th ><b>Account Currency</b></th>
+                <th ><b>Incoterms  </b></th>
+                <th ><b>Bank Name </b></th>
+                <th ><b>IFSC </b></th>
+                <th ><b>Account Number </b></th>
+                <th ><b>Mail ID  </b></th>
+                <th ><b>Phone No</b></th>
+                        
+            </tr>
+            <apex:repeat value="{!accList}" var="acc">
+                <tr>
+                     <td>  <apex:outputText value="{!acc.name}"/> </td>
+                     <td>  <apex:outputText value="{!acc.Vendor_Code__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.Type__c}"/> </td>
+                     <td>  <apex:outputText style="" value="{!acc.Category__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.Owner.Name}"/> </td>
+                     <td>  <apex:outputText value="{!acc.Title__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.Name_1__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.Name_2__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.Mobile_Phone__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.Country__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.Postal_code__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.PAN_Number__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.TIN_CST_Number__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.Payment_Terms__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.Payment_Methods__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.CurrencyIsoCode}"/> </td>
+                     <td>  <apex:outputText value="{!acc.Incoterms__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.Name__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.IFSC__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.Account_Number__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.Mail_ID__c}"/> </td>
+                     <td>  <apex:outputText value="{!acc.Phone_No__c}"/> </td>
+                     
+                </tr>
+            </apex:repeat>
+        </table>
+</apex:page>

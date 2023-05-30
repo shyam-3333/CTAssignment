@@ -1,0 +1,11 @@
+<apex:page standardController="Quote" extensions="Clone_QuoteItems"> 
+<!-- action="{!autorun}"> -->
+ <apex:form >
+      <apex:pageBlock title="Clone Quote ">
+         Are you sure you want to clone this {!Quote.name} Quote...
+         <br/> <br/>
+         If yes please click on &nbsp; <apex:commandButton action="{!autorun}" value="Clone"/>&nbsp;button &nbsp;if no please click on &nbsp;<apex:commandButton action="{!cancel}" value="Cancel"/>&nbsp;button
+      </apex:pageBlock>
+   </apex:form>
+  
+</apex:page>

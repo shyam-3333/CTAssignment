@@ -1,0 +1,99 @@
+<apex:page controller="RTWclassificationdata" Readonly="true" sidebar="false" action="{!loadDataExcel}" contentType="application/vnd.ms-excel#Agentli.xls">
+    <table style="width:100%;border:1px solid;">
+        <tr style="text-align:center; border:1px solid;">
+            <th>Venor name</th>
+            <th>Product type</th>
+            <th>SKU</th>
+            <th>PO number</th>
+            <th>Base Color</th>
+            <th>Collection</th>
+            <th>Craft</th>
+            <th>Description</th>
+            <th>Fabric</th>
+            <th>Form</th>
+            <th>Procurement Cost</th>
+            <th>Buyer cost</th>
+            <th>Quantity</th>
+            <th>Season</th>
+            <th>Okhai size</th>
+            <th>Size</th>
+            <th>Style</th>
+            <th>Style code</th>
+            <th>Year of design</th>
+            <th>Remarks</th>
+            <th>Pleats</th>
+            <th>PLY</th>
+            <th>Design</th>
+            <th>Cost</th>
+            <th>Order ID</th>
+            <th>Fabric 1</th>
+            <th>Fabric 1 quatntity</th>
+            <th>Fabric 2</th>
+            <th>Fabric 2 quantity</th>
+            <th>Mask Description</th>
+            <th>Top Fabric</th>
+            <th>Consumption</th>
+            <th>Bottom Fabric</th>
+            <th>Source</th>
+            <th>Yardage SKU Code</th>
+            <th>Yardage consumption</th>
+            <th>Yardage cost</th>
+            <th>Total cost</th>
+            <th>Loom </th>
+            <th>RTW Size</th>
+            <th>Ecom Size</th>
+            <th>Ecom material</th>
+            <th>Zari</th>
+            
+            
+        </tr>
+        <apex:repeat value="{!dataList}" var="pro">
+            <tr style="text-align:center; border:1px solid;">
+                <td> {!pro.Vendor_custom__c} </td>
+                <td> {!pro.Product__c} </td>
+                <td> {!pro.SKU__c} </td>
+                <td> {!pro.PO_Number__c} </td>
+                <td> {!pro.Base_Colour__c} </td>
+                <td> {!pro.Collection__c} </td>
+                <td> {!pro.Craft__c} </td>
+                <td> {!pro.Description__c} </td>
+                <td> {!pro.MFabric__c} </td>
+                <td> {!pro.Form__c} </td>
+                <td> {!pro.MRP_Pc__c} </td>
+                <td> {!pro.Buyers_Cost__c} </td>
+                <td> {!pro.Quantity__c} </td>
+                <td> {!pro.Season__c} </td>
+                <td> {!pro.Gender__c} </td>
+                <td> {!pro.Okhai_Size__c} </td>
+                <td> {!pro.Size__c} </td>
+                <td> {!pro.STYLE__c} </td>
+                <td> {!pro.Style_Code__c} </td>
+                <td> {!pro.Year_of_Design__c} </td>
+                <td> {!pro.Remarks__c} </td>
+                <td> {!pro.MPleats__c} </td>
+                <td> {!pro.MPly__c} </td>
+                <td> {!pro.MDesign__c} </td>
+                <td> {!pro.MCost__c} </td>
+                <td> {!pro.Order_ID__c} </td>
+                <td> {!pro.Fabric_1__c} </td>
+                <td> {!pro.Fabric_1_Quantity__c} </td>
+                <td> {!pro.Fabric_2__c} </td>
+                <td> {!pro.Fabric_2_Quantity__c} </td>
+                <td> {!pro.MASK_DESCRIPTION__c} </td>
+                <td> {!pro.Top_Fabric__c} </td>
+                <td> {!pro.Consumtion__c} </td>
+                <td> {!pro.Bottom_Fabric__c} </td>
+                <td> {!pro.Source__c} </td>
+                <td> {!pro.Yardage_SKU_Code__c} </td>
+                <td> {!pro.Yardage_Consumption__c} </td>
+                <td> {!pro.Yardage_Cost__c} </td>
+                <td> {!pro.Total_Costs__c} </td>
+                <td> {!pro.RTW_SIZE__c} </td>
+                <td> {!pro.Ecom_Size__c} </td>
+                <td> {!pro.E_Com_Material__c} </td>
+                <td> {!pro.Zari__c} </td>
+                
+            </tr>
+        </apex:repeat>
+    </table>
+</apex:page>

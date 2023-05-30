@@ -1,0 +1,103 @@
+<apex:page controller="NPD_AlbumScreen1_Report_Class" sidebar="false" id="mypage" docType="HTML-5.0">
+    <apex:form id="myForm">
+        <table class="table_design1" border="1" align="center" width="1000" style="background-color:#323C79;">
+             <tr align="center">
+                   
+                    <td colspan="3" style="color:#F1F4FA;font-weight:bold;font-size:16px;"><b>New Products</b></td>
+             </tr>
+             <tr>
+                    <td colspan="3" style="color:#F1F4FA;font-weight:bold;font-size:16px;"><b>Select Options</b><br/><br/>
+                    <input type="radio" name="Models" value="Year">Year</input>
+                    <input type="radio" name="Models" value="Model">Model</input>
+                    <input type="radio" name="Models" value="Search Model">Search Model</input>
+                    </td>
+                    
+              </tr>
+              <tr>
+                    <td colspan="3" style="color:#F1F4FA;font-weight:bold;font-size:16px;"><b>Enter Model/PSY/Case No.</b><br/><br/>
+                        <apex:inputText value="{!searchStr}"></apex:inputText> 
+                       <!-- <input type="text" name="Model No"></input> -->
+                        <apex:commandButton value="Display" action="{!displayModel}" reRender="outerPanelId,errorId" status="searchStatus"/>
+                        <apex:actionStatus id="searchStatus">
+                            <apex:facet name="start" >
+                              <img src="/img/loading.gif" />                    
+                            </apex:facet>
+                        </apex:actionStatus>
+
+                    </td>
+                    
+                    <!-- <td colspan="3" style="color:#F1F4FA;font-weight:bold;font-size:16px;"><b><apex:selectRadio layout="pageDirection">
+                          <apex:selectOption itemLabel="Year" itemValue="1"></apex:selectOption>
+                          <apex:selectOption itemLabel="Model" itemValue="2"></apex:selectOption>
+                          <apex:selectOption itemLabel="Search Model" itemValue="3"></apex:selectOption>
+                         
+                     </apex:selectRadio></b></td> -->
+                </tr>
+                <tr>
+                    <td colspan="3" style="color:#FFF;font-weight:bold;font-size:16px;">
+                        <apex:outputPanel id="errorId">
+                            <apex:pageMessages />
+                        </apex:outputPanel>
+                        <apex:outputPanel id="outerPanelId">
+                            <apex:outputPanel id="recordFound" rendered="{!isDisplayModel}">
+                               
+                                <table border="0" width="100%" style="background-color:#C8DDE2;">
+                                    <tr>
+                                        <td colspan="3" align="center" style="color:#333FFF;text-decoration: underline;">
+                                            <apex:outputLabel value="Model -">{!projectItems.Model_No__c}</apex:outputLabel>
+                                        </td>
+                                    </tr>
+                                    <tr rowspan="10">
+                                        <td>
+                                            <apex:outputField value="{!projectItems.ImageUpload__c}" rendered="{!NOT(ISBLANK(projectItems.ImageUpload__c))}"/>
+                                        <apex:image value="{!$Resource.No_Image}" width="300" height="400" rendered="{!ISBLANK(projectItems.ImageUpload__c)}"/>
+                                        </td>
+                                        <td>
+                                            <apex:outputLabel style="color:#A31807;" value="PSY No.:" /><br/><br/>
+                                            <apex:outputLabel style="color:#A31807;" value="Brand:" /><br/><br/>
+                                            <apex:outputLabel style="color:#A31807;" value="Range:" /><br/><br/>
+                                            <apex:outputLabel style="color:#A31807;" value="Description:" /><br/><br/>
+                                            <apex:outputLabel style="color:#A31807;" value="Gender:" /><br/><br/>
+                                            <apex:outputLabel style="color:#A31807;" value="Calibre:" /><br/><br/>
+                                            <apex:outputLabel style="color:#A31807;" value="Function:" /><br/><br/><br/>
+                                            <apex:outputLabel style="text-decoration: underline;color: darkgreen;" value="Source" /><br/><br/>
+                                            <apex:outputLabel style="color:#A31807;" value="Case Source:" /><br/><br/>
+                                            <apex:outputLabel style="color:#A31807;" value="Case Material:" /><br/><br/>
+                                            <apex:outputLabel style="color:#A31807;" value="B'let Source:" /><br/><br/>
+                                        
+                                        
+                                        </td>
+                                        <td>
+                                            <apex:outputLabel style="color:#2A35E4" value="{!projectItems.PSY_No__c}" /><br/><br/>
+                                            <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Brand1__c}"/><br/><br/>
+                                            <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Collection_Names__c}"/><br/><br/>
+                                            <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Collection_Names__c}"/><br/><br/>
+                                            <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Gender__c}"/><br/><br/>
+                                            <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Momentfuntionvalue__c}"/><br/><br/>
+                                            <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Momentfuntionvalue__c}"/><br/><br/><br/>
+                                            <apex:outputLabel ></apex:outputLabel><br/><br/>
+                                            <apex:outputLabel style="color:#2A35E4" value="{!supplyAgency}"></apex:outputLabel><br/><br/>
+                                            <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Case_Material__r.Name}"></apex:outputLabel><br/><br/>
+                                            <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Strap_Source__c}"></apex:outputLabel><br/><br/>
+                                        
+                                        
+                                        
+                                        </td>
+                                    </tr>    
+                                        
+                                   
+                                
+                                
+                                </table>        
+                                        
+                                      
+                                  
+                                
+            
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                    </td>
+                </tr>
+         </table>
+    </apex:form>
+</apex:page>

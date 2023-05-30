@@ -1,0 +1,353 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 03-24-2021
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+  Modifications Log 
+  Ver   Date         Author                               Modification
+  1.0   03-22-2021   ChangeMeIn@UserSettingsUnder.SFDoc   Initial Version
+-->
+<apex:page controller="EmailAlertClassificationClass" Readonly="true" sidebar="false" action="{!loadDataExcel}" contentType="application/vnd.ms-excel#Agentli.xls">
+    <table style="width:100%;border:1px solid;">
+        <tr style="text-align:center; border:1px solid;">
+            <!-- <th>SKU
+            </th>
+            <th>Vendor Reference Code
+            </th>
+            <th>Product Category
+            </th>
+            <th>Origin
+            </th>
+            <th>PO Number
+            </th>
+            <th>Quantity
+            </th>
+            <th>Cost
+            </th>
+            <th>Base Colour
+            </th>
+            <th>Vendor Name
+            </th>
+            <th>MRP
+            </th>
+            <th>Warp
+            </th>
+            <th>Weft
+            </th>
+            <th>Route (Proc -Type)
+            </th>
+            <th>HANDLOOM MARK
+            </th>
+            <th>Blouse Type
+            </th>
+            <th>Vendor code
+            </th>
+            <th>Dupatta_Fabric
+            </th>
+            <th>Kurta_Fabric
+            </th>
+            <th>Salwar_Fabric
+            </th> 
+            <th>Detailed Colour
+            </th>
+            <th>Design Story
+            </th>
+            <th>Story 1
+            </th>
+            <th>Story 2
+            </th>
+            <th>Design Description
+            </th>
+            <th >UserName
+            </th>
+            <th>Fabric
+            </th>
+            <th>Zari Type
+            </th>
+            <th>Loom 
+            </th>
+            <th>Occasion
+            </th>
+            <th>Craft
+            </th>
+            <th>Collection
+            </th>
+            <th>Body Pattern
+            </th>
+            <th>Body Des Element
+            </th>
+            <th>Body Des Material
+            </th>
+            <th>Body Des Density
+            </th>
+            <th>Border Pattern
+            </th>
+            <th>Border Des Element
+            </th>
+            <th>Border Des Material
+            </th>
+            <th>Border Size
+            </th>
+            <th>Pallu Pattern
+            </th>
+            <th>Pallu Design
+            </th>
+            <th>Pallu Des Material
+            </th>
+            <th>Pallu Des Density
+            </th>
+            <th>Pallu Size
+            </th>
+            <th>Comments
+            </th>
+            <th>Warehouse Stock
+            </th>
+            <th>Sold Stock
+            </th>
+            <th>Store Stock
+            </th>
+            <th>Order Id
+            </th> -->
+            <th>Material Number
+            </th>
+            <th>PRODUCT
+            </th>
+            <th>ORIGIN
+            </th>
+            <th>DESIGN STORY
+            </th>
+            <th>WARP
+            </th>
+            <th>WEFT
+            </th>
+            <th>FABRICS
+            </th>
+            <th>CRAFT
+            </th>
+            <th>BASE COLOUR
+            </th>
+            <th>DETAILED COLOUR
+            </th>
+            <th>LOOM
+            </th>
+            <th>ROUTE
+            </th>
+            <th>ZARI type
+            </th>
+            <th>OCCASION
+            </th>
+            <th>WASH CARE
+            </th>
+            <th>HANDLOOM MARK
+            </th>
+            <th>COLLECTION
+            </th> 
+            <th>SAREE DIMENSION
+            </th>
+            <th>BLOUSE DIMENSION
+            </th>
+            <th>BLOUSE TYPE
+            </th>
+            <th>STORY-1
+            </th>
+            <th>STORY-2
+            </th>
+            <th>BODY PATTERN
+            </th>
+            <th>BODY DES ELEMENT
+            </th>
+            <th>BODYDESMATERIAL
+            </th>
+            <th>
+                BODY DES DENSITY
+            </th>
+            <th>
+                BORDER PATTERN
+            </th>
+            <th>
+                BORDER ELEMENT
+            </th>
+            <th>
+                BORDER DES MATERIAL
+            </th>
+            <th>
+                BORDER SIZE
+            </th>
+            <th>
+                PALLU PATTERN
+            </th>
+            <th>
+                PALLU DESIGN
+            </th>
+            <th>
+                PALLU DES MATERIAL
+            </th> 
+            <th>
+                PALLU DES DENSITY
+            </th>
+            <th>
+                PALLU SIZE
+            </th>
+            <th>
+                VENDOR CODE
+            </th>
+            <th>
+                FABRIC_REPL
+            </th>
+            <th>
+                CRAFT_REPL
+            </th>
+            <th>
+                ORDER ID
+            </th>
+            
+        </tr>
+        <apex:repeat value="{!dataList}" var="pro">
+            <tr style="text-align:center; border:1px solid;">
+                <td>
+                    {!pro.SKU_Code__c}
+                    
+                </td>
+                
+                <td>
+                    {!pro.Product_Category_Taneira__c}
+                </td>
+                
+                <td>
+                    {!pro.Cluster__c}
+                </td>
+                
+                <td>
+                    {!pro.Design_Story__c}
+                </td>
+                <td>
+                    {!pro.Material_Wrap__c}
+                </td>
+                <td>
+                    {!pro.Taneira_Material_Weft__c}
+                </td>
+                <td>
+                    {!pro.Fabric__c}
+                    
+                </td>
+                <td>
+                    {!pro.Workmanship__c}
+                </td>
+                
+                <td>
+                    {!pro.Base_Colour__c}
+                </td>
+                
+                <td>
+                    {!pro.Detailed_Colour__c}
+                </td>
+                
+                <td>
+                    {!pro.Loom__c}
+                </td>
+                
+                <td>
+                    {!pro.Proc_Type__c}
+                </td>
+                <td>
+                    {!pro.Zari_Type__c}
+                </td>
+                <td>
+                    {!pro.Occasion__c}
+                </td>
+                <td>
+                    <apex:outputPanel rendered="{!pro.Product_Category_Taneira__c == 'Saree'}" >
+                        Dry Clean
+                    </apex:outputPanel>
+                </td>
+                <td>
+                    {!pro.Handloommark__c}
+                </td>
+                <td>
+                    {!pro.Collection__c}
+                </td>
+                <td>
+                    {!pro.Saree_Dimensions__c}
+                </td> 
+                <td>
+                    <apex:outputPanel rendered="{!pro.Product_Category_Taneira__c == 'Saree' && (pro.Blouse_Type__c == 'Unstitched' || pro.Blouse_Type__c == 'Stitched') }" >
+                        70cm X 110cm 
+                    </apex:outputPanel>
+                </td>
+                <td>
+                    {!pro.Blouse_Type__c}
+                </td>
+                <td>
+                    {!pro.Story_1__c}
+                </td>
+                <td>
+                    {!pro.Story_2__c}
+                </td>
+                <td>
+                    {!pro.Body_Pattern__c}
+                    
+                </td>
+                <td>
+                    {!pro.Body_Des_Element__c}
+                    
+                </td>
+                
+                <td>
+                    {!pro.Body_Des_Material__c}
+                </td>
+                <td>
+                    {!pro.Body_Des_Density__c}
+                </td>
+                <td>
+                    {!pro.Border_Pattern__c}
+                    
+                </td>
+                <td>
+                    {!pro.Border_Des_Element__c}
+                    
+                </td>
+                <td>
+                    {!pro.Border_Des_Material__c}
+                </td>
+                <td>
+                    {!pro.Border_Size__c}
+                </td>
+                <td >
+                    {!pro.Pallu_Pattern__c}
+                    
+                </td>
+                <td>
+                    {!pro.Pallu_Design__c}
+                    
+                </td>
+                <td>
+                    {!pro.Pallu_Des_Material__c}
+                    
+                </td>
+                <td >
+                    {!pro.Pallu_Des_Density__c}
+                    
+                </td>
+                
+                <td >
+                    {!pro.Pallu_Size__c}
+                </td>
+                
+                <td>
+                    {!pro.Vendor_custom__r.Vendor_Code__c}
+                </td>
+                <td>
+                    {!pro.FabricR__c}
+                </td>
+                <td>
+                    {!pro.CraftR__c}
+                </td>
+                <td>
+                    {!pro.Order_Id__c}
+                </td>
+                
+            </tr>
+        </apex:repeat>
+    </table>
+</apex:page>

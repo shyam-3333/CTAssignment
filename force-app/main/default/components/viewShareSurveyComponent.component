@@ -1,0 +1,153 @@
+<apex:component controller="viewShareSurveyComponentController" allowDML="true">
+    <style>
+    .btn_css {
+        padding-left: 1rem!important;
+    padding-right: 1rem!important;
+    text-align: center!important;
+    vertical-align: middle!important;
+    background-color: #0070d2!important;
+    border: 1px solid #0070d2!important;
+    color: #fff!important;
+        background-image:none!important;
+        margin-top:4px!important;
+        }
+    </style>
+    <apex:attribute name="surveyIdParam" description="The survey to use" type="Id" required="required" assignTo="{!surveyId}"/>
+    <apex:form id="theForm">
+        <div class="slds-box slds-theme--shade">
+            <div class="slds-text-heading--medium">{!$Label.LABS_SF_Share_My_Survey}</div>
+            <div class="slds-form--stacked">
+                <div class="slds-form-element">
+                    <apex:outputLabel for="urlOptions" value="{!$Label.LABS_SF_Sharing_Options}" styleClass="slds-form-element__label" />
+                    <div class="slds-select_container">
+                        <apex:selectList id="urlOptions" value="{!selectedURLType}" size="1" styleClass="slds-select">
+                            <apex:selectOptions value="{!urlType}" />
+                            <apex:actionSupport event="onchange" rerender="theForm" />
+                        </apex:selectList>
+                    </div>
+                </div>
+                <apex:outputPanel rendered="{!selectedURLType == 'Chatter'}">
+                    <div class="slds-form-element">
+                        <apex:outputLabel for="chatterLink" value="{!$Label.LABS_SF_Chatter_Link} " styleClass="slds-form-element__label" />
+                        <div class="slds-form-element__control">
+                            <!--div class="slds-text-title">
+                                {!surveyURLBase + surveyURL}&nbsp;
+                                <a class="slds-button slds-button--brand" href="{!surveyURLBase + surveyURL}" target="_blank">Open Survey (New Window)</a-->
+                                <br/>
+                                <!--apex:selectList id="sel1" value="{!selectedValues1}" multiselect="true" style="width:100px" size="5">
+<apex:selectOptions value="{!SelectedValues}" />
+
+</apex:selectList>
+<apex:commandButton value="send" action="{!sendEmail}" />
+                            </div-->
+                        </div>
+                    </div>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!selectedURLType != 'Chatter'}">
+                    <apex:outputLabel for="sitesList" value="Select Site" styleClass="slds-form-element__label" />
+                    <apex:actionRegion >
+                        <div class="slds-select_container">
+                            <apex:selectList styleClass="slds-select" value="{!surveySite}" id="sitesList" size="1" >
+                                <apex:selectOptions value="{!sitesPicklist}" />
+                                <apex:actionSupport event="onclick" reRender="emailLinkText"/>
+                            </apex:selectList>
+                        </div>
+                    </apex:actionRegion>
+                    <div class="slds-form-element">
+                        <!--apex:outputLabel for="emailLink" value="Emailable Link" styleClass="slds-form-element__label" />
+                        
+                        <div class="slds-form-element__control">
+                            <apex:outputPanel id="emailLinkText">
+                                <div class="slds-text-title" id="emailLinkText">
+                                    {!surveyURLBase + surveyURL}&nbsp;
+                                    <apex:outputLink target="_blank" styleClass="slds-button slds-button--brand" value="{!surveyURLBase + surveyURL}">
+                                        Open Survey
+                                    </apex:outputLink>
+                                    <br/-->
+                        <!--div class="slds-grid slds-wrap"-->
+                        <!--div class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-small-size--1-of-2 slds-large-size--1-of-2"-->
+                            
+                        
+                                    <apex:inputTextarea value="{!emailBody}" style="width:500px;height:120px;"><br/> Email Body<br/>  </apex:inputTextarea>
+                        <!--/div-->
+                        <!--div class="slds-size--1-of-2 slds-medium-size--1-of-2 slds-small-size--1-of-2 slds-large-size--1-of-2" style="padding-top: 85px;"-->
+                        <apex:outputPanel rendered="{!IF(AccString != '',TRUE, FALSE)}">
+                            <br/>
+                            <br/>
+                        </apex:outputPanel>
+                        
+                        <div>
+                            <b>{!AccString + AccName}</b>
+                        </div>
+                        
+                        <div>
+                            <b>{!OppString + OppName}</b> 
+                        </div>
+                        <apex:outputPanel rendered="{!IF(AccString != '',TRUE, FALSE)}">
+                            <br/>
+                        </apex:outputPanel>
+                            
+                            <!--/div-->
+                            <!--/div-->
+                                    <apex:outputPanel rendered="{!selectedURLType != 'Email Link, Anonymous'}" >
+                                        <apex:outputPanel rendered="{!IF(VisitAccString != '',TRUE, FALSE)}">
+                                            <br/>
+                                            <br/>
+                                        </apex:outputPanel>
+                                        <div>
+                                            <b>{!VisitAccString + VisitAccName}</b>
+                                        </div>
+                                        <div>
+                                            <b>{!VisitString + VisitName}</b>
+                                        </div>
+                                        <apex:outputPanel rendered="{!IF(VisitAccString != '',TRUE, FALSE)}">
+                                            <br/>
+                                        </apex:outputPanel>
+                                        <apex:outputText >Contacts</apex:outputText> <br/>
+                                        <div class="slds-grid slds-gutters">
+                                            <div  class="slds-size--1-of-4">
+                                                <apex:inputText value="{!ConName}" style="width:100%;"  />  
+                                            </div>
+                                            <div  class="slds-size--1-of-4">
+                                                <apex:commandButton value="Search" action="{!NameString}" style="margin-left:10px;"/>  
+                                            </div>
+                                            
+                                        </div>
+                                        
+                                        <apex:selectList id="sel2" value="{!selectedValues1}" multiselect="true" style="width:365px" size="5">
+                                            <apex:selectOptions value="{!SelectedValues}" />
+                                        </apex:selectList>
+                                        <apex:commandButton value="send" action="{!sendEmail}" styleClass="btn_css"/>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!selectedURLType == 'Email Link, Anonymous'}" >
+                                        <div>
+                                            <b>{!VisitAccString + VisitAccName}</b>
+                                        </div>
+                                        <apex:inputText label="Email Id" value="{!AnonymousEmailValue}"  styleClass="slds-input" ><div>
+                                            Email Id
+                                            </div> </apex:inputText>
+                                        <apex:commandButton value="send" action="{!sendAnonymousEmail}" styleClass="btn_css" />
+                                     </apex:outputPanel>  
+                                    
+                                </div>
+                            </apex:outputPanel>
+                        </div>
+                    </div>
+                <!--/apex:outputPanel>
+            </div>
+        </div-->
+    </apex:form>
+    <script>
+    $(document).ready(function () {
+        if($('#takeSurveyFrame').height <= 225) {
+            adjustIframeHeight("takeSurveyFrame");
+        }
+    });
+    </script>
+    <style>
+        #takeSurveyFrame {min-height: 225px;}
+    </style>
+    
+    <apex:iframe src="{!surveySite + surveyURL+'&OppName='+OppName}" scrolling="True" id="takeSurveyFrame"/>
+    
+</apex:component>

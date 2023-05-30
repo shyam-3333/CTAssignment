@@ -1,0 +1,13 @@
+<template>
+
+    <lightning-card title="Please select the checkbox to sent email" icon-name="custom:custom14">
+                                        
+        <lightning-datatable  data={feedbackData}  columns={columns} key-field="Id"  onrowselection={getSelectedRec}> </lightning-datatable>
+ 
+        <div slot="footer"> 
+            <lightning-button title="Email" label="Sent Email" size="small" variant="brand" icon-name="standard:email" icon-position="right" onclick={handleSendEmail}></lightning-button>
+        </div>
+     
+  <br/><br/>
+</lightning-card>
+</template>

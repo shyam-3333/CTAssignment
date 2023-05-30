@@ -1,0 +1,868 @@
+<apex:page controller="TaneiraProdAttributionVF" showHeader="false" sidebar="false" standardStylesheets="false" >
+    <apex:pageMessages />
+    <slds>
+        <apex:includeScript value="{!URLFOR($Resource.jquery, 'js/jquery-1.6.2.min.js')}" />
+        <apex:includeScript value="/support/console/40.0/integration.js" />
+        <apex:includeScript value="{!URLFOR($Resource.jquery, 'js/jquery-ui-1.8.16.custom.min.js')}" />
+        <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+        <apex:includescript value="//code.jquery.com/jquery-1.11.1.min.js" />
+        <apex:includescript value="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js" />
+        <apex:stylesheet value="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css" />
+        <script src="../../soap/ajax/36.0/connection.js" type="text/javascript"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/3.1.6/css/fixedHeader.dataTables.min.css"/>
+            <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/fixedheader/3.1.6/js/dataTables.fixedHeader.min.js"></script>    
+        <apex:includeScript value="https://code.jquery.com/jquery-3.5.1.js"/>
+        <apex:includeScript value="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"/>
+        <apex:includeScript value="https://cdn.datatables.net/fixedcolumns/3.3.1/js/dataTables.fixedColumns.min.js"/>
+        <apex:stylesheet value="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css"/>
+        <apex:stylesheet value="https://cdn.datatables.net/fixedcolumns/3.3.1/css/fixedColumns.dataTables.min.css"/>  
+        <script src="/xdomain/xdomain.js"></script>
+        <script >
+            function navigate()
+        {
+            //alert("Hi");
+            window.location.href='/apex/UploadProductData';
+        }
+        function  Showsentmessage() {
+            var x = document.getElementById("warning");
+            x.innerHTML='PO already sent.';
+            x.className = "show";
+            console.log(x);
+            // setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+        }
+        function Showpopup()
+        {
+            if (confirm("PO will be sent , Are you sure?") == true) {
+                CallApexMethod() ;
+            } else {
+                var x = document.getElementById("snackbar");
+                x.innerHTML='Cancelled';
+                x.className = "show";
+                console.log(x);
+                setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+            }
+        }
+        function showSnackbar() {
+            var x = document.getElementById("snackbar");
+            x.innerHTML='PO Sent successfully.';
+            x.className = "show";
+            console.log(x);
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+            // text = "PO sent successfully !!";
+            
+            document.getElementById('j_id0:fm1:SentPOshowId').style.display = 'none'; 
+            
+            document.getElementById('j_id0:fm1:SentPOhideId').style.display = 'block'; 
+        }
+        $(document).ready(function() {
+            var table = $('#tableId').DataTable( {
+                scrollY:        ($(window).height() * 65 / 100),
+                scrollX:        true,
+                scrollCollapse: true,
+                paging:         true,
+                fixedColumns:   {
+                    leftColumns: 5,
+                }
+            } );
+        } );
+        </script>
+        <script>
+        </script>
+        <style>
+            /* Ensure that the demo table scrolls */
+            th,{ white-space: nowrap; 
+            height:50px;}
+            td{ white-space: nowrap;
+            height : 70px;
+            min-width : 70px;
+            }
+            img {
+            max-width: 100%;
+            height: 100%;
+            }
+            
+            .slds-col {
+            width:100%;
+            }
+            .d_title {
+            background: #099ad6 none repeat scroll 0 0;
+            color: #fff;
+            display: inline-block;
+            font-size: 24px;
+            padding: 5px;
+            width: 100%;
+            position:fixed;
+            }
+            #theDivId .dataTables_filter {
+            float:left;
+            margin-left:20px;
+            }
+            tr {
+            
+            }
+            #snackbar {
+            visibility: hidden;
+            z-index: 100001 !important;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            top: 30px;
+            font-size: 17px;
+            background-color: green;
+            }
+            #warning {
+            visibility: hidden;
+            z-index: 100001 !important;
+            min-width: 250px;
+            margin-left: -125px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 2px;
+            padding: 16px;
+            position: fixed;
+            z-index: 1;
+            left: 50%;
+            top: 30px;
+            font-size: 17px;
+            background-color: #FFA500;
+            }
+            #snackbar.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            }
+            
+            #warning.show{
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            }
+            <!-- td{
+white-space: normal!important;
+}
+.slds-truncate {
+white-space: normal;
+}
+#theDivId .dataTables_filter {
+float:left;
+margin-left:20px;
+}
+.pt20 {
+padding-top:20px;
+}
+.layout-fixed {
+table-layout: fixed;
+}
+
+.hard_left {
+position:absolute;
+*position: relative; /*ie7*/
+
+}
+.next_left {
+position:absolute;
+*position: relative; /*ie7*/
+
+}
+
+.outer {position:relative}
+.inner {
+overflow-x:scroll;
+overflow-y:visible;
+width:400px; 
+margin-left:200px;
+}-->
+            
+        </style>
+        <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <head></head>
+            <apex:stylesheet value="{!$Resource.Slds215}" />
+            <body>
+                <apex:form id="fm1" >
+                    <apex:actionFunction name="CallApexMethod" action="{!sentPo}" onComplete="showSnackbar()"></apex:actionFunction>
+                    <div id="snackbar">
+                    </div>
+                    <div id="warning">
+                    </div>
+                    <div class="d_title">
+                        <apex:outputPanel onclick="moveBack();" style="cursor:pointer;">
+                            <apex:image value="{!$Resource.BackIcon_Taneira}" height="32px" width="32"/> 
+                        </apex:outputPanel>
+                        <apex:outputLabel value="Taneira Products" style=" margin-left: 29px;" >
+                            <!--<apex:outputPanel rendered="{!showmessage}" >
+<div class="slds-align_absolute-center" style="height:8rem;border: 1px solid #b3aeae;width: 775px;border-radius: 10px;
+margin-bottom: 20px;position: static;">
+
+</div>
+</apex:outputPanel>--></apex:outputLabel>              
+                    </div><br/><br/>
+                    
+                    <div style="margin-left: 691px;  margin-top: 17px;  margin-bottom: -53px;">
+                        Sl No : {!SLno}
+                    </div>
+                    <!--apex:outputPanel id="panelId"></apex:outputPanel-->
+                    <div class="slds-grid slds-wrap" id="theDivId" style="margin-top: 20px;">
+                        <!--  <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2 col--padded"> --->
+                        <div class="slds-col slds-p-horizontal--small">
+                            <div class="slds-col">
+                                <apex:actionStatus id="statusId" >       
+                                    <apex:facet name="start">
+                                        <div class="slds-spinner_container slds-is-fixed">
+                                            <div role="status" class="slds-spinner slds-spinner--large slds-spinner--brand slds-is-relative">
+                                                <span class="slds-assistive-text">Loading</span>
+                                                <div class="slds-spinner__dot-a"></div>
+                                                <div class="slds-spinner__dot-b"></div>
+                                            </div>
+                                        </div>
+                                    </apex:facet>          
+                                </apex:actionStatus>
+                                <apex:outputPanel style="position:fixed;top:50px;right:0;">Category User&nbsp;<b>:</b>&nbsp;
+                                    <apex:selectList size="1" value="{!selectedCategoryUser}" >
+                                        <apex:selectOptions value="{!userList}" />
+                                    </apex:selectList> &nbsp;
+                                    
+                                    <apex:outputPanel id="poId">
+                                        
+                                        <apex:commandButton id="SentPOshowId" value="Send PO to SAP" reRender="poId,fm1" styleClass="slds-button slds-button--neutral slds-not-selected" status="statusId" onclick="Showpopup()" rendered="{!IF(prodList[0].PO_Number__c == null,TRUE, FALSE)}"  />
+                                        <apex:commandButton id="SentPOhideId" value="Send PO to SAP" reRender="poId,fm1" styleClass="slds-button slds-button--neutral slds-not-selected" status="statusId" onclick="Showsentmessage()" rendered="{!IF(prodList[0].PO_Number__c != null,TRUE, FALSE)}" />
+                                    </apex:outputPanel>
+                                    <apex:commandButton value="Upload proc cost" action="{!showUploadPopUp}" styleClass="slds-button slds-button--neutral slds-not-selected" status="statusId" />
+                                    <apex:commandButton value="Download proc cost" action="{!downloadProductsproc}" styleClass="slds-button slds-button--neutral slds-not-selected" reRender="" status="statusId"/>
+                                    
+                                    <apex:commandButton value="Download PO" action="{!poDownload}" styleClass="slds-button slds-button--neutral slds-not-selected" status="statusId" />
+                                    <apex:commandButton value="Download MM" action="{!mmDownload}" styleClass="slds-button slds-button--neutral slds-not-selected" status="statusId" />
+                                    <apex:commandButton value="Save" action="{!doSave}" styleClass="slds-button slds-button--neutral slds-not-selected" status="statusId"/>                         
+                                    <apex:commandButton value="Submit" action="{!doSubmit}" oncomplete="fun({!check});" styleClass="slds-button slds-button--neutral slds-not-selected" reRender="fm1" disabled="{!IF($Profile.Name == 'Purchase',true,false)}" /> 
+                                    
+                                </apex:outputPanel><br/><br/>
+                                <apex:pageBlock id="pgb">
+                                    
+                                    <table class="slds-table slds-table--bordered slds-resizable pt20 " id="tableId">
+                                        <thead>
+                                            <tr class="slds-text-heading--label" bgcolor="#DEDEDE" >
+                                                <th focusable="true" class="slds-resizable " scope="col">
+                                                    <span class="slds-truncate" title="SKU">SKU</span>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable " scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Vendor Reference Code">Vendor Reference Code</span>
+                                                </th>
+                                                
+                                                <th focusable="true" class="slds-resizable " scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Product Category">Product Category</span>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable " scope="col">
+                                                    <span class="slds-truncate" title="Origin">Origin</span>
+                                                </th>
+                                                <th focusable="true" class="slds-is-resizable " scope="col">
+                                                    <span class="slds-truncate" title="Photo">Photo</span>
+                                                </th>
+                                                <th></th>
+                                                <th focusable="true" class="slds-is-resizable " scope="col">
+                                                    <span class="slds-truncate" title="PO Number">PO Number</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1" > 
+                                                            <apex:param value="PO_Number__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable " scope="col">
+                                                    <span class="slds-truncate" title="Quantity">Quantity</span>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" >
+                                                    <span class="slds-truncate" title="PROC-TYPE">PROC-TYPE</span><br/>
+                                                </th>                                             
+                                                <th focusable="true" class="slds-resizable" scope="col" >
+                                                    <span class="slds-truncate" title="YARDAGE SKU CODE">CHILD SKU</span><br/>
+                                                </th>                                            
+                                                <th focusable="true" class="slds-resizable" scope="col" >
+                                                    <span class="slds-truncate" title="YARDAGE CONSUMPTION">CHILD QTY(in cm)</span><br/>
+                                                </th> 
+                                                <th focusable="true" class="slds-resizable" scope="col" >
+                                                    <span class="slds-truncate" title="YARDAGE UCP">RAW UCP</span><br/>
+                                                </th> 
+                                                <th focusable="true" class="slds-resizable" scope="col" >
+                                                    <span class="slds-truncate" title="YARDAGE COST">TOTAL YARDAGE COST</span><br/>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable " scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Packing Logistic">Packing/Logistic Cost</span>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="Occasion">Occasion</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="pgb" > 
+                                                            <apex:param value="Occasion_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable " scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Buyers Cost">Buyers Cost</span>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Procurement">Procurement Cost</span><br/>
+                                                </th>
+                                                
+                                                <th focusable="true" class="slds-resizable" scope="col" >
+                                                    <span class="slds-truncate" title="TOTAL COST">TOTAL COST</span><br/>                                                      
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;"><span class="slds-truncate" title="Price Band">Price Band</span><br/>
+                                                    <abbr title="Copy to entire row with first row value">
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1" >
+                                                            <apex:param value="Price_Band__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                
+                                                
+                                                <th focusable="true" class="slds-resizable " scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Base Colour">Base Colour</span>
+                                                </th>
+                                                <th focusable="true" class="slds-is-resizable " scope="col">
+                                                    <span class="slds-truncate" title="Vendor Name">Vendor Name</span>
+                                                </th>
+                                                
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="Suggested MRP">Suggested MRP</span>
+                                                </th>
+                                                <apex:outputpanel rendered="{!AND(prodList.size>0)}">
+                                                    <apex:outputPanel rendered="{!IF(prodList[0].Product_Category_Taneira__c != 'USKD', TRUE, FALSE)}">
+                                                        <th focusable="true" class="slds-resizable" scope="col">
+                                                            <span class="slds-truncate" title="Warp">Warp</span>
+                                                        </th>
+                                                        <th focusable="true" class="slds-resizable" scope="col">
+                                                            <span class="slds-truncate" title="Weft">Weft</span>
+                                                        </th>
+                                                    </apex:outputPanel>
+                                                </apex:outputPanel>
+                                                <apex:outputpanel rendered="{!AND(prodList.size>0)}">
+                                                    <apex:outputPanel rendered="{!IF(prodList[0].Product_Category_Taneira__c == 'USKD' || prodList[0].Product_Category_Taneira__c == 'SSKD', TRUE, FALSE)}">
+                                                        <th focusable="true" class="slds-resizable" scope="col">
+                                                            <span class="slds-truncate" title="Dupatta_Fabric">Dupatta_Fabric</span>
+                                                        </th>
+                                                        <th focusable="true" class="slds-resizable" scope="col">
+                                                            <span class="slds-truncate" title="Kurta_Fabric">Kurta_Fabric</span>
+                                                        </th>
+                                                        <th focusable="true" class="slds-resizable" scope="col">
+                                                            <span class="slds-truncate" title="Salwar_Fabric">Salwar_Fabric</span>
+                                                        </th>
+                                                        <th focusable="true" class="slds-resizable" scope="col">
+                                                            <span class="slds-truncate" title="No of pieces">No of pieces</span>
+                                                        </th>
+                                                    </apex:outputPanel>
+                                                </apex:outputPanel>
+                                                <!--
+<th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+<span class="slds-truncate" title="QR Code">QR Code</span>
+</th> -->
+                                                
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Detailed Colour">Detailed Colour</span>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Design Story">Design Story</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1" > 
+                                                            <apex:param value="Design_Story_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Story 1">Story 1</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1" > 
+                                                            <apex:param value="Story_1_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Story 2">Story 2</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1" > 
+                                                            <apex:param value="Story_2_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Design Description">Design Description</span>
+                                                </th>
+                                                <th focusable="true" class="slds-is-resizable" scope="col">
+                                                    <span class="slds-truncate" title="UserName">UserName</span>
+                                                </th>
+                                                
+                                                
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Fabric">Fabric</span>
+                                                </th>
+                                                
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="FabricR">FabricR</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="pgb" > 
+                                                            <apex:param value="FabricR__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="Zari Type">Zari Type</span>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Loom ">Loom </span>
+                                                </th>
+                                                
+                                                
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="Craft">Craft</span> 
+                                                </th>
+                                                
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="CraftR">CraftR</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="pgb" > 
+                                                            <apex:param value="CraftR__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="Collection">Collection</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1" > 
+                                                            <apex:param value="Collection_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="Body Pattern">Body Pattern</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1">
+                                                            <apex:param value="Body_Pattern_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>                                        
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Body Des Element">Body Des Element</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1">
+                                                            <apex:param value="Body_Des_Element_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="Body Des Material">Body Des Material</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1">
+                                                            <apex:param value="Body_Des_Material_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="Body Des Density">Body Des Density</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1">
+                                                            <apex:param value="Body_Des_Density_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="Border Pattern">Border Pattern</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1">
+                                                            <apex:param value="Border_Pattern_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="Border Des Element">Border Des Element</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1">
+                                                            <apex:param value="Border_Des_Element_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="Border Des Material">Border Des Material</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1" >
+                                                            <apex:param value="Border_Des_Material_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="Border Size">Border Size</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1">
+                                                            <apex:param value="Border_Size_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Pallu Pattern">Pallu Pattern</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1" >
+                                                            <apex:param value="Pallu_Pattern_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Pallu Design">Pallu Design</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1">
+                                                            <apex:param value="Pallu_Design_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="Pallu Des Material">Pallu Des Material</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1">
+                                                            <apex:param value="Pallu_Des_Material_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="Pallu Des Density">Pallu Des Density</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1">
+                                                            <apex:param value="Pallu_Des_Density_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col">
+                                                    <span class="slds-truncate" title="Pallu Size">Pallu Size</span><br/>
+                                                    <abbr title="Copy to entire row with first row value"> 
+                                                        <apex:commandButton value="Copy All" action="{!doCopy}" reRender="fm1" >
+                                                            <apex:param value="Pallu_Size_Update__c" assignTo="{!copyValue}" name="copyValue" />
+                                                        </apex:commandButton>
+                                                    </abbr>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Comments">Comments</span>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Warehouse Stock">Warehouse Stock</span>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Sold Stock">Sold Stock</span>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Store Stock">Store Stock</span>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="Order Id">Order Id</span>
+                                                </th>
+                                                <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                    <span class="slds-truncate" title="TaxCode">TaxCode</span>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <apex:repeat value="{!wrraperList}" var="pro">
+                                                <tr class="slds-hint-parent" data-label="SKU">
+                                                    <td role="gridcell hard_left" data-label="SKU">
+                                                        <apex:commandLink value="{!pro.productRec.SKU_Code__c}" onclick="openRecordView('{!pro.productrec.Id}')" reRender="null"/>
+                                                        
+                                                    </td>
+                                                    
+                                                    <td role="gridcell next_left" data-label="Vendor Reference Code">
+                                                        {!pro.productRec.Name}
+                                                    </td>
+                                                    
+                                                    <td role="gridcell" data-label="Product Category">
+                                                        {!pro.productRec.Product_Category_Taneira__c}
+                                                    </td>
+                                                    
+                                                    <td role="gridcell" data-label="Origin">
+                                                        {!pro.productRec.Cluster__c}
+                                                    </td>
+                                                    <td role="gridcell" data-label="Photo">
+                                                        <apex:image value="{!pro.imgLink}" height="80px" width="80px" />
+                                                    </td>
+                                                    <td></td>
+                                                    <td role="gridcell" data-label="PO Number">
+                                                        <apex:inputField value="{!pro.productRec.PO_Number__c}" style="{!if(AND(pro.productRec.PO_Number__c==null,colorCheck),'border-color:#ff3f34','')}"/>
+                                                    </td>
+                                                    <td role="gridcell" data-label="Quantity">
+                                                        {!pro.productRec.Quantity__c}
+                                                    </td>
+                                                    <td role="gridcell" data-label="PROC-TYPE">
+                                                        {!pro.productRec.Proc_Type__c}
+                                                    </td>
+                                                    <td role="gridcell" data-label="YARDAGE SKU CODE">
+                                                        <apex:outputPanel layout="none" id="yd1" rendered="{!pro.productRec.Proc_Type__c == 'Value Added'}">
+                                                            <apex:inputField value="{!pro.productRec.Yardage_SKU_Code__c}" />
+                                                        </apex:outputPanel>
+                                                    </td>
+                                                    <td role="gridcell" data-label="YARDAGE CONSUMPTION">
+                                                        <apex:outputPanel layout="none" id="yd2" rendered="{!pro.productRec.Proc_Type__c == 'Value Added'}">
+                                                            <apex:inputField value="{!pro.productRec.Yardage_Consumption__c}" />
+                                                        </apex:outputPanel>                                                
+                                                    </td>
+                                                    <td role="gridcell" data-label="YARDAGE UCP">
+                                                        <apex:outputPanel layout="none" id="yd4" rendered="{!pro.productRec.Proc_Type__c == 'Value Added'}">
+                                                            <apex:inputField value="{!pro.productRec.Yardage_UCP__c}" />
+                                                        </apex:outputPanel>                                                
+                                                    </td>
+                                                    <td role="gridcell" data-label="YARDAGE COST">
+                                                        <apex:outputPanel layout="none" id="yd3" rendered="{!pro.productRec.Proc_Type__c == 'Value Added'}">
+                                                            {!pro.productRec.Yardage_Cost__c}
+                                                        </apex:outputPanel>                                               
+                                                    </td>
+                                                    <td role="gridcell" data-label="Packing Logistic">
+                                                        {!pro.productRec.Packing_Logistic_Cost__c}
+                                                    </td>
+                                                    <td role="gridcell" controller="defaultvalue" data-label="Occasion">
+                                                        <apex:inputField value="{!pro.productRec.Occasion_Update__c}" style="{!if(AND(pro.productRec.Occasion_Update__c==null,colorCheck),'border-color:#ff3f34','')}"/>
+                                                    </td>
+                                                    <td role="gridcell" data-label="Buyers Cost">
+                                                        {!pro.productRec.Buyers_Cost__c}
+                                                    </td>
+                                                    
+                                                    <td role="gridcell" data-label="Procurement">
+                                                        <apex:inputField value="{!pro.productRec.Procurement_Cost__c}" style="{!if(AND(pro.productRec.Procurement_Cost__c==null,colorCheck),'border-color:#ff3f34','')}"/>
+                                                    </td>
+                                                    <td role="gridcell" data-label="TOTAL COST">
+                                                        {!pro.productRec.Cost__c}
+                                                    </td>
+                                                    
+                                                    <td role="gridcell" data-label="Price Band">
+                                                        <apex:inputField value="{!pro.productRec.Price_Band__c}" style="{!if(AND(pro.productRec.Price_Band__c==null,colorCheck),'border-color:#ff3f34','')}"/>
+                                                    </td>                                                   <td role="gridcell" data-label="Base Colour">
+                                                        {!pro.productRec.Base_Colour__c}
+                                                    </td>
+                                                    <td role="gridcell" data-label="Vendor Name">
+                                                        {!pro.productRec.Vendor_Name__c}
+                                                    </td>
+                                                    <td role="gridcell" data-label="Origin">
+                                                        {!pro.productRec.Suggested_Mrp__c}
+                                                    </td>
+                                                    <apex:outputpanel rendered="{!AND(prodList.size>0)}">
+                                                        <apex:outputPanel rendered="{!IF(prodList[0].Product_Category_Taneira__c != 'USKD', TRUE, FALSE)}"> 
+                                                            <td role="gridcell" data-label="Warp">
+                                                                {!pro.productRec.Material_Wrap__c}
+                                                            </td>
+                                                            
+                                                            <td role="gridcell" data-label="Weft">
+                                                                {!pro.productRec.Taneira_Material_Weft__c}
+                                                            </td>
+                                                        </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                                    <apex:outputpanel rendered="{!AND(prodList.size>0)}">
+                                                        <apex:outputPanel rendered="{!IF(prodList[0].Product_Category_Taneira__c == 'USKD' || prodList[0].Product_Category_Taneira__c == 'SSKD', TRUE, FALSE)}">
+                                                            <td role="gridcell" data-label="Dupatta_Fabric">
+                                                                {!pro.productRec.Dupatta_Fabric__c}
+                                                            </td>
+                                                            <td role="gridcell" data-label="Kurta_Fabric">
+                                                                {!pro.productRec.Kurta_Fabric__c}
+                                                            </td>
+                                                            <td role="gridcell" data-label="Salwar_Fabric">
+                                                                {!pro.productRec.Salwar_Fabric__c}
+                                                            </td>
+                                                            <td role="gridcell" data-label="No of pieces">
+                                                                {!pro.productRec.No_of_pieces__c}
+                                                            </td>
+                                                        </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                                    <!--
+<td role="gridcell" data-label="QR Code">
+{!pro.productRec.QR_Code__c}
+
+</td> -->
+                                                    <td role="gridcell" data-label="Detailed Colour">
+                                                        {!pro.productRec.Detailed_Colour__c}
+                                                    </td>
+                                                    <td role="gridcell" data-label="Design Story">
+                                                        <apex:inputField value="{!pro.productRec.Design_Story_Update__c}" style="{!if(AND(pro.productRec.Design_Story_Update__c==null,colorCheck),'border-color:#ff3f34','')}"/>
+                                                    </td>
+                                                    <td role="gridcell" data-label="Story 1">
+                                                        <apex:inputField value="{!pro.productRec.Story_1_Update__c}" style="{!if(AND(pro.productRec.Story_1_Update__c==null,colorCheck),'border-color:#ff3f34','')}"/>
+                                                    </td>
+                                                    <td role="gridcell" data-label="Story 2">
+                                                        <apex:inputField value="{!pro.productRec.Story_2_Update__c}" style="{!if(AND(pro.productRec.Story_2_Update__c==null,colorCheck),'border-color:#ff3f34','')}"/>
+                                                    </td>
+                                                    <td role="gridcell" data-label="Design description">
+                                                        {!pro.productRec.Design_Description__c}
+                                                    </td>
+                                                    <td role="gridcell" data-label="UserName">
+                                                        {!pro.productRec.Offline_Username__c}
+                                                    </td>
+                                                    <td role="gridcell" data-label="Fabric">
+                                                        {!pro.productRec.Fabric__c}
+                                                    </td>
+                                                    <td role="gridcell" data-label="FabricR">
+                                                        <apex:inputField value="{!pro.productRec.FabricR__c}" />
+                                                    </td>
+                                                    <td role="gridcell" data-label="Zari Type">
+                                                        {!pro.productRec.Zari_Type__c}
+                                                    </td>
+                                                    <td role="gridcell" data-label="Loom">
+                                                        {!pro.productRec.Loom__c}
+                                                    </td>
+                                                    
+                                                    <td role="gridcell" data-label="Craft">
+                                                        {!pro.productRec.Workmanship__c}" 
+                                                    </td>
+                                                    <td role="gridcell" data-label="CraftR">
+                                                        <apex:inputField value="{!pro.productRec.CraftR__c}" />
+                                                    </td>
+                                                    <td role="gridcell" data-label="Collection">
+                                                        <apex:inputField value="{!pro.productRec.Collection_Update__c}" style="{!if(AND(pro.productRec.Collection_Update__c==null,colorCheck),'border-color:#ff3f34','')}"/>
+                                                    </td>
+                                                    <td role="gridcell" data-label="Body Pattern">
+                                                        <apex:inputField value="{!pro.productRec.Body_Pattern_Update__c}"/>
+                                                    </td>
+                                                    <td role="gridcell" data-label="Body Des Element">
+                                                        <apex:inputField value="{!pro.productRec.Body_Des_Element_Update__c}"/>
+                                                    </td>
+                                                    <td role="gridcell" data-label="Body Des Material">
+                                                        <apex:inputField value="{!pro.productRec.Body_Des_Material_Update__c}"/>
+                                                    </td>
+                                                    <td role="gridcell" data-label="Body Des Density">
+                                                        <apex:inputField value="{!pro.productRec.Body_Des_Density_Update__c}"/>
+                                                    </td>
+                                                    <td role="gridcell" data-label="Border Pattern">
+                                                        <apex:inputField value="{!pro.productRec.Border_Pattern_Update__c}"/>
+                                                    </td>
+                                                    <td role="gridcell" data-label="Border Des Element">
+                                                        <apex:inputField value="{!pro.productRec.Border_Des_Element_Update__c}"/>
+                                                    </td>
+                                                    <td role="gridcell" data-label="Border Des Material">
+                                                        <apex:inputField value="{!pro.productRec.Border_Des_Material_Update__c}" />
+                                                    </td>
+                                                    <td role="gridcell" data-label="Border Size">
+                                                        <apex:inputField value="{!pro.productRec.Border_Size_Update__c}"/>
+                                                    </td>
+                                                    <td role="gridcell" data-label="Pallu Pattern">
+                                                        <apex:inputField value="{!pro.productRec.Pallu_Pattern_Update__c}"/>
+                                                    </td>
+                                                    <td role="gridcell" data-label="Pallu Design">
+                                                        <apex:inputField value="{!pro.productRec.Pallu_Design_Update__c}" />
+                                                    </td>
+                                                    <td role="gridcell" data-label="Pallu Des Material">
+                                                        <apex:inputField value="{!pro.productRec.Pallu_Des_Material_Update__c}" />
+                                                    </td>
+                                                    <td role="gridcell" data-label="Pallu Des Density">
+                                                        <apex:inputField value="{!pro.productRec.Pallu_Des_Density_Update__c}"/>
+                                                    </td>
+                                                    <td role="gridcell" data-label="Pallu Size">
+                                                        <apex:inputField value="{!pro.productRec.Pallu_Size_Update__c}" />
+                                                    </td>
+                                                    <td role="gridcell" data-label="Comments">
+                                                        {!pro.productRec.Comments__c}
+                                                    </td>
+                                                    <td role="gridcell" data-label="Warehouse Stock">
+                                                        {!pro.productRec.Warehouse_Stock__c}
+                                                    </td>
+                                                    <td role="gridcell" data-label="Sold Stock">
+                                                        {!pro.productRec.Sold_Stock__c}
+                                                    </td>
+                                                    <td role="gridcell" data-label="Store Stock">
+                                                        {!pro.productRec.Store_Stock__c}
+                                                    </td>
+                                                    <td role="gridcell" data-label="Order Id">
+                                                        {!pro.productRec.Order_Id__c}
+                                                    </td>
+                                                    <td role="gridcell" data-label="TaxCode">
+                                                        {!pro.productRec.Vendor_TaxCode__c}
+                                                    </td>
+                                                </tr>
+                                            </apex:repeat>
+                                        </tbody>
+                                    </table>   
+                                </apex:pageBlock>
+                                <br/>
+                                
+                                <!--Modal/Popup Box Footer Starts here-->
+                                
+                                
+                                <apex:outputPanel rendered="{!showUploadPopUp}" id="UploadPopUp" layout="none">
+                                    <section style="margin-top:50px" role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                                        <div class="slds-modal__container" style="height:80% !important">
+                                            <header class="slds-modal__header">
+                                                <h2>
+                                                    Upload CSV
+                                                </h2>
+                                                
+                                            </header>
+                                            <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1" style="height:100%">
+                                                <apex:inputFile value="{!csvFileBody}"  filename="{!csvAsString}"/>
+                                            </div>
+                                            <footer class="slds-modal__footer">
+                                                <apex:actionRegion >
+                                                    <apex:commandButton action="{!hideUploadPopUp}" value="Cancel" reRender="fm1"/>
+                                                    <apex:commandButton value="Import File" action="{!importCSVFile}"/>
+                                                </apex:actionRegion>            
+                                            </footer>
+                                        </div>
+                                    </section>  
+                                </apex:outputPanel>
+                                
+                                
+                                <!--apex:commandButton value="PDF Download" action="{!downloadProductsPdf}" styleClass="slds-button slds-button--neutral slds-not-selected" reRender="" status="statusId"/>
+<apex:commandButton value="Download" action="{!downloadProducts}" styleClass="slds-button slds-button--neutral slds-not-selected" reRender="" status="statusId"/>
+<apex:commandButton value="PO Updated" action="{!poNumUpdated}" styleClass="slds-button slds-button--neutral slds-not-selected" reRender="pgmsg" status="statusId"/> 
+<apex:commandButton value="Data Updated" action="{!dataUpdated}" styleClass="slds-button slds-button--neutral slds-not-selected" reRender="pgmsg" status="statusId"/>
+<apex:commandButton value="Download" action="{!downloadProducts}" styleClass="slds-button slds-button--neutral slds-not-selected" reRender="" status="statusId"/>
+<button type="button" onclick="navigate();" Class="slds-button slds-button--neutral slds-not-selected" status="statusId" id="navButton">Upload Product</button>
+<apex:commandButton value="Price Updated" action="{!priceUpdated}" styleClass="slds-button slds-button--neutral slds-not-selected" reRender="pgmsg" status="statusId"/>-->
+                            </div>
+                        </div>
+                    </div>
+                </apex:form>
+            </body>
+        </html>
+        <script>
+        /* function fun(a){
+        console.log(a);
+        if(a==false){
+            alert('Please fill all the mandatory fields.');
+        }
+    }
+    var j$ = jQuery.noConflict();
+    j$(document).ready(function() {  
+        paginationTable();
+        <!--var prodTable = j$('[id$="tableId"]').DataTable({});-->
+            
+    });
+        
+        */ function openRecordView(proId) {
+            if ((typeof sforce != 'undefined') && sforce && (!!sforce.one)) {
+                sforce.one.navigateToSObject(proId);
+            } else {
+                window.open('/' + proId);
+            }
+        }
+        /* 
+        function paginationTable() {
+            var prodTable = j$('[id$="tableId"]').DataTable({
+                "pageLength":100,
+                "aaSorting": [],
+                "fixedHeader": true,
+                "aoColumnDefs": [
+                    { "bSortable": false, "aTargets": [ 0,1,2,3 ] }
+                ]    
+            });
+            
+        }*/
+        function moveBack(){
+            
+            if ((typeof sforce != 'undefined') && sforce && (!!sforce.one)){ 
+                
+                sforce.one.navigateToURL("/apex/TaneiraViewAngularJSPage");
+            }
+            else{
+                console.log('**');
+                window.open('/apex/TaneiraViewAngularJSPage','_self');
+                
+            }
+        }
+        
+        </script>
+    </slds>
+</apex:page>

@@ -1,0 +1,106 @@
+Id,Serial_No__c,Item_Name__c,Type__c,Order_No__c,Parent_Order_No__c,Assigned_Team__c,Planned_Lead_Time__c,TemplateType__c,Approval_required__c
+,AR01,Fragrance development,Stage,1,0,Marketing User,196,Marketing Temp New 7,FALSE
+,AR0101,Product brief,Sub-Stage,2,1,Marketing User,196,Marketing Temp New 7,FALSE
+,AR010101,Brief to Fragrance house,Activity,3,2,Fragrance Expert,7,Marketing Temp New 7,FALSE
+,AR010102,Receipt of Fragrance samples- options,Activity,4,3,Fragrance Expert,45,Marketing Temp New 7,FALSE
+,AR010103,Evaluation of fragrance samples,Activity,5,4,Fragrance Expert,14,Marketing Temp New 7,FALSE
+,AR010104,Consumer testing (basis development inputs/ themes that work vs benchmark),Activity,6,5,Fragrance Expert,14,Marketing Temp New 7,FALSE
+,AR010105,Rework of fragrance (2 reworks included) - 6 weeks for each rework,Activity,7,6,Fragrance Expert,45,Marketing Temp New 7,FALSE
+,AR010106,Consumer testing (selection vs benchmark),Activity,8,7,Fragrance Expert,70,Marketing Temp New 7,FALSE
+,AR010107,Gate approval of Fragrance,Activity,9,8,Marketing User,1,Marketing Temp New 7,TRUE
+,AR00102,Development of Packaging,Sub-Stage,10,1,Marketing User,145,Marketing Temp New 7,FALSE
+,AR010201,Brief to design house/ Agency for packaging material designs,Activity,11,10,Marketing User,7,Marketing Temp New 7,FALSE
+,AR010202,Receipt of rendered image options for bottle & cap,Activity,12,11,Marketing User,90,Marketing Temp New 7,FALSE
+,AR010203,Finalise deisgn on unit pack,Activity,13,12,Marketing User,40,Marketing Temp New 7,FALSE
+,AR010204,Finalization of Bottle and cap design option,Activity,14,13,Marketing User,7,Marketing Temp New 7,FALSE
+,AR010205,Gate approval of Packaging,Activity,15,14,Marketing User,1,Marketing Temp New 7,TRUE
+,AR02,Packaging Development,Stage,16,1,NPD Packaging,227,Project Temp New 7,FALSE
+,AR0201,Bottle development,Sub-Stage,17,16,NPD Packaging,227,Project Temp New 7,FALSE
+,AR020101,Sharing rendered images of bottle with selected vendors,Activity,18,17,NPD Packaging,1,Project Temp New 7,FALSE
+,AR020102,Recepit of bottle drawing,Activity,19,18,NPD Packaging,10,Project Temp New 7,FALSE
+,AR020103,QA approval on bottle drawing,Activity,20,19,QA,3,Project Temp New 7,FALSE
+,AR020104,Signoff on bottle shape,Activity,21,20,Marketing User,5,Project Temp New 7,TRUE
+,AR020105,Bottle acrylic development,Activity,22,21,NPD Packaging,20,Project Temp New 7,FALSE
+,AR020106,Artwork development for printing on bottle (both text & color pantone),Activity,23,22,Marketing User,20,Project Temp New 7,FALSE
+,AR020107,Artwork approval,Activity,24,23,Marketing User,7,Project Temp New 7,TRUE
+,AR020108,Cost approval of bottle,Activity,25,24,Marketing User,7,Project Temp New 7,FALSE
+,AR020109,Bottle mold development & sample submission,Activity,26,25,Sourcing,80,Project Temp New 7,FALSE
+,AR020110,QA approval on bottle proto sample & final drawing,Activity,27,26,QA,3,Project Temp New 7,TRUE
+,AR020111,Bottle decoration proofing (including 1 iterations) also order for stab comp,Activity,28,27,NPD Packaging,40,Project Temp New 7,TRUE
+,AR020112,Color approval on decorated bottle sample,Activity,29,28,Marketing User,10,Project Temp New 7,TRUE
+,AR020113,Reliability parameters approval on decorated bottle sample,Activity,30,29,QA,5,Project Temp New 7,FALSE
+,AR020114,Gate approval of Bottle,Activity,31,30,QA,1,Project Temp New 7,TRUE
+,AR020115,Mobilising bottle samples for stab comp tests(from soft mould),Activity,32,31,NPD Packaging,15,Project Temp New 7,FALSE
+,AR0202,Cap development,Sub-Stage,33,16,NPD Packaging,209,Project Temp New 7,FALSE
+,AR020201,Sharing bottle dwg to preferred cap supplier for cap development initiation,Activity,34,33,NPD Packaging,3,Project Temp New 7,FALSE
+,AR020202,Acrylic development of cap,Activity,35,34,NPD Packaging,20,Project Temp New 7,FALSE
+,AR020203,Cap 2D dwg development & signoff (including 1 iteration),Activity,36,35,NPD Packaging,10,Project Temp New 7,FALSE
+,AR020204,Cap decoration final renders and artwork with pantone reference,Activity,37,36,Marketing User,15,Project Temp New 7,FALSE
+,AR020205,Signoff on cap shape,Activity,38,37,Marketing User,5,Project Temp New 7,TRUE
+,AR020206,Cost approval of cap,Activity,39,38,Marketing User,7,Project Temp New 7,TRUE
+,AR020207,Cap mold development & sample submission,Activity,40,39,Sourcing,90,Project Temp New 7,FALSE
+,AR020208,Cap decoration proofing and finalization (2 rounds of trial) and also order for stab comp,Activity,41,40,NPD Packaging,40,Project Temp New 7,TRUE
+,AR020209,Reliability parameters approval on decorated cap sample,Activity,42,41,QA,3,Project Temp New 7,FALSE
+,AR020210,Gate aproval for Cap,Activity,43,42,Marketing User,1,Project Temp New 7,FALSE
+,AR020209,Providing cap samples for stab comp,Activity,44,43,Marketing User,15,Project Temp New 7,FALSE
+,AR0203,Pump development,Sub-Stage,45,16,Marketing User,31,Project Temp New 7,FALSE
+,AR020301,Sharing bottle dwg to preferred pump supplier for pump development initiation,Activity,46,45,Marketing User,3,Project Temp New 7,FALSE
+,AR020302,Pump selection(from OTS),Activity,47,46,QA,7,Project Temp New 7,TRUE
+,AR020303,Finalization of pump color,Activity,48,47,Marketing User,7,Project Temp New 7,TRUE
+,AR020304,Finalization of Pumps(from OTS),Activity,49,48,Sourcing,7,Project Temp New 7,FALSE
+,AR020305,Color approval of pump sample,Activity,50,49,Marketing User,3,Project Temp New 7,TRUE
+,AR020306,Reliability parameters approval on decorated bottle sample,Activity,51,50,QA,3,Project Temp New 7,FALSE
+,AR020307,Gate aproval for Pump,Activity,52,51,Marketing User,1,Project Temp New 7,FALSE
+,AR0204,Monocarton size finalization & getting unprinted sample,Sub-Stage,53,16,NPD Packaging,88,Project Temp New 7,FALSE
+,AR020401,Sharing bottle dwg to preferred Monocarton supplier for monocarton development initiation,Activity,54,53,NPD Packaging,3,Project Temp New 7,FALSE
+,AR020402,Monocarton size finalization & getting unprinted sample,Activity,55,54,NPD Packaging,14,Project Temp New 7,FALSE
+,AR020403,Size & fitment approval,Activity,56,55,QA,3,Project Temp New 7,TRUE
+,AR020404,Generating KLD from preferred supplier,Activity,57,56,NPD Packaging,5,Project Temp New 7,FALSE
+,AR020405,Monocarton artwork generation,Activity,58,57,Marketing User,15,Project Temp New 7,FALSE
+,AR020406,Cost approval of monocarton,Activity,59,58,Marketing User,7,Project Temp New 7,TRUE
+,AR020407,Monocarton proofing & signoff  by marketing(including 2 iteration),Activity,60,59,NPD Packaging,40,Project Temp New 7,TRUE
+,AR020408,Gate approval for Monocarton,Activity,61,60,Marketing User,1,Project Temp New 7,FALSE
+,AR0205,Shipper development,Sub-Stage,62,16,NPD Packaging,34,Project Temp New 7,FALSE
+,AR020501,Sharing Monocarton dwg/sample to preferred Shippers,Activity,63,62,NPD Packaging,3,Project Temp New 7,FALSE
+,AR020502,Shipper dimension finalization and sharing for artwork development,Activity,64,63,NPD Packaging,5,Project Temp New 7,FALSE
+,AR020503,Shipper artwork receipt,Activity,65,64,NPD Packaging,5,Project Temp New 7,FALSE
+,AR020504,Shipper proofing/ sample generation for transit trial & print approval & spec release for all components,Activity,66,65,QA,21,Project Temp New 7,TRUE
+,AR0206,Finalization of bottler & Capability assesment if required,Sub-Stage,67,16,QA,10,Project Temp New 7,TRUE
+,AR03,Compatability & stability,Stage,68,16,QA,218,Project Temp New 7,FALSE
+,AR0301,Apply for FDA approval,Activity,69,68,Sourcing,4,Project Temp New 7,FALSE
+,AR0302,Order fragrance oils for stab comp,Activity,70,69,Sourcing,7,Project Temp New 7,FALSE
+,AR0303,Oils to reach bottler for stab comp,Activity,71,70,Sourcing,45,Project Temp New 7,FALSE
+,AR0304,Receive FDA approval,Activity,72,71,Sourcing,25,Project Temp New 7,FALSE
+,AR0305,Approval of alcohol,Activity,73,72,Fragrance Expert,10,Project Temp New 7,TRUE
+,AR0306,Maturation,Activity,74,73,QA,14,Project Temp New 7,FALSE
+,AR0307,Maceration,Activity,75,74,QA,14,Project Temp New 7,FALSE
+,AR0308,Chilling,Activity,76,75,QA,1,Project Temp New 7,FALSE
+,AR0309,Filtering & filling,Activity,77,76,QA,4,Project Temp New 7,FALSE
+,AR0310A,Dermatology tests,Activity,78,77,QA,30,Project Temp New 7,FALSE
+,AR0310B,Stab comp Start month 1,Activity,79,78,QA,1,Project Temp New 7,FALSE
+,AR0311,Stab comp end Month 1,Activity,80,79,QA,30,Project Temp New 7,TRUE
+,AR0312,Stab comp end Month 2,Activity,81,80,QA,30,Project Temp New 7,TRUE
+,AR0313,Stab comp end Month 3,Activity,82,81,QA,30,Project Temp New 7,TRUE
+,AR0314,Conclusion of stability of fragrance and compability with packaging materials,Activity,83,82,QA,3,Project Temp New 7,FALSE
+,AR04,Prodution,Stage,84,68,Sourcing,188,Project Temp New 7,FALSE
+,AR040101,Ordering of bulk Packaging material & fragrance oils,Activity,85,84,Sourcing,7,Project Temp New 7,FALSE
+,AR040102,Packaging material to reach bottler for production (including component prodn at vendors end & transit) [For imports add 25 days],Activity,86,85,Sourcing,60,Project Temp New 7,FALSE
+,AR040103,Approval at incoming stage for packagiing components,Activity,87,86,QA,3,Project Temp New 7,TRUE
+,AR040104,Fragrance oils to reach bottler,Activity,88,87,Sourcing,45,Project Temp New 7,FALSE
+,AR040105,Order Alcohol,Activity,89,88,Sourcing,7,Project Temp New 7,FALSE
+,AR040106,Receive alcohol,Activity,90,89,Sourcing,15,Project Temp New 7,FALSE
+,AR040107,Maturation start,Activity,91,90,Sourcing,1,Project Temp New 7,FALSE
+,AR040108,Maturation end,Activity,92,91,Sourcing,14,Project Temp New 7,FALSE
+,AR040109,Maceration Start,Activity,93,92,Sourcing,1,Project Temp New 7,FALSE
+,AR040110,Maceration End,Activity,94,93,Sourcing,14,Project Temp New 7,FALSE
+,AR040111,Chilling,Activity,95,94,Sourcing,1,Project Temp New 7,FALSE
+,AR040112,Filtering  / variant,Activity,96,95,Sourcing,1,Project Temp New 7,FALSE
+,AR040113,Start of production,Activity,97,96,Sourcing,1,Project Temp New 7,FALSE
+,AR040114,Production end,Activity,98,97,Sourcing,15,Project Temp New 7,FALSE
+,AR040115,FG inspection @ bottler,Activity,99,98,QA,3,Project Temp New 7,TRUE
+,AR05,Dispatch of Finished product,Stage,100,84,Sourcing,30,Project Temp New 7,FALSE
+,AR0501,Reach CWH,Activity,101,100,Sourcing,7,Project Temp New 7,FALSE
+,AR0502,Inwarding,Activity,102,101,Sourcing,2,Project Temp New 7,FALSE
+,AR0503,Olfactive & QA clearance,Activity,103,102,QA,7,Project Temp New 7,TRUE
+,AR0504,Reach CFA,Activity,104,103,Sourcing,10,Project Temp New 7,FALSE
+,AR0505,Instore,Activity,105,104,Sourcing,4,Project Temp New 7,FALSE

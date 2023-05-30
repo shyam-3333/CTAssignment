@@ -1,0 +1,377 @@
+.forceBrandBand {
+  padding: 0rem !important;
+}
+
+.icn {
+  fill : white!important;
+}
+
+header.slds-card__header.slds-grid{
+  padding-top:0px;
+} 
+/*.slds-modal__container {
+  max-width: 80rem !important;
+  width: 80% !important;
+}*/
+
+.card {
+  /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);*/
+  max-width: 234px;
+  margin: auto;
+  /*text-align: center;*/
+  font-family: arial;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+
+.cartCard {
+  /*box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);*/
+  max-width: 300px;
+  margin: auto;
+  /*text-align: center;*/
+  font-family: arial;
+}
+
+.cartCard:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+}
+ 
+.price {
+  color: grey;
+  font-size: 22px;
+}
+ 
+.card button {
+  
+}
+
+.addCartButton{
+  border: none;
+  outline: 0;
+  padding: 6px;
+  color: white;
+  background-color:#003f80d6;
+  text-align: center;
+  cursor: pointer;
+  font-size: 18px;
+
+}
+ 
+.card button:hover {
+  opacity: 0.7;
+}
+
+body {
+  font-family: "Lato", sans-serif;
+}
+
+.sidenav {
+  height: 100%;
+  width: 0px;
+  position: fixed;
+  transform:(0,0,0);
+  z-index: 103;
+  left: 0;
+  background-color: rgb(255, 254, 254);
+  overflow-x: hidden;
+}
+
+.sidenav a {
+  padding: 6px 6px 6px 32px;
+  text-decoration: none;
+  font-size: 25px;
+  color: #818181;
+  display: block;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.main {
+  margin-left: 200px; /* Same as the width of the sidenav */
+  position: fixed;
+
+
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
+
+.class1{
+  height: 70%;
+  width: 325px;
+  position: fixed;
+  z-index: 103;
+  background-color: #fff;
+  overflow-x: hidden;
+
+}
+
+.genderDiv {
+  text-decoration: none;
+  font-size: 25px;
+  color: white;
+  display: block;
+}
+
+.genderDiv:hover {
+  color: #f1f1f1;
+}
+
+
+/* Style the header */
+.header {
+  /*padding: 0 16px;*/
+  margin-top: -12px;
+  margin-bottom: -12px;
+  background: #555;
+}
+
+/* Page content */
+.content {
+}
+
+/* The sticky class is added to the header with JS when it reaches its scroll position */
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%
+}
+
+/* Add some top padding to the page content to prevent sudden quick movement (as the header gets a new position at the top of the page (position:fixed and top:0) */
+.sticky + .content {
+  padding-top: 102px;
+}
+
+.affixDiv{
+  margin: 0;
+  width: 100%;
+  z-index: 101;
+  position: -webkit-sticky;
+  background: #4a7580;
+
+}
+
+.spanCorner{
+  font-size:30px;
+  cursor:pointer;
+  /*position:fixed;*/
+  transform:(0,0,0);
+  z-index:102;
+  color:white;
+  margin-left:5px;
+  -webkit-backface-visibility: hidden;
+
+}
+
+.lgc-bg {
+  background-color: rgb(242, 242, 242);
+}
+
+.quantity {
+  display: inline-block; 
+}
+
+ 
+ .quantity .input-text.qty {
+  width: 55px;
+  height: 39px;
+  padding: 0 5px;
+  text-align: center;
+  background-color: white;
+  border: 1px solid #efefef;
+ }
+ 
+ .quantity.buttons_added {
+  text-align: left;
+  position: relative;
+  white-space: nowrap;
+  vertical-align: top; }
+ 
+ .quantity.buttons_added input {
+  display: inline-block;
+  margin: 0;
+  vertical-align: top;
+  box-shadow: none;
+ }
+ 
+ .quantity.buttons_added .minus,
+ .quantity.buttons_added .plus {
+  padding: 0px 10px 8px;
+  font-size: 30px;
+  color: rgb(0, 0, 0);
+  width:55px;
+  height: 40px;
+  background-color: #ffffff;
+  border: 1px solid #efefef;
+  cursor:pointer;}
+ 
+ .quantity.buttons_added .minus {
+  border-right: 0; }
+ 
+ .quantity.buttons_added .plus {
+  border-left: 0; }
+ 
+ .quantity.buttons_added .minus:hover,
+ .quantity.buttons_added .plus:hover {
+  background: #eeeeee; }
+ 
+ .quantity input::-webkit-outer-spin-button,
+ .quantity input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  margin: 0; }
+  
+  .quantity.buttons_added .minus:focus,
+ .quantity.buttons_added .plus:focus {
+  outline: none;
+ }
+
+
+
+
+ .quantityCart {
+  /*display: inline-block; */
+}
+
+ 
+ .quantityCart .input-text.qty {
+  width: 55px;
+  height: 39px;
+  padding: 0 5px;
+  text-align: center;
+  background-color: white;
+  border: 1px solid #efefef;
+ }
+ 
+ .quantityCart.buttons_added {
+  text-align: left;
+  position: relative;
+  white-space: nowrap;
+  vertical-align: top; }
+ 
+ .quantityCart.buttons_added input {
+  display: inline-block;
+  margin: 0;
+  vertical-align: top;
+  box-shadow: none;
+ }
+ 
+ .quantityCart.buttons_added .minus,
+ .quantityCart.buttons_added .plus {
+  padding: 0px 10px 8px;
+  font-size: 30px;
+  color: rgb(0, 0, 0);
+  width:55px;
+  height: 40px;
+  background-color: #ffffff;
+  border: 1px solid #efefef;
+  cursor:pointer;}
+ 
+ .quantityCart.buttons_added .minus {
+  border-right: 0; }
+ 
+ .quantityCart.buttons_added .plus {
+  border-left: 0; }
+ 
+ .quantityCart.buttons_added .minus:hover,
+ .quantityCart.buttons_added .plus:hover {
+  background: #eeeeee; }
+ 
+ .quantityCart input::-webkit-outer-spin-button,
+ .quantity input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  margin: 0; }
+  
+  .quantityCart.buttons_added .minus:focus,
+ .quantityCart.buttons_added .plus:focus {
+  outline: none;
+ }
+
+ .fixed{
+  margin: 0;
+      padding: 0;
+      width: 100%;
+      top: 0;
+      z-index: 101;
+      position: -webkit-sticky;
+      position: sticky;
+      background:linear-gradient(to right, rgb(86, 204, 242), rgb(47, 128, 237));
+      /*background:repeating-linear-gradient(45deg, rgb(90 110 145), rgb(84,105,141) 20px, rgba(84,105,141,.97) 20px, rgba(84,105,141,.97) 40px);*/
+  }
+
+  
+
+  @media screen and (min-width: 1024px){
+    .fixedCard{
+    
+      z-index: 101;
+      position: sticky;
+  }
+}
+
+.customEyewear{
+  width:100%;
+  max-height: 140px;
+}
+
+.customWatchAndJewellery{
+  width:100%;
+  max-height: 242px;
+
+}
+
+.dollars:before { content:'Rs.'; }
+
+
+.loader {
+  border: 5px solid #f3f3f3;
+  border-radius: 50%;
+  border-top: 5px solid #3498db;
+  width: 60px;
+  height: 60px;
+  -webkit-animation: spin 2s linear infinite; /* Safari */
+  animation: spin 2s linear infinite;
+  z-index: 100001;
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.spinner {
+  border: 1px solid;
+  position: fixed;
+  z-index: 10001;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 50 50'%3E%3Cpath d='M28.43 6.378C18.27 4.586 8.58 11.37 6.788 21.533c-1.791 10.161 4.994 19.851 15.155 21.643l.707-4.006C14.7 37.768 9.392 30.189 10.794 22.24c1.401-7.95 8.981-13.258 16.93-11.856l.707-4.006z'%3E%3CanimateTransform attributeType='xml' attributeName='transform' type='rotate' from='0 25 25' to='360 25 25' dur='0.6s' repeatCount='indefinite'/%3E%3C/path%3E%3C/svg%3E") center / 50px no-repeat;
+}
+/*.slds-modal {
+  
+  position: absolute !important;
+  top: 0 !important;
+  
+  left: 0 !important;
+  z-index: 9001 !important;
+}
+.slds-modal__container{
+  display: inline-block !important;
+  position: fixed !important;
+  left: 25% !important;
+  
+}*/

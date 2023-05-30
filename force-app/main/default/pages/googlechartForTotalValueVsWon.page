@@ -1,0 +1,44 @@
+<!-- T01 iterating and displaying report link -->
+<apex:page controller="googlechartForTotalProjcetVsWon" showHeader="false" sidebar="false">
+    <head>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+            google.load("visualization", "1", {packages:["corechart"]});
+        google.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Cost band'); // Implicit domain label col.
+            data.addColumn('number', 'Value'); // Implicit series 1 data col.
+            data.addColumn('number', 'Won'); // Implicit series 1 data col.
+            data.addRows([
+                ['0-25',{!QuotesSubmitted0_25L},{!OrdersWon0_25L}],
+                ['25-80',{!QuotesSubmitted25_80L},{!OrdersWon25_80L}],
+                ['80-350',{!QuotesSubmitted_80_350L},{!OrdersWon_80_350L}],
+                ['> 350',{!QuotesSubmittedGreaterThan350L},{!OrdersWonGreaterThan350L}],
+                ['Total',{!QuotesSubmitted},{!OrdersWon}]
+            ]);
+            
+            var options = {
+                title: 'Total Value Vs Won',
+                hAxis: {title: 'Cost band', titleTextStyle: {color: 'red'}},
+                vAxis: {title: 'Rs.Lakhs', titleTextStyle: {color: 'red'}}
+            };
+            
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+        </script>
+    </head>
+    <body>
+        <div id="chart_div"></div>
+        <table width="100%" border="1" style="border-collapse:collapse;">
+            <!-- T01-->
+            <apex:repeat value="{!TotalValueWonData}" var="obj">
+                <tr>
+                    <td><a href="{!obj['reportPath']}" target="_blank">{!obj['linkName']}</a></td>
+                </tr>
+            </apex:repeat>
+            <!-- T01-->
+        </table>
+    </body>
+</apex:page>

@@ -1,0 +1,1010 @@
+<apex:page controller="RTWProductViewController" sidebar="false" showHeader="false">
+    <script>
+    
+    </script>
+    <style>
+        .d_title {
+        background: #099ad6 none repeat scroll 0 0;
+        color: #fff;
+        display: inline-block;
+        font-size: 24px;
+        padding: 5px ;
+        width: 100%;
+        }
+        
+        th{
+            text-align:left!important;
+        }
+       
+        
+        .Download{
+        float:right;
+        font-size:14px;
+        margin-top:6px;
+        }
+    </style>
+    <apex:form >
+        <div class="d_title">
+            <apex:outputPanel onclick="moveBack();" style="cursor:pointer;">
+                <apex:image value="{!$Resource.BackIcon_Taneira}" height="32px" width="32"/> 
+            </apex:outputPanel>
+            <apex:outputLabel value="RTW Products" style=" margin-left: 29px;" />
+            <div class="Download">
+                <apex:commandButton value="Download MM" action="{!downloadMM}"/>
+            </div>
+            <div class="Download">
+                <apex:commandButton value="Download PO" action="{!downloadPO}"/>
+            </div>
+            <div class="Download">
+                <apex:commandButton value="Download" action="{!ProductDownload}"/>
+            </div>
+            <div class="Download">
+                <apex:commandButton value="PDF Download" action="{!ProductPDFDownload}" />
+            </div>
+        </div> <br/><br/>
+    </apex:form>
+    <head>
+        <apex:includescript value="//code.jquery.com/jquery-1.11.1.min.js"/>
+        <apex:includescript value="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"/>
+        <apex:stylesheet value="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css"/>
+        <script>
+        j$ = jQuery.noConflict();
+        j$(document).ready( function () {
+            var proTable = j$('[id$="proTable"]').DataTable({
+                
+            });
+        });
+        </script>
+    </head>
+    <body>
+        <apex:form >
+        <table id="proTable" class="display">
+            <thead>
+                <tr>
+                    
+                    <apex:outputPanel rendered="{!IF(ProdType !='MASK' && ProdType !='LEHENGA' && ProdType !='BLOUSE' && ProdType != 'KURTA' && ProdType != 'SHORT TOP' && ProdType != 'DRESS' && ProdType != 'TROUSER' && ProdType != 'USKD' && ProdType != 'KURTA SET' && ProdType != 'SLIP' && ProdType != 'TUNIC',true,false)}">
+                        <th>ITEM NO</th>
+                        <th>PACK NO</th>
+                        <th>SKU</th>
+                        <th> &nbsp;&nbsp;&nbsp;Vendor Name &nbsp;&nbsp;&nbsp;</th>
+                        <th>Product Category</th>
+                        <th>PO Number</th>
+                        <th>Photo</th>
+                        <th>Form</th>
+                        <th>CRAFT</th>
+                        <th>Warp</th>
+                        <th>Weft</th>
+                        <th>BASE COLOUR</th>
+                        <th>FABRICS</th>
+                         <th>QUANTITY</th>
+                        <th>DESCRIPTION</th>
+                        <th>SEASON</th>
+                        <th>COLLECTION</th>
+                        <th>YEAR OF DESIGN</th>
+                        <th>COST</th><!--renaming of MRP to cost based on cient request -->
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(ProdType =='LEHENGA',true,false)}">
+                        <th>ITEM NO</th>
+                        <th>SKU</th>
+                        <th> &nbsp;&nbsp;&nbsp;Vendor Name &nbsp;&nbsp;&nbsp;</th>
+                        <th>Product Category</th>
+                        <th>PO Number</th>
+                        <th>BASE COLOUR</th>
+                        <th>COLLECTION</th>
+                        <th>CRAFT</th>
+                        <th>SEASON</th>
+                        <th>FABRIC</th>
+                        <th>FORM</th>
+                        <th>VENDOR COST</th>
+                        <th>QUANTITY</th>
+                        <th>TOP FABRIC</th>
+                        <th>CONSUMPTION</th>
+                        <th>BOTTOM FABRIC</th>
+                        <th>CONSUMPTION</th>
+                        <th>STYLE CODE</th>
+                        <th>VENDOR STYLE CODE</th>
+                        <th>SOURCE</th>
+                        <th>YARDAGE SKU CODE</th>
+                        <th>YARDAGE CONSUMPTION</th>
+                        <th>YARDAGE COST</th>
+                        <th>TOTAL COST</th>
+                        <th>SIZE-LCD</th>
+                        <th>ECOM SIZE</th>
+                        <th>E-Com Material</th>
+                        <th>BLOUSE TYPE</th>
+                        <th>BLOUSE FABRIC</th>
+                        <th>BLOUSE COLOUR</th>
+                        <th>DUPATTA FABRIC</th>
+                        <th>DUPATTA COLOUR</th>
+                        <th>ORDER ID </th>
+                        <th>REMARKS</th>
+                        <th>Actual MRP</th>
+                        <th>Created By  </th>
+                        <th></th>
+                    </apex:outputPanel>   
+                    <apex:outputPanel rendered="{!IF(ProdType =='BLOUSE',true,false)}">
+                        <th>ITEM NO</th>
+                        <th>SKU</th>
+                        <th> &nbsp;&nbsp;&nbsp;Vendor Name &nbsp;&nbsp;&nbsp;</th>
+                        <th>PRODUCT CATEGARY</th>
+                        <th>PO Number</th>
+                        <th>BASE COLOUR</th>
+                        <th>COLLECTION</th>
+                        <th>CRAFT</th>
+                        <th>SEASON</th>
+                        <th>FABRIC</th>
+                        <th>FORM</th>
+                        <th>VENDOR COST</th>
+                        <th>QUANTITY</th>
+                        <th>TOP FABRIC</th>
+                        <th>CONSUMPTION</th>
+                        <th>BOTTOM FABRIC</th>
+                        <!--<th>CONSUMPTION</th>-->
+                        <th>SOURCE</th>
+                        <th>YARDAGE SKU CODE</th>
+                        <th>YARDAGE CONSUMPTION</th>
+                        <th>YARDAGE COST</th>
+                        <th>TOTAL COST</th>
+                        <th>LOOM</th>
+                        <th>RTW_ SIZE</th>
+                        <th>ECOM SIZE</th>
+                        <th>E-Com Material</th>
+                        <th>STYLECODE</th>
+                        <th>ZARI</th>
+                        <th>DESCRIPTION</th>
+                        <th>ORDER ID</th>
+                        <th>REMARKS</th>
+                        <th>Actual MRP</th>
+                        <th>Created By </th>
+                        <th></th>
+                    </apex:outputPanel> 
+                    <apex:outputPanel rendered="{!IF( ProdType == 'DRESS',true,false)}">
+                        <th>ITEM NO </th>
+                        <th>SKU</th>
+                        <th> &nbsp;&nbsp;&nbsp;Vendor Name &nbsp;&nbsp;&nbsp;</th>
+                        <th>PRODUCT CATEGARY</th>
+                        <th>PO Number</th>
+                        <th>BASE COLOUR</th>
+                        <th>COLLECTION</th>
+                        <th>CRAFT</th>
+                        <th>SEASON</th>
+                        <th>FABRIC</th>
+                        <th>TOP FABRIC</th>
+                        <th>CONSUMPTION</th>
+                        <th>BOTTOM FABRIC</th>
+                        <th>CONSUMPTION</th>
+                        <th>FORM</th>
+                        <th>VENDOR COST</th>
+                        <th>QUANTITY</th>
+                        <th>SOURCE</th>
+                        <th>YARDAGE SKU CODE</th>
+                        <th>YARDAGE CONSUMPTION</th>
+                        <th>YARDAGE COST</th>
+                        <th>TOTAL COST</th>
+                        <th>LOOM</th>
+                        <th>RTW_ SIZE</th>
+                        <th>ECOM SIZE</th>
+                        <th>E-Com Material</th>
+                        <th>STYLE CODE</th>
+                        <th>VENDOR STYLE CODE</th>
+                        <th>ZARI</th>
+                        <th>DESCRIPTION</th>
+                        <th>ORDER ID</th>
+                        <th>REMARKS</th>
+                        <th>Actual MRP</th>
+                        <th>Created By  </th>
+                        <th></th>
+                    </apex:outputPanel>    
+                    <apex:outputPanel rendered="{!IF( ProdType == 'SHORT TOP',true,false)}">
+                        <th>ITEM NO </th>
+                        <th>SKU</th>
+                        <th> &nbsp;&nbsp;&nbsp;Vendor Name &nbsp;&nbsp;&nbsp;</th>
+                        <th>PRODUCT CATEGARY</th>
+                        <th>PO Number</th>
+                        <th>BASE COLOUR</th>
+                        <th>COLLECTION</th>
+                        <th>CRAFT</th>
+                        <th>SEASON</th>
+                        <th>FABRIC</th>
+                        <th>TOP FABRIC</th>
+                        <th>CONSUMPTION</th>
+                        <th>BOTTOM FABRIC</th>
+                        <th>CONSUMPTION</th>
+                        <th>FORM</th>
+                        <th>VENDOR COST</th>
+                        <th>QUANTITY</th>
+                        <th>SOURCE</th>
+                        <th>YARDAGE SKU CODE</th>
+                        <th>YARDAGE CONSUMPTION</th>
+                        <th>YARDAGE COST</th>
+                        <th>TOTAL COST</th>
+                        <th>LOOM</th>
+                        <th>RTW_ SIZE</th>
+                        <th>ECOM SIZE</th>
+                        <th>E-Com Material</th>
+                        <th>STYLE NAME</th>
+                        <th>STYLE CODE</th>
+                        <th>VENDOR STYLE CODE</th>
+                        <th>ZARI</th>
+                        <th>DESCRIPTION</th>
+                        <th>ORDER ID</th>
+                        <th>REMARKS</th>
+                        <th>Actual MRP</th>
+                        <th>Created By  </th>
+                        <th></th>
+                    </apex:outputPanel>                    
+                    <apex:outputPanel rendered="{!IF( ProdType == 'TROUSER',true,false)}">
+                        <th>ITEM NO </th>
+                        <th>SKU</th>
+                        <th> &nbsp;&nbsp;&nbsp;Vendor Name &nbsp;&nbsp;&nbsp;</th>
+                        <th>PRODUCT CATEGARY</th>
+                        <th>PO Number</th>
+                        <th>BASE COLOUR</th>
+                        <th>COLLECTION</th>
+                        <th>CRAFT</th>
+                        <th>SEASON</th>
+                        <th>FABRIC</th>
+                        <th>TOP FABRIC</th>
+                        <th>CONSUMPTION</th>
+                        <th>BOTTOM FABRIC</th>
+                        <th>CONSUMPTION</th>
+                        <th>FORM</th>
+                        <th>VENDOR COST</th>
+                        <th>QUANTITY</th>
+                        <th>SOURCE</th>
+                        <th>YARDAGE SKU CODE</th>
+                        <th>YARDAGE CONSUMPTION</th>
+                        <th>YARDAGE COST</th>
+                        <th>TOTAL COST</th>
+                        <th>LOOM</th>
+                        <th>RTW_ SIZE</th>
+                        <th>ECOM SIZE</th>
+                        <th>E-Com Material</th>
+                        <th>STYLE NAME</th>
+                        <th>STYLE CODE</th>
+                        <th>VENDOR STYLE CODE</th>
+                        <th>ZARI</th>
+                        <th>ORDER ID</th>
+                        <th>REMARKS</th>
+                        <th>Actual MRP</th>
+                        <th>Created By </th>
+                        <th></th>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!IF(ProdType == 'KURTA SET' || ProdType == 'KURTA' || ProdType == 'TUNIC' || ProdType == 'SLIP' ,true,false)}">
+                        <th>ITEM NO</th>
+                        <th>SKU</th>
+                        <th> &nbsp;&nbsp;&nbsp;Vendor Name &nbsp;&nbsp;&nbsp;</th>
+                        <th>PRODUCT CATEGARY</th>
+                        <th>PO Number</th>
+                        <apex:outputPanel rendered="{!ProdType == 'KURTA' && showSlipfield || ProdType == 'KURTA SET' && showSlipfieldforKurtaSet}">
+                            <th>SLIP</th>
+                            </apex:outputPanel>
+                        <apex:outputPanel rendered="{!ProdType == 'KURTA' || ProdType == 'KURTA SET' }">
+                            <th>DUPATTA</th>
+                             <th>JACKET</th>
+                            <th>KURTA</th>
+                            <th>TROUSER</th>
+                            </apex:outputPanel>
+                        <th>BASE COLOUR </th>
+                        <th>COLLECTION</th>
+                        <th>CRAFT</th>
+                        <th>SEASON</th>
+                        <th>FABRIC</th>
+                        <th>TOP FABRIC</th>
+                        <th>CONSUMPTION</th>
+                        <th>BOTTOM FABRIC</th>
+                        <th>CONSUMPTION</th>
+                        <th>FORM</th>
+                        <th>VENDOR COST</th>
+                        <th>QUANTITY</th>
+                        <th>No of Pcs</th>
+                        <th>SOURCE</th>
+                        <th>YARDAGE SKU CODE</th>
+                        <th>YARDAGE CONSUMPTION</th>
+                        <th>YARDAGE COST</th>
+                        <th>TOTAL COST</th>
+                        <th>LOOM</th>
+                        <th>RTW_ SIZE</th>
+                        <th>ECOM SIZE</th>
+                        <th>E-Com Material</th>
+                        <th>STYLE NAME</th>
+                        <th>STYLE CODE</th>
+                        <th>VENDOR STYLE CODE</th>
+                        <th>ZARI</th>
+                        <th>KURTA DESCRIPTION</th>
+                        <th>ORDER ID</th>
+                        <th>REMARKS</th>
+                        <th>Actual MRP</th>
+                        <th>Created By  </th>
+                        <th></th>
+                    </apex:outputPanel> 
+                    <apex:outputPanel rendered="{!IF(ProdType =='USKD',true,false)}">
+                        <th>ITEM NO</th>
+                        <th> &nbsp;&nbsp;&nbsp;Vendor Name &nbsp;&nbsp;&nbsp;</th>
+                        <th>Vendor Code</th>
+                        <th>PRODUCT CATEGARY</th>
+                        <th>SKU</th>
+                        <th>Loom </th>
+                        <th>Proc-Type</th>
+                        <th>Quantity</th>
+                        <th>Kurta Fabric</th>
+                        <th>Dupatta Fabric </th>
+                        <th>Salwar Fabric</th>
+                        
+                        <th> ORIGIN </th>
+                        <th> PO NUMBER </th>
+                        <th> COST </th>
+                        <th> BASE COLOUR </th>
+                        <th> SUGGESTED MRP </th>
+                        <th> DETAILED COLOR </th>
+                        <th> DESIGN STORY </th>
+                        <th> STORY 1 </th>
+                        <th> STORY 2 </th>
+                        <th> DESIGN DESCRIPTION  </th>
+                        <th> FABRIC </th>
+                        <th> ZARI TYPE </th>
+                        <th> OCCASION  </th>
+                        <th> CRAFT </th>
+                        <th> COLLECTION </th>
+                        <th> BODY PATTERN </th>
+                        <th> BODY DES ELEMENT </th>
+                        <th> BODY DES MATERIAL `</th>
+                        <th> BODY DES DENSITY </th>
+                        <th> BORDER PATTERN </th>
+                        <th> BORDER DES ELEMENT </th>
+                        <th> BORDER DES MATERIAL </th>
+                        <th> BORDER SIZE </th>
+                        <th> PALLU PATTERN </th>
+                        <th> PALLU DESIGN </th>
+                        <th> PALLU DES MATERIAL </th>
+                        <th> PALLU DES DENSITY  </th>
+                        <th> PALLU SIZE </th>
+                        <th> WAREHOUSE STOCK </th>
+                        <th> SOLD STOCK </th>
+                        <th> STORE STOCK </th>
+                        <th> ORDER ID </th>
+                        <th> COMMENTS </th>
+                        <th>Created By  </th>
+                        <th></th>
+                    </apex:outputPanel> 
+                    <apex:outputPanel rendered="{!IF(ProdType =='MASK' && ProdType !='LEHENGA' && ProdType !='BLOUSE' ,true,false)}">
+                        <th>ITEM NO</th>
+                        <th>PACK NO</th>
+                        <th>SKU</th>
+                        <th> &nbsp;&nbsp;&nbsp;Vendor Name &nbsp;&nbsp;&nbsp;</th>
+                        <th>Product Category</th>
+                        <th> PO NUMBER </th>
+                        <th>Photo</th>
+                        <th>BASE COLOUR</th>
+                        <th>FABRICS</th>
+                        <th>STYLE NAME</th>
+                        <th>GENDER</th>
+                        <th>DESIGN</th>
+                        <th>PLEATS</th>
+                        <th>PLY</th>
+                        <th>QUANTITY</th>
+                        <th>COST</th>
+                        <th>ORDER ID</th>
+                        <th>FABRIC 1</th>
+                        <th>FABRIC 1 QUANTITY</th>
+                        <th>FABRIC 2</th>
+                        <th>FABRIC 2 QUANTITY</th>
+                        <th>MASK DESCRIPTION</th>
+                        <th>REMARKS</th>
+                        <th>Actual MRP</th>
+                        <th>Created By  </th>
+                        <th></th>
+                    </apex:outputPanel> 
+                    <apex:outputPanel rendered="{!IF(ProdType !='BLOUSE' && ProdType !='LEHENGA' && ProdType != 'MASK' && ProdType != 'KURTA' && ProdType != 'SHORT TOP' && ProdType != 'DRESS' && ProdType != 'TROUSER' && ProdType !='USKD' && ProdType != 'KURTA SET' && ProdType != 'SLIP' && ProdType != 'TUNIC',true,false)}">
+                        
+                        <th>GENDER</th>
+                        <th>OKHAI_SIZE</th>
+                        <th>ECOM SIZE</th>
+                        <th>E-Com Material</th>
+                        <th>SIZE</th>
+                        <th>STYLE</th>
+                        <th>STYLECODE</th>
+                        <th>REMARKS</th>
+                        <th>Actual MRP</th>
+                        <th>Created By </th>
+                        <th></th>
+                    </apex:outputPanel>
+                </tr>
+            </thead>
+            <tbody>
+                <apex:repeat value="{!proViewList}" var="pro">
+                    <tr>
+                        
+                        <apex:outputPanel rendered="{!IF(ProdType !='MASK' && ProdType !='LEHENGA' && ProdType !='BLOUSE' && ProdType != 'KURTA' && ProdType != 'SHORT TOP' && ProdType != 'DRESS' && ProdType != 'TROUSER' && ProdType != 'USKD' &&  ProdType != 'KURTA SET' && ProdType != 'SLIP' && ProdType != 'TUNIC',true,false)}">
+                            <td>{!pro.Item_no__c}</td>
+                            <td>{!pro.Pack_no__c}</td>
+                            <td>
+                                <a href="{!'/'+pro.id}">{!pro.SKU__c}</a>
+                            </td>
+                            <td>{!pro.vendor_custom__r.Name}</td>
+                            <td>{!pro.Product__c}</td>
+                            <td>{!pro.PO_Number__c}</td>
+                            <apex:outputPanel rendered="{!IF(pro.Photo__c != null,true,false)}">
+                                <td><apex:image value="{!pro.ImageLink__c}" height="80px" width="80px" /></td>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(pro.Photo__c == null,true,false)}">
+                                <td></td>
+                            </apex:outputPanel>
+                            <td>{!pro.Form__c}</td>
+                            <td>{!pro.Craft__c}</td>
+                            <td>{!pro.Warp__c}</td>
+                            <td>{!pro.Weft__c}</td>
+                            <td>{!pro.Base_Colour__c}</td>
+                            <td>{!pro.MFabric__c}</td>
+                            <td>{!pro.Quantity__c}</td>
+                            <td>{!pro.Description__c}</td>
+                            <td>{!pro.Season__c}</td>
+                            <td>{!pro.Collection__c}</td>
+                            <td>{!pro.Year_of_Design__c}</td>
+                            <td>{!pro.MRP_Pc__c}</td>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF(ProdType =='LEHENGA',true,false)}">
+                            <td>{!pro.Item_no__c}</td>
+                            <td>
+                                <a href="{!'/'+pro.id}">{!pro.SKU__c}</a>
+                            </td>
+                            <td>{!pro.vendor_custom__r.Name}</td>
+                            <td>{!pro.Product__c}</td>
+                            <td>{!pro.PO_Number__c}</td>
+                            <td>{!pro.Base_Colour__c}</td>
+                            <td>{!pro.Collection__c}</td>
+                            <td>{!pro.Craft__c}</td>
+                            <th>{!pro.Season__c}</th>
+                            <td>{!pro.MFabric__c}</td>
+                            <td>{!pro.Form__c}</td>
+                            <td>{!pro.MRP_Pc__c}</td>
+                            <td>{!pro.Quantity__c}</td>
+                            <td>{!pro.Top_Fabric__c}</td>
+                            <td>{!pro.Consumtion__c}</td>
+                            <td>{!pro.Bottom_Fabric__c}</td>
+                            <td>{!pro.Consumtion1__c}</td>
+                            <td>{!pro.Style_Code__c}</td>
+                            <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Style_Code__c == 'OTS'}">
+                                    {!pro.Vendot_style_code__c}
+                                </apex:outputPanel>
+                            </td> 
+                            <td>{!pro.Source__c}</td>
+                             <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_SKU_Code__c}
+                                </apex:outputPanel>
+                            </td> 
+                            <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_Consumption__c}
+                                </apex:outputPanel>
+                            </td> 
+                            <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_Cost__c}
+                                </apex:outputPanel>
+                            </td> 
+                             <td>{!pro.Total_Costs__c}</td>                            
+                            <td>{!pro.Size_LCD__c}</td>
+                            <td>{!pro.Ecom_Size__c}</td>
+                            <td>{!pro.E_Com_Material__c}</td>
+                            <td>{!pro.Blouse_Type__c}</td>
+                            <td>{!pro.Blouse_Fabric__c}</td>
+                            <td>{!pro.Blouse_Color__c}</td>
+                            <td>{!pro.DupattaFabric__c}</td>
+                            <td>{!pro.Dupatta_Color__c}</td>                                                       
+                            <td>{!pro.Order_ID__c}</td>
+                            <td>{!pro.Remarks__c}</td>
+                            <td>{!pro.Actual_MRP_Update__c}</td>
+                            <td>{!pro.CreatedBy.Name}</td>
+                            <td>
+                                <apex:commandLink value="Download Doc" action="{!DocDwld}" reRender="proTable"> 
+                                    <apex:param value="{!pro.id}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                            <td>
+                                <apex:commandLink value="Download Image" action="{!ImageDwld}" reRender="proTable" > 
+                                    <apex:param value="{!pro.id}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF(ProdType =='BLOUSE',true,false)}">
+                            <td>{!pro.Item_no__c}</td>
+                            <td>
+                                <a href="{!'/'+pro.id}">{!pro.SKU__c}</a>
+                            </td>
+                            <td>{!pro.vendor_custom__r.Name}</td>
+                            <td>{!pro.Product__c}</td>
+                            <td>{!pro.PO_Number__c}</td>
+                            <td>{!pro.Base_Colour__c}</td>
+                            <td>{!pro.Collection__c}</td>
+                            <td>{!pro.Craft__c}</td>
+                            <td>{!pro.Season__c}</td>
+                            <td>{!pro.MFabric__c}</td>
+                            <td>{!pro.Form__c}</td>
+                            <td>{!pro.MRP_Pc__c}</td>
+                            <td>{!pro.Quantity__c}</td>
+                            <td>{!pro.Top_Fabric__c}</td>
+                            <td>{!pro.Consumtion__c}</td>
+                            <td>{!pro.Bottom_Fabric__c}</td>
+                           <!-- <td>{!pro.Consumtion1__c}</td>  -->
+                            <td>{!pro.Source__c}</td>
+                            <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_SKU_Code__c}
+                                </apex:outputPanel>
+                            </td> 
+                            <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_Consumption__c}
+                                </apex:outputPanel>
+                            </td> 
+                            <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_Cost__c}
+                                </apex:outputPanel>
+                            </td> 
+                             <td>{!pro.Total_Costs__c}</td>
+                            <td>{!pro.Loom__c}</td>
+                            <td>{!pro.RTW_SIZE__c}</td>
+                            <td>{!pro.Ecom_Size__c}</td>
+                            <td>{!pro.E_Com_Material__c}</td>
+                            <td>{!pro.Style_Code__c}</td>
+                            <td>{!pro.Zari__c}</td>
+                            <td>{!pro.Description__c}</td>
+                            <td>{!pro.Order_ID__c}</td>
+                            <td>{!pro.Remarks__c}</td>
+                            <td>{!pro.Actual_MRP_Update__c}</td>
+                            <td>{!pro.CreatedBy.Name}</td>
+                            <td>
+                                <apex:commandLink value="Download Doc" action="{!DocDwld}" reRender="proTable" > 
+                                    <apex:param value="{!pro.id}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                            <td>
+                                <apex:commandLink value="Download Image" action="{!ImageDwld}" reRender="proTable" > 
+                                    <apex:param value="{!pro.id}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF( ProdType == 'DRESS',true,false)}">
+                            <td>{!pro.Item_no__c}</td>
+                            <td>
+                                <a href="{!'/'+pro.id}">{!pro.SKU__c}</a>
+                            </td>
+                            <td>{!pro.vendor_custom__r.Name}</td>
+                            <td>{!pro.Product__c}</td>
+                            <td>{!pro.PO_Number__c}</td>
+                            <td>{!pro.Base_Colour__c}</td>
+                            <td>{!pro.Collection__c}</td>
+                            <td>{!pro.Craft__c}</td>
+                            <td>{!pro.Season__c}</td>
+                            <td>{!pro.MFabric__c}</td>
+                            <td>{!pro.Top_Fabric__c}</td>
+                            <td>{!pro.Consumtion__c}</td>
+                            <td>{!pro.Bottom_Fabric__c}</td>
+                            <td>{!pro.Consumtion1__c}</td>
+                            <td>{!pro.Form__c}</td>
+                            <td>{!pro.MRP_Pc__c}</td>
+                            <td>{!pro.Quantity__c}</td>
+                            <td>{!pro.Source__c}</td>
+                             <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_SKU_Code__c}
+                                </apex:outputPanel>
+                            </td> 
+                            <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_Consumption__c}
+                                </apex:outputPanel>
+                            </td>
+                            <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_Cost__c}
+                                </apex:outputPanel>
+                            </td> 
+                             <td>{!pro.Total_Costs__c}</td>
+                            <td>{!pro.Loom__c}</td>
+                            <td>{!pro.RTW_SIZE__c}</td>
+                            <td>{!pro.Ecom_Size__c}</td>
+                            <td>{!pro.E_Com_Material__c}</td>
+                            <td>{!pro.Style_Code__c}</td>
+                            <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Style_Code__c == 'OTS'}">
+                                    {!pro.Vendot_style_code__c}
+                                </apex:outputPanel>
+                            </td>
+                            <td>{!pro.Zari__c}</td>
+                            <td>{!pro.Description__c}</td>
+                            <td>{!pro.Order_ID__c}</td>
+                            <td>{!pro.Remarks__c}</td>
+                            <td>{!pro.Actual_MRP_Update__c}</td>
+                            <td>{!pro.CreatedBy.Name}</td>
+                            <td>
+                                <apex:commandLink value="Download Doc" action="{!DocDwld}"> 
+                                    <apex:param value="{!pro.id}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                            <td>
+                                <apex:commandLink value="Download Image" action="{!ImageDwld}" reRender="proTable" > 
+                                    <apex:param value="{!pro.id}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                        </apex:outputPanel>
+                        
+                        
+                          <apex:outputPanel rendered="{!IF( ProdType == 'SHORT TOP',true,false)}">
+                            <td>{!pro.Item_no__c}</td>
+                            <td>
+                                <a href="{!'/'+pro.id}">{!pro.SKU__c}</a>
+                            </td>
+                            <td>{!pro.vendor_custom__r.Name}</td>
+                            <td>{!pro.Product__c}</td>
+                            <td>{!pro.PO_Number__c}</td>
+                            <td>{!pro.Base_Colour__c}</td>
+                            <td>{!pro.Collection__c}</td>
+                            <td>{!pro.Craft__c}</td>
+                            <td>{!pro.Season__c}</td>
+                            <td>{!pro.MFabric__c}</td>
+                            <td>{!pro.Top_Fabric__c}</td>
+                            <td>{!pro.Consumtion__c}</td>
+                            <td>{!pro.Bottom_Fabric__c}</td>
+                            <td>{!pro.Consumtion1__c}</td>
+                            <td>{!pro.Form__c}</td>
+                            <td>{!pro.MRP_Pc__c}</td>
+                            <td>{!pro.Quantity__c}</td>
+                            <td>{!pro.Source__c}</td>
+                               <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_SKU_Code__c}
+                                </apex:outputPanel>
+                            </td> 
+                            <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_Consumption__c}
+                                </apex:outputPanel>
+                            </td>
+                            <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_Cost__c}
+                                </apex:outputPanel>
+                            </td> 
+                             <td>{!pro.Total_Costs__c}</td>
+                            <td>{!pro.Loom__c}</td>
+                            <td>{!pro.RTW_SIZE__c}</td>
+                            <td>{!pro.Ecom_Size__c}</td>
+                            <td>{!pro.E_Com_Material__c}</td>
+                            <td>{!pro.Style_Name__c}</td>
+                            <td>{!pro.Style_Code__c}</td>
+                            <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Style_Code__c == 'OTS'}">
+                                    {!pro.Vendot_style_code__c}
+                                </apex:outputPanel>
+                            </td>
+                            <td>{!pro.Zari__c}</td>
+                            <td>{!pro.Description__c}</td>
+                            <td>{!pro.Order_ID__c}</td>
+                            <td>{!pro.Remarks__c}</td>
+                              <td>{!pro.Actual_MRP_Update__c}</td>
+                            <td>{!pro.CreatedBy.Name}</td>
+                            <td>
+                                <apex:commandLink value="Download Doc" action="{!DocDwld}"> 
+                                    <apex:param value="{!pro.id}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                            <td>
+                                <apex:commandLink value="Download Image" action="{!ImageDwld}" reRender="proTable" > 
+                                    <apex:param value="{!pro.id}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel rendered="{!IF( ProdType == 'TROUSER',true,false)}">
+                            <td>{!pro.Item_no__c}</td>
+                            <td>
+                                <a href="{!'/'+pro.id}">{!pro.SKU__c}</a>
+                            </td>
+                            <td>{!pro.vendor_custom__r.Name}</td>
+                            <td>{!pro.Product__c}</td>
+                            <td>{!pro.PO_Number__c}</td>
+                            <td>{!pro.Base_Colour__c}</td>
+                            <td>{!pro.Collection__c}</td>
+                            <td>{!pro.Craft__c}</td>
+                            <td>{!pro.Season__c}</td>
+                            <td>{!pro.MFabric__c}</td>
+                            <td>{!pro.Top_Fabric__c}</td>
+                            <td>{!pro.Consumtion__c}</td>
+                            <td>{!pro.Bottom_Fabric__c}</td>
+                            <td>{!pro.Consumtion1__c}</td>
+                            <td>{!pro.Form__c}</td>
+                            <td>{!pro.MRP_Pc__c}</td>
+                            <td>{!pro.Quantity__c}</td>
+                            <td>{!pro.Source__c}</td>
+                             <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_SKU_Code__c}
+                                </apex:outputPanel>
+                            </td> 
+                            <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_Consumption__c}
+                                </apex:outputPanel>
+                            </td> 
+                             <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_Cost__c}
+                                </apex:outputPanel>
+                            </td> 
+                             <td>{!pro.Total_Costs__c}</td>
+                            <td>{!pro.Loom__c}</td>
+                            <td>{!pro.RTW_SIZE__c}</td>
+                            <td>{!pro.Ecom_Size__c}</td>
+                            <td>{!pro.E_Com_Material__c}</td>
+                            <td>{!pro.Style_Name__c}</td>
+                            <td>{!pro.Style_Code__c}</td>
+                            <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Style_Code__c == 'OTS'}">
+                                    {!pro.Vendot_style_code__c}
+                                </apex:outputPanel>
+                            </td>
+                            <td>{!pro.Zari__c}</td>
+                            <td>{!pro.Order_ID__c}</td>
+                            <td>{!pro.Remarks__c}</td>
+                            <td>{!pro.Actual_MRP_Update__c}</td>
+                            <td>{!pro.CreatedBy.Name}</td>
+                            <td>
+                                <apex:commandLink value="Download Doc" action="{!DocDwld}"> 
+                                    <apex:param value="{!pro.id}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                            <td>
+                                <apex:commandLink value="Download Image" action="{!ImageDwld}" reRender="proTable" > 
+                                    <apex:param value="{!pro.id}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel rendered="{!IF(ProdType == 'KURTA SET' || ProdType == 'KURTA' || ProdType == 'TUNIC' || ProdType == 'SLIP' ,true,false)}">
+                            <td>{!pro.Item_no__c}</td>
+                            <td>
+                                <a href="{!'/'+pro.id}">{!pro.SKU__c}</a>
+                            </td>
+                            <td>{!pro.vendor_custom__r.Name}</td>
+                            <td>{!pro.Product__c}</td>
+                            <td>{!pro.PO_Number__c}</td>
+                            <td>
+                            <apex:outputPanel rendered="{!ProdType == 'KURTA' && showSlipfield || ProdType == 'KURTA SET'&& showSlipfieldforKurtaSet}">
+                                {!pro.SLIP__c}
+                            </apex:outputPanel>
+                                </td>
+                            <td>
+                                <apex:outputPanel rendered="{!ProdType == 'KURTA' || ProdType == 'KURTA SET'}">
+                                    {!pro.Duppatta__c}
+                                </apex:outputPanel>
+                            </td>
+                            <td>
+                                <apex:outputPanel rendered="{!ProdType == 'KURTA' || ProdType == 'KURTA SET' }">
+                                   {!pro.Jacket__c}
+                                </apex:outputPanel>
+                            </td>
+                            <td>
+                                <apex:outputPanel rendered="{!ProdType == 'KURTA' || ProdType == 'KURTA SET' }">
+                                    {!pro.Kurta__c}
+                                </apex:outputPanel>
+                            </td>
+                            <td>
+                                <apex:outputPanel rendered="{!ProdType == 'KURTA' || ProdType == 'KURTA SET' }">
+                                    {!pro.Trouser__c}
+                                </apex:outputPanel>
+                            </td>
+                            <td>{!pro.Base_Colour__c}</td>
+                            <td>{!pro.Collection__c}</td>
+                            <td>{!pro.Craft__c}</td>
+                            <td>{!pro.Season__c}</td>
+                            <td>{!pro.MFabric__c}</td>
+                            <td>{!pro.Top_Fabric__c}</td>
+                            <td>{!pro.Consumtion__c}</td>
+                            <td>{!pro.Bottom_Fabric__c}</td>
+                            <td>{!pro.Consumtion1__c}</td>
+                            <td>{!pro.Form__c}</td>
+                            <td>{!pro.MRP_Pc__c}</td>
+                            <td>{!pro.Quantity__c}</td>
+                            <td>{!pro.X1_SET__c}</td>
+                            <td>{!pro.Source__c}</td>
+                             <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_SKU_Code__c}
+                                </apex:outputPanel>
+                            </td> 
+                            <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_Consumption__c}
+                                </apex:outputPanel>
+                            </td> 
+                             <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Source__c == 'Value addition'}">
+                                    {!pro.Yardage_Cost__c}
+                                </apex:outputPanel>
+                            </td> 
+                             <td>{!pro.Total_Costs__c}</td>
+                            <td>{!pro.Loom__c}</td>
+                            <td>{!pro.RTW_SIZE__c}</td>
+                            <td>{!pro.Ecom_Size__c}</td>
+                            <td>{!pro.E_Com_Material__c}</td>
+                            <td>{!pro.Style_Name__c}</td>
+                            <td>{!pro.Style_Code__c}</td>
+                            <td>
+                                <apex:outputPanel layout="none"  rendered="{!pro.Style_Code__c == 'OTS'}">
+                                    {!pro.Vendot_style_code__c}
+                                </apex:outputPanel>
+                            </td>
+                            <td>{!pro.Zari__c}</td>
+                            <td>{!pro.Kurta_Description__c}</td>
+                            <td>{!pro.Order_ID__c}</td>
+                            <td>{!pro.Remarks__c}</td>
+                            <td>{!pro.Actual_MRP_Update__c}</td>
+                            <td>{!pro.CreatedBy.Name}</td>
+                            <td>
+                                <apex:commandLink value="Download Doc" action="{!DocDwld}" reRender="proTable" > 
+                                    <apex:param value="{!pro.id}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                            <td>
+                                <apex:commandLink value="Download Image" action="{!ImageDwld}" reRender="proTable" > 
+                                    <apex:param value="{!pro.id}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF(ProdType =='USKD',true,false)}">
+                            <tr>
+                                <td>{!pro.Item_no__c}</td>
+                                <td>{!pro.vendor_custom__r.Name}</td>
+                                <td>{!pro.vendor_custom__r.Vendor_Code__c}</td>
+                                <td>
+                                    <a href="{!'/'+pro.id}">{!pro.Product__c}</a>
+                                </td>
+                                <td>{!pro.SKU__c}</td>
+                                <td>{!pro.Loom__c}</td>
+                                <td>{!pro.Proc_Type__c}</td>
+                                <td>{!pro.Quantity__c}</td>
+                                <td>{!pro.Kurta_Fabric__c}</td>
+                                <td>{!pro.DupattaFabric__c}</td>
+                                <td>{!pro.Salwar_Fabric__c}</td>
+                                
+                                <td>{!pro.Origin__c}</td>
+                                <td>{!pro.PO_Number__c}</td>
+                                <td>{!pro.MRP_Pc__c}</td>
+                                <td>{!pro.Base_Colour__c}</td>
+                                <td>{!pro.Suggested_MRP__c}</td>
+                                <td>{!pro.Detailed_Colour__c}</td>
+                                <td>{!pro.Design_Story__c}</td>
+                                <td>{!pro.Story_1__c}</td>
+                                <td>{!pro.Story_2__c}</td>
+                                <td>{!pro.Description__c}</td>
+                                <td>{!pro.Fabric__c}</td>
+                                <td>{!pro.Zari_Type__c}</td>
+                                <td>{!pro.Occasion__c}</td>
+                                <td>{!pro.Craft__c}</td>
+                                <td>{!pro.Collection__c}</td>
+                                <td>{!pro.Body_Pattern__c}</td>
+                                <td>{!pro.Body_Des_Element__c}</td>
+                                <td>{!pro.Body_Des_Material__c}</td>
+                                <td>{!pro.Body_Des_Density__c}</td>
+                                <td>{!pro.Border_Pattern__c}</td>
+                                <td>{!pro.Border_Des_Element__c}</td>
+                                <td>{!pro.Border_Des_Material__c}</td>
+                                <td>{!pro.Border_Size__c}</td>
+                                <td>{!pro.Pallu_Pattern__c}</td>
+                                <td>{!pro.Pallu_Design__c}</td>
+                                <td>{!pro.Pallu_Des_Material__c}</td>
+                                <td>{!pro.Pallu_Des_Density__c}</td>
+                                <td>{!pro.Pallu_Size__c}</td>
+                                <td>{!pro.Warehouse_Stock__c}</td>
+                                <td>{!pro.Sold_Stock__c}</td>
+                                <td>{!pro.Store_Stock__c}</td>
+                                <td>{!pro.Order_ID__c}</td>
+                                <td>{!pro.Remarks__c}</td>
+                                <td>{!pro.Actual_MRP_Update__c}</td>
+                                <td>{!pro.CreatedBy.Name}</td>
+                                <td>
+                                <apex:commandLink value="Download Doc" action="{!DocDwld}" reRender="proTable" > 
+                                    <apex:param value="{!pro.id}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                                <td>
+                                <apex:commandLink value="Download Image" action="{!ImageDwld}" reRender="proTable" > 
+                                    <apex:param value="{!pro.id}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                            </tr>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF(ProdType =='MASK' && ProdType !='LEHENGA' && ProdType !='BLOUSE' ,true,false)}">
+                            <td>{!pro.Item_no__c}</td>
+                            <td>{!pro.Pack_no__c}</td>
+                            <td>
+                                <a href="{!'/'+pro.id}">{!pro.SKU__c}</a>
+                            </td>
+                            <td>{!pro.vendor_custom__r.Name}</td>
+                            <td>{!pro.Product__c}</td>
+                            <td>{!pro.PO_Number__c}</td>
+                            <apex:outputPanel rendered="{!IF(pro.Photo__c != null,true,false)}">
+                                <td><apex:image value="{!pro.ImageLink__c}" height="80px" width="80px" /></td>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!IF(pro.Photo__c == null,true,false)}">
+                                <td></td>
+                            </apex:outputPanel>
+                            <td>{!pro.Base_Colour__c}</td>
+                            <td>{!pro.MFabric__c}</td>
+                            <td>{!pro.MStyle_name__c}</td>
+                            <td>{!pro.Gender__c}</td>
+                            <td>{!pro.MDesign__c}</td>
+                            <td>{!pro.MPleats__c}</td>
+                            <td>{!pro.MPly__c}</td>
+                            <td>{!pro.Quantity__c}</td>
+                            <td>{!pro.MCost__c}</td>
+                            <td>{!pro.Order_ID__c}</td>
+                            <td>{!pro.Fabric_1__c}</td>
+                            <td>{!pro.Fabric_1_Quantity__c}</td>
+                            <td>{!pro.Fabric_2__c}</td>
+                            <td>{!pro.Fabric_2_Quantity__c}</td>
+                            <td>{!pro.MASK_DESCRIPTION__c}</td>
+                            <td>{!pro.Remarks__c}</td>
+                            <td>{!pro.Actual_MRP_Update__c}</td>
+                            <td>{!pro.CreatedBy.Name}</td>
+                            <td>
+                                <apex:commandLink value="Download Doc" action="{!DocDwld}" reRender="proTable"> 
+                                    <apex:param value="{!0}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                            <td>
+                                <apex:commandLink value="Download Image" action="{!ImageDwld}" reRender="proTable" > 
+                                    <apex:param value="{!pro.id}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!IF(ProdType !='BLOUSE' && ProdType !='LEHENGA' && ProdType !='MASK' && ProdType != 'KURTA' && ProdType != 'SHORT TOP' && ProdType != 'DRESS' && ProdType != 'TROUSER' && ProdType != 'USKD' && ProdType != 'KURTA SET' && ProdType != 'SLIP' && ProdType != 'TUNIC',true,false)}">
+                            
+                            <td>{!pro.Gender__c}</td>
+                            <td>{!pro.Okhai_Size__c}</td>
+                            <td>{!pro.Ecom_Size__c}</td>
+                            <td>{!pro.E_Com_Material__c}</td>
+                            <td>{!pro.Size__c}</td>
+                            <td>{!pro.STYLE__c}</td>
+                            <td>{!pro.Style_Code__c}</td>
+                            <td>{!pro.Remarks__c}</td>
+                            <td>{!pro.Actual_MRP_Update__c}</td>
+                            <td>{!pro.CreatedBy.Name}</td>
+                            <td>
+                                <apex:commandLink value="Download Doc" action="{!DocDwld}" reRender="proTable"> 
+                                    <apex:param value="{!0}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                            <td>
+                                <apex:commandLink value="Download Image" action="{!ImageDwld}" reRender="proTable" > 
+                                    <apex:param value="{!pro.id}" assignTo="{!proId}" name="proId" />
+                                </apex:commandLink>
+                            </td>
+                        </apex:outputPanel>
+                        
+                    </tr>
+                </apex:repeat>
+            </tbody>
+        </table>
+        </apex:form>
+    </body>
+    <script>
+    function moveBack(){
+        
+        if ((typeof sforce != 'undefined') && sforce && (!!sforce.one)){ 
+            
+            sforce.one.navigateToURL("/apex/RTWProductView");
+        }
+        else{
+            console.log('**');
+            window.open('/apex/RTWProductView','_self');
+            
+        }
+    }
+    </script>    
+</apex:page>

@@ -1,0 +1,57 @@
+<apex:page standardController="Quote" sidebar="false" showHeader="false" renderAs="PDF">
+ <P>To,<br/>M/S.{!Quote.Contact.Account.Name}</p><p align='right'>Date :&nbsp;&nbsp;<apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+     <apex:param value="{!Today()}" />
+</apex:outputText></p><br/>
+ <b>Sub : {!Quote.Subject__c}</b><br/><br/>
+ Dear Sir : {!Quote.Contact.Name}<br/><br/>
+ At the outset we would like to thank you for the interest shown in TITAN- Products.<br/><br/>
+ <b>Details of your requirement :-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TITAN GIFT CARDS</b><br/><br/>
+
+<table border="1" cellspacing="0" width="700">
+
+<tr>
+<th>Partculars</th>
+<th>Discount</th>
+<th>Validity</th>
+</tr>
+<apex:repeat value="{!Quote.QuoteLineItems}" var="line">
+<tr>
+<td><apex:outputLabel value="{!line.PricebookEntry.Product2.Name}"/> </td>
+        
+<td><apex:outputLabel value="{!line.Discount}"/></td>
+<td><apex:outputLabel value="{!line.Validity__c}"/></td>
+</tr>
+</apex:repeat>
+</table>
+
+<br/><br/><b>Payment Terms:</b> {!Quote.Payment_Term_Corporate__c}------100% advance payment of the order value will need to be made
+along with the issue of the Purchase Order. <br/><br/>
+
+<b>Delivery:</b> {!Quote.Delivery__c}------Delivery at your Office Location in 5 to 7 working days of receipt of
+Purchase Order and 100% advance.<br/><br/>
+
+<b>* Please Also Note:</b><br/><br/>
+Terms and Conditions applicable for Titan Gift Vouchers:<br/><br/>
+-The voucher is only an entitlement to credit to the extent of the face value of
+the voucher and is non-encashable. If the value of the purchase is less than
+the value of the voucher the balance is non-refundable.<br/>
+-X The voucher is valid in<b> WORLD OF TITAN OUTLETS.</b><br/>
+-X The voucher is valid for a period of six months from the date of issue.<br/>
+-X The voucher is not a legal tender.<br/><br/>
+Force Majeure: Adherence to these commitments might not be possible in case of
+any prevention or hindrance in consequence of any act of god or state, or any other
+extraneous circumstances beyond the anticipation or control of either party.<br/><br/>
+We hope the above meets with your requirements.<br/><br/>
+Yours Sincerely,<br/>
+For Titan Industries Limited.<Br/><Br/><Br/>
+N.B: In the event of the order being placed on Titan Industries Limited the following information needs to be provided by {!Quote.Contact.Account.Name} in the Purchase Order.<br/><br/>
+1] Rate Finalised. <br/>
+2] Delivery schedule, delivery address (es) and name (s) of the contact person. <br/>
+3] Provide us the TIN no and the CST no of your company in the Po.<br/>
+
+ 
+ 
+ 
+ 
+
+</apex:page>

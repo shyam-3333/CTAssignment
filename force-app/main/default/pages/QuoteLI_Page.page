@@ -1,0 +1,106 @@
+<apex:page standardController="Quote" extensions="QuoteLIQuoteOpportunity_DataHandler"  >
+    <head> <!-- contentType="application/x-excel#RenderAsTestFile.xls" -->
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    </head>
+    <div>
+        <table width="100%" cellspacing="0" border="1" align="left" style=" font-family:Arial,Helvetica,sans-serif; font-size:10pt;color:#000;">
+            <tr align= "center" colspan="1">
+                
+                <th>Product</th>
+                <th>Product ID</th>
+                <th>CPG</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Company</th>
+                <th>Designation</th>
+                <th>Shipping Address</th>
+                <th>Shipping City</th>
+                <th>Shipping State</th>
+                <th>Shipping Country</th>
+                <th>Shipping PostalCode</th>
+                <th>Shipping Mobile</th>
+                <th>Shipping Email</th>
+                <th>InvoiceNumber</th>
+                <th>Denomination</th>
+                <th>Quantity</th>
+                <th>Amount</th>
+                <th>Purchase Order</th>
+                <th>GB Order No.</th>
+                <th>Recipient Email ID</th>
+                
+            </tr>
+            <apex:repeat value="{!wrapList.sObjQuoteDataList}" var="qtval">
+                <tr style="font-family:Arial,Helvetica,sans-serif;background:#d6f5d6;font-weight:bold;font-size:12px; color:#2e5cb8;">
+                    
+                    <td width="30%">
+                        <apex:outputField value="{!qtval.Product2.Name}"/>
+                    </td >
+                    <td width="30%">
+                        <apex:outputText value="N/A"/>
+                    </td >
+                    <td width="30%">
+                        <apex:outputField value="{!qtval.CPG__c}"/>
+                    </td >
+                    
+                    <td width="30%">
+                        <apex:outputField value="{!wrapList.qtdata.Opportunity.Owner.FirstName}"/>
+                    </td>
+                    <td width="30%">
+                        <apex:outputField value="{!Quote.Opportunity.Owner.LastName}"/>
+                    </td>
+                    <td width="30%">
+                        <apex:outputText value="Titan Company PVT Ltd"/>
+                    </td>
+                    <td width="30%">
+                        <apex:outputText value="{!Quote.Opportunity.Owner.UserRole.Name}"/>
+                    </td>
+                    <td width="30%">
+                        <apex:outputField value="{!Quote.Opportunity.Owner.Street}"/>
+                    </td> 
+                    <td width="30%">
+                        <apex:outputField value="{!Quote.Opportunity.Owner.City}"/>
+                    </td>   
+                    <td width="30%">
+                        <apex:outputField value="{!Quote.Opportunity.Owner.State}"/>
+                    </td> 
+                    <td width="30%">
+                        <apex:outputField value="{!Quote.Opportunity.Owner.Country}"/>
+                    </td> 
+                    <td width="30%">
+                        <apex:outputField value="{!Quote.Opportunity.Owner.PostalCode}"/>
+                    </td>
+                    <td width="30%">
+                        <apex:outputField value="{!Quote.Opportunity.Owner.Phone}"/>
+                    </td> 
+                    <td width="30%">
+                        <apex:outputText value="{!Quote.Opportunity.Owner.Email}"/>
+                    </td> 
+                    <td width="30%">
+                        <apex:outputText value="N/A"/>
+                    </td>
+                    <td width="30%">
+                        <apex:outputField value="{!qtval.Sales_Price_c__c}"/>
+                    </td > 
+                    <td width="30%">
+                        <apex:outputField value="{!qtval.Quantity}"/>
+                    </td>
+                    <td width="30%">
+                        <apex:outputText value="{!qtval.Sales_Price_c__c * qtval.Quantity}"/>
+                    </td>
+                    <td width="30%">
+                        <apex:outputField value="{!Quote.Insti_ref__c}"/>
+                    </td>
+                    <td width="30%">
+                        <apex:outputText value="N/A"/>
+                    </td>
+                    <td width="30%">
+                        <apex:outputField value="{!Quote.Recipient_Email_ID__c}"/>
+                    </td>
+                    
+                </tr> 
+            </apex:repeat>         
+        </table>
+    </div>
+    
+    
+</apex:page>

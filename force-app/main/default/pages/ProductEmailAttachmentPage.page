@@ -1,0 +1,68 @@
+<apex:page standardController="Product__c" extensions="ProductEmailAttachmentPageController" cache="true" contentType="application/vnd.ms-Excel#SalesForceExport.xls" 
+      standardStylesheets="false" applyHtmlTag="false" showHeader="false" sidebar="false">
+    <style>
+        th{
+            width: 250px;
+            height: 50px;
+            overflow:hidden;
+            //background-color:; 
+        }
+    </style>   
+         <table border="1" style="font-family: Arial; border-collapse: collapse; width:100%">
+            <tr>
+                <th><b>Product Description</b></th>
+                <th ><b>Product Category</b></th>
+                <th ><b>Vendor Name</b></th>
+                <th ><b>SKU Code</b></th>
+                <th ><b>Product Type</b></th>
+                <th ><b>Cost Price</b></th>
+                <th ><b>Quantity </b></th>
+                <th ><b>Suggested MRP</b></th>
+                <th ><b>Origin </b></th>
+                <th ><b>Design Story</b></th>
+                <th ><b>Design Type</b></th>
+                <th ><b>Article Number</b></th>
+                <th ><b>Warp </b></th>
+                <th ><b>Weft </b></th>
+                <th ><b>Zari Type</b></th>
+                <th ><b>Color </b></th>
+                <th ><b>Craft </b></th>
+                <th ><b>Loom </b></th>
+                <th ><b>Route </b></th>
+                <th ><b>Occasion </b></th>
+                <th ><b>Saree Dimensions</b></th>
+                <th ><b>Blouse Dimensions</b></th>
+                <th ><b>Comments</b></th>
+                        
+            </tr>
+            <apex:repeat value="{!productList}" var="prod">
+            <tr>
+                 <td style="width:100%">  <apex:outputText value="{!prod.name}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Product_Category_Taneira__c}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Account__r.name}"/> </td>
+                 <td style="width:100%">  <apex:outputText style="" value="{!prod.SKU_Code__c}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Product_Type__c}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Cost__c}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Quantity__c}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Suggested_MRP__c}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Cluster__c}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Design_Story__c }"/> </td>
+                 <td>  <apex:outputText value="{!prod.Design_Type__c }"/> </td>
+                 <td>  <apex:outputText value="{!prod.Article_Number__c}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Material_Wrap__c}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Taneira_Material_Weft__c}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Zari_Type__c}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Colour__c}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Workmanship__c }"/> </td>
+                 <td>  <apex:outputText value="{!prod.Loom__c}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Route__c}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Occasion__c }"/> </td>
+                 <td>  <apex:outputText value="{!prod.Saree_Dimensions__c}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Blouse_Dimensions__c}"/> </td>
+                 <td>  <apex:outputText value="{!prod.Comments__c}"/> </td>
+                 
+            </tr>
+             </apex:repeat>
+        </table>
+   
+</apex:page>

@@ -1,0 +1,148 @@
+<!--
+*******************************************************************************************************************************************
+ModifiedBy            Date      Tag     Description
+*******************************************************************************************************************************************
+Saradha  11/19/2019   T01		T01- 	Hardcoded URL change fix
+-->
+<apex:page controller="PaginationDemoController" sidebar="false" readOnly="true">
+    <html>
+        <head>            
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/scroller/1.5.1/css/scroller.dataTables.min.css" />
+            
+            <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js" />
+            <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" />
+                <script type="text/javascript" src="https://cdn.datatables.net/scroller/1.5.1/js/dataTables.scroller.min.js" />
+                    
+                    <apex:includeScript value="{!URLFOR($Resource.CustomApp, 'js/jquery.min.js')}"/>
+                        <apex:includeScript value="{!URLFOR($Resource.CustomApp, 'js/angular.min.js')}"/>
+                            <apex:includeScript value="{!URLFOR($Resource.CustomApp, 'js/angular-datatables.min.js')}"/>
+                                <apex:includeScript value="{!URLFOR($Resource.CustomApp, 'js/jquery.dataTables.min.js')}"/>
+                                    
+                                    <style>
+                                    
+                                    #mydiv img {
+                                
+                                width: 40px;
+            height: 40px;
+            left: 5%;
+            top: 0%;
+            position: absolute;
+            }
+            
+            table td img.img-thumbnail {
+                
+                width: 204px;
+                height: auto;
+            }
+            </style>
+            </head>
+            <body ng-app="app" ng-controller="formController" style="min-height: 400px;">
+                
+                <table id="product-details" class="display nowrap" style="width:100%">
+                    <thead>
+                    <tr>
+                    <th>Image</th>
+                <th>Name</th>
+                <th>SKU</th>
+                <th>Category</th>
+                <th>Vendor</th>
+                <th>Proc Type</th>
+                </tr>
+                </thead>
+                </table>
+                
+                </body>
+                
+                <script type="text/javascript">
+                    //<T01>
+                    var url = location.href;  // entire url including querystring - also: window.location.href;
+            var baseURL = url.substring(0, url.indexOf('/', 14));
+            console.log('Base URL = ',baseURL);
+            
+            var lastProdId = '';
+            var totalProducts = '{!totalProducts}';
+            var products = [];
+            
+            
+            var app = angular.module('app', ['datatables']);
+            
+            app.controller('formController', function($scope,$http,$window,$timeout,DTOptionsBuilder, DTColumnBuilder,DTColumnDefBuilder, $log) {
+                
+            });
+            
+            $(document).ready(function() {
+                $('#product-details').DataTable( {
+                    serverSide: true,
+                    ordering: true,
+                    searching: true,                    
+                    ajax: function ( data, callback, settings ) {
+                        if(products.length == 0 || data.start + data.length > products.length ){
+                            $.ajax({
+                                url: "http://ped.force.com/services/apexrest/ProductDetails/" + lastProdId,
+                                success: function(res){
+                                    
+                                    if(res){
+                                        let parsedRes = JSON.parse(res);
+                                        if(parsedRes['STATUS'] == "SUCCESS"){
+                                            lastProdId = parsedRes['LAST_PROD_ID'];
+                                            
+                                            let attrCheck = ["Photo_Backup__c", "SKU_Code__c", "Product_Category_Taneira__c", "Vendor_Name__c", "Proc_Type__c"];
+                                            parsedRes['PRODUCTS'].map((prod) => {
+                                                attrCheck.map((attr) => {
+                                                if(!prod[attr]){
+                                                prod[attr] = '';
+                                            }
+                                            })
+                                            })
+                                                products.push(...parsedRes['PRODUCTS']);
+                                                
+                                                setTimeout( function () {
+                                                callback( {
+                                                draw: data.draw,
+                                                data: products,
+                                                recordsTotal: totalProducts,
+                                                recordsFiltered: totalProducts
+                                            } );
+                                        }, 50 );
+                                    }
+                                }
+                            }
+                                   })
+                        }
+                    },
+                    columns: [
+                        { data: "Photo_Backup__c" },
+                        { data: "Name" },
+                        { data: "SKU_Code__c" },
+                        { data: "Product_Category_Taneira__c" },
+                        { data: "Vendor_Name__c" },
+                        { data: "Proc_Type__c" },
+                    ],
+                        columnDefs: [
+                        {
+                        render: function ( data, type, row ) {
+                        if(row['Photo_Backup__c']){
+                    return '<a href="/apex/Product_Image?Id='+row['Id']+'" target="_blank">'+
+                    '<img src="'+baseURL+'/servlet/servlet.FileDownload?file='+row['Photo_Backup__c']+'" alt="" class="img-thumbnail" />'+
+                    '</a>';
+                }
+                                                return 'N/A';
+                                                },
+                                                targets: 0
+                                                },
+                                                ],
+                                                scrollY: 500,
+                                                scrollX: true,
+                                                scroller: {
+                                                loadingIndicator: true
+                                                },
+                                                stateSave: false
+                                                } );
+                
+                
+            } );
+            
+            </script> 
+        </html>
+    </apex:page>

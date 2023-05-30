@@ -1,0 +1,128 @@
+<apex:component controller="QC_Document_Status_Email_Package" access="global">
+<apex:attribute name="ComponentId" type="Id" description="Id of the Quote" assignTo="{!compId }"/>   <head>
+      <style>
+      @page{
+      margin-left:1.00in;margin-right:0.10in;
+      margin-top:0.50in;
+      }
+      </style>
+</head>     
+        <c:StylingPdfContent type="header" >  
+        <div style="page-break-after:always;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;text-align:right;">Page <span class="pagenumber" /> of <span class="pagecount"/></div>
+        
+    </c:StylingPdfContent>
+    <c:StylingPdfContent type="footer" >
+     <table>
+         
+            <tr>
+               <td width="30%"><div align="center" style="color:black;font-size:10pt;"><b>Product Approval</b></div> </td>
+               <td width="23%"><div align="center" style="color:black;font-size:10pt;"><b>Inspected </b></div></td>
+               <td width="23%"><div align="center" style="color:black;font-size:10pt;"><b>Checked </b> </div></td>
+               <td width="24%"><div align="center" style="color:black;font-size:10pt;"><b>Approved </b> </div></td>
+            </tr>
+            <tr>
+                <td>
+             <div align="center">   <apex:outputtext value="{!component.Final_Verdict__c}"  style="font-size:16pt;color:{!IF(component.Final_Verdict__c == 'Accept', 'green', 'red')}"/></div>
+                </td>
+              <td>
+              <div align="center"> <apex:outputtext value="{!component.Owner.name}"  style="font-size:10pt;color:{!IF(component.Final_Verdict__c != '', 'black', '')}"/></div>
+              </td>
+              <td>
+             <div align="center"> <apex:outputtext value="{!firstActorName}"  style="font-size:10pt;color:black;"/> </div>
+              </td>      
+              <td>
+              <div align="center"> <apex:outputtext value="{!secondActorName}"  style="font-size:10pt;color:black;"/> </div>
+              </td>
+            </tr>
+      
+        </table>  
+    </c:StylingPdfContent>
+    <div align="Left">
+         <apex:image value="{!component.imageurl__c}" url="{!component.imageurl__c}"  width="10%" height="10%" rendered="{!If(component.imageurl__c!=null ,True,False)}" /> 
+          <apex:image value="{!component.imageurl2__c}" url="{!component.imageurl2__c}"  width="10%" height="10%" rendered="{!If(component.imageurl2__c!=null ,True,False)}" /> 
+         <apex:image value="{!component.imageurl3__c}" url="{!component.imageurl3__c}"  width="10%" height="10%" rendered="{!If(component.imageurl3__c!=null ,True,False)}" /> 
+
+    </div>
+    <!--
+    <c:StylingPdfContent type="footer1">
+          <div align="center" style="color:#585858;font-size:10pt;"><br></br>Checked : {!lst.Name}</div>
+    </c:StylingPdfContent>
+    
+     <c:StylingPdfContent type="footer2">
+         <div align="center" style="color:#585858;font-size:10pt;"><br></br>Approved : {!lst1.Name}</div>
+    </c:StylingPdfContent>
+    -->
+         <div align="center" style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:18px;"><b>Reliability Test Record - {!component.Name__c}&nbsp;&nbsp;&nbsp;</b></div><br></br>       
+            <table width="100%" cellspacing="0" border="1" align="left" style="border-bottom-style: none;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">
+                           
+                 <tr style="line-height: 25px;">    
+                     <td class="fieldLabel">Sample Department</td>
+                     <td><apex:outputtext value="{!component.Sample_Department__c}"  /></td>
+                     <td class="fieldLabel">No. of Samples Received</td>
+                     <td><apex:outputtext value="{!component.No_Of_Sample_Received__c}"/></td>
+                 </tr> 
+                 <tr style="line-height: 25px;">
+                    <!--<td class="fieldLabel">Brand</td>
+                    <td><apex:outputLabel value="{!component.Brand__r.Name}"></apex:outputLabel></td>-->
+                    <td class="fieldLabel">Vendor</td>
+                    <td><apex:outputLabel value="{!component.Vendor__r.Name}"></apex:outputLabel></td>
+                     <td class="fieldLabel">SKU</td>
+                     <td>
+                        <apex:outputtext value="{!component.SKU_Reference__c}"  />
+                     </td>
+                  </tr>
+                  <!--<tr style="line-height: 25px;">
+                     <td class="fieldLabel">Report Date</td>
+                     <td colspan="3">
+                        <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                            <apex:param value="{!component.Published_Date__c}" />
+                        </apex:outputText>
+                     </td>
+                  </tr>-->
+                  <apex:variable var="v" value="" rendered="{!NOT(ISBLANK(component.General_Observation__c))}">
+                    <tr style="line-height: 25px;">
+                        <td class="fieldLabel" colspan="4">
+                            <div >General Observation</div>
+                        </td>
+                    </tr>
+                    <tr style="line-height: 25px;">
+                        <td colspan="4" ><apex:outputfield value="{!component.General_Observation__c}"/></td>
+                    </tr>
+                </apex:variable>        
+            </table>
+        <br></br>
+     
+    <table width="100%" cellspacing="0" cellpadding="2" align="left" border="1" style="border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:9pt;color:#000;">       
+        <td colspan="7" style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;background:#f7ffe6;font-size:16px; color:#2e5cb8;"><div align="center"><b>Reliability Test Certificate</b></div></td>
+            
+                <tr style="background:#F0F8FF;">
+                    <td width="50%" colspan="3" style="color:#0000FF;font-weight:bold;font-size:16px;"><b>Packaging</b></td>
+                    <td colspan="4" style="color:#0000FF;font-weight:bold;font-size:16px;"><apex:outputText value="{!component.Final_Verdict__c}" style="color:{!if(component.Final_Verdict__c == 'Accept','Green','red')};"></apex:outputText></td>
+                </tr>
+                <tr style=" display:{!if(packagingTestParamList.size != 0,'inline','none')};color:#000;">
+                    <td width="15%" style="background:#D3D3D3;"><b>Test Parameter</b></td>
+                    <td width="15%" style="background:#D3D3D3;"><b>Test Condition</b></td>
+                    <td width="15%" style="background:#D3D3D3;"><b>Test Specification</b></td>
+                    <td width="15%" style="background:#D3D3D3;"><b>Acceptance Criteria</b></td>
+                    <td width="15%" style="background:#D3D3D3;"><b>Observation</b></td>
+                    <td width="10%"  style="background:#D3D3D3;"><b>Remarks</b></td>
+                    <td width="15%" style="background:#D3D3D3;"><b>Conclusion</b></td>
+                    
+                </tr>
+          
+                <apex:repeat value="{!packagingTestParamList}" var="packagingFind">
+                    <tr>
+                        <td><apex:outputText value="{!packagingFind.testName}" /></td>
+                        <td><apex:outputText value="{!packagingFind.uUOM}" /></td>
+                        <td><apex:outputText value="{!packagingFind.specification}" /></td>
+                        <td><apex:outputText value="{!packagingFind.acceptanceCritaria}" /></td>
+                        <td><apex:outputText value="{!packagingFind.observation}" /></td>
+                        <td><apex:outputText value="{!packagingFind.commentAndRemarks}" /></td>
+                        
+                         <td style="font-weight:{!if(packagingFind.verdict == 'Reject','bold','Standard')}">    
+                            <apex:outputText value="{!packagingFind.verdict}" />
+                       </td>
+                    </tr>
+                </apex:repeat> 
+          </table>
+</apex:component>

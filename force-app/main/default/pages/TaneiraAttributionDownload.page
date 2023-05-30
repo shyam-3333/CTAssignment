@@ -1,0 +1,7 @@
+<apex:page controller="TaneiraProdAttributionVF" cache="true" readOnly="true" contentType="application/vnd.ms-excel#Procurement update_{!param}.csv; charset=UTF-8"> {!header} 
+        <apex:repeat value="{!wrraperList}" var="pro">
+            {!pro.productRec.Id},{!pro.productRec.SKU_Code__c},{!pro.productRec.Procurement_Cost__c},{!pro.productRec.Quantity__c}
+       </apex:repeat>
+      
+     
+</apex:page>

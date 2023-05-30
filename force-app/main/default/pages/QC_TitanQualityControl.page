@@ -1,0 +1,2300 @@
+<!--
+    Name:
+    Created By: Anand Durga Prasad
+    Modified By:  Anand Durga Prasad
+    Description: Page to populate the component data and test parameters and input parameters dynamically for all the components (Full-Watch, Watch-Head, Case, Dial, Metal-strap, Leather-strap, special-strap,Battery,Module, Packaging)
+-->
+<apex:page controller="QC_TitanQualityControl" showHeader="false" doctype="html-5.0" id="pge" action="{!autoPopulateParentInfo}" > 
+    <head>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/> 
+        <apex:includeScript value="{!URLFOR($Resource.JqueryA)}"/>
+        <apex:includeScript value="{!URLFOR($Resource.JqueryA, 'js/jquery-1.6.2.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.JqueryA, 'js/jquery-ui-1.8.16.custom.min.js')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.JqueryA, 'css/ui-lightness/jquery-ui-1.8.16.custom.css')}"/>
+        
+        <apex:includeScript value="{!URLFOR($Resource.Jquery_UI_latest, 'external/jquery/jquery.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.Jquery_UI_latest, 'jquery-ui.js')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.Jquery_UI_latest, 'jquery-ui.css')}"/>
+        
+        <apex:includeScript value="{!URLFOR($Resource.jqueryMultiselect, 'jquery.multiselect.js')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.jqueryMultiselect, 'jquery.multiselect.css')}"/>
+        
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
+    </head>
+    <script type="text/javascript">
+        $( ".details" ).click(function() {
+            $( ".block-details" ).toggle( "slow" );
+            return false;
+        });
+        var __sfdcSessionId = '{!GETSESSIONID()}';
+    </script> 
+    <script src="/soap/ajax/28.0/connection.js" type="text/javascript"></script>
+    <script src="/soap/ajax/28.0/apex.js" type="text/javascript"></script>
+    <apex:stylesheet value="{!$Page.QC_titanStylesSheet}" />
+    <script>
+        $(function () {
+            $(".accordion").accordion({
+                header: "h3",
+                collapsible: false,
+                active: false
+            });
+        });
+    </script>
+    <script>
+    var __sfdcSessionId = '{!GETSESSIONID()}';
+    function onDataEdit(){
+        var parentVar = window.parent.isSaved;
+        //alert('--parentVar--'+parentVar);
+        var tabCount = window.parent.numberofTabs;
+        //alert('--tabCount--'+tabCount);
+        window.parent.isSaved = false;
+        var indexes = [];
+        for(var i=0; i<tabCount ;i++){
+            indexes[indexes.length] = i;
+        }
+        window.parent.$( "#tabs" ).tabs({ disabled: indexes });
+    }
+    
+    function onDataSave(){
+        var parentVar = window.parent.isSaved;
+        window.parent.isSaved = true;
+        window.parent.$( "#tabs" ).tabs({ disabled: [] });
+    }
+    
+    /*
+    @JS Method    : confirmSaveData
+    @Description  : Method to confirm the test parameter deletion on change of input parameters
+    @Created By   : Anand
+    @Param        : compId (Getting component id to query the final verdict value from database)
+  */
+    function confirmSaveData(compId,finalVer){
+        //Retrieving final verdict from database to check the previous final verdict of component
+        var comId = "select id,Name__c,Final_Verdict__c from QC_Components__c where id ='"+compId+"'";
+        result = sforce.connection.query(comId);
+        parentRecords = result.getArray("records");
+        var finalVerdict; 
+        var currentFV = document.getElementById('pge:frm:outFV').innerHTML;
+        if(parentRecords != null){
+            finalVerdict= parentRecords[0].Final_Verdict__c;
+        } 
+        /****************************************************************/
+        //Retrieving child data for checking rejected component.
+        var rejectChild = false;
+        var rejectCompNames = [];
+        var childComps = "select id,Name__c,Final_Verdict__c from QC_Components__c where parent__c ='{!component.id}'";
+        
+        resultChild = sforce.connection.query(childComps);
+        records = resultChild.getArray("records");
+        
+        for(var i = 0; i< records.length;i++){
+            var fv = records[i].Final_Verdict__c;
+            if(records[i].Final_Verdict__c == 'Reject'){
+                var comp =  records[i].Name__c;
+                rejectCompNames[rejectCompNames.length] = records[i].Name__c;
+                rejectChild = true;
+            }
+        }
+        /****************************************************************/
+        if(finalVerdict != null && finalVerdict != ''){
+            if(confirm('All the test findings and final verdict/verdict will be reset. Do you wish to proceed ?')) {
+                saveData();
+                setTimeout(function () {
+                    window.location.reload();
+                }, 5000);
+                return true;
+            }
+        }
+        else {
+            saveData();
+            //return true;
+        }
+        
+    }//End of Method
+    
+    /*
+    @JS Method    : finalVerdictConfirm
+    @Description  : Method to display popup message if any child verdict has rejected  when giving final verdict at parent lavel 
+    @Created By   : Anand
+    @Param        : N/A
+    */
+    
+    function finalVerdictConfirm(){
+        //Retrieving final verdict from database to check the previous final verdict of component
+        var comId = "select id,Name__c,Final_Verdict__c from QC_Components__c where id ='{!component.id}'";
+        result = sforce.connection.query(comId);
+        var parentRecords = result.getArray("records");
+        var currentFV = document.getElementById('pge:frm:comFV').value;
+        //Retrieving child data for checking rejected component.
+        var rejectChild = false;
+        var rejectCompNames = [];
+        var childComps = "select id,Name__c,Final_Verdict__c from QC_Components__c where parent__c ='{!component.id}'";
+        
+        resultChild = sforce.connection.query(childComps);
+        records = resultChild.getArray("records");
+        
+        for(var i = 0; i< records.length;i++){
+            var fv = records[i].Final_Verdict__c;
+            
+            if(records[i].Final_Verdict__c == 'Reject'){
+                var comp =  records[i].Name__c;
+                
+                rejectCompNames[rejectCompNames.length] = records[i].Name__c;
+                rejectChild = true;
+            }
+        }
+        
+        if(rejectChild == true && (parentRecords[0].Name__c == 'Full-Watch' || parentRecords[0].Name__c == 'Watch-Head') &&  currentFV != parentRecords[0].Final_Verdict__c){ // && parentRecords[0].Final_Verdict__c){
+            if(confirm('The components '+ rejectCompNames + ' is/are rejected. Do you wish to continue with the same verdict ? ')) {
+                saveCompData();
+                //alert('after method calling');
+                setTimeout(function () {
+                    window.location.reload();
+                }, 5000);
+                return true;
+            }
+            else{          
+                return false;
+            }
+        }else{          
+            saveCompData();
+            return true;
+        }
+    }  
+    
+    function emptyVerdictConfirm(){
+        //Retrieving final verdict from database to check the previous final verdict of component
+        var comId = "select id,Name__c,Final_Verdict__c from QC_Components__c where id ='{!component.id}'";
+        result = sforce.connection.query(comId);
+        var parentRecords = result.getArray("records");
+        var currentFV = document.getElementById('pge:frm:comFV').value;
+        //Retrieving child data for checking rejected component.
+        var rejectChild = false;
+        var rejectCompNames = [];
+        var childComps = "select id,Name__c,Final_Verdict__c from QC_Components__c where parent__c ='{!component.id}'";
+        
+        resultChild = sforce.connection.query(childComps);
+        records = resultChild.getArray("records");
+        
+        for(var i = 0; i< records.length;i++){
+            var fv = records[i].Final_Verdict__c;
+            
+            if(records[i].Final_Verdict__c == '' || records[i].Final_Verdict__c == null){
+                var comp =  records[i].Name__c;
+                
+                rejectCompNames[rejectCompNames.length] = records[i].Name__c;
+                rejectChild = true;
+            }
+        }
+        if(rejectChild == true && (parentRecords[0].Name__c == 'Full-Watch' || parentRecords[0].Name__c == 'Watch-Head') &&  currentFV != parentRecords[0].Final_Verdict__c){ // && parentRecords[0].Final_Verdict__c){
+            if(confirm('The components '+ rejectCompNames + ' is/are rejected. Do you wish to continue with the same verdict ? ')) {
+                saveCompData();
+                setTimeout(function () {
+                    window.location.reload();
+                }, 5000);
+                return true;
+            }
+            else{          
+                return false;
+            }
+        }else{          
+            saveCompData();
+            return true;
+        }
+    }
+    
+    //Method to evaluate Determined value of battery  
+    function batteryFormula(val,rowN){
+        var mesCap = val.value;
+        var rowNumber = rowN.value;
+        var capacity,dividedVal = 0;
+        var queryresult = "select id,Value__c FROM QC_Input_Data__c Where Question_Name__c = 'Capacity(mAh)' and Component_No__c = '{!component.id}'";
+        result = sforce.connection.query(queryresult); 
+        records = result.getArray("records");
+        for(var i=0; i< records.length; i++) {
+            capacity = records[i].Value__c;
+        } 
+        if((capacity != null || Number(capacity) > 0 ) && mesCap != null){
+            dividedVal = (Number(mesCap)/Number(capacity))*100;
+            document.getElementById("pge:frm:testparamBty:"+rowN+":batDetVal").value = dividedVal.toFixed(2);
+        }                         
+    } 
+    function moduleAddition(num,row,spec,isManual,isParent) {
+        var initial, after, x;
+        if(isManual === 'true' && isParent === 'true'){
+            if (document.getElementById("pge:frm:modRepeat:"+row+":int"+num).value == null) {
+                initial.value = "R";
+            }
+            //alert(initial);
+            after = document.getElementById("pge:frm:modRepeat:"+row+":at"+num).value;
+            x = document.getElementById("pge:frm:modRepeat:"+row+":ob"+num);
+            x.value = after;
+            if(after.length > 0){
+                x.value = after;
+            }
+            //alert(after);
+        }else{
+            if(spec.search('No Stoppage') <= -1 ){
+                var a   = Number(num)-1;
+                initial = document.getElementById("pge:frm:modRepeat:"+row+":int"+num).value;
+                after   = document.getElementById("pge:frm:modRepeat:"+row+":at"+num).value;
+                x       = document.getElementById("pge:frm:modRepeat:"+row+":ob"+num);
+                if(initial.length > 0 || after.length > 0){
+                    x.value = (Number(after) - Number(initial)).toFixed(2); 
+                } 
+                else{
+                  x.value = 'U'
+                }
+               
+                if(x.value){
+                    
+                }else{
+                   x.value = 'U';
+                }
+                
+            }
+            else{
+                if (document.getElementById("pge:frm:modRepeat:"+row+":int"+num).value == null) {
+                    initial.value = "R";
+                }
+                after = document.getElementById("pge:frm:modRepeat:"+row+":at"+num).value;
+                x = document.getElementById("pge:frm:modRepeat:"+row+":ob"+num);
+                x.value = after;
+                if(after.length > 0){
+                    x.value = after;
+                }
+            } 
+        }
+    }
+    
+    function cellIdentification(){
+        for (i=1;1<=20;i++){
+            for(j=1;j<=5;j++){
+                
+            }
+        }
+    }
+    function validateNumber(val,spec,isManual,isParent){   
+        if(isManual === 'true' && isParent === 'true'){
+            if(val.value.length > 1){
+                var numval = val.value;
+                curvar = numval.replace(/[\\A-Za-z0-9!"£$%^&\)\(*+_={};:'@#~,Š\/<>\" "\?|`¬\]\[]/g,'');
+                val.value=curvar;
+                val.focus; 
+            }else{ 
+                var numval = val.value;
+                curvar = numval.replace(/[\\A-QT-Za-z0-9!"£$%^&\)\(*+_={};:'@#~,Š\/<>\" "\?|`¬\]\[]/g,'');
+                val.value=curvar;
+                val.focus; 
+            }
+        }else{
+            if(spec.search('No Stoppage') <= -1){
+                var numval = val.value;
+                curvar = numval.replace(/[\\A-Za-z!"£$%^&\)\(*+_={};:'@#~,Š\/<>\" "\?|`¬\]\[]/g,'');
+                val.value=curvar;
+                val.focus; 
+            }else{
+                if(val.value.length > 1){
+                    var numval = val.value;
+                    curvar = numval.replace(/[\\A-Za-z0-9!"£$%^&\)\(*+_={};:'@#~,Š\/<>\" "\?|`¬\]\[]/g,'');
+                    val.value=curvar;
+                    val.focus; 
+                }else{ 
+                    var numval = val.value;
+                    curvar = numval.replace(/[\\A-QT-Za-z0-9!"£$%^&\)\(*+_={};:'@#~,Š\/<>\" "\?|`¬\]\[]/g,'');
+                    val.value=curvar;
+                    val.focus; 
+                }
+            }
+        }
+        
+    } 
+    //Method to check the Numeric.
+    function numericVal(val,isNum){
+        var numval = val.value;
+        if(isNaN(numval) && isNum=='true'){        
+            alert('Please enter number');         
+            curvar = numval.replace(/[\\A-Za-z!"£$%^&\)\( *+_={};:'@#~,Š\/<>\" "\?|`¬\]\[]/g,'');
+            val.value = curvar;
+            val.focus; 
+        }
+    }
+    //method to avoid spaces for input parameters
+    function avoidSpace(event,isNum) {
+        if(isNum=='true'){  
+            var k = event ? event.which : window.event.keyCode;
+            if (k == 32) return false;
+        }
+    }
+    //Method to check test findings numberic for battery Measured Capacity (mAh) (value will be entered)
+    function numericTestVal(val){
+        var numval = val.value;
+        if(isNaN(numval)){        
+            alert('Please enter number');         
+            curvar = numval.replace(/[\\A-Za-z!"£$%^&\)\( *+_={};:'@#~,Š\/<>\" "\?|`¬\]\[]/g,'');
+            val.value = curvar;
+            val.focus; 
+        }
+    }
+    //method to avoid spaces for test findings Battery Measured Capacity (mAh) (value will be entered) 
+    function avoidTestSpace(event) { 
+        var k = event ? event.which : window.event.keyCode;
+        if (k == 32) return false;
+    }
+    //Method to call on onchange piclist value of question
+    function newQuestion(rowNum,qid){
+        var compName = '{!component.Name__c}';
+        var compId = '{!component.id}';
+        var quesName = document.getElementById('pge:frm:QPreview:'+rowNum+':quesName');
+        var sel = document.getElementById('pge:frm:QPreview:'+rowNum+':plist');
+        var vl = sel.value;
+        //var testPara = '2';
+        maskBody();
+        if(compName == 'Module' && quesName.innerText == 'Type of Module :'){
+            //debugger;
+            var text = sel.options[sel.selectedIndex].innerHTML;
+            var inputDataRes = "SELECT id,Response_Id__c,Value__c FROM QC_Input_Data__c WHERE Question__c ='"+qid+"' AND Component_No__c ='"+compId+"'";
+            result = sforce.connection.query(inputDataRes);
+            var inputData = result.getArray("records");
+            if(text == 'Digital' && (inputData[0].Value__c != 'Digital' || inputData[0].Value__c == null) && compName == 'Module'){
+                if(confirm('If you select digital value, then all non digital type test parameter will be deleted. Are you sure to delete Non Digital Type Test? Please confirm.')){
+                    //testPara = '0';
+                    //addNewQuesiton(vl,qid,testPara);
+                    addNewQuesiton(vl,qid);
+                }else{
+                    if(inputData[0].Value__c == null){
+                        sel.options[sel.selectedIndex].selected = null;
+                    }else{
+                        sel.value = inputData[0].Response_Id__c;
+                    }
+                    unmaskBody();
+                    //debugger;
+                }
+            }
+            else if(text == 'Smart Watch' && (inputData[0].Value__c != 'Smart Watch' || inputData[0].Value__c == null) && compName == 'Module'){
+                if(confirm('If you select Smart Watch value, then all non Smart Watch type test parameter will be deleted. Are you sure to delete Non Smart Watch Type Test? Please confirm.')){
+                    //testPara = '0';
+                    //addNewQuesiton(vl,qid,testPara);
+                    addNewQuesiton(vl,qid);
+                }else{
+                    if(inputData[0].Value__c == null){
+                        sel.options[sel.selectedIndex].selected = null;
+                    }else{
+                        sel.value = inputData[0].Response_Id__c;
+                    }
+                    unmaskBody();
+                    //debugger;
+                }
+            }
+            else if(text != 'Digital' && inputData[0].Value__c == 'Digital' && compName == 'Module'){
+                if(confirm('If select non digital value, then all digital type test will be deleted. Are you sure to delete Digital Type Test? Please confirm')){
+                    //testPara = '1';
+                    //addNewQuesiton(vl,qid,testPara);
+                    addNewQuesiton(vl,qid);
+                }else{
+                    sel.value = inputData[0].Response_Id__c;
+                }
+                unmaskBody();
+                //debugger;
+            }
+           else if(text != 'Smart Watch' && inputData[0].Value__c == 'Smart Watch' && compName == 'Module'){
+                if(confirm('If select non Smart Watch value, then all Smart Watch type test will be deleted. Are you sure to delete Smart Watch Type Test? Please confirm')){
+                    //testPara = '1';
+                    //addNewQuesiton(vl,qid,testPara);
+                    addNewQuesiton(vl,qid);
+                }else{
+                    sel.value = inputData[0].Response_Id__c;
+                }
+                unmaskBody();
+                //debugger;
+            }
+            else{
+                //addNewQuesiton(vl,qid,testPara);
+                addNewQuesiton(vl,qid);
+            }
+        }else{
+            //addNewQuesiton(vl,qid,testPara);
+            addNewQuesiton(vl,qid);
+        }
+    } 
+    
+    //Code for masking the screen when input picklist values given.
+    $(document).ready(function(){
+        $("#checkbox select").multiselect(); 
+    });
+    function maskBody(){
+        $('body').append('<div id="mask" ></div>');
+        $('#mask').fadeIn(100);
+    }
+    
+    function unmaskBody() {
+        $('#mask').fadeOut(100); 
+        $('#mask').remove();  
+    } 
+    //Method to convert lower case characters as upper case
+    function convertUpperCase() {
+        var x = document.getElementById("pge:frm:skuRef");
+        x.value = x.value.toUpperCase();
+    }
+    
+    </script>
+    
+    <!-- added by sudama for image -->
+    <style type="text/css">
+        .img{width:100px !important;} 
+        .bPageBlock .detailList tr td, .bPageBlock .detailList tr th, .hoverDetail .bPageBlock .detailList tr td, .hoverDetail .bPageBlock .detailList tr th { border-bottom: none !important;}
+        .OptPanel{width:50%;float:left;padding-top:20px;borde:none !important; }   
+        .Optpanel1{float:right;padding-right:100px;}   
+        .bPageBlock, .individualPalette .bPageBlock
+        {
+            border: none !important;
+            background:none !important;
+        }
+        
+    </style>
+    <!-- end -->
+    <style>
+        .general-obser {
+            top: 0 !important;
+        }
+        .general-title{
+            position: relative;
+            top: -10px;
+        }
+        .moduletest {font-weight : bold;}
+        .inputbox { width: 30px; }
+        .question{
+            color:black;
+            font-size: 14px;
+        }
+        
+        .fieldLabel{
+            font-weight : bold;
+            font-size   :12px;
+            text-align  :right;
+        }
+        
+        .vfTable{
+            border :1;
+            width  :100%;
+            align  :center;
+            cellpadding:10;
+        }
+        #mask {
+            display: none;
+            background:#000;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 150%;
+            height: 100%;    
+            opacity:0.1;
+        }
+        .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default {
+            border: 1px solid #00B2AE;
+            background: #00B2AE;
+            font-weight: bold;
+            color: #fff;text-align:left;
+        }
+        .ui-accordion-content p {
+            text-align: left;
+            line-height: 25px;
+        }
+        .ta100 textarea {
+        width:100%!important;
+        height:86px!important;
+        }
+        .overfscroll {
+        height:92px;
+        overflow-y:scroll;
+        width:100%;
+        }
+    </style>   
+    <apex:form id="frm">
+        <div  class="pageContainer alignCenter">
+            <apex:pagemessages /> 
+            <apex:actionfunction name="saveData" action="{!InputParamErrorMsg}"/>
+            <!--<apex:actionfunction name="deleteTest" action="{!delTest}" reRender="blk,InTestPackage,testBlock,OutTestPackage,modTable,modOutputInnerPanel">
+            <apex:param value="" name="indexN" assignTo="{!indexNo}"/>
+            </apex:actionfunction>-->
+            <apex:actionfunction name="saveCompData" action="{!saveComponentData}"/>
+            <apex:actionfunction name="addNewQuesiton" rerender="pblock" action="{!addQuesiton}" oncomplete="unmaskBody();"> 
+                <apex:param name="vl" assignto="{!selectedRes}" value=""/>
+                <apex:param name="qid" assignto="{!selectedQid}" value=""/>
+                <!--<apex:param name="testPara" assignto="{!testPara}" value=""/>-->
+            </apex:actionfunction>
+            <div class="alignCenter"  style="display:{!if(show && component.Sample_Category__c != 'Competitor Products' && (comType == 'Full-Watch' || comtype == 'Watch-Head') && sDataList.size !=0,'block','none')};font-size:16px;" >
+                <!--<apex:commandButton value="Summary Report" action="{!reportPDF}" />-->
+                <apex:commandLink value="Reliability Report" action="{!reportPDF}" target="_blank" styleclass="btn" style="text-decoration: none;" title="Click here to view the report in Pdf format"/>
+                <apex:commandLink value="Detailed Report" action="{!detailedReportPDF}" target="_blank" styleclass="btn" style="text-decoration: none;" title="Click here to view the report in Pdf format"/>
+                <apex:commandLink value="All Test Finding Report" action="{!reportPDFTestFinding}" target="_blank" styleclass="btn" style="text-decoration: none;" title="Click here to view the test finding report in Pdf format" rendered="{!IF(OR($Profile.Name=='NPD Activity User',$Profile.Name=='NPD-Stage User'),false,true)}"   />
+                <apex:commandLink value="Clone" action="{!cloneRecords}" target="_blank" styleclass="btn" style="text-decoration: none;" title="Click this button to clone the complete component" rendered="{!IF(OR($Profile.Name=='NPD Activity User',$Profile.Name=='NPD-Stage User'),false,true)}"/>
+            </div>
+            <div class="alignCenter displayInLine marginLR10" style="display:{!if(component.Parent__c == null && component.Sample_Category__c != 'Competitor Products'&& comType != 'Full-Watch' && comtype != 'Watch-Head'  && sDataList.size != 0,'block','none')};font-size:16px;" >
+                <apex:commandLink value="Detailed Report" action="{!detailedReportPDF}" target="_blank" styleclass="btn" style="text-decoration: none;" title="Click here to view the report in Pdf format"/>
+                <apex:commandLink value="{!comType} Report" action="{!individualReport}" target="_new" styleclass="btn" style="text-decoration: none;" title="Click here to view the report in Pdf format"/>
+                <apex:commandLink value="Clone" action="{!cloneRecords}" target="_blank" styleclass="btn" style="text-decoration: none;" title="Click this button to clone the complete component" rendered="{!IF(OR($Profile.Name=='NPD Activity User',$Profile.Name=='NPD-Stage User'),false,true)}" />
+            </div> 
+            <div class="alignCenter"  style="display:{!if(show && component.Sample_Category__c == 'Competitor Products' && (comType == 'Full-Watch' || comtype == 'Watch-Head') && sDataList.size !=0,'block','none')};font-size:16px;" >
+                <!--<apex:commandButton value="Summary Report" action="{!reportPDF}" />-->
+                <apex:commandLink value="Reliability Report" action="{!reportPDF}" target="_blank" styleclass="btn" style="text-decoration: none;" title="Click here to view the report in Pdf format"/>
+                <apex:commandLink value="Competitor Evaluation Report" action="{!detailedReportPDF}" target="_blank" styleclass="btn" style="text-decoration: none;" title="Click here to view the report in Pdf format"/>
+                <apex:commandLink value="All Test Finding Report" action="{!reportPDFTestFinding}" target="_blank" styleclass="btn" style="text-decoration: none;" title="Click here to view the test finding report in Pdf format" rendered="{!IF(OR($Profile.Name=='NPD Activity User',$Profile.Name=='NPD-Stage User'),false,true)}"   />
+                <apex:commandLink value="Clone" action="{!cloneRecords}" target="_blank" styleclass="btn" style="text-decoration: none;" title="Click this button to clone the complete component" rendered="{!IF(OR($Profile.Name=='NPD Activity User',$Profile.Name=='NPD-Stage User'),false,true)}"/>
+            </div>
+            <div class="alignCenter displayInLine marginLR10" style="display:{!if(component.Parent__c == null && component.Sample_Category__c == 'Competitor Products'&& comType != 'Full-Watch' && comtype != 'Watch-Head'  && sDataList.size != 0,'block','none')};font-size:16px;" >
+                <apex:commandLink value="Competitor Evaluation Report" action="{!detailedReportPDF}" target="_blank" styleclass="btn" style="text-decoration: none;" title="Click here to view the report in Pdf format"/>
+                <apex:commandLink value="{!comType} Report" action="{!individualReport}" target="_new" styleclass="btn" style="text-decoration: none;" title="Click here to view the report in Pdf format"/>
+                <apex:commandLink value="Clone" action="{!cloneRecords}" target="_blank" styleclass="btn" style="text-decoration: none;" title="Click this button to clone the complete component" rendered="{!IF(OR($Profile.Name=='NPD Activity User',$Profile.Name=='NPD-Stage User'),false,true)}" />
+            </div> 
+            <br/>
+            <br/>
+            <!-- added by sudama for uploading photo <!-- --><!-- added by Anindwita for uploading photo for all the sample category along with Competitor Products -->
+            <div style="display:{!if(((component.Sample_Category__c == 'Competitor Products' || component.Sample_Category__c == 'New' || component.Sample_Category__c == 'New Material' || component.Sample_Category__c == 'New Design' || component.Sample_Category__c == 'New Construction ' || component.Sample_Category__c == 'New Vendor' || component.Sample_Category__c == 'New Color' || component.Sample_Category__c == 'Bulk lot confirmation' || component.Sample_Category__c == 'Re-certification') && component.Parent__c == null) || (component.Sample_Category__c == 'Re-submission' || component.Sample_Category__c == 'Update' ),'block','none')}">
+            <table width="100%">
+            <tr>
+            <td width="33%" style="font-size:12px;">
+            <apex:outputPanel id="Iphoto1">
+                <div class="alignCenter displayInLine marginLR10" style="display:{!if(((component.Sample_Category__c == 'Competitor Products' || component.Sample_Category__c == 'New' || component.Sample_Category__c == 'New Material' || component.Sample_Category__c == 'New Design' || component.Sample_Category__c == 'New Construction ' || component.Sample_Category__c == 'New Vendor' || component.Sample_Category__c == 'New Color' || component.Sample_Category__c == 'Bulk lot confirmation' || component.Sample_Category__c == 'Re-certification') && component.Parent__c == null) || (component.Sample_Category__c == 'Re-submission' || component.Sample_Category__c == 'Update' ),'block','none')}">
+                    <apex:commandButton value="Click to Insert Image" action="{!uploadphotoPanel}" rendered="{!if((component.imageurl__c == '' && hidePhotoPanel == False),true,false)}" reRender="frm,Iphoto2"/> 
+                </div>
+            </apex:outputPanel>
+            <apex:outputPanel id="Iphoto2" rendered="{!hidePhotoPanel}">  
+                <div class="alignCenter displayInLine marginLR10" style="display:{!if(((component.Sample_Category__c == 'Competitor Products' || component.Sample_Category__c == 'New' || component.Sample_Category__c == 'New Material' || component.Sample_Category__c == 'New Design' || component.Sample_Category__c == 'New Construction ' || component.Sample_Category__c == 'New Vendor' || component.Sample_Category__c == 'New Color' || component.Sample_Category__c == 'Bulk lot confirmation' || component.Sample_Category__c == 'Re-certification') && component.Parent__c == null) || (component.Sample_Category__c == 'Re-submission' || component.Sample_Category__c == 'Update' ),'block','none')}">
+                    <apex:image value="{!component.imageurl__c}" url="{!component.imageurl__c}"  rendered="{!if((component.imageurl__c == ''),false,true)}" styleclass="img">   </apex:image> 
+                    <apex:image rendered="{!if((component.imageurl__c == ''),true,false)}" url="https://c.cs16.content.force.com/profilephoto/005/F" styleclass="img" />                        
+                    <apex:inputFile value="{!photo}" filename="{!fileName}" rendered="{!if((component.imageurl__c == ''),true,false)}"> </apex:inputFile> <br/><br/>
+                    <apex:commandButton value="Upload photo" action="{!uploadphoto}" rendered="{!if((component.imageurl__c == ''),true,false)}"/> 
+                    <apex:commandButton value="Edit photo" action="{!editPhoto}" rendered="{!if((component.imageurl__c != ''),true,false)}"/>  
+                    <apex:outputPanel rendered="{!if((component.imageurl__c == ''),true,false)}">
+                        <apex:commandButton value="Cancel" action="{!cancelPhoto}"/>                                    
+                    </apex:outputPanel>
+                </div>
+            </apex:outputPanel>
+            </td>
+            <td width="33%" style="font-size:12px;">
+             <apex:outputPanel id="Iphotonew1">
+                <div class="alignCenter displayInLine marginLR10" style="display:{!if(((component.Sample_Category__c == 'Competitor Products' || component.Sample_Category__c == 'New' || component.Sample_Category__c == 'New Material' || component.Sample_Category__c == 'New Design' || component.Sample_Category__c == 'New Construction ' || component.Sample_Category__c == 'New Vendor' || component.Sample_Category__c == 'New Color' || component.Sample_Category__c == 'Bulk lot confirmation' || component.Sample_Category__c == 'Re-certification') && component.Parent__c == null) || (component.Sample_Category__c == 'Re-submission' || component.Sample_Category__c == 'Update'),'block','none')}">
+                    <apex:commandButton value="Click to Insert Image" action="{!uploadphotoPanel2}" rendered="{!if((component.imageurl2__c == '' && hidePhotoPanel2 == False),true,false)}" reRender="frm,Iphotonew2"/> 
+                </div>
+            </apex:outputPanel>
+              <apex:outputPanel id="Iphotonew2" rendered="{!hidePhotoPanel2}">  
+                <div class="alignCenter displayInLine marginLR10" style="display:{!if(((component.Sample_Category__c == 'Competitor Products' || component.Sample_Category__c == 'New' || component.Sample_Category__c == 'New Material' || component.Sample_Category__c == 'New Design' || component.Sample_Category__c == 'New Construction ' || component.Sample_Category__c == 'New Vendor' || component.Sample_Category__c == 'New Color' || component.Sample_Category__c == 'Bulk lot confirmation' || component.Sample_Category__c == 'Re-certification') && component.Parent__c == null) || (component.Sample_Category__c == 'Re-submission' || component.Sample_Category__c == 'Update'),'block','none')}">
+                    <apex:image value="{!component.imageurl2__c}" url="{!component.imageurl2__c}"  rendered="{!if((component.imageurl2__c == ''),false,true)}" styleclass="img">   </apex:image> 
+                    <apex:image rendered="{!if((component.imageurl2__c == ''),true,false)}" url="https://c.cs16.content.force.com/profilephoto/005/F" styleclass="img" />                        
+                    <apex:inputFile value="{!photo2}" filename="{!fileName2}" rendered="{!if((component.imageurl2__c == ''),true,false)}"> </apex:inputFile> <br/><br/>
+                    <apex:commandButton value="Upload photo" action="{!uploadphoto2}" rendered="{!if((component.imageurl2__c == ''),true,false)}"/> 
+                    <apex:commandButton value="Edit photo" action="{!editPhoto2}" rendered="{!if((component.imageurl2__c != ''),true,false)}"/>  
+                    <apex:outputPanel rendered="{!if((component.imageurl2__c == ''),true,false)}">
+                        <apex:commandButton value="Cancel" action="{!cancelPhoto}"/>                                    
+                    </apex:outputPanel>
+                </div>
+            </apex:outputPanel>
+            </td>
+            <td width="33%" style="font-size:12px;">
+             <apex:outputPanel id="Iphotonew3">
+                <div class="alignCenter displayInLine marginLR10" style="display:{!if(((component.Sample_Category__c == 'Competitor Products' || component.Sample_Category__c == 'New' || component.Sample_Category__c == 'New Material' || component.Sample_Category__c == 'New Design' || component.Sample_Category__c == 'New Construction ' || component.Sample_Category__c == 'New Vendor' || component.Sample_Category__c == 'New Color' || component.Sample_Category__c == 'Bulk lot confirmation' || component.Sample_Category__c == 'Re-certification') && component.Parent__c == null) || (component.Sample_Category__c == 'Re-submission' || component.Sample_Category__c == 'Update'),'block','none')}">
+                    <apex:commandButton value="Click to Insert Image" action="{!uploadphotoPanel3}" rendered="{!if((component.imageurl3__c == '' && hidePhotoPanel3 == False),true,false)}" reRender="frm,Iphotonew4"/> 
+                </div>
+            </apex:outputPanel>
+              <apex:outputPanel id="Iphotonew4" rendered="{!hidePhotoPanel3}">  
+                <div class="alignCenter displayInLine marginLR10" style="display:{!if(((component.Sample_Category__c == 'Competitor Products' || component.Sample_Category__c == 'New' || component.Sample_Category__c == 'New Material' || component.Sample_Category__c == 'New Design' || component.Sample_Category__c == 'New Construction ' || component.Sample_Category__c == 'New Vendor' || component.Sample_Category__c == 'New Color' || component.Sample_Category__c == 'Bulk lot confirmation' || component.Sample_Category__c == 'Re-certification') && component.Parent__c == null) || (component.Sample_Category__c == 'Re-submission' || component.Sample_Category__c == 'Update'),'block','none')}">
+                    <apex:image value="{!component.imageurl3__c}" url="{!component.imageurl3__c}"  rendered="{!if((component.imageurl3__c == ''),false,true)}" styleclass="img">   </apex:image> 
+                    <apex:image rendered="{!if((component.imageurl3__c == ''),true,false)}" url="https://c.cs16.content.force.com/profilephoto/005/F" styleclass="img" />                        
+                    <apex:inputFile value="{!photo3}" filename="{!fileName3}" rendered="{!if((component.imageurl3__c == ''),true,false)}"> </apex:inputFile> <br/><br/>
+                    <apex:commandButton value="Upload photo" action="{!uploadphoto3}" rendered="{!if((component.imageurl3__c == ''),true,false)}"/> 
+                    <apex:commandButton value="Edit photo" action="{!editPhoto3}" rendered="{!if((component.imageurl3__c != ''),true,false)}"/>  
+                    <apex:outputPanel rendered="{!if((component.imageurl3__c == ''),true,false)}">
+                        <apex:commandButton value="Cancel" action="{!cancelPhoto}"/>                                    
+                    </apex:outputPanel>
+                </div>
+            </apex:outputPanel>
+            </td>
+            </tr>
+            </table>
+        </div>
+            <!-- end -->
+            
+            <div class="colorPlainDivGrey marginTB20">   
+                <div class="alignLeft paddingT15 marginL15">
+                    <h1>Reliability Testing - {!comType}</h1>
+                </div>    
+            </div>
+            <div class="marginTB20 alignCenter">
+                <div class="displayInLine marginLR10" style="display:{!if(showComp && !isInputLocked && show && showTest,'inline','none')}">   
+                    <apex:commandButton value="Edit" action="{!EditComponentData}"  onclick="onDataEdit();" />
+                </div>
+                <div class="displayInLine marginLR10" style="display:{!if(!showComp ,'inline','none')}"> 
+                    <apex:commandButton value="Save"  onclick="onDataSave();finalVerdictConfirm();emptyVerdictConfirm();return false;" action="{!saveComponentData}" /> <!-- action="{!saveComponentData}" -->
+                </div>  
+                <div class="displayInLine marginLR10" style="display:{!if(!showComp,'inline','none')}">  
+                    <apex:commandButton value="Cancel" action="{!cancel}" onclick="onDataSave();" />
+                </div>
+            </div> 
+            <div class=""  style="display:{!if((component.Final_Verdict__c != null || component.Parent__c != null  || comType == 'Full-Watch' || comType == 'Watch-Head') && component.Document_Status__c == 'Published','block','none')}">      
+                <apex:pageBlock >
+                    <apex:commandButton value="Exception Approval" action="{!showPopup}" rerender="popup" status="status" rendered="{!IF(OR($Profile.Name=='NPD Activity User',$Profile.Name=='NPD-Stage User',$Profile.Name=='NPD Activity User',$Profile.Name=='Quality Control Profile'),false,true)}" styleclass="alignCenter marginTB10"/>
+                    <apex:outputPanel id="popup">
+                        <apex:outputPanel id="popInnerOutputPnl" styleClass="customPopup" layout="block" rendered="{!displayPopUp}" >
+                            <div class="QC-pageblock">
+                                <apex:pageblockSection >
+                                    <apex:pageblockSectionItem >
+                                        <apex:outputLabel value="Special Approval" for="approval"></apex:outputLabel>
+                                        <apex:inputField value="{!component.Exception_Verdict__c}"/>
+                                    </apex:pageblockSectionItem>
+                                    <apex:pageblockSectionItem >
+                                        <apex:outputLabel value="Comment and remarks" for="comment"></apex:outputLabel>
+                                        <apex:inputField value="{!component.Comment__c}"/>
+                                    </apex:pageblockSectionItem>
+                                </apex:pageblockSection> 
+                            </div>
+                            <div class="QC-button">
+                                <apex:commandButton value="Save" styleClass="closeButton marginTB10" rerender="frm" action="{!saveSpecialApprovalData}"/>
+                                <apex:commandButton value="Cancel" styleClass="closeButton marginTB10" rerender="frm" action="{!closePopup}"/>
+                            </div>
+                        </apex:outputPanel>
+                    </apex:outputPanel>    
+                </apex:pageBlock>
+            </div>
+            
+            <table border="1" cellspacing="0" width="100%">
+                <apex:panelGroup rendered="{!!showComp}">
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(comType != 'Module' && comType != 'Battery' && comType != 'Packaging','block','none')}">     
+                                <div class="  " style="display:{!if(component.Parent__c == null ,'block','none')}">
+                                    <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>PSY Ref / Concept Ref / Vendor Ref :</h2> </div> 
+                                    <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield value="{!component.PSY_Reference__c}"  /> </div> 
+                                </div>
+                                <div class="  " style="display:{!if(component.Parent__c!=null ,'block','none')}">
+                                    <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>PSY Ref / Concept Ref / Vendor Ref :</h2> </div> 
+                                    <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.PSY_Reference__c}"  /> </div> 
+                                </div>
+                            </div>
+                        </td>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(comType != 'Module' && comType != 'Battery' && comType != 'Packaging','block','none')}">    
+                                <div class="  " style="display:{!if(component.Parent__c == null ,'block','none')}">
+                                    <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Model No :</h2> </div> 
+                                    <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield value="{!component.Model__c}"/> </div> 
+                                </div>
+                                <div class="  " style="display:{!if(component.Parent__c != null ,'block','none')}">
+                                    <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Model No :</h2> </div> 
+                                    <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.Model__c}"/> </div> 
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Parent__c == null ,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Report Reference Number :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.Report_Ref_Number__c}"  /> </div> 
+                            </div>
+                        </td> 
+                        <td class="paddingTB5RL10">
+                            <div class="  " >
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Record Status :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.Component_Status__c}"/> </div> 
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(comType != 'Module' && comType != 'Battery' && comType != 'Packaging','block','none')}"> 
+                                <div class="  " style="display:{!if(component.Parent__c == null ,'block','none')}">
+                                    <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Watch Variant :</h2> </div> 
+                                    <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield value="{!component.Watch_variant__c}" /> </div> 
+                                </div>
+                                <div class="  " style="display:{!if(component.Parent__c!=null ,'block','none')}">
+                                    <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Watch Variant :</h2> </div> 
+                                    <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.Watch_variant__c}" /> </div> 
+                                </div>
+                            </div>
+                        </td>
+                        <td class="paddingTB5RL10" >
+                            <div class="  " style="display:{!if(comType != 'Module' && comType != 'Battery' ,'block','none')}">  
+                                <div class="  " style="display:{!if((component.Parent__c == null && isBrandModified != true),'block','none')}">
+                                    <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Brand<span style="color:red;font-size:16px;">*</span> :</h2> </div> 
+                                    <div class="marginLR10 divWidth40P displayInLine alignLeft">
+                                        <apex:inputfield value="{!component.Brand__c}" >
+                                            <apex:actionSupport event="onchange" reRender="frm,master" action="{!selectBrand}"/>
+                                        </apex:inputfield>
+                                        
+                                    </div> 
+                                    <div class="marginLR10 divWidth40P displayInLine alignLeft" style="display:none;" > <apex:inputfield value="{!component.Brands__c}"  /> </div>
+                                   
+                                </div>
+                                
+                                <div class="  " style="display:{!if((component.Parent__c!=null || isBrandModified),'block','none')}" >
+                                    <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Brand :</h2> </div> 
+                                    <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.Brand__c}" style="text-decoration:none;"  /> </div>
+                                    <div class="marginLR10 divWidth40P displayInLine alignLeft" style="display:none;" > <apex:inputfield value="{!component.Brands__c}"   /> </div>
+                                    
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Parent__c == null ,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Vendor :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield value="{!component.Vendor__c}"  /> </div> 
+                            </div>
+                            <div class="  " style="display:{!if(component.Parent__c != null ,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Vendor :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.Vendor__c}"  /> </div> 
+                            </div>
+                        </td>
+                        <td class="paddingTB5RL10">
+                            <div class="  ">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight ">   <h2>Document Status :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft "> <apex:outputfield value="{!component.Document_Status__c}"  /> </div> 
+                            </div>
+                        </td>   
+                    </tr>
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Parent__c == null ,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Number of Samples Received :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield value="{!component.No_Of_Sample_Received__c}"  /> </div> 
+                            </div>
+                            <div class="  " style="display:{!if(component.Parent__c!=null ,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Number of Samples Received :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.No_Of_Sample_Received__c}"  /> </div> 
+                            </div>
+                        </td>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Parent__c == null ,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Test Back Ground :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield value="{!component.Test_Back_Ground__c}"  /> </div> 
+                            </div>
+                            <div class="  " style="display:{!if(component.Parent__c != null ,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Test Back Ground :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.Test_Back_Ground__c}"  /> </div> 
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Parent__c == null ,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Sample Date <span style="color:red;font-size:16px;">*</span> :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield value="{!component.Sample_Date__c}"  required="true"/> </div> 
+                            </div>
+                            <div class="  " style="display:{!if(component.Parent__c != null ,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Sample Date :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.Sample_Date__c}"  /> </div> 
+                            </div>
+                        </td> 
+                        <td class="paddingTB5RL10">
+                            <div class="  ">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight ">   <h2>Sample Category :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft "> <apex:outputfield value="{!component.Sample_Category__c}"  /> </div> 
+                            </div>
+                        </td>          
+                    </tr>
+                    <tr> 
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Parent__c == null ,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>{!$ObjectType.QC_Components__c.fields.Sample_Department__c.label} :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield value="{!component.Sample_Department__c}"  /> </div> 
+                            </div>
+                            <div class="  " style="display:{!if(component.Parent__c != null ,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>{!$ObjectType.QC_Components__c.fields.Sample_Department__c.label} :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.Sample_Department__c}"  /> </div> 
+                            </div>
+                        </td>  
+                        <!------------Adding  Master variant and SKU reference number based on parent value------------->
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(comType == 'Full-Watch' || comtype == 'Watch-Head','block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight ">   <h2>Master Variant :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft "> <apex:outputfield value="{!component.Master_Variant__c}"  /> </div> 
+                            </div>
+                            <div class="  minWidth350" style="display:{!if(comType != 'Full-Watch' && comtype !='Watch-Head','block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>SKU Reference :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield value="{!component.SKU_Reference__c}" id="skuRef" onkeyup="convertUpperCase();" /> </div> 
+                            </div>
+                        </td>
+                    </tr>  
+                    <!--added by sudama to capture new email field -->
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Parent__c == null ,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>{!$ObjectType.QC_Components__c.fields.Sample_Received_From__c.label} :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield value="{!component.Sample_Received_From__c}"  /> </div> 
+                            </div>
+                            
+                            
+                            
+                            
+                         <!--   <div class="  " style="display:{!if(component.Parent__c == null ,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>{!$ObjectType.QC_Components__c.fields.Sample_Received_From__c.label} :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.Sample_Received_From__c}"  /> </div> 
+                            </div>  -->
+                        </td>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(comType != 'Module' && comType != 'Battery' ,'block','none')}">  
+                                <div class="  " style="display:{!if(((component.Parent__c == null && isBrandModified) || component.Parent__c!=null || isBrandModified != true),'block','none')}">
+                                    <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>{!$ObjectType.QC_Components__c.fields.Cluster__c.label} :</h2> </div> 
+                                    <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield id="clust1" value="{!component.Cluster__c}"  /> </div>
+                                    </div>
+                                
+                            </div>
+                        </td>
+                        
+                        
+                    </tr> 
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Parent__c == null ,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>{!$ObjectType.QC_Components__c.fields.Additional_email_address__c.label} :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield value="{!component.Additional_email_address__c}"  /> </div> 
+                            </div>
+                        </td>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Sample_Category__c == 'Competitor Products' && component.Parent__c == null,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>{!$ObjectType.QC_Components__c.fields.Price__c.label} :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield value="{!component.Price__c}"  /> </div> 
+                            </div>
+                            <!--    <div class="  " style="display:{!if(component.Sample_Category__c == 'Competitor Products','block','none')}">
+                            <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>{!$ObjectType.QC_Components__c.fields.price__c.label} :</h2> </div> 
+                            <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.Price__c}"  /> </div> 
+                            </div>  -->
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Sample_Category__c == 'Competitor Products','none','block')}">                      
+                                <div class="marginLR10 divWidth40P displayInLine alignRight" > <h2> {!if(component.Parent__c == null,'Final Verdict :','Verdict :')}</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield value="{!component.Final_Verdict__c}" id="comFV" /> </div> 
+                            </div> 
+                            <!--  <div class="  " style="display:{!if(component.Parent__c == null ,'block','none')}">
+                            <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Verdict :</h2> </div> 
+                            <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield value="{!component.Final_Verdict__c}"  /> </div> 
+                            </div>-->
+                        </td>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(comType == 'Full-Watch' || comtype == 'Watch-Head','block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight ">   <h2>Master:</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft "> <apex:outputfield value="{!component.Master__c}"  /> </div> 
+                            </div>
+                            
+                        </td>
+                        
+                    </tr>
+                    <tr>
+                        <td  class="paddingTB5RL10" colspan="2" >
+                            <div class="accordion" style="height:104px">
+                                <h3>General Observation</h3>
+                                <div  >
+                                    <table width="100%" border="0">
+                                        <tr>
+                                            <td width="20%"><div class="marginLR10 divWidth20P displayInLine alignLeft">   <h2 class="general-title">General Observation :</h2> </div> </td>
+                                            
+                                              <td class="ta100">  <div class="marginLR10 divWidth40P displayInLine alignLeft" style="width:100%"> <apex:inputfield value="{!component.General_Observation__c}"  /> </div>
+                                            </td>
+                                            
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div> 
+                        </td>
+                    </tr>
+                </apex:panelGroup>  
+                <apex:panelGroup rendered="{!showComp}">
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Final_Verdict__c != null && component.Document_Status__c == 'Published' && component.Parent__c != null,'block','none')}">   
+                                <div class="  " style="display:{!if(component.Parent__c == null ,'block','none')}">
+                                    <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Exception Verdict</h2> </div> 
+                                    <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.Exception_Verdict__c}"  /> </div> 
+                                </div>      
+                            </div>
+                        </td>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Final_Verdict__c != null && component.Document_Status__c == 'Published' && component.Parent__c != null,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Comment</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.Comment__c}"  /> </div> 
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(comType != 'Module' && comType != 'Battery' && comType != 'Packaging','block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>PSY Ref / Concept Ref / Vendor Ref :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.PSY_Reference__c}"  /> </div> 
+                            </div>
+                        </td>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(comType != 'Module' && comType != 'Battery' && comType != 'Packaging','block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Model No :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.Model__c}"  /> </div> 
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Parent__c == null ,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight ">   <h2>Report Reference Number :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.Report_Ref_Number__c}"  /> </div> 
+                            </div>
+                        </td>
+                        <td class="paddingTB5RL10">
+                            <div class="  ">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Record Status :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.Component_Status__c}"  /> </div> 
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(comType != 'Module' && comType != 'Battery' && comType != 'Packaging','block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Watch Variant :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.Watch_variant__c}"  /> </div> 
+                            </div>
+                        </td>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(comType != 'Module' && comType != 'Battery','block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight ">   <h2>Brand :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.Brand__c}" /> </div>
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont" style="display:none;"> <apex:outputfield value="{!component.Brands__c}" /> </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  ">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Vendor :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.Vendor__c}"  /> </div> 
+                            </div>
+                        </td>
+                        <td class="paddingTB5RL10">
+                            <div class="  ">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Document Status :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.Document_Status__c}"/> </div> 
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  ">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Number of Samples Received :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.No_Of_Sample_Received__c}"  /> </div> 
+                            </div>
+                        </td>
+                        <td class="paddingTB5RL10">
+                            <div class="  ">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Test Back Ground :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.Test_Back_Ground__c}"  /> </div> 
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  ">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight ">   <h2>Sample Date :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.Sample_Date__c}"  /> </div> 
+                            </div>
+                        </td>
+                        <td class="paddingTB5RL10">
+                            <div class="  ">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Sample Category  :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.Sample_Category__c}"  /> </div> 
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>          
+                        <td class="paddingTB5RL10">
+                            <div class="  ">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>{!$ObjectType.QC_Components__c.fields.Sample_Department__c.label} :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.Sample_Department__c}"  /> </div> 
+                            </div>
+                        </td> 
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(comType == 'Full-Watch' || comtype == 'Watch-Head','block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight ">   <h2>Master Variant :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.Master_Variant__c}"  /> </div> 
+                            </div>
+                            <div class=" " style="display:{!if(comType!='Full-Watch' && comtype !='Watch-Head','block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight" >   <h2>SKU Reference :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.SKU_Reference__c}"  /> </div> 
+                            </div>
+                        </td>
+                    </tr>
+                    <!-- added by sudama for new requirement to add email field -->
+                    <tr>          
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Parent__c == null,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>{!$ObjectType.QC_Components__c.fields.Sample_Received_From__c.label} :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.Sample_Received_From__c}"  /> </div> 
+                            </div>
+                        </td>
+                        <td class="paddingTB5RL10">
+                            
+                            <div class="  " style="display:{!if(comType != 'Module' && comType != 'Battery' ,'block','none')}">  
+                                
+                                <div class="  " style="display:{!if(((component.Parent__c == null && isBrandModified) || component.Parent__c!=null || isBrandModified != true),'block','none')}">
+                                    <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>{!$ObjectType.QC_Components__c.fields.Cluster__c.label} :</h2> </div> 
+                                    <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.Cluster__c}"  /> </div>
+                                    </div>
+
+                            </div>
+                        </td>
+                         
+                    </tr>
+                    <tr>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Parent__c == null ,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>{!$ObjectType.QC_Components__c.fields.Additional_email_address__c.label} :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:outputfield value="{!component.Additional_email_address__c}"  /> </div> 
+                            </div>
+                        </td>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Sample_Category__c == 'Competitor Products' && component.Parent__c == null,'block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>{!$ObjectType.QC_Components__c.fields.Price__c.label} :</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.Price__c}"  /> </div> 
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>          
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(component.Sample_Category__c == 'Competitor Products','none','block')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>{!if(component.Parent__c == null,'Final Verdict :','Verdict :')}</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.Final_Verdict__c}" id="outFV" /> </div> 
+                                
+                            </div>
+                            <!--  <div class="  " style="display:{!if(component.Parent__c != null ,'block','none')}">
+                            <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Verdict :</h2> </div> 
+                            <div class="marginLR10 divWidth40P displayInLine alignLeft resultsFont"> <apex:outputfield value="{!component.Final_Verdict__c}"  /> </div> 
+                            </div>-->
+                        </td>
+                        <td class="paddingTB5RL10">
+                            <div class="  " style="display:{!if(comType == 'Full-Watch' || comtype == 'Watch-Head','block','none')}">
+                                <div class="marginLR10 divWidth40P displayInLine alignRight ">   <h2>Master:</h2> </div> 
+                                <div class="marginLR10 divWidth40P displayInLine alignLeft "> <apex:outputfield value="{!component.Master__c}"  /> </div> 
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td  class="paddingTB5RL10" colspan="2" >
+                            <div class="accordion" >
+                                <h3>General Observation</h3>
+                                <div  >
+                                    <table width="100%" border="0">
+                                        <tr>
+                                            <td width="20%">
+                                                <div class="marginLR10 divWidth20P displayInLine alignLeft"><h2 class="general-title general-obser">General Observation :</h2></div> 
+                                            </td>
+                                            <td width="80%">
+                                                <div class="marginLR10 divWidth40P displayInLine alignLeft overfscroll"><h2 class="general-title general-obser"> <apex:outputfield value="{!component.General_Observation__c}"  /></h2> </div>
+                                            </td>
+                                           
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div> 
+                        </td>
+                    </tr>
+                </apex:panelGroup>
+            </table>
+            <apex:outputPanel rendered="{!IF(OR($Profile.Name=='NPD Activity User',$Profile.Name=='NPD-Stage User'),false,true)}" >
+                <!--<apex:actionRegion >-->
+                    <div class="colorPlainDivGrey marginTB20"><div class="alignLeft paddingT15 marginL15"><h1>Input Parameters</h1></div></div> 
+                    <!-- Input parameter buttons of Top -->
+                    <div class="marginTB20 alignCenter">
+                        <div class="displayInLine marginLR10" style="display:{!if(show && !isInputLocked && showComp && showTest,'inline','none')}">   
+                            <apex:commandButton value="Edit" action="{!editMode}"  onclick="onDataEdit();" />
+                        </div>
+                        <div class="displayInLine marginLR10" style="display:{!if(!show && component.Sample_Category__c == 'Competitor Products','inline','none')}"> 
+                            <apex:commandButton value="Add Input" action="{!addInput}" /> 
+                        </div>  
+                        <div class="displayInLine marginLR10" style="display:{!if(!show,'inline','none')}"> 
+                            <apex:commandButton value="Save" onclick="onDataSave(); confirmSaveData('{!component.id}','{!component.Final_Verdict__c}');return false" rendered="{!!show}"/>
+                        </div>  
+                        <div class="displayInLine marginLR10" style="display:{!if(!show,'inline','none')}">  
+                            <apex:commandButton value="Cancel" action="{!cancel}" onclick="onDataSave();" rendered="{!!show}" />
+                        </div>
+                    </div> 
+                    <!--<apex:variable value="{!0}" var="OrderNo"/>-->
+                    <apex:panelGroup id="pblock" rendered="{!!show}">
+                        <table border="1" cellspacing="0" width="100%">
+                            <apex:variable value="{!0}" var="rowNum"/>
+                            <apex:repeat value="{!questionWrapList}" var="qqw" id="QPreview">
+                                <tr >
+                                    <td  style="border: hidden; display:{!if(component.Sample_Category__c == 'Competitor Products','block','none')};">
+                                        <apex:commandLink immediate="true" action="{!delInputData}" onclick="if(!confirm('Are you sure to delete Input Data? Please confirm')){return false;}" value="Del" rendered="{!component.Sample_Category__c == 'Competitor Products' && qqw.isManual}">
+                                            <apex:param name="inputindexNo" value="{!FLOOR(rowNum)}"/>
+                                        </apex:commandLink>
+                                    </td>
+                                    <td class="divWidth40P" >
+                                        <apex:outputpanel id="quesName" rendered="{!!qqw.isManual}">
+                                            <h2>{!qqw.question} :<span style="color:red;font-size:16px;display:{!if(qqw.responseRequired==true && component.Sample_Category__c != 'Competitor Products','inline','none')}">*</span></h2> 
+                                        </apex:outputpanel>
+                                        <apex:outputpanel id="quesNameIsManual" rendered="{!qqw.isManual}" >
+                                            <apex:inputTextArea id="questionName" cols="40" rows="1" value="{!qqw.questionName}" required="true" />
+                                        </apex:outputpanel>
+                                    </td>
+                                    <td class="divWidth30P">
+                                        <apex:outputpanel id="picklist" rendered="{!qqw.renderPicklist}" ><!-- if(!confirm('Are you sure to delete Test? Please confirm')){return false;} -->
+                                            <!--<apex:selectlist id="plist"  size="1" rendered="{!qqw.renderPicklist}" value="{!qqw.selectedPicklist}" onchange="newQuestion(this.value,'{!qqw.id}'),maskBody()"  >-->
+                                            <apex:selectlist id="plist"  size="1" rendered="{!qqw.renderPicklist}" value="{!qqw.selectedPicklist}" onchange="newQuestion('{!rowNum}','{!qqw.id}')">
+                                                <apex:selectOptions value="{!qqw.singleOptions}" />
+                                            </apex:selectlist> 
+                                            <span id="error" style="color:red;display:{!if(qqw.responseRequired==true && component.Sample_Category__c != 'Competitor Products','inline','none')}" >
+                                                {!qqw.errorMsg}
+                                            </span>  
+                                        </apex:outputpanel>
+                                        <div id="checkbox" style="display:{!if(qqw.renderSelectCheckboxes=='true','inline','none')}" >
+                                            <apex:selectlist multiselect="true" size="5" rendered="{!qqw.renderSelectCheckboxes}" value="{!qqw.selectedMulti}"  >
+                                                <apex:selectOptions value="{!qqw.multiOptions}"/>
+                                            </apex:selectlist>     
+                                           <span id="error" style="color:red;display:{!if(qqw.responseRequired == true && component.Sample_Category__c != 'Competitor Products','inline','none')}" >
+                                                {!qqw.errorMsg}
+                                            </span>  
+                                            
+                                        </div>
+                                        <apex:outputpanel id="text1" rendered="{!qqw.renderFreeText}" >
+                                            <apex:inputTextArea cols="50" rows="2" rendered="{!qqw.renderFreeText}" value="{!qqw.openTextValue}" onkeypress="return avoidSpace(event,'{!qqw.isNumeric}')" onkeyup="numericVal(this,'{!qqw.isNumeric}')"/>  
+                                            <span id="error" style="color:red;display:{!if(qqw.responseRequired==true && component.Sample_Category__c != 'Competitor Products','inline','none')}" >
+                                                {!qqw.errorMsg}
+                                            </span> 
+                                        </apex:outputpanel>
+                                    </td>
+                                    <td class="divWidth30P">
+                                        <div id="comment"> 
+                                            <apex:inputTextArea cols="40" rows="1" rendered="{!qqw.commentRequired}" value="{!qqw.commentData}"/>  
+                                        </div>
+                                    </td> 
+                                </tr> 
+                                <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                                <!--<apex:variable value="{!OrderNo+1}" var="OrderNo"/>-->
+                            </apex:repeat>
+                        </table>
+                        <script>
+                            $("#checkbox select").multiselect();
+                        </script>
+                    </apex:panelGroup>
+                    
+                    <apex:panelGroup rendered="{!show}">
+                        <table border="1" cellspacing="0" width="100%">
+                            <apex:variable value="{!0}" var="rowNum"/>
+                            <apex:repeat value="{!questionWrapList}" var="qqw" >
+                                <tr>
+                                    <td style="border: hidden; display:{!if(component.Sample_Category__c == 'Competitor Products','inline','none')}">
+                                        <apex:commandLink action="{!delInputData}" onclick="if(!confirm('Are you sure to delete Test? Please confirm')){return false;}" value="Del" rendered="{!component.Sample_Category__c == 'Competitor Products'}">
+                                            <apex:param name="inputindexNo" value="{!FLOOR(rowNum)}"/>
+                                        </apex:commandLink>
+                                    </td>
+                                    <td class="paddingTB5RL10 divWidth40P">
+                                        <!--<h2>{!qqw.question} :</h2>-->
+                                        <apex:outputpanel id="quesNameOut" rendered="{!!qqw.isManual}" >
+                                            <h2>{!qqw.question} :<span style="color:red;font-size:16px;display:{!if(qqw.responseRequired==true && component.Sample_Category__c != 'Competitor Products','inline','none')}">*</span></h2> 
+                                        </apex:outputpanel>
+                                        <apex:outputpanel id="quesNameIsManualOut" rendered="{!qqw.isManual}" >
+                                            <h2>{!qqw.questionName} :</h2>
+                                        </apex:outputpanel>
+                                    </td> 
+                                    <td class="paddingTB5RL10 divWidth30P resultsFont">
+                                        <apex:outputPanel rendered="{!qqw.renderPicklist}">
+                                            {!qqw.selectedPicklistLabel}
+                                        </apex:outputPanel>
+                                        <!--<apex:outputPanel rendered="{!IF(qqw.selectedMultiLabel.size > 0 && qqw.renderSelectCheckboxes , true, false)}">-->
+                                        <!--<apex:outputPanel style="display:{!if(qqw.selectedMultiLabel.size > 0 && qqw.renderSelectCheckboxes , 'inline', 'none')}">-->
+                                        <apex:outputPanel rendered="{!qqw.renderSelectCheckboxes}">
+                                            <div style="display:{!if(qqw.selectedMultiLabel.size > 0, 'inline', 'none')}">
+                                                {!qqw.selectedMultiLabel} 
+                                            </div>
+                                             
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!qqw.renderFreeText}">
+                                            {!qqw.openTextValue}  
+                                        </apex:outputPanel>
+                                    </td>
+                                    <td class="paddingTB5RL10 divWidth30P resultsFont">
+                                        <apex:outputPanel >
+                                            {!qqw.commentData}
+                                        </apex:outputPanel>
+                                    </td>
+                                </tr>
+                                <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                            </apex:repeat>  
+                        </table>                                                  
+                    </apex:panelGroup>
+                    <!-- Input parameter buttons of bottom -->
+                    <div class="marginTB20 alignCenter">
+                        <div class="displayInLine marginLR10" style="display:{!if(show && !isInputLocked && showComp && showTest, 'inline','none')}">   
+                            <apex:commandButton value="Edit" action="{!editMode}" />
+                        </div>
+                        <div class="displayInLine marginLR10" style="display:{!if(!show && component.Sample_Category__c == 'Competitor Products','inline','none')}"> 
+                            <apex:commandButton value="Add Input" action="{!addInput}" /> 
+                        </div>      
+                        <div class="displayInLine marginLR10" style="display:{!if(!show,'inline','none')}"> 
+                            <apex:commandButton value="Save" onclick="onDataSave(); confirmSaveData('{!component.id}','{!component.Final_Verdict__c}');return false" rendered="{!!show}"/>
+                        </div>  
+                        <div class="displayInLine marginLR10" style="display:{!if(!show,'inline','none')}">  
+                            <apex:commandButton value="Cancel" action="{!cancel}" onclick="onDataSave();" rendered="{!!show}"/>
+                        </div>
+                    </div>
+                    <!-- here need to add rejected parameter sudama -->
+                <!--</apex:actionRegion>-->
+                <apex:panelGroup > 
+                    <div>
+                        <div class="colorPlainDivGrey marginTB20"><div class="alignLeft paddingT15 marginL15"><h1>Test Findings</h1></div></div>
+                    </div> 
+                    <div class=" alignCenter ">
+                        <div class="marginTB20 alignCenter ">
+                            <apex:pagemessages />
+                            <div class="displayInLine marginLR10" style="display:{!if(showTest && !isInputLocked  && showComp && show,'inline','none')}"> 
+                                <apex:commandButton value="Edit" action="{!edit}"/> 
+                                                                
+                            </div>
+                            <div class="displayInLine marginLR10" style="display:{!if(((!showTest)&&(show) && (comType != 'Battery')),'inline','none')}">
+                                <apex:commandButton value="Add Test" action="{!addTest}" />    
+                            </div>
+                            <div class="displayInLine marginLR10" style="display:{!if(((!showTest)&&(show)),'inline','none')}">
+                                <apex:commandButton value="Save" action="{!updateTestData}" />    <!--|| (comType == 'Module') -->
+                            </div>
+                            <div class="displayInLine marginLR10" style="display:{!if(((!showTest)&&(show)),'inline','none')}">
+                                <apex:commandButton value="Cancel" action="{!cancel}"/>  <!-- || (comType == 'Module') -->
+                            </div>
+                            <div class="displayInLine marginLR10" style="display:{!if(showApproval && showTest && component.Sample_Category__c != 'Competitor Products' && (component.Document_Status__c == 'Draft' || component.Document_Status__c == 'Partial Published') && component.Parent__c == null  && sDataList.size != 0,'inline','none')}">  
+                                <apex:commandButton value="Submit for Approval" action="{!submitApproval}"  id="subApprval" />   <!--  rendered="{!(comId!=null) && (testAllParameter.size > 0)}"-->
+                            </div>
+                        </div>
+                        <div class="floatRight  marginLR10 marginTN40"  style="display:{!if(showTest,'inline','none')}">
+                            <apex:outputLink value="/apex/QC_TestFindingsReport?id={!component.id}" target="_target"  title="Click here to view the report in Pdf format" rendered="{!IF(OR($Profile.Name=='NPD Activity User',$Profile.Name=='NPD-Stage User'),false,true)}" ><b>Test Findings Report</b></apex:outputLink>
+                        </div>
+                        
+                    </div> 
+                </apex:panelGroup>
+                <!-- INPUT Test parameters for Full-Watch,Watch-head,Case,Dail,Leather-Strap,Metal-Strap,Special-Strap-->
+                
+                <apex:panelGroup rendered="{!(!showTest)&&(show) && (comType!='Battery') && (comType!='Module') && (comType!='Packaging')}" id="testBlock" >
+                    <table border="1" width="100%" style="align:center;" cellpadding="10">
+                        
+                        <tr style="font-weight: bold; color: black;">
+                            <td></td>
+                            <td>Test</td>
+                            <td>Specification</td>
+                            <td>UOM</td>
+                            <td>Observation</td>
+                            <td>Remark</td>
+                            <td>Conclusion</td>
+                        </tr>
+                        <apex:variable value="{!0}" var="rowNum"/>
+                        <apex:repeat value="{!testWrapList}" var="tpl" id="testparam"  >
+                            
+                            <tr>
+                                <td>
+                                    <apex:commandLink action="{!delTest}" onclick="if(!confirm('Are you sure to delete Test? Please confirm')){return false;}" value="Del" rendered="{!tpl.isManual}">
+                                        <apex:param name="indexNo" value="{!FLOOR(rowNum)}"/>
+                                    </apex:commandLink>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.name}"  rendered="{!!tpl.IsEditUOMSPec}"/>
+                                    <apex:inputText value="{!tpl.name}"  rendered="{!tpl.IsEditUOMSPec}"/>
+                                    <span id="error" style="color:red;" >
+                                        {!tpl.errorMsg}
+                                    </span>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.Specification}" rendered="{!!tpl.IsEditUOMSPec}" />
+                                    <apex:inputText value="{!tpl.Specification}" rendered="{!tpl.IsEditUOMSPec}" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.UOM}" rendered="{!!tpl.IsEditUOMSPec}" />
+                                    <apex:inputText value="{!tpl.UOM}" rendered="{!tpl.IsEditUOMSPec}" />
+                                </td>
+                                <td>
+                                    <apex:inputtext value="{!tpl.observation}" />
+                                </td>
+                                <td>
+                                    <apex:inputtext value="{!tpl.commentsandRemarks}" />
+                                </td>
+                                <td>
+                                    <apex:selectlist value="{!tpl.conclusion}" size="1" disabled="{!tpl.hideVerdict}" style="color:{!if(!tpl.hideVerdict == true,'black','red')}" >
+                                        <apex:selectOptions value="{!Conclusion}" />
+                                    </apex:selectlist>
+                                </td>
+                            </tr>
+                            <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                        </apex:repeat>
+                    </table>
+                </apex:panelGroup>
+                
+                <!-- OUTPUT Test parameters for Full-Watch,Watch-head,Case,Dail,Leather-Strap,Metal-Strap,Special-Strap-->  
+                
+                <apex:outputpanel rendered="{!showTest && (comType!='Battery') && (comType!='Module') && (comType!='Packaging')}" id="blk"> 
+                    <table border="1" width="100%" style="align:center;" cellpadding="10">
+                        <tr style="font-weight: bold; color: black;">
+                            <td></td>
+                            <td>Test</td>
+                            <td>Specification</td>
+                            <td>UOM</td>
+                            <td>Observation</td>
+                            <td>Remark</td>
+                            <td>Conclusion</td>
+                        </tr>
+                        <apex:variable value="{!0}" var="rowNum"/>
+                        <apex:repeat value="{!testWrapList}" var="tpl" id="testparam1"  >
+                            <tr>
+                                <td>
+                                    <apex:commandLink action="{!delTest}" onclick="if(!confirm('Are you sure to delete Test? Please confirm')){return false;}" value="Del" rendered="{!tpl.isEnableBtn}">
+                                        <apex:param name="indexNo" value="{!FLOOR(rowNum)}"/>
+                                    </apex:commandLink>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.name}"  />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.Specification}" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.UOM}" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.observation}" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.commentsandRemarks}" />
+                                </td>
+                                <td>
+                                    <apex:outputtext value="{!tpl.conclusion}"/>
+                                </td>
+                            </tr>
+                            <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                        </apex:repeat>
+                    </table>
+                </apex:outputpanel>  
+                <!-- added by sudama for module-->
+                 <!-- INPUT Test parameters for Full-Watch,Watch-head,Case,Dail,Leather-Strap,Metal-Strap,Special-Strap-->
+                
+                <apex:panelGroup rendered="{!(!showTest)&&(show) && (comType == 'Module') && (showModuleTest != True)}" id="testBlockModule" >
+                    <table border="1" width="100%" style="align:center;" cellpadding="10">
+                        
+                        <tr style="font-weight: bold; color: black;">
+                            <td class="freezeCol tableHeadBg"></td>
+                            <td class="freezeCol tableHeadBg">Test Description</td>
+                            <td class="freezeCol tableHeadBg">Testing Condition</td>
+                             <td class="freezeCol tableHeadBg">Duration/Cycle</td>
+                            <td class="freezeCol tableHeadBg">Observation</td>
+                            <td class="freezeCol tableHeadBg">Remark</td>
+                            <td class="freezeCol tableHeadBg">Conclusion</td>
+                             <td class="freezeCol tableHeadBg">No. of Samples</td>
+                        </tr>
+                        <apex:variable value="{!0}" var="rowNum"/>
+                        <apex:repeat value="{!testWrapList}" var="tpl" id="testparam2"  >
+                            
+                            <tr>
+                                <td>
+                                    <apex:commandLink action="{!delTest}" onclick="if(!confirm('Are you sure to delete Test? Please confirm')){return false;}" value="Del" rendered="{!tpl.isManual}">
+                                        <apex:param name="indexNo" value="{!FLOOR(rowNum)}"/>
+                                    </apex:commandLink>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.name}"  rendered="{!!tpl.IsEditUOMSPec}"/>
+                                    <apex:inputText value="{!tpl.name}"  rendered="{!tpl.IsEditUOMSPec}"/>
+                                    <span id="error" style="color:red;" >
+                                        {!tpl.errorMsg}
+                                    </span>
+                                </td>
+                                 <td>
+                                    <apex:outputText value="{!tpl.UOM}" rendered="{!!tpl.IsEditUOMSPec}" />
+                                    <apex:inputText value="{!tpl.UOM}" rendered="{!tpl.IsEditUOMSPec}" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.Specification}" rendered="{!!tpl.IsEditUOMSPec}" />
+                                    <apex:inputText value="{!tpl.Specification}" rendered="{!tpl.IsEditUOMSPec}" />
+                                </td> 
+                                <td>
+                                    <apex:inputtext value="{!tpl.observation}" />
+                                </td>
+                                <td>
+                                    <apex:inputtext value="{!tpl.commentsandRemarks}" />
+                                </td>
+                                <td>
+                                    <apex:selectlist value="{!tpl.conclusion}" size="1" disabled="{!tpl.hideVerdict}" style="color:{!if(!tpl.hideVerdict == true,'black','red')}" >
+                                        <apex:selectOptions value="{!Conclusion}" />
+                                    </apex:selectlist>
+                                </td>
+                                 <td>
+                                    <apex:inputtext value="{!tpl.NoOfSample}" />
+                                </td>
+                            </tr>
+                            <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                        </apex:repeat>
+                    </table>
+                </apex:panelGroup>
+                
+                <!-- OUTPUT Test parameters for Full-Watch,Watch-head,Case,Dail,Leather-Strap,Metal-Strap,Special-Strap-->  
+                
+                <apex:outputpanel rendered="{!showTest && (comType == 'Module') && (showModuleTest != True )}" id="blk1"> 
+                    <table border="1" width="100%" style="align:center;" cellpadding="10">
+                        <tr style="font-weight: bold; color: black;">
+                            <td class="freezeCol tableHeadBg"> </td>
+                           <td class="freezeCol tableHeadBg">Test Description</td>
+                            <td class="freezeCol tableHeadBg">Testing Condition</td>
+                             <td class="freezeCol tableHeadBg">Duration/Cycle</td>
+                            <td class="freezeCol tableHeadBg">Observation</td>
+                            <td class="freezeCol tableHeadBg">Remark</td>
+                            <td class="freezeCol tableHeadBg">Conclusion</td>
+                            <td class="freezeCol tableHeadBg">No. of Samples</td>
+                        </tr>
+                        <apex:variable value="{!0}" var="rowNum"/>
+                        <apex:repeat value="{!testWrapList}" var="tpl" id="testparam3"  >
+                            <tr>
+                                <td>
+                                    <apex:commandLink action="{!delTest}" onclick="if(!confirm('Are you sure to delete Test? Please confirm')){return false;}" value="Del" rendered="{!tpl.isEnableBtn}">
+                                        <apex:param name="indexNo" value="{!FLOOR(rowNum)}"/>
+                                    </apex:commandLink>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.name}"  />
+                                </td>
+                                 <td>
+                                    <apex:outputText value="{!tpl.UOM}" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.Specification}" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.observation}" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.commentsandRemarks}" />
+                                </td>
+                                <td>
+                                    <apex:outputtext value="{!tpl.conclusion}"/>
+                                </td>
+                                 <td>
+                                    <apex:outputText value="{!tpl.NoOfSample}" />
+                                </td>
+                            </tr>
+                            <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                        </apex:repeat>
+                    </table>
+                </apex:outputpanel>  
+                
+                <!-- end -->
+                
+                
+                <!-- INPUT Test parameters for Battery(Visual Inspection) component -->
+                
+                <apex:outputpanel rendered="{!(!showTest) && (show) && (comType=='Battery')}" id="testBlockBty" >
+                    <apex:datatable value="{!testWrapList}" var="tpl" id="testparamBatVI" border="1" width="100%" style="align:center;" cellpadding="10" > 
+                        <apex:column style="color: #1b606f;font-size: 1.2em;font-weight:bold;width:15%" value="{!tpl.name}"  headervalue="1) {!tpl.name}" rendered="{!(tpl.acceptCriteria!='Leakage Test' && tpl.name == 'Visual Inspection')}"/>
+                        <apex:column width="60%" rendered="{!(tpl.acceptCriteria!='Leakage Test' && tpl.name == 'Visual Inspection')}" >
+                            <apex:inputtext value="{!tpl.observation}"/>
+                        </apex:column>
+                        <apex:column headervalue="Remarks"  rendered="{!(tpl.acceptCriteria!='Leakage Test' && tpl.name == 'Visual Inspection')}">
+                            <apex:inputtext value="{!tpl.commentsandRemarks}" />
+                        </apex:column> 
+                        <apex:column rendered="{!(tpl.acceptCriteria != 'Leakage Test' && tpl.name == 'Visual Inspection')}"> 
+                            <apex:selectlist value="{!tpl.conclusion}" size="1" >
+                                <apex:selectOptions value="{!Conclusion}"/>
+                            </apex:selectlist>  
+                        </apex:column>
+                    </apex:datatable>
+                    <apex:variable var="rowNum" value="{!1}" /> 
+                    <apex:datatable value="{!testWrapList}" var="tpl" id="testparamBty" border="1" width="100%" style="align:center;" cellpadding="10" > 
+                        <apex:column value="{!tpl.name}" headervalue="Capacity" rendered="{!(tpl.acceptCriteria!='Leakage Test' && tpl.name != 'Visual Inspection')}"/>
+                        <apex:column value="{!tpl.Specification}" headervalue="Specification" rendered="{!(tpl.acceptCriteria!='Leakage Test' && tpl.name != 'Visual Inspection')}"/>  
+                        <apex:column headervalue="Measured Capacity (mAh)" rendered="{!(tpl.acceptCriteria!='Leakage Test' && tpl.name != 'Visual Inspection')}" > 
+                            <apex:inputtext value="{!tpl.observation}" onkeypress="return avoidTestSpace(event)" onkeyup="numericTestVal(this);" onblur="batteryFormula(this,'{!rowNum}')"/>
+                        </apex:column>
+                        <!-- <apex:column value="{!tpl.UOM}" headervalue="Determined value" rendered="{!(tpl.acceptCriteria!='Leakage Test' && tpl.name != 'Visual Inspection')}"/> -->
+                        <apex:column headervalue="Determined Value" rendered="{!(tpl.acceptCriteria!='Leakage Test' && tpl.name != 'Visual Inspection')}">
+                            <apex:inputtext value="{!tpl.determinedVal}"  id="batDetVal" onkeypress="javascript:return false;"/>
+                        </apex:column>
+                        
+                        <apex:column headervalue="Remarks"  rendered="{!(tpl.acceptCriteria!='Leakage Test' && tpl.name != 'Visual Inspection')}">
+                            <apex:inputtext value="{!tpl.commentsandRemarks}" /> 
+                            <apex:variable var="rowNum" value="{!rowNum+1}"/>
+                        </apex:column> 
+                        <apex:column headervalue="Conclusion" rendered="{!(tpl.acceptCriteria!='Leakage Test' && tpl.name != 'Visual Inspection')}"> 
+                            <apex:selectlist value="{!tpl.conclusion}" size="1" >
+                                <apex:selectOptions value="{!Conclusion}"/> 
+                            </apex:selectlist>  
+                        </apex:column>
+                    </apex:datatable> 
+                </apex:outputpanel>
+                <!-- INPUT Test parameters for Battery(Leakage Test) component -->
+                <apex:outputpanel rendered="{!(!showTest) && (show) && (comType=='Battery')}" id="testBlockBtyLt" >
+                    <table border="1" class="vfTable">
+                        <tr>
+                            <th colspan="7">Leakage Test</th>
+                        </tr>
+                        <tr>
+                            <th colspan="2"  >Characteristics</th>
+                            <th >Grade</th>
+                            <th >Standard</th>
+                            <th>Observation</th>
+                            <th>Conclusion</th> 
+                        </tr>
+                        <apex:repeat value="{!testWrapList}" var="modTP">
+                            <apex:outputpanel rendered="{!modTP.acceptCriteria=='Leakage Test'}">
+                                <tr >
+                                    <td class="resultsFont">
+                                        <div style="display:{!if((modTP.UOM == 'S1') && modTP.Name =='Non-Defective Battery','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}"  />  
+                                        </div>
+                                        <div style="display:{!if(modTP.UOM == 'C1' && modTP.Name =='Defective Battery','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}"  />  
+                                        </div>
+                                        <div style="display:{!if(modTP.UOM == 'L1' && modTP.Name =='Leaks','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}"  />  
+                                        </div>
+                                    </td>
+                                    <td class="resultsFont">
+                                        <div style="display:{!if(modTP.UOM == 'S1' && modTP.Name =='Non-Defective Battery','block','none')}">     
+                                            Salting  
+                                        </div>
+                                        <div style="display:{!if(modTP.UOM == 'C1' && modTP.Name =='Defective Battery','block','none')}">     
+                                            Creep
+                                        </div>
+                                        <div style="display:{!if(modTP.UOM == 'L1' && modTP.Name =='Leaks','block','none')}">     
+                                            Leaks
+                                        </div>
+                                    </td>
+                                    <td class="resultsFont">
+                                        <apex:outputtext value="{!modTP.UOM}"
+                                                         title="{!if(modTP.UOM == 'S1', 'A little leakage near the Gasket',
+                                                                if(modTP.UOM == 'S2', 'Leakage in the vicinity nearer  of the Gasket',
+                                                                if(modTP.UOM == 'S3', 'Leakage spreads in clouds on both sides of the gasket but doesn#39;t reach the negative contact',
+                                                                if(modTP.UOM == 'C1','Leakage spread in clouds on the flat negative contact but doesn#39;t reach the center part of the flat negative contact',
+                                                                if(modTP.UOM == 'C2','Leakage spreads in clouds over a considerable area of the flat contact',
+                                                                if(modTP.UOM == 'L1','Crystalized liquid swells upon part of the cloud spreads on all most all the surface of flat negative contact',
+                                                                if(modTP.UOM == 'L2','Crystalized liquid swells up on all the surface of the negative contact','')))))))}"/>
+                                    </td>
+                                    <td class="resultsFont">{!modTP.specification}</td>
+                                    <td class="resultsFont"><apex:inputtext value="{!modTP.observation}"/></td>
+                                    <!--<td class="resultsFont"><apex:inputtext value="{!modTP.commentsandRemarks}" /></td>-->
+                                    <td class="resultsFont">
+                                        <apex:selectlist value="{!modTP.conclusion}" size="1" >
+                                            <apex:selectOptions value="{!Conclusion}"/>                           
+                                        </apex:selectlist>  
+                                    </td>
+                                    
+                                </tr>
+                            </apex:outputpanel>
+                        </apex:repeat> 
+                    </table>
+                </apex:outputpanel> 
+                <!-- OUTPUT Test parameters for Battery(Visual Inspection) component -->
+                
+                <apex:outputpanel rendered="{!showTest && (comType=='Battery')}" id="battery"> 
+                    <apex:datatable value="{!testWrapList}" var="tpl" id="testparamOutBatVI" border="1" width="100%" style="align:center;" cellpadding="10" > 
+                        <apex:column style="color: #1b606f;font-size: 1.2em;font-weight:bold;width:15%;" value="{!tpl.name}" rendered="{!(tpl.acceptCriteria!='Leakage Test' && tpl.name == 'Visual Inspection')}"/>
+                        <apex:column width="60%"  rendered="{!(tpl.acceptCriteria!='Leakage Test' && tpl.name == 'Visual Inspection')}" >
+                            <apex:outputtext value="{!tpl.observation}"/>
+                        </apex:column>
+                        <apex:column headervalue="Remarks" rendered="{!(tpl.acceptCriteria!='Leakage Test' && tpl.name == 'Visual Inspection')}">
+                            <apex:outputtext value="{!tpl.commentsandRemarks}" />
+                        </apex:column>
+                        <apex:column rendered="{!(tpl.acceptCriteria!='Leakage Test' && tpl.name == 'Visual Inspection')}">  
+                            <apex:outputtext value="{!tpl.conclusion}"/>
+                        </apex:column>
+                    </apex:datatable>     
+                    <apex:datatable value="{!testWrapList}" var="stp" id="showparamBty" border="1" width="100%" style="align:center;" cellpadding="10">
+                        <apex:column value="{!stp.name}" headervalue="Capacity" rendered="{!(stp.acceptCriteria!='Leakage Test' && stp.name != 'Visual Inspection')}"/>
+                        <apex:column value="{!stp.Specification}" headervalue="Specification" rendered="{!(stp.acceptCriteria!='Leakage Test' && stp.name != 'Visual Inspection')}"/>   
+                        <apex:column headervalue="Measured Capacity (mAh)" rendered="{!(stp.acceptCriteria!='Leakage Test' && stp.name != 'Visual Inspection')}"> 
+                            <apex:outputText value="{!stp.observation}" />
+                        </apex:column>
+                        <apex:column value="{!stp.DeterminedVal}" headervalue="Determined Value" rendered="{!(stp.acceptCriteria!='Leakage Test' && stp.name != 'Visual Inspection')}"/>
+                        
+                        <apex:column headervalue="Remarks" rendered="{!(stp.acceptCriteria!='Leakage Test' && stp.name != 'Visual Inspection')}">
+                            <apex:outputtext value="{!stp.commentsandRemarks}" />   
+                        </apex:column>
+                        <apex:column headervalue="Conclusion" rendered="{!(stp.acceptCriteria!='Leakage Test' && stp.name != 'Visual Inspection')}">  
+                            <apex:outputtext value="{!stp.conclusion}"/>
+                        </apex:column>
+                    </apex:datatable>
+                </apex:outputpanel> 
+                
+                <!-- Output Test parameters for Battery(Leakage Test) component -->
+                <apex:outputpanel rendered="{!showTest && (comType=='Battery')}" id="testBlockBtyOutLt" >
+                    <table  class="vfTable"  border="1" cellpadding="10" cellspacing="0" width="100%">
+                        <tr>
+                            <th colspan="7">Leakage Test</th>
+                        </tr>
+                        <tr>
+                            <th colspan="2">Characteristics</th>
+                            <th >Grade</th>
+                            <th>Standard</th>
+                            <th>Observation</th>
+                            <th>Conclusion</th> 
+                        </tr>
+                        <apex:repeat value="{!testWrapList}" var="modTP">
+                            <apex:outputpanel rendered="{!modTP.acceptCriteria=='Leakage Test'}"> 
+                                <tr >
+                                    <td class="resultsFont paddingTB5RL10" >
+                                        <div style="display:{!if(modTP.UOM ==  'S1' && modTP.Name =='Non-Defective Battery','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}"  />  
+                                        </div>
+                                        <div style="display:{!if(modTP.UOM == 'C1' && modTP.Name =='Defective Battery','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}"  />  
+                                        </div>
+                                        <div style="display:{!if(modTP.UOM == 'L1' && modTP.Name =='Leaks','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}"  />  
+                                        </div>
+                                    </td>
+                                    <td class="resultsFont paddingTB5RL10">
+                                        <div style="display:{!if(modTP.UOM == 'S1' && modTP.Name =='Non-Defective Battery','block','none')}">     
+                                            Salting  
+                                        </div>
+                                        <div style="display:{!if(modTP.UOM == 'C1' && modTP.Name =='Defective Battery','block','none')}">     
+                                            Creep
+                                        </div>
+                                        <div style="display:{!if(modTP.UOM == 'L1' && modTP.Name =='Leaks','block','none')}">     
+                                            Leaks
+                                        </div>
+                                    </td>
+                                    <td class="resultsFont paddingTB5RL10">
+                                        <apex:outputtext value="{!modTP.UOM}"
+                                                         title="{!if(modTP.UOM == 'S1', 'A little leakage near the Gasket',
+                                                                if(modTP.UOM == 'S2', 'Leakage in the vicinity nearer  of the Gasket',
+                                                                if(modTP.UOM == 'S3', 'Leakage spreads in clouds on both sides of the gasket but doesn#39;t reach the negative contact',
+                                                                if(modTP.UOM == 'C1','Leakage spread in clouds on the flat negative contact but doesn#39;t reach the center part of the flat negative contact',
+                                                                if(modTP.UOM == 'C2','Leakage spreads in clouds over a considerable area of the flat contact',
+                                                                if(modTP.UOM == 'L1','Crystalized liquid swells upon part of the cloud spreads on all most all the surface of flat negative contact',
+                                                                if(modTP.UOM == 'L2','Crystalized liquid swells up on all the surface of the negative contact','')))))))}"/>
+                                    </td>           
+                                    <td class="resultsFont paddingTB5RL10">{!modTP.specification}</td>
+                                    <td class="resultsFont paddingTB5RL10">{!modTP.observation}</td>
+                                    <td class="resultsFont paddingTB5RL10">{!modTP.Conclusion}</td> 
+                                </tr>
+                            </apex:outputpanel>
+                        </apex:repeat> 
+                    </table>
+                </apex:outputpanel>   
+                <!-- INPUT Test parameters for Package component -->
+                <apex:outputpanel rendered="{!(!showTest)&&(show)&&(comType=='Packaging')}" id="InTestPackage" >     
+                    <table id="testparamPkg" border="1" width="100%" style="align:center;" cellpadding="10">
+                        <tr style="font-weight: bold; color: black;">
+                            <td></td>
+                            <td>Test Parameter</td>
+                            <td>Test Specification</td>
+                            <td>Test Condition</td>
+                            <td>Acceptance Criteria</td>
+                            <td>Observation</td>
+                            <td>Remark</td>
+                            <td>Conclusion</td>
+                        </tr>
+                        <apex:variable value="{!0}" var="rowNum"/>
+                        <apex:repeat value="{!testWrapList}" var="tpl" id="packegeWrapId">
+                            <tr>
+                                <td>
+                                    <apex:commandLink action="{!delTest}" onclick="if(!confirm('Are you sure to delete Test? Please confirm')){return false;}" value="Del" rendered="{!!tpl.isManual}">
+                                        <apex:param name="indexNo" value="{!FLOOR(rowNum)}"/>
+                                    </apex:commandLink>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.name}" rendered="{!!tpl.IsEditUOMSPec}" />
+                                    <apex:inputText value="{!tpl.name}" rendered="{!tpl.IsEditUOMSPec}" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.Specification}" rendered="{!!tpl.IsEditUOMSPec}" />
+                                    <apex:inputText value="{!tpl.Specification}" rendered="{!tpl.IsEditUOMSPec}" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.UOM}" rendered="{!!tpl.IsEditUOMSPec}" />
+                                    <apex:inputText value="{!tpl.UOM}" rendered="{!tpl.IsEditUOMSPec}" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.acceptCriteria}" rendered="{!!tpl.IsEditUOMSPec}" />
+                                    <apex:inputText value="{!tpl.acceptCriteria}" rendered="{!tpl.IsEditUOMSPec}" />
+                                </td>
+                                <td>
+                                    <apex:inputtext value="{!tpl.observation}" />
+                                </td>
+                                <td>
+                                    <apex:inputtext value="{!tpl.commentsandRemarks}" />
+                                </td>
+                                <td>
+                                    <apex:selectlist value="{!tpl.conclusion}" size="1" disabled="{!tpl.hideVerdict}" style="color:{!if(!tpl.hideVerdict == true,'black','red')}" >
+                                        <apex:selectOptions value="{!Conclusion}" />
+                                    </apex:selectlist>
+                                </td>
+                            </tr>
+                            <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                        </apex:repeat>
+                    </table>
+                </apex:outputpanel>
+                
+                <!-- OUTPUT Test parameters for Package component -->
+                <apex:outputpanel rendered="{!showTest && (comType=='Packaging')}" id="OutTestPackage">      
+                    <table>
+                        <tr style="font-weight: bold; color: black;">
+                            <td></td>
+                            <td>Test Parameter</td>
+                            <td>Test Specification</td>
+                            <td>Test Condition</td>
+                            <td>Acceptance Criteria</td>
+                            <td>Observation</td>
+                            <td>Remark</td>
+                            <td>Conclusion</td>
+                        </tr>
+                        <apex:variable value="{!0}" var="rowNum"/>
+                        <apex:repeat value="{!testWrapList}" var="tpl" id="testparam12"  >
+                            <tr>
+                                <td>
+                                    <apex:commandLink action="{!delTest}" onclick="if(!confirm('Are you sure to delete Test? Please confirm')){return false;}" value="Del" rendered="{!tpl.isEnableBtn}">
+                                        <apex:param name="indexNo" value="{!FLOOR(rowNum)}"/>
+                                    </apex:commandLink>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.name}" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.Specification}" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.UOM}" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.acceptCriteria}" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.observation}" />
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!tpl.commentsandRemarks}" />
+                                </td>
+                                <td>
+                                    <apex:outputtext value="{!tpl.conclusion}"/>
+                                </td>
+                            </tr>
+                            <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                        </apex:repeat>
+                    </table>
+                </apex:outputpanel> 
+                
+                <!-- INPUT Test parameters for MODULE component -->
+                <apex:outputPanel rendered="{!(!showTest)&&(show)&&(comType == 'Module') && showModuleTest }"  id="modTable">  
+                    <apex:variable var="call" value="{!0}" /> 
+                    <apex:datatable value="{!testWrapList}" var="tpl" id="testparamBatVI1" border="1" width="100%" style="align:center;" cellpadding="10" > 
+                        <apex:column style="color: #1b606f;font-size: 1.2em;font-weight:bold;width:15%" value="{!tpl.name}"  headervalue="1) {!tpl.name}" rendered="{!(tpl.name == 'General Observation')}"/>
+                        <apex:column width="60%" rendered="{!(tpl.name == 'General Observation')}" >
+                            <apex:inputtext value="{!tpl.observation}"/>
+                        </apex:column>
+                        <apex:column headervalue="Remarks"  rendered="{!(tpl.name == 'General Observation')}">
+                            <apex:inputtext value="{!tpl.commentsandRemarks}" />
+                        </apex:column>
+                        <apex:column rendered="{!(tpl.name == 'General Observation')}"> 
+                            <apex:selectlist value="{!tpl.conclusion}" size="1" >
+                                <apex:selectOptions value="{!Conclusion}"/>
+                            </apex:selectlist>  
+                        </apex:column>
+                    </apex:datatable>
+                    <table border="1" class="report-module " id="outPutTbl">
+                        <tr>
+                            <th colspan="2" class="lockCell tableHeadBg">Test Parameters</th>
+                            <th class="freezeCol tableHeadBg">Test Conditions</th>
+                            <th class="freezeCol tableHeadBg">Evaluation Criteria</th>
+                            <th colspan="5" class="freezeCol tableHeadBg">Initial</th>
+                            <th colspan="5" class="freezeCol tableHeadBg">After</th>
+                            <th colspan="5" class="freezeCol tableHeadBg">Observation</th>
+                            <th class="freezeCol tableHeadBg">Remarks</th>
+                            <th class="freezeCol tableHeadBg">Conclusion</th>
+                        </tr>
+                        <tr>
+                            <td class="lockCell tableRowBg"></td>
+                            <td class="lockCell tableRowBg"></td>
+                            <td class="lockCell tableRowBg"></td>  
+                            <td class="lockCell tableRowBg"></td> 
+                            <td class="freezeCol tableRowBg">1</td>
+                            <td class="freezeCol tableRowBg">2</td>
+                            <td class="freezeCol tableRowBg">3</td>
+                            <td class="freezeCol tableRowBg">4</td>
+                            <td class="freezeCol tableRowBg">5</td>
+                            <td class="freezeCol tableRowBg">1</td>
+                            <td class="freezeCol tableRowBg">2</td>
+                            <td class="freezeCol tableRowBg">3</td>
+                            <td class="freezeCol tableRowBg">4</td>
+                            <td class="freezeCol tableRowBg">5</td>
+                            <td class="freezeCol tableRowBg">1</td>
+                            <td class="freezeCol tableRowBg">2</td>
+                            <td class="freezeCol tableRowBg">3</td>
+                            <td class="freezeCol tableRowBg">4</td>
+                            <td class="freezeCol tableRowBg">5</td>
+                            <td class="freezeCol tableRowBg"></td>
+                            <td class="freezeCol tableRowBg"></td>
+                        </tr>
+                        <apex:variable value="{!0}" var="rowNum"/>
+                        <apex:repeat value="{!testWrapList}" var="modTP" id="modRepeat">
+                            <tr>
+                                <td class="freezeRow tableRowBg">
+                                    <apex:commandLink action="{!delTest}" onclick="if(!confirm('Are you sure to delete Test? Please confirm')){return false;}" value="Del" rendered="{!if((modTP.isManual),true,false)}">
+                                        <apex:param name="indexNo" value="{!FLOOR(rowNum)}"/>
+                                    </apex:commandLink>
+                                </td>
+                                <apex:outputpanel rendered="{!if((modTP.isManual),false,true)}">
+                                    <td class="freezeRow tableRowBg">  
+                                        <!--<div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='0ºC for 7 Hours & 55ºC for 7 Hours for 6 Cycles','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />   
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 0º C Duration : 24 Hour','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 55º C Duration : 24 Hour','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 50˚C RH : 95% Duration : 24 Hour in BC opened condition','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />    
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose' && modTP.UOM=='Frequency : 15 Hz to 150 Hz G Force : 5G Direction :  X, Y & Z axis Duration : 20 Minute','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage - During the test' ,'block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose' && modTP.UOM=='Height : 1 Meter Base : wooden board','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose Shift in Time Rate : 0.5S/D Movt. CC:0.5µA Time Variation  3H : ±5Sec / 2H : ±3Min' && modTP.UOM=='Shock : 100g Direction : 6 directions (+X,-X,+Y,-Y,+Z&-Z)  Duration : 2msec No. Of Stroke :','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose Shift in Time Rate : 0.5S/D Movt. CC:0.5µA Time Variation  3H : ±5Sec / 2H : ±3Min' && modTP.UOM=="1st Shock - Against the Case & Parallel to the plane of the Watch on 9#39;0 Clock Side 2nd Shock - Against the MG & perpendicular to the Plane of the Watch",'block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.UOM =='Hours','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.UOM=='No. of  Actuation','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>-->
+                                        <div style="display:{!if(modTP.isVisible,'block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                    </td>
+                                </apex:outputpanel>
+                                <apex:outputpanel rendered="{!if((modTP.isManual && modTP.isParent),true,false)}">
+                                    <td>
+                                        <apex:inputtextarea value="{!modTP.Name}"  style="border-color:{!if(LEN(TRIM(modTP.Name)) == 0 && modTP.isError && modTP.isParent,'red','none')}"/>
+                                    </td>
+                                </apex:outputpanel>
+                                <apex:outputpanel rendered="{!if((modTP.isManual && !modTP.isParent),true,false)}">
+                                    <td><apex:outputtext value="{!modTP.Name}"/></td>
+                                </apex:outputpanel>
+                                <apex:outputpanel rendered="{!if((modTP.isManual),false,true)}"> 
+                                    <td class="freezeRow tableRowBg">  
+                                        <!--<div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='0ºC for 7 Hours & 55ºC for 7 Hours for 6 Cycles','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 0º C Duration : 24 Hour','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 55º C Duration : 24 Hour','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 50˚C RH : 95% Duration : 24 Hour in BC opened condition','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />    
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose' && modTP.UOM=='Frequency : 15 Hz to 150 Hz G Force : 5G Direction :  X, Y & Z axis Duration : 20 Minute','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage - During the test' ,'block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose' && modTP.UOM=='Height : 1 Meter Base : wooden board','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose Shift in Time Rate : 0.5S/D Movt. CC:0.5µA Time Variation  3H : ±5Sec / 2H : ±3Min' && modTP.UOM=='Shock : 100g Direction : 6 directions (+X,-X,+Y,-Y,+Z&-Z)  Duration : 2msec No. Of Stroke :','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose Shift in Time Rate : 0.5S/D Movt. CC:0.5µA Time Variation  3H : ±5Sec / 2H : ±3Min' && modTP.UOM=="1st Shock - Against the Case & Parallel to the plane of the Watch on 9#39;0 Clock Side 2nd Shock - Against the MG & perpendicular to the Plane of the Watch",'block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.UOM =='Hours','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.UOM=='No. of  Actuation','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>-->
+                                        <div style="display:{!if(modTP.isVisible,'block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                    </td>
+                                </apex:outputpanel>
+                                <!-- this panel is rendered only for manual Parent test data means first records in set of five record -->
+                                <apex:outputpanel rendered="{!if((modTP.isManual && modTP.isParent),true,false)}">
+                                    <td><apex:inputtextarea value="{!modTP.UOM}"  style="border-color:{!if(LEN(TRIM(modTP.UOM)) == 0 && modTP.isError && modTP.isParent,'red','none')}"/></td>
+                                </apex:outputpanel>
+                                <!-- this panel is rendered only for manual Child test data in set of five record -->
+                                <apex:outputpanel rendered="{!if((modTP.isManual && !modTP.isParent),true,false)}">
+                                    <td><apex:outputtext value="{!modTP.UOM}"/></td>
+                                </apex:outputpanel>
+                                <!-- this panel is rendered only for manual test data record -->
+                                <apex:outputpanel rendered="{!(modTP.isManual)}">
+                                    <td>
+                                        <!--<span style="color:red;display:{!if(LEN(TRIM(modTP.Specification)) == 0 && modTP.isError == true,'inline','none')}" >{!modTP.errorMsg}</span>-->
+                                        <apex:inputtextarea value="{!modTP.Specification}" style="border-color:{!if(LEN(TRIM(modTP.Specification)) == 0 && modTP.isError == true,'red','none')}" />
+                                    </td>
+                                </apex:outputpanel>
+                                <apex:outputpanel rendered="{!(!modTP.isManual)}">
+                                    <td  class="freezeRow tableRowBg"><apex:outputtext value="{!modTP.Specification}"/></td>
+                                </apex:outputpanel>
+                                <apex:outputpanel rendered="{!(modTP.Specification!='Test observation') && (modTP.name != 'General Observation') && (modTP.Specification !='24 Hours/Color Change')&&(modTP.Specification!='3000 Actuation') && (!modTP.isLast)}">
+                                    <td><apex:inputtext value="{!modTP.initial1}"  id="int1" styleClass="inputbox" onblur="moduleAddition(1,'{!call}','{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}');" onkeyup="validateNumber(this,'{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}')" style="border-color:{!if(LEN(TRIM(modTP.initial1)) == 0 && modTP.isError,'red','none')}" /></td>
+                                    <td><apex:inputtext value="{!modTP.initial2}"  id="int2" styleClass="inputbox" onblur="moduleAddition(2,'{!call}','{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}');" onkeyup="validateNumber(this,'{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}')" style="border-color:{!if(LEN(TRIM(modTP.initial2)) == 0 && modTP.isError,'red','none')}"/></td>
+                                    <td><apex:inputtext value="{!modTP.initial3}"  id="int3" styleClass="inputbox" onblur="moduleAddition(3,'{!call}','{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}');" onkeyup="validateNumber(this,'{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}')" style="border-color:{!if(LEN(TRIM(modTP.initial3)) == 0 && modTP.isError,'red','none')}"/></td>
+                                    <td><apex:inputtext value="{!modTP.initial4}"  id="int4" styleClass="inputbox" onblur="moduleAddition(4,'{!call}','{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}');" onkeyup="validateNumber(this,'{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}')" style="border-color:{!if(LEN(TRIM(modTP.initial4)) == 0 && modTP.isError,'red','none')}"/></td>
+                                    <td><apex:inputtext value="{!modTP.initial5}"  id="int5" styleClass="inputbox" onblur="moduleAddition(5,'{!call}','{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}');" onkeyup="validateNumber(this,'{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}')" style="border-color:{!if(LEN(TRIM(modTP.initial5)) == 0 && modTP.isError,'red','none')}"/></td>
+                                    <td><apex:inputtext value="{!modTP.afterTest1}" id="at1" styleClass="inputbox" onblur="moduleAddition(1,'{!call}','{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}');" onkeyup="validateNumber(this,'{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}')" style="border-color:{!if(LEN(TRIM(modTP.afterTest1)) == 0 && modTP.isError && !modTP.isParent,'red','none')}"/></td>
+                                    <td><apex:inputtext value="{!modTP.afterTest2}" id="at2" styleClass="inputbox" onblur="moduleAddition(2,'{!call}','{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}');" onkeyup="validateNumber(this,'{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}')" style="border-color:{!if(LEN(TRIM(modTP.afterTest2)) == 0 && modTP.isError && !modTP.isParent,'red','none')}"/></td>
+                                    <td><apex:inputtext value="{!modTP.afterTest3}" id="at3" styleClass="inputbox" onblur="moduleAddition(3,'{!call}','{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}');" onkeyup="validateNumber(this,'{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}')" style="border-color:{!if(LEN(TRIM(modTP.afterTest3)) == 0 && modTP.isError && !modTP.isParent,'red','none')}"/></td>
+                                    <td><apex:inputtext value="{!modTP.afterTest4}" id="at4" styleClass="inputbox" onblur="moduleAddition(4,'{!call}','{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}');" onkeyup="validateNumber(this,'{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}')" style="border-color:{!if(LEN(TRIM(modTP.afterTest4)) == 0 && modTP.isError && !modTP.isParent,'red','none')}"/></td>
+                                    <td><apex:inputtext value="{!modTP.afterTest5}" id="at5" styleClass="inputbox" onblur="moduleAddition(5,'{!call}','{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}');" onkeyup="validateNumber(this,'{!modTP.Specification}','{!modTP.isManual}','{!modTP.isParent}')" style="border-color:{!if(LEN(TRIM(modTP.afterTest5)) == 0 && modTP.isError && !modTP.isParent,'red','none')}"/></td>
+                                    <td><apex:inputtext value="{!modTP.observation1}" id="ob1" styleClass="inputbox" /></td>
+                                    <td><apex:inputtext value="{!modTP.observation2}" id="ob2" styleClass="inputbox" /></td>
+                                    <td><apex:inputtext value="{!modTP.observation3}" id="ob3" styleClass="inputbox" /></td>
+                                    <td><apex:inputtext value="{!modTP.observation4}" id="ob4" styleClass="inputbox" /></td>
+                                    <td><apex:inputtext value="{!modTP.observation5}" id="ob5" styleClass="inputbox" /></td>  
+                                    
+                                    <td ><apex:inputtextarea value="{!modTP.commentsandRemarks}" cols="20"/> </td> 
+                                    <td>
+                                        <apex:selectlist value="{!modTP.conclusion}" size="1">
+                                            <apex:selectOptions value="{!Conclusion}"/> 
+                                        </apex:selectlist>  
+                                    </td>
+                                </apex:outputpanel>
+                                
+                                <!-- below row rendered only with specification  Test observation,24 Hours/Color Change,3000 Actuation-->
+                                <apex:outputpanel rendered="{! ((modTP.Specification=='Test observation') || (modTP.Specification =='24 Hours/Color Change')||(modTP.Specification=='3000 Actuation') && (modTP.name != 'General Observation')) || (modTP.isManual && modTP.isLast) }">
+                                    <!--<td class="freezeRow tableRowBg"><apex:outputtext value="{!modTP.Specification}"/></td>-->
+                                    <td colspan="5"><apex:inputtextarea value="{!modTP.initTestObser}" style="border-color:{!if(LEN(TRIM(modTP.initTestObser)) == 0 && modTP.isError,'red','none')}"/></td>
+                                    <td colspan="5"><apex:inputtextarea value="{!modTP.afterTestObser}" style="border-color:{!if(LEN(TRIM(modTP.afterTestObser)) == 0 && modTP.isError,'red','none')}"/></td>
+                                    <td colspan="5"><apex:inputtextarea value="{!modTP.observation}" /></td>
+                                    <td ><apex:inputtextarea value="{!modTP.commentsandRemarks}" cols="20" /> </td> 
+                                    <td>
+                                        <apex:selectlist value="{!modTP.conclusion}" size="1" >
+                                            <apex:selectOptions value="{!Conclusion}"/> 
+                                        </apex:selectlist>  
+                                    </td>
+                                </apex:outputpanel>
+                            </tr>
+                            <apex:variable var="call" value="{!call+1}"/>
+                            <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                        </apex:repeat>
+                    </table>              
+                </apex:outputPanel>
+                
+                <!-- OUTPUT Test parameters for MODULE component -->
+                <apex:outputPanel rendered="{!showTest && (comType == 'Module') && showModuleTest }"  id="modOutputTable">  
+                    <apex:variable var="call" value="{!0}" /> 
+                    <apex:datatable value="{!testWrapList}" var="tpl" id="testparamBatVI11" border="1" width="100%" style="align:center;" cellpadding="10" > 
+                        <apex:column style="color: #1b606f;font-size: 1.2em;font-weight:bold;width:15%" value="{!tpl.name}"  headervalue="1) {!tpl.name}" rendered="{!(tpl.name == 'General Observation')}"/>
+                        
+                        <apex:column width="60%" rendered="{!(tpl.name == 'General Observation')}" >
+                            <apex:outputtext value="{!tpl.observation}" />
+                        </apex:column>
+                        <apex:column headervalue="Remarks"  rendered="{!(tpl.name == 'General Observation')}">
+                            <apex:outputtext value="{!tpl.commentsandRemarks}" />
+                        </apex:column>
+                        <apex:column rendered="{!(tpl.name == 'General Observation')}">  
+                            <apex:outputtext value="{!tpl.conclusion}"/>
+                        </apex:column>
+                        
+                    </apex:datatable>
+                    
+                    <table border="1" class="report-module" id="freezeTab">
+                        <tr><th></th>
+                            <th class="lockCell tableHeadBg">Test Parameters</th>
+                            <th class="lockCell tableHeadBg">Test Conditions</th>
+                            <th class="lockCell tableHeadBg">Evaluation Criteria</th>
+                            <th colspan="5" class="freezeCol tableHeadBg">Initial</th>
+                            <th colspan="5" class="freezeCol tableHeadBg">After</th>
+                            <th colspan="5" class="freezeCol tableHeadBg">Observation</th>
+                            <th class="freezeCol tableHeadBg">Remarks</th>
+                            <th class="freezeCol tableHeadBg">Conclusion</th>
+                        </tr>
+                        <tr>
+                            <td class="lockCell tableRowBg"></td>
+                            <td class="lockCell tableRowBg"></td>
+                            <td class="lockCell tableRowBg"></td>  
+                            <td class="lockCell tableRowBg"></td> 
+                            <td class="freezeCol tableRowBg">1</td>
+                            <td class="freezeCol tableRowBg">2</td>
+                            <td class="freezeCol tableRowBg">3</td>
+                            <td class="freezeCol tableRowBg">4</td>
+                            <td class="freezeCol tableRowBg">5</td>
+                            <td class="freezeCol tableRowBg">1</td>
+                            <td class="freezeCol tableRowBg">2</td>
+                            <td class="freezeCol tableRowBg">3</td>
+                            <td class="freezeCol tableRowBg">4</td>
+                            <td class="freezeCol tableRowBg">5</td>
+                            <td class="freezeCol tableRowBg">1</td>
+                            <td class="freezeCol tableRowBg">2</td>
+                            <td class="freezeCol tableRowBg">3</td>
+                            <td class="freezeCol tableRowBg">4</td>
+                            <td class="freezeCol tableRowBg">5</td>
+                            <td class="freezeCol tableRowBg"></td>
+                            <td class="freezeCol tableRowBg"></td>
+                        </tr>
+                        <apex:variable value="{!0}" var="rowNum"/>
+                        <apex:repeat value="{!testWrapList}" var="modTP" id="modOutputRepeat">
+                            <tr>
+                                <td class="freezeRow tableRowBg">
+                                    <!--<apex:commandLink action="{!delTest}" onclick="if(!confirm('Are you sure to delete Test? Please confirm')){return false;}" value="Del" rendered="{!if((modTP.isManual && modTP.isParent) || (modTP.Specification=='No Stoppage' || modTP.Specification=='No Stoppage / No Component loose' || modTP.Specification=='No Stoppage - During the test' || modTP.Specification=='No Stoppage / No Component loose' || modTP.Specification=='No Stoppage / No Component loose Shift in Time Rate : 0.5S/D Movt. CC:0.5µA Time Variation  3H : ±5Sec / 2H : ±3Min' || modTP.Specification=='No Stoppage / No Component loose Shift in Time Rate : 0.5S/D Movt. CC:0.5µA Time Variation  3H : ±5Sec / 2H : ±3Min' || modTP.UOM =='Hours' || modTP.UOM=='No. of  Actuation'),true,false)}">-->
+                                    <apex:commandLink action="{!delTest}" onclick="if(!confirm('Are you sure to delete Test? Please confirm')){return false;}" value="Del" rendered="{!if((modTP.isManual && modTP.isParent) || (modTP.isVisible),true,false)}"> 
+                                        <apex:param name="indexNo" value="{!FLOOR(rowNum)}"/>
+                                    </apex:commandLink>
+                                </td>
+                                <apex:outputpanel rendered="{!if((modTP.UOM != null || modTP.Specification != null) && !modTP.isManual,True,False)}"> 
+                                    <td class="freezeRow tableRowBg">  
+                                        <!--<div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='0ºC for 7 Hours & 55ºC for 7 Hours for 6 Cycles','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 0º C Duration : 24 Hour','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 55º C Duration : 24 Hour','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 50˚C RH : 95% Duration : 24 Hour in BC opened condition','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose' && modTP.UOM=='Frequency : 15 Hz to 150 Hz G Force : 5G Direction :  X, Y & Z axis Duration : 20 Minute','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage - During the test' ,'block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose' && modTP.UOM=='Height : 1 Meter Base : wooden board','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose Shift in Time Rate : 0.5S/D Movt. CC:0.5µA Time Variation  3H : ±5Sec / 2H : ±3Min' && modTP.UOM=='Shock : 100g Direction : 6 directions (+X,-X,+Y,-Y,+Z&-Z)  Duration : 2msec No. Of Stroke :','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose Shift in Time Rate : 0.5S/D Movt. CC:0.5µA Time Variation  3H : ±5Sec / 2H : ±3Min' && modTP.UOM=='1st Shock - Against the Case & Parallel to the plane of the Watch on 9#39;0 Clock Side 2nd Shock - Against the MG & perpendicular to the Plane of the Watch','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.UOM =='Hours','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.UOM=='No. of  Actuation','block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>--> 
+                                        <div style="display:{!if(modTP.isVisible,'block','none')}">     
+                                            <apex:outputtext value="{!modTP.Name}" styleclass="moduletest" />  
+                                        </div>
+                                    </td>
+                                </apex:outputPanel>
+                                <apex:outputpanel rendered="{!if((modTP.isManual),true,false)}">
+                                    <td class="freezeRow tableRowBg"><apex:outputtext value="{!modTP.Name}" styleclass="moduletest" /></td>
+                                    <td class="freezeRow tableRowBg"><apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" /></td>
+                                </apex:outputPanel>
+                                <apex:outputpanel rendered="{!if((modTP.isManual),false,true)}"> 
+                                    <td class="freezeRow tableRowBg">  
+                                        <!--<div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='0ºC for 7 Hours & 55ºC for 7 Hours for 6 Cycles','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 0º C Duration : 24 Hour','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 55º C Duration : 24 Hour','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 50˚C RH : 95% Duration : 24 Hour in BC opened condition','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose' && modTP.UOM=='Frequency : 15 Hz to 150 Hz G Force : 5G Direction :  X, Y & Z axis Duration : 20 Minute','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage - During the test' ,'block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose' && modTP.UOM=='Height : 1 Meter Base : wooden board','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose Shift in Time Rate : 0.5S/D Movt. CC:0.5µA Time Variation  3H : ±5Sec / 2H : ±3Min' && modTP.UOM=='Shock : 100g Direction : 6 directions (+X,-X,+Y,-Y,+Z&-Z)  Duration : 2msec No. Of Stroke :','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose Shift in Time Rate : 0.5S/D Movt. CC:0.5µA Time Variation  3H : ±5Sec / 2H : ±3Min' && modTP.UOM=="1st Shock - Against the Case & Parallel to the plane of the Watch on 9#39;0 Clock Side 2nd Shock - Against the MG & perpendicular to the Plane of the Watch",'block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.UOM =='Hours','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                        <div style="display:{!if(modTP.UOM=='No. of  Actuation','block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>-->
+                                        <div style="display:{!if(modTP.isVisible,'block','none')}">     
+                                            <apex:outputtext value="{!modTP.UOM}" styleclass="moduletest" />  
+                                        </div>
+                                    </td>
+                                </apex:outputPanel>
+                                <apex:outputpanel rendered="{!(modTP.Specification!='Test observation')&&  (modTP.name != 'General Observation') && (modTP.Specification !='24 Hours/Color Change')&&(modTP.Specification!='3000 Actuation') && (!modTP.isLast)}">
+                                    <td class="freezeRow tableRowBg"><apex:outputtext value="{!modTP.Specification}"/></td>
+                                    <td><apex:outputtext value="{!modTP.initial1}"   styleClass="inputbox" /></td>
+                                    <td><apex:outputtext value="{!modTP.initial2}"   styleClass="inputbox" /></td>
+                                    <td><apex:outputtext value="{!modTP.initial3}"   styleClass="inputbox" /></td>
+                                    <td><apex:outputtext value="{!modTP.initial4}"   styleClass="inputbox" /></td>
+                                    <td><apex:outputtext value="{!modTP.initial5}"   styleClass="inputbox" /></td>
+                                    <td><apex:outputtext value="{!modTP.afterTest1}" styleClass="inputbox" /></td>
+                                    <td><apex:outputtext value="{!modTP.afterTest2}" styleClass="inputbox" /></td>
+                                    <td><apex:outputtext value="{!modTP.afterTest3}" styleClass="inputbox" /></td>
+                                    <td><apex:outputtext value="{!modTP.afterTest4}" styleClass="inputbox" /></td>
+                                    <td><apex:outputtext value="{!modTP.afterTest5}" styleClass="inputbox" /></td>
+                                    <td><apex:outputtext value="{!modTP.observation1}" styleClass="inputbox" /></td>
+                                    <td><apex:outputtext value="{!modTP.observation2}" styleClass="inputbox" /></td>
+                                    <td><apex:outputtext value="{!modTP.observation3}" styleClass="inputbox" /></td>
+                                    <td><apex:outputtext value="{!modTP.observation4}" styleClass="inputbox" /></td>
+                                    <td><apex:outputtext value="{!modTP.observation5}" styleClass="inputbox"  /></td>   
+                                    
+                                    <td><apex:outputtext value="{!modTP.commentsandRemarks}" /></td>     
+                                    <td><apex:outputtext value="{!modTP.conclusion}" /></td>               
+                                </apex:outputpanel>
+                                <!-- below row rendered only with specification  Test observation,24 Hours/Color Change,3000 Actuation-->
+                                <apex:outputpanel rendered="{!((modTP.Specification=='Test observation') || (modTP.Specification =='24 Hours/Color Change')||(modTP.Specification=='3000 Actuation') && (modTP.name != 'General Observation')) || (modTP.isManual && modTP.isLast) }">
+                                    <td class="freezeRow tableRowBg"><apex:outputtext value="{!modTP.Specification}"/></td>
+                                    <td colspan="5"><apex:outputtext value="{!modTP.initTestObser}"/></td>
+                                    <td colspan="5"><apex:outputtext value="{!modTP.afterTestObser}"/></td>
+                                    <td colspan="5"><apex:outputtext value="{!modTP.observation}" /></td>
+                                    <td><apex:outputtext value="{!modTP.commentsandRemarks}" /> </td> 
+                                    <td><apex:outputtext value="{!modTP.conclusion}" /> </td>
+                                    
+                                </apex:outputpanel>
+                            </tr>
+                            <apex:variable var="call" value="{!call+1}"/>
+                            <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                            
+                        </apex:repeat>
+                    </table>   
+                </apex:outputPanel> 
+                
+                <div class="marginTB20 alignCenter">
+                    <div class="displayInLine marginLR10" style="display:{!if(showTest && !IsInputLocked && showComp && show,'inline','none')}"> 
+                        <apex:commandButton value="Edit" action="{!edit}" />  
+                    </div>
+                    <div class="displayInLine marginLR10" style="display:{!if(((!showTest)&&(show) && (comType != 'Battery' )),'inline','none')}">
+                        <apex:commandButton value="Add Test" action="{!addTest}" />    
+                    </div>
+                    <div class="displayInLine marginLR10" style="display:{!if(((!showTest)&&(show)),'inline','none')}">
+                        <apex:commandButton value="Save" action="{!updateTestData}"   />    <!--|| (comType == 'Module') -->
+                    </div> 
+                    <div class="displayInLine marginLR10" style="display:{!if(((!showTest)&&(show)),'inline','none')}">
+                        <apex:commandButton value="Cancel" action="{!cancel}"   />  <!-- || (comType == 'Module') -->
+                    </div>
+                    <div class="displayInLine marginLR10" style="display:{!if(showApproval && showTest && component.Sample_Category__c != 'Competitor Products' && (component.Document_Status__c == 'Draft' || component.Document_Status__c == 'Partial Published') && component.Parent__c == null && sDataList.size != 0,'inline','none')}">  
+                        <apex:commandButton value="Submit for Approval" action="{!submitApproval}"  />   <!-- oncomplete="relodParent();" oncomplete="window.top.location='/apex/QC_Tabs?id{!component.id}'; return false" rendered="{!(comId!=null) && (testAllParameter.size > 0)}"-->
+                    </div>
+                    
+                </div>
+            </apex:outputPanel>
+            <!-- added by sudama for new development of resubmition error message-->
+            
+            <apex:panelGroup style="display:{!if(AND((component.Sample_Category__c == 'Re-submission'),component.Parent_Report_Reference_Number__c!=''),'inline','none')}" rendered="{! If(mSize !=0 ,true,false) }"> 
+                <div>
+                    <div class="colorPlainDivGrey marginTB20"><div class="alignLeft paddingT15 marginL15"><h1>Earlier Test Findings</h1></div></div>
+                </div> 
+                <apex:outputpanel > 
+                    <table border="1" width="100%" style="align:center;" cellpadding="10">
+                        <td colspan="6" style="font-family:Arial,Helvetica,sans-serif;background:#f7ffe6;font-weight:bold;font-size:14px; color:#2e5cb8;"><div align="center"><b>Report Reference Number : <apex:outputtext value="{!component.Parent_Report_Reference_Number__c}"/></b></div></td>
+                        
+                        <apex:outputpanel rendered="{!If(parentTestData.size !=0 ,true,false)}">
+                            <tr>
+                                <td colspan="6" style="font-family:Arial,Helvetica,sans-serif;background:#d6f5d6;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                                    <apex:outputText value="Full Watch" />                           
+                                </td>
+                            </tr>               
+                            <tr style="font-weight: bold; color: black;">         
+                                <td>Test</td>
+                                <td>Specification</td>
+                                <td>UOM</td>
+                                <td>Observation</td>
+                                <td>Remark</td>
+                                <td>Conclusion</td>                   
+                            </tr>
+                            <apex:repeat value="{!parentTestData}" var="tpl" id="testparam11111" >  
+                                <tr>
+                                    <td>
+                                        <apex:outputText value="{!tpl.Condition_Ref__r.Question__r.Test_Name__c}" />
+                                        <apex:outputText value="{!tpl.Test_Name__c}" />                           
+                                    </td>
+                                    <td >
+                                        <apex:outputText value="{!tpl.Condition_Ref__r.Question__r.Specification__c}"/>
+                                        <apex:outputText value="{!tpl.Specification_Input__c}"/>                           
+                                    </td>
+                                    <td>
+                                        <apex:outputText value="{!tpl.Condition_Ref__r.Question__r.UOM__c}"/>
+                                        <apex:outputText value="{!tpl.UOM_Input__c}"/>                           
+                                    </td>
+                                    <td> 
+                                        <apex:outputText value="{!tpl.Observation__c}" />
+                                    </td>
+                                    <td>
+                                        <apex:outputText value="{!tpl.Comments_and_Remarks__c}"/>
+                                    </td>
+                                    <td>
+                                        <apex:outputtext value="{!tpl.Conclusion__c}"/>
+                                    </td>                      
+                                </tr>
+                            </apex:repeat>
+                        </apex:outputpanel>
+                        
+                        <apex:repeat value="{!mAllChildTestData}" var="childMap" id="testparam111" >                         
+                            <tr>
+                                <td colspan="6" style="font-family:Arial,Helvetica,sans-serif;background:#d6f5d6;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                                    <apex:outputText value="{!childMap}" />                           
+                                </td>
+                            </tr>               
+                            <tr style="font-weight: bold; color: black;">         
+                                <td>Test</td>
+                                <td>Specification</td>
+                                <td>UOM</td>
+                                <td>Observation</td>
+                                <td>Remark</td>
+                                <td>Conclusion</td>                   
+                            </tr>
+                            <apex:repeat value="{!mAllChildTestData[childMap]}" var="childTest">  
+                                <apex:outputpanel >                   
+                                    <tr>
+                                        <td>
+                                            <apex:outputText value="{!childTest.Condition_Ref__r.Question__r.Test_Name__c}" />
+                                            <apex:outputText value="{!childTest.Test_Name__c}" />                           
+                                        </td>
+                                        <td >
+                                            <apex:outputText value="{!childTest.Condition_Ref__r.Question__r.Specification__c}"/>
+                                            <apex:outputText value="{!childTest.Specification_Input__c}"/>                           
+                                        </td>
+                                        <td>
+                                            <apex:outputText value="{!childTest.Condition_Ref__r.Question__r.UOM__c}"/>
+                                            <apex:outputText value="{!childTest.UOM_Input__c}"/>                           
+                                        </td>
+                                        <td> 
+                                            <apex:outputText value="{!childTest.Observation__c}" />
+                                        </td>
+                                        <td>
+                                            <apex:outputText value="{!childTest.Comments_and_Remarks__c}"/>
+                                        </td>
+                                        <td>
+                                            <apex:outputtext value="{!childTest.Conclusion__c}"/>
+                                        </td>                      
+                                    </tr>
+                                </apex:outputpanel>
+                            </apex:repeat>
+                        </apex:repeat>
+                    </table>
+                </apex:outputpanel>           
+            </apex:panelGroup>
+            <!--</apex:actionRegion >-->
+        </div>  
+        <apex:outputPanel rendered="{!refreshPage}">
+            <script>
+            window.top.location='/apex/QC_Tabs?id={!component.id}';
+            </script>
+        </apex:outputPanel>
+        
+        <script>
+        /*$(function () {
+            $('.expander').live('click', function () {
+                $('#TableData').slideToggle();
+            });
+        });*/
+        </script>
+    </apex:form> 
+    <apex:outputPanel rendered="{!IF($Profile.Name!='NPD-Stage User',true,false)}">
+    </apex:outputPanel> 
+</apex:page>

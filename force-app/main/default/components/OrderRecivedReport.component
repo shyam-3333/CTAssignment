@@ -1,0 +1,64 @@
+<apex:component controller="VF_001" access="global" allowDML="false">
+   <center><h1>Orders Recieved-Weekly Basis</h1></center>
+    <table>
+    <apex:repeat value="{!accounttotals}" var="a" >
+        <tr>
+                   <table style="border:1px solid black;">
+                        <tr>
+                            <th style="border:1px solid black;">Account</th>
+                            <th style="border:1px solid black;">Opportunity</th>
+                            <th style="border:1px solid black;">Basic Price(INR)</th>
+                            <th style="border:1px solid black;">Turnover</th>
+                            <th style="border:1px solid black;">PO Date</th>
+                            <th style="border:1px solid black;">LOI Date</th>
+                            <th style="border:1px solid black;">Member1</th>
+                            <th style="border:1px solid black;">Member2</th>
+                        </tr>
+                    </table>
+                    <table style="border:1px solid black;">
+        <apex:variable value="{!1}" var="index">
+       <apex:repeat value="{!a.account.opportunities}" var="o">
+        <tr style="border:1px solid black; border-collapse:collapse;width:100%;">
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!a.account.name}" rendered="{! If(index == 1, true, false)}"/></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Basic_Price__c}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Turnover1__c}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.PO_Date__c}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.LOI_Date__c}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Member1__r.FirstName}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Member2__r.FirstName}"></apex:outputText></td>
+         <apex:variable value="{!index+1}" var="index"/>  
+        </tr>
+       </apex:repeat>
+      </apex:variable>
+      <!--<table style="border:1px solid black;">
+       <apex:variable value="{!1}" var="index">
+       <tr>
+         <th style="border:1px solid black;"></th>
+         <th style="border:1px solid black;">Total Amount</th>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><b><apex:outputText value="{!a.total.Total_Amount_In_Lakh__c}" rendered="{! If(index == 1, true, false)}"/></b></td>
+         <th style="border:1px solid black;"></th>
+         <th style="border:1px solid black;"></th>
+         <th style="border:1px solid black;"></th>
+         <apex:variable value="{!index+1}" var="index"/>  
+       </tr>
+       </apex:variable>
+      </table>-->    
+     </table>
+                
+           </tr> 
+       </apex:repeat>
+       </table>
+                <!--<table style="border:1px solid black;">
+                    <tr>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"><b>Grand Total</b></th>
+                         <th style="border:1px solid black;"><apex:outputText value="{!grandTotal}"/></th>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"></th>
+                         
+                    </tr>
+                </table>-->
+    
+</apex:component>

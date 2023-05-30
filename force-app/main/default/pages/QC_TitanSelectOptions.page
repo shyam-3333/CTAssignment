@@ -1,0 +1,281 @@
+<!--
+    Name:
+    Created By: Shamshar Singh,Anand Durga Prasad
+    Created Date:
+    Modified By:  Anand Durga Prasad
+    Last Modified Date:
+    Description: Page for selecting sample category, sample type to create different components like(Full-Watch, Watch-Head, Case, Dial, Metal-strap, Leather-strap, special-strap,Battery,Module, Packaging)
+-->
+<apex:page controller="QC_TitanSelectOptions" sidebar="false" id="pge"> 
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+</head>
+<apex:includeScript value="{!URLFOR($Resource.JqueryA, 'js/jquery-1.6.2.min.js')}"/>
+<apex:includeScript value="{!URLFOR($Resource.JqueryA, 'js/jquery-ui-1.8.16.custom.min.js')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.JqueryA, 'css/ui-lightness/jquery-ui-1.8.16.custom.css')}"/>
+<apex:stylesheet value="{!$Page.QC_titanStylesSheet}" />        
+
+ <script>
+    function restrictMultiStrapSelection(val){
+        var component=val;
+        alert(component);
+   }
+   
+    //JS method to hide master variant field when master checkbox selected.
+    function hideMasterVariant(){
+        checkVal = document.getElementById("pge:frm:master").checked;
+        //alert(checkVal);
+        var disp = (checkVal == true) ? "none" : "inline";
+        document.getElementById("mvlabel").style.display = disp;
+        if( document.getElementById("pge:frm:mFullWatch") != null){
+          document.getElementById("pge:frm:mFullWatch").style.display = disp;
+        }
+        if( document.getElementById("pge:frm:mFullWatch_lkwgt") != null){
+          document.getElementById("pge:frm:mFullWatch_lkwgt").style.display = disp; 
+        }
+        if( document.getElementById("pge:frm:mWatchHead") != null){
+          document.getElementById("pge:frm:mWatchHead").style.display = disp; 
+        }
+        if( document.getElementById("pge:frm:mWatchHead_lkwgt") != null){
+          document.getElementById("pge:frm:mWatchHead_lkwgt").style.display = disp; 
+        }
+    }
+    
+    //JS method to hide master field when master variant having value.
+    function hideMaster(){
+         var mVariantVal;
+          if(document.getElementById("pge:frm:mFullWatch") != null){
+              mVariantVal = document.getElementById("pge:frm:mFullWatch");
+          }
+          else  if(document.getElementById("pge:frm:mWatchHead") != null){
+              mVariantVal = document.getElementById("pge:frm:mWatchHead");
+          }
+          var disp = (mVariantVal != null) ? "none" : "inline";
+          document.getElementById("masterLabel").style.display = disp;
+          document.getElementById("pge:frm:master").style.display = disp;
+    }
+
+ </script>
+ <style>
+    .question 
+    {
+       color:black;
+       font-size: 14px;
+     }
+     
+     .fieldLabel
+     {
+       font-weight : bold;
+       font-size   :12px;
+       text-align  :right;
+     }
+     .btn-primary {
+        color: #fff !important;
+        background-color: #337ab7 !important;
+        border-color: #2e6da4 !important;
+    }
+     .fieldvisiblity
+     {
+        display: none;
+     }
+    
+</style>
+ <apex:pageMessages />
+ <apex:form id="frm"> 
+      <div class="pageContainer alignCenter">
+      <div class="colorPlainDivGrey ">
+          <div class="alignLeft paddingT15 marginL15"><h1>Sample Category and Type</h1></div>
+      </div>  
+            <div class="marginTB20 ">
+                <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2>Sample Category :</h2> </div> 
+                 <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:selectList size="1" value="{!firstSelection}">
+                 <apex:selectOptions value="{!FirstAction}"></apex:selectOptions>
+                  <apex:actionSupport event="onchange" reRender="frm,master" action="{!submit}"/>
+              </apex:selectList>   </div> 
+             </div>
+<!-- add rendered to Competitor Products as per new requirement -->
+             <div class="marginTB20 ">
+                   <apex:outputPanel rendered="{!(firstSelection == 'New' || firstSelection == 'New Material' || firstSelection == 'New Design' || firstSelection == 'New Construction ' || firstSelection == 'New Vendor' || firstSelection == 'New Color' || firstSelection == 'Bulk lot confirmation' || firstSelection == 'Update' || firstSelection == 'Re-Certification' || firstSelection == 'Re-Submission' || firstSelection == 'Competitor Products')}">
+                       <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2> Sample Type   : </h2> </div>
+                       <div class="marginLR10 divWidth40P displayInLine alignLeft"><apex:selectList size="1" value="{!secondSelection}">
+                 <apex:selectOptions value="{!secondAction}"></apex:selectOptions>
+                 <apex:actionSupport event="onchange" reRender="frm,master" action="{!submit}"/>
+              </apex:selectList></div> 
+                  </apex:outputPanel>
+            </div>
+            
+     <apex:outputPanel rendered="{!showInputData}" id="compBlock" >
+         <div>
+        <table border="0" width="100%" >
+           <tr><td align="center">
+           <div class="colorPlainDivGrey">
+           <div class="alignLeft paddingT15 marginL15"><h1> Reliability Testing - {!secondSelection}</h1>
+           </div>
+           </div>
+             
+           </td></tr>
+        </table>
+      </div>
+         <table width="100%" >
+                 <tr>
+                     <td class="fieldLabel">{!$ObjectType.QC_Components__c.fields.Model__c.label}</td><td><apex:inputfield value="{!component.Model__c}"/></td>
+                     <td class="fieldLabel">{!$ObjectType.QC_Components__c.fields.Sample_Date__c.label}</td><td><apex:inputfield value="{!component.Sample_Date__c}"  /></td>      
+                 </tr>
+                 <tr>
+                     <td class="fieldLabel">PSY Ref / Concept Ref / Vendor Ref</td><td><apex:inputfield value="{!component.PSY_Reference__c}"  /></td>          
+                     <td class="fieldLabel">{!$ObjectType.QC_Components__c.fields.Vendor__c.label}</td><td><apex:inputfield value="{!component.Vendor__c}"  /></td>              
+                 </tr>
+                 <tr>    
+                     <td class="fieldLabel">{!$ObjectType.QC_Components__c.fields.Brand__c.label}<span style="color:red;font-size:16px;">*</span></td>
+                     <td><apex:inputfield value="{!component.Brand__c}">
+                     	<apex:actionSupport event="onchange" reRender="frm,master" action="{!selectBrand}"/>
+                     </apex:inputfield></td>
+                     <td class="fieldLabel">{!$ObjectType.QC_Components__c.fields.Sample_Department__c.label}</td><td><apex:inputfield value="{!component.Sample_Department__c}"  /></td>
+                 </tr>
+                 <tr>   
+                     <td class="fieldLabel">{!$ObjectType.QC_Components__c.fields.Watch_variant__c.label}</td><td><apex:inputfield value="{!component.Watch_variant__c}"  /></td> 
+                      <td class="fieldLabel">Number of Samples Received</td><td><apex:inputfield value="{!component.No_Of_Sample_Received__c}"  /></td>
+                 </tr>
+                 <tr>
+                     <td class="fieldLabel">{!$ObjectType.QC_Components__c.fields.Test_Back_Ground__c.label}</td><td><apex:inputfield value="{!component.Test_Back_Ground__c}"/></td>
+                     <td class="fieldLabel" id="mvlabel">Master Variant</td>
+                     <td>
+                           
+                            <!--  <apex:inputfield value="{!master.Master_FullWatch__c}" onchange="hideMaster();"  id="mFullWatch" rendered="{!secondSelection == 'Full-Watch'}"/>
+                            <apex:inputfield value="{!master.Master_WatchHead__c}" onchange="hideMaster();" id="mWatchHead" rendered="{!secondSelection == 'Watch-Head' }"/>
+                           <!-- <apex:inputfield value="{!component.Master_Variant__c}" rendered="{!component.Master__c==false}" />-->          
+                           <apex:inputfield value="{!master.Master_FullWatch__c}" id="mFullWatch" rendered="{!secondSelection == 'Full-Watch' && component.Master__c==false}">                              
+                               <apex:actionsupport event="onchange" rerender="compBlock"/>
+                           </apex:inputfield>
+                           <apex:inputfield value="{!master.Master_WatchHead__c}" id="mWatchHead" rendered="{!secondSelection == 'Watch-Head' && component.Master__c==false}">                         
+                               <apex:actionsupport event="onchange" rerender="compBlock"/>
+                           </apex:inputfield>
+                     </td>
+                  </tr>
+                  
+                  <tr>
+                   
+<!--                   <td> <apex:inputfield value="{!component.Master__c}" id="master" onclick="hideMasterVariant()" /> </td> -->
+                       <td class="fieldLabel" style="display:{!if(master.Master_FullWatch__c == null && master.Master_WatchHead__c == null,'inline','none')}">Master</td>
+                   <td> 
+                         <apex:inputfield value="{!component.Master__c}" id="master" onclick="hideMasterVariant()" rendered="{!master.Master_FullWatch__c == null && master.Master_WatchHead__c == null}"/>
+                        <!-- <apex:inputfield value="{!component.Master__c}" rendered="{!master.Master_FullWatch__c == null && master.Master_WatchHead__c == null}">
+                            <apex:actionsupport event="onclick" rerender="compBlock,CopyFullHead"/>  
+                         </apex:inputfield>  -->
+                   </td>  
+                   <td class="fieldLabel">{!$ObjectType.QC_Components__c.fields.Sample_Received_From__c.label}</td>
+                   <td><apex:inputfield value="{!component.Sample_Received_From__c}"/></td>
+                  </tr>
+             	  <tr>
+                      <td class="fieldLabel fieldvisiblity">{!$ObjectType.QC_Components__c.fields.Brands__c.label}</td><td class="fieldvisiblity"><apex:inputfield value="{!component.Brands__c}"  /></td>
+                      <td class="fieldLabel ">{!$ObjectType.QC_Components__c.fields.Cluster__c.label}</td><td><apex:inputfield value="{!component.Cluster__c}"  /></td>
+                      
+                  </tr>
+      </table> 
+     </apex:outputPanel>
+     <!-- <apex:outputPanel rendered="{!renderMaster}" id="master" >
+         <table width="100%" >
+             <tr><td class="fieldLabel">Master</td>
+                 <td>
+                      <apex:inputfield value="{!component.Master__c}" rendered="{!component.Master_Variant__c == null}">
+                       <apex:actionsupport event="onclick" rerender="compBlock"/>
+                      </apex:inputfield>
+                 </td> 
+             </tr>
+         </table>
+     </apex:outputPanel> -->
+
+         <apex:outputPanel id="CopyFullHead">
+         <apex:outputPanel rendered="{!showCopyComponent}" >
+            <div align="center">
+                <apex:selectcheckboxes id="selectCopyComp" value="{!copySelectedComp}" >
+                   <b>Select the component to copy data:</b>
+                        <apex:selectOptions value="{!copyDataMasterVariant}" ></apex:selectOptions>
+                        <!-- <apex:actionSupport event="onclick" reRender="frm" action="{!submit}"/> -->
+                        <apex:actionSupport event="onclick" reRender="" action="{!submit}"/>
+                </apex:selectcheckboxes> 
+                <br></br>
+            </div>
+        </apex:outputPanel>
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!showFullWatchComp}" id="fullWat">
+            <div align="center">
+                <apex:selectcheckboxes id="selectFullWatchComp" value="{!componentFullWatch}" >
+                    <apex:selectOptions value="{!optionCompFullWatch}" ></apex:selectOptions>
+                      <!-- <apex:actionSupport event="onclick" reRender="frm" action="{!submit}"/>  -->
+                      <apex:actionSupport event="onclick" reRender="CopyFullHead" action="{!submit}"/>
+                </apex:selectcheckboxes> 
+                <br></br>
+                <apex:commandButton value="Save & Next" action="{!componentMaster}"/>
+            </div>
+        </apex:outputPanel> 
+        
+        <apex:outputPanel rendered="{!showWatchHeadComp}" id="watHead">
+            <div align="center">
+                <apex:selectcheckboxes id="selectWatchHeadComp" value="{!componentWatchHead}">
+                    <apex:selectoptions value="{!optionsWatchHead}"></apex:selectoptions>
+                    <apex:actionSupport event="onclick" reRender="CopyFullHead" action="{!submit}"/>
+               </apex:selectcheckboxes> 
+                <br></br>
+                <apex:commandButton value="Save & Next" action="{!componentMaster}" />
+            </div>
+        </apex:outputPanel>
+        
+      <apex:outputPanel rendered="{!showIndiComp}" id="comp">
+            <div align="center">
+                <apex:selectRadio id="selectindiComp" value="{!componentPicklist}" onclick="">
+                    <apex:selectOptions value="{!optionIndividualComponent}" ></apex:selectOptions>
+             </apex:selectRadio>
+                <apex:commandButton value="Save & Next" action="{!componentMaster}" reRender="frm" />
+            </div>
+      </apex:outputPanel> 
+      
+      <apex:outputpanel rendered="{!(firstSelection == 'Update') && (secondSelection == 'Full-Watch')}">     
+      <div class="marginTB20 ">
+           <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2> Report Reference Number </h2></div>
+           <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield value="{!master.FullWatch_Lookup__c}"  /></div>
+           <div class="marginLR10 divWidth40P displayInLine marginTB20"> <apex:commandButton value="Submit" action="{!updateComponents}"/>  </div>
+            </div>
+      </apex:outputpanel>
+      
+      <apex:outputpanel rendered="{!(firstSelection == 'Update')  && (secondSelection == 'Watch-Head')}">
+      <div class="marginTB20 ">
+            <div class="marginLR10 divWidth40P displayInLine alignRight"><h2>Report Reference Number :</h2></div> 
+            <div class="marginLR10 divWidth40P displayInLine alignLeft"> <apex:inputfield value="{!master.WatchHead_Lookup__c}"  /></div>
+            <div class="marginLR10 divWidth40P displayInLine marginTB20"> <apex:commandButton value="Submit" action="{!updateComponents}"/></div>  
+       </div>
+     </apex:outputpanel>
+
+      <apex:outputpanel rendered="{!(firstSelection == 'Update') && (secondSelection == 'Watch-Component')}">
+          <div class="marginTB20 ">
+               <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2> Report Reference Number :</h2></div>
+               <div class="marginLR10 divWidth40P displayInLine alignLeft"><apex:inputfield value="{!master.Component_Lookup__c}"  /></div>
+               <div class="marginLR10 divWidth40P displayInLine marginTB20"><apex:commandButton value="Submit" action="{!updateComponents}"/> </div>
+          </div> 
+      </apex:outputpanel>
+      
+      <apex:outputpanel rendered="{!(firstSelection == 'Re-Submission' && secondSelection == 'Full-Watch' )}">
+         <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2> Report Reference Number : </h2></div>
+<!--             <div class="marginLR10 divWidth40P displayInLine alignLeft"><apex:inputfield value="{!master.FullWatch_Lookup__c}" /></div> -->
+            <div class="marginLR10 divWidth40P displayInLine alignLeft"><apex:inputfield value="{!master.ReSub_FullWatch__c}" /></div>
+            <div class="marginLR10 divWidth40P displayInLine marginTB20"><apex:commandButton value="Submit" action="{!reSubmission}" /></div>
+      </apex:outputpanel>
+      
+      <apex:outputpanel rendered="{!(firstSelection == 'Re-Submission' && secondSelection == 'Watch-Head' )}"> 
+         <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2> Report Reference Number : </h2></div>
+<!--              <div class="marginLR10 divWidth40P displayInLine alignLeft"><apex:inputfield value="{!master.WatchHead_Lookup__c}" /></div> -->
+             <div class="marginLR10 divWidth40P displayInLine alignLeft"><apex:inputfield value="{!master.ReSub_WatchHead__c}" /></div>
+             <div class="marginLR10 divWidth40P displayInLine marginTB20"><apex:commandButton value="Submit" action="{!reSubmission}" /></div>
+      </apex:outputpanel>
+
+      <apex:outputpanel rendered="{!firstSelection == 'Re-Submission' && secondSelection == 'Watch-Component'}">
+         <div class="marginLR10 divWidth40P displayInLine alignRight">   <h2> Report Reference Number : </h2></div>
+<!--              <div class="marginLR10 divWidth40P displayInLine alignLeft"><apex:inputfield value="{!master.Component_Lookup__c}" /></div> -->
+             <div class="marginLR10 divWidth40P displayInLine alignLeft"><apex:inputfield value="{!master.ReSub_Component__c}" /></div>
+             <div class="marginLR10 divWidth40P displayInLine marginTB20"><apex:commandButton value="Submit" action="{!reSubmission}" /></div>
+      </apex:outputpanel>
+   
+      </div>
+ </apex:form>
+ </apex:page>

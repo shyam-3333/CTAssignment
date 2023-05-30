@@ -1,0 +1,69 @@
+<apex:page standardController="Quote" extensions="QuoteLIQuoteOpportunity_DataHandler" renderAs="PDF" >
+    <head> <!-- contentType="application/x-excel#RenderAsTestFile.xls" -->
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    </head>
+    <div>
+        <table width="100%" cellspacing="0" border="1" align="left" style=" font-family:Arial,Helvetica,sans-serif; font-size:10pt;color:#000;">
+            <tr align= "center" colspan="1">
+                
+                <th>Product</th>
+                <th>Designation</th>
+                <th>Shipping City</th>
+                <th>Denomination</th>
+                <th>Quantity</th>
+                <th>Amount</th>
+                <th>Purchase Order</th>
+                <th>Recipient Email ID</th>
+                
+            </tr>
+            <apex:variable value="{!0}"  var="totalQty"/>
+            <apex:variable value="{!0}"  var="totalAmt"/>
+            <apex:repeat value="{!wrapList.sObjQuoteDataList}" var="qtval">
+                <tr style="font-family:Arial,Helvetica,sans-serif;background:#d6f5d6;font-weight:bold;font-size:12px; color:#2e5cb8;">
+                    
+                    <td width="30%">
+                        <apex:outputField value="{!qtval.Product2.Name}"/>
+                    </td >
+                    <td width="30%">
+                        <apex:outputText value="{!Quote.Opportunity.Owner.UserRole.Name}"/>
+                    </td>
+                    
+                    <td width="30%">
+                        <apex:outputField value="{!Quote.Opportunity.Owner.City}"/>
+                    </td>   
+                    <td width="30%">
+                        <apex:outputText value="{0,number,###,###,##0}">
+                            <apex:param value="{!qtval.Sales_Price_c__c}"/>
+                        </apex:outputText>
+                      </td > 
+                    <td width="30%">
+                        <apex:outputText value="{0,number,###,###,##0}">
+                        <apex:param value="{!qtval.Quantity}"/>
+                            </apex:outputText>
+                    </td>
+                    <td width="30%">
+                        <apex:outputText value="{0,number,###,###,##0}">
+                        <apex:param value="{!qtval.Sales_Price_c__c * qtval.Quantity}"/>
+                            </apex:outputText>
+                    </td>
+                    <td width="30%">
+                        <apex:outputField value="{!Quote.Insti_ref__c}"/>
+                    </td>
+                    <td width="30%">
+                        <apex:outputField value="{!Quote.Recipient_Email_ID__c}"/>
+                    </td>
+                    
+                </tr> 
+                <apex:variable value="{!totalQty + qtval.Quantity }"  var="totalQty"/>
+                <apex:variable value="{!totalAmt + (qtval.Sales_Price_c__c * qtval.Quantity)}"  var="totalAmt"/>
+            </apex:repeat>         
+            <tr>
+                <td colspan="4" style="text-align:right;font-weight: bold;"> TOTAL </td>   
+                <td>{!totalQty}</td>
+                <td colspan="3" style="text-align:left;">{!totalAmt}</td>
+            </tr>
+        </table>
+    </div>
+    
+    
+</apex:page>

@@ -1,0 +1,45 @@
+<apex:page controller="RTWProductViewController" cache="true" readOnly="true" renderAs="pdf" >
+    <apex:stylesheet value="{!$Resource.pdfdownloadCSS}" />
+    <script type = "text/javascript">
+    
+    </script>
+    <table border='1'>
+        <thead>
+            <tr> 
+                <th>ITEM NO</th>
+                <th>VENDOR NAME</th>
+                <!--<th>VENDOR CODE</th>-->
+                <th>VENDOR STYLE CODE</th>
+                <th>SKU</th>
+                <th>STYLE CODE</th>
+                <th>PRODUCT CATEGORY</th>
+                <th>BASE COLOUR</th>
+                <th>CRAFT</th>
+                <th>FABRIC</th>
+                <th>COST</th>
+                <th>QUANTITY</th>
+                <th>PHOTO</th>
+            </tr>
+        </thead>
+        <tbody>
+            <apex:repeat value="{!proViewList}" var="dwnld">
+                <tr>
+                    <td>{!dwnld.Item_no__c}</td>
+                    <td>{!dwnld.vendor_custom__r.Name}</td>
+                    <!--<td>{!dwnld.vendor_custom__r.Vendor_Code__c}</td>-->
+                    <td>{!dwnld.Vendot_style_code__c}</td>
+                    <td>{!dwnld.SKU__c}</td>
+                    <td>{!dwnld.Style_Code__c}</td>
+                    <td>{!dwnld.Product__c}</td>
+                    <td>{!dwnld.Base_Colour__c}</td>
+                    <td>{!dwnld.Craft__c}</td>
+                    <td>{!dwnld.MFabric__c}</td>
+                    <td>{!dwnld.MRP_Pc__c}</td>
+                    <td>{!dwnld.Quantity__c}</td>
+                    <td><apex:image value="{!dwnld.ImageLink__c}"/></td>
+                </tr>
+            </apex:repeat>
+            
+        </tbody>
+    </table>
+</apex:page>

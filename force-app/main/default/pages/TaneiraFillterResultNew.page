@@ -1,0 +1,160 @@
+<apex:page controller="TaneiraFillterResultNew" sidebar="false" showHeader="false" > 
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"/>
+    <apex:includeScript value="https://unpkg.com/sticky-table-headers" /> 
+    <style>
+        .squeeze {
+            overflow: auto;
+            height: 500px;
+        }
+    </style>
+    
+    <apex:form >
+        <apex:actionFunction name="refreshPageSize" action="{!refreshPageSize}" status="fetchStatus" reRender="pbId"/>
+        <apex:pageBlock id="pbId">
+                                   
+            <apex:panelGroup >
+                <font size="10" color="black"> <b> Ask Me </b> </font>
+                 
+                <apex:selectRadio value="{!product}" >                  
+                      <apex:selectOptions value="{!Items}"></apex:selectOptions>                  
+                </apex:selectRadio>                         
+                  <apex:inputtext id="searchTextBox" value="{!searchText}"> </apex:inputtext>
+                      <strong><apex:commandButton Id="btnSearch" action="{!search}" rerender="renderBlock" status="status" title="Search" value="Search" /></strong>                
+            </apex:panelGroup>
+            
+             <apex:outputPanel layout="block" styleClass="squeeze">
+                 <apex:pageBlockTable value="{!Products}" var="prod" style="width:100%" id="prodpgblktbl" > 
+                     
+                     
+                      <apex:column headerValue="Photo">
+                        <apex:commandLink action="{!assetClicked}" value="View Image" id="theCommandLink" > 
+                        <apex:param value="{!prod.Photo__c}" name="id" assignTo="{!selectedAsset}" ></apex:param>
+                        </apex:commandLink>
+                     </apex:column>  
+           <!---    <apex:column headerValue="Photo">           
+                     <apex:outputField value="{!prod.Photo__c}" rendered="{!NOT(ISBLANK(prod.Photo__c))}"/>
+                        <apex:image value="/profilephoto/005/T" rendered="{!ISBLANK(prod.Photo__c)}"/> 
+                    </apex:column>  --->
+                    
+                    <apex:column headerValue="Vender Product code" style="width:250px">
+                        <apex:outputField value="{!prod.Vendor_code__c}"/>
+                    </apex:column>                    
+                    <apex:column headerValue="SKU" style="width:250px">
+                        <apex:outputField value="{!prod.SKU_Code__c}"/>
+                    </apex:column>
+                    <apex:column headerValue="Product Category">
+                        <apex:outputField value="{!prod.Product_Category_Taneira__c}"/>                        
+                    </apex:column>
+                    <apex:column headerValue="Vendor Name">
+                        <apex:outputField value="{!prod.Vendor_Name__c}"/>                        
+                    </apex:column>
+                    <apex:column headerValue="Proc Type">
+                        <apex:outputField value="{!prod.Proc_Type__c}"/>                        
+                    </apex:column>
+                    <apex:column headerValue="Proc Socrce">
+                        <apex:outputField value="{!prod.Proc_Source__c}"/>                        
+                    </apex:column>
+                    <apex:column headerValue="PO Number">
+                        <apex:outputField value="{!prod.PO_Number__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Cost Price">
+                        <apex:outputField value="{!prod.Cost__c}"/>                        
+                    </apex:column>
+                    <apex:column headerValue="Quantity">
+                        <apex:outputField value="{!prod.Quantity__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="MRP">
+                        <apex:outputField value="{!prod.Suggested_MRP__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Origin">
+                        <apex:outputField value="{!prod.Cluster__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Design Story">
+                        <apex:outputField value="{!prod.Design_Story__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Story1">
+                        <apex:outputField value="{!prod.Story_1__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Story2">
+                        <apex:outputField value="{!prod.Story_2__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Design Description">
+                        <apex:outputField value="{!prod.Design_Description__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Wrap">
+                        <apex:outputField value="{!prod.Material_Wrap__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Weft">
+                        <apex:outputField value="{!prod.Weft__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Zari Type">
+                        <apex:outputField value="{!prod.Zari_Type__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue=" Base Colour">
+                        <apex:outputField value="{!prod.Base_Colour__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Detailed Color">
+                        <apex:outputField value="{!prod.Detailed_Colour__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Craft">
+                        <apex:outputField value="{!prod.Workmanship__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Loom">
+                        <apex:outputField value="{!prod.Loom__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Occasion">
+                        <apex:outputField value="{!prod.Occasion__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Fold">
+                        <apex:outputField value="{!prod.Fold__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Fabric">
+                        <apex:outputField value="{!prod.Fabric__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Collection">
+                        <apex:outputField value="{!prod.Collection__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Blouse Dimensions">
+                        <apex:outputField value="{!prod.Blouse_Dimensions__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Blouse Type">
+                        <apex:outputField value="{!prod.Blouse_Type__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Blouse Size">
+                        <apex:outputField value="{!prod.Blouse_Size__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Body Des Element">
+                        <apex:outputField value="{!prod.Body_Des_Element__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Body Des Material">
+                        <apex:outputField value="{!prod.Body_Des_Material__c}"/>                        
+                    </apex:column>
+                     <apex:column headerValue="Body Pattern">
+                        <apex:outputField value="{!prod.Body_Pattern__c}"/>                        
+                    </apex:column>
+                     
+                   
+                </apex:pageBlockTable> 
+            <script>
+                $('[id$=prodpgblktbl]').stickyTableHeaders({scrollableArea: $('.squeeze')});
+            </script>
+            </apex:outputPanel>
+               <apex:panelGrid columns="8">
+                 <apex:outputText > {!(setCon.pageNumber * size)+1-size}-{!IF((setCon.pageNumber * size)>noOfRecords, noOfRecords,
+                     (setCon.pageNumber * size))} of {!noOfRecords} 
+                </apex:outputText>     
+            <apex:commandButton status="fetchStatus" reRender="pbId" value="First" action="{!setCon.first}" disabled="{!!setCon.hasPrevious}" title="First Page"/> 
+  
+                <apex:commandButton status="fetchStatus" reRender="pbId" value="Previous" action="{!setCon.previous}" disabled="{!!setCon.hasPrevious}" title="Previous Page"/> 
+  
+                <apex:commandButton status="fetchStatus" reRender="pbId" value="Next" action="{!setCon.next}" disabled="{!!setCon.hasNext}" title="Next Page"/> 
+  
+                <apex:commandButton status="fetchStatus" reRender="pbId" value="Last" action="{!setCon.last}" disabled="{!!setCon.hasNext}" title="Last Page"/> 
+                   
+              <apex:selectList value="{!size}" multiselect="false" size="1" onchange="refreshPageSize();" >
+                    <apex:selectOptions value="{!paginationSizeOptions}" /> 
+                </apex:selectList> Item per Page                                           
+            </apex:panelGrid>        
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

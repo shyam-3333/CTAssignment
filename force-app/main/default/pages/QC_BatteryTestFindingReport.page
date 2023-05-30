@@ -1,0 +1,115 @@
+<apex:page renderas="pdf" controller="QC_TestFindingsReport" standardStylesheets="false" showHeader="false" doctype="html-5.0" id="pge">
+   
+   <c:StylingPdfContent type="header" >  
+        <div style="page-break-after:always;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;text-align:right;">Page <span class="pagenumber" /> of <span class="pagecount"/></div>
+        
+    </c:StylingPdfContent>
+
+    <c:StylingPdfContent type="footer">
+          <div align="left" style="color:#808080;">
+              <!--Product Approval : {!component.Final_Verdict__c}<br></br>-->
+              Product Approval : &nbsp;<apex:outputtext value="{!component.Final_Verdict__c}"  style="color:{!IF(component.Final_Verdict__c == 'Accept', 'green', 'red')}"/> <br></br>
+              Inspected : {!component.Owner.name}  
+          </div>
+          
+    </c:StylingPdfContent>
+    
+    <c:StylingPdfContent type="footer1">
+          <div align="center" style="color:#808080;"><br></br>Checked : {!l1l2UserName.L1_Approver__r.Name}</div>
+    </c:StylingPdfContent>
+    
+     <c:StylingPdfContent type="footer2">
+         <div align="right" style="color:#808080;"><br></br>Approved : {!l1l2UserName.L2_Approver__r.Name}</div>
+    </c:StylingPdfContent>
+    
+    <div style="font-family:Arial,Helvetica,sans-serif; font-size:14px; font-weight:bold;text-align:center;">Reliability Test Report - {!component.Name__c}</div><br/>
+    <apex:pageMessages />    
+ 
+    <!--Component data -->
+    <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1" style="font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;"> 
+       <tr><td width="50%">Report Reference Number</td><td>{!component.Report_Ref_Number__c}</td></tr>
+       <tr><td width="50%">Watch Variant</td><td>{!component.Watch_variant__c}</td></tr>
+    </table> 
+    <br/><br/>
+    <table cellspacing="0" cellpadding="3" align="left" border="1"  width="100%" style="font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;">   
+                <apex:repeat value="{!batteryVisualInception}" var="visInspect" >
+                    <tr>
+                        <td>
+                            <b>1.<apex:outputText value="{!visInspect.testName}" /></b>
+                        </td>
+                        <td colspan="2">
+                          <apex:outputText value="{!visInspect.observation}" />
+                        </td>
+                        <td><apex:outputText value="{!visInspect.verdict}" /></td>
+                        <td >
+                            <apex:outputText value="{!visInspect.commentAndRemarks}" />
+                        </td>
+                    </tr> 
+                </apex:repeat>       
+                <tr>
+                    <td><b>2.Capacity</b></td>
+                    <td><b>Specification</b></td>
+                    <td><b>Determined Value</b></td>
+                    <td><b>Conclusion</b></td>
+                    <td><b>Comments and Remarks</b></td>
+                </tr>                
+                <apex:repeat value="{!batteryTestParamList}" var="batteryFind">
+                    <tr>
+                        <td><apex:outputText value="{!batteryFind.testName}" /></td>
+                        <td><apex:outputText value="{!batteryFind.specification}" /></td>
+                        <td><apex:outputText value="{!batteryFind.DeterminedVal}" /></td>
+                        <td><apex:outputText value="{!batteryFind.verdict}" /></td>
+                        <td><apex:outputText value="{!batteryFind.commentAndRemarks}" /></td>
+                    </tr>
+                 
+                </apex:repeat>
+          </table>
+         
+          <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1" style="font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;">              
+        
+                <tr>
+                    <td colspan="6"><b>3.Leakage Test</b></td>
+                </tr>
+                <tr>
+                    <td width="20%"><b>Characteristics</b></td>
+                    <td width="10%"><b></b></td>
+                    <td width="30%" colspan="2"><b>Grade</b></td>
+                    <td width="20%"><b>Observation</b></td>
+                    <td width="20%"><b>Conclusion</b></td>
+                    <td width="20%"><b>Comments and Remarks</b></td>
+                </tr>
+              <apex:repeat value="{!batteryLeakage}" var="modTP">
+                <apex:panelGroup rendered="{!(modTP.acceptCriteria=='Leakage Test')}"> 
+                   <tr >
+                         <td width="20%" >
+                             <div style="display:{!if(modTP.UOM == 'S1' && modTP.testName =='Non-Defective Battery','block','none')}">     
+                                     <apex:outputtext value="{!modTP.testName}"  />  
+                             </div>
+                             <div style="display:{!if(modTP.UOM == 'C1' && modTP.testName =='Defective Battery','block','none')}">     
+                                     <apex:outputtext value="{!modTP.testName}"  />  
+                             </div>
+                             <div style="display:{!if(modTP.UOM == 'L1' && modTP.testName =='Leaks','block','none')}">     
+                                     <apex:outputtext value="{!modTP.testName}"  />  
+                             </div>
+                         </td>
+                         <td width="10%">
+                             <div style="display:{!if(modTP.UOM == 'S1' && modTP.testName =='Non-Defective Battery','block','none')}">     
+                                     Salting  
+                             </div>
+                             <div style="display:{!if(modTP.UOM == 'C1' && modTP.testName =='Defective Battery','block','none')}">     
+                                     Creep
+                             </div>
+                             <div style="display:{!if(modTP.UOM == 'L1' && modTP.testName =='Leaks','block','none')}">     
+                                     Leaks
+                             </div>
+                         </td>
+                         <td width="10%" >{!modTP.UOM}</td>
+                         <td width="20%" >{!modTP.Specification}</td>
+                         <td width="20%" ><apex:outputText value="{!modTP.observation}" /></td>
+                         <td width="20%"><apex:outputText value="{!modTP.verdict}" /></td> 
+                         <td width="20%"><apex:outputText value="{!modTP.commentAndRemarks}" /></td> 
+                    </tr>
+               </apex:panelGroup>
+              </apex:repeat>
+          </table>  
+ </apex:page>

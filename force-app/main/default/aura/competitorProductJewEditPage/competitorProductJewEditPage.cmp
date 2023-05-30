@@ -1,0 +1,18 @@
+<aura:component controller="CompetitorProductJewController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,lightning:actionOverride" access="global" >
+   <aura:attribute name="recordId" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.doinit}" /> 
+    <aura:attribute name="RecTypeName" type="String"/>
+    <div class="slds-show" aura:id="radioDiv">   
+    </div>
+    
+    <div  aura:id="detailDiv" style="background-color: white;">
+        <aura:if isTrue="{!equals(v.RecTypeName,'Plain')}">
+            
+            <c:competitorProductPlain isNew="false" showDetail="true" recId="{!v.recordId}" recTypeName="{!v.RecTypeName}"/>
+            
+        </aura:if>
+        <aura:if isTrue="{!equals(v.RecTypeName,'Studded')}">
+           <c:competitotProductStudded isNew="false" showDetail="true" recId="{!v.recordId}" recTypeName="{!v.RecTypeName}"/>
+        </aura:if>
+    </div>
+</aura:component>

@@ -1,0 +1,195 @@
+<apex:page extensions="OppTimePlan" standardController="Opportunity">
+      <center><button type="button">Proposed</button></center>
+      <label><br></br></label>
+      <apex:form id="formId">
+          <apex:pagemessages id="errmsg" />
+         <apex:outputPanel rendered="{!isEdit}">
+            <table  style="border:1px solid black; border-collapse:collapse;width:96%;">
+              <tr></tr>
+                <tr>
+                    <th style="border:1px solid black;min-width: 123px;"><center>Activities Planned</center></th>
+                    <th style="border:1px solid black;min-width: 64px;"><center>Parameter</center></th>
+                    <th style="border:1px solid black;"><center>RFQ qualified</center></th>
+                    <th style="border:1px solid black;"><center>Customer Committed Date</center></th>
+                    <th style="border:1px solid black;"><center>Visit</center></th>
+                    <th style="border:1px solid black;"><center>Strategy Meeting</center></th>
+                    <th style="border:1px solid black;"><center>Concept validation</center></th>
+                    <th style="border:1px solid black;"><center>R1 Proposal Submission</center></th>
+                    <th style="border:1px solid black;"><center>Mech Proposal Submission</center></th>
+                    <th style="border:1px solid black;"><center>Elec Proposal Submission</center></th>
+                    <th style="border:1px solid black;"><center>Comments/Remarks</center></th>
+                    <th style="border:1px solid black;"><center>Remarks for delay</center></th>
+                </tr>
+            <apex:repeat value="{!listOppProposed}" var="opp">
+            <tr>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Activities_Planned__c}" /></td>
+                <td style="border:1px solid black;"><apex:outputText value="Planned Date" /></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.RFQ_qualified__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Customer_Committed_Date__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Visit__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Strategy_Meeting__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Concept_Validation__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.R1_Proposal_Submission__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Mech_Proposal_Submission__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Elec_Proposal_Submission__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Comment_Remarks__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Remarks_for_Delay__c}"/></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Activities_Planned_Ad__c}" /></td>
+                <td style="border:1px solid black;"><apex:outputText value="Actual Date" /></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.RFQ_Qualified_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Customer_Committed_Date_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Visit_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Strategy_Meeting_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Concept_Validation_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.R1_Proposal_Submission_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Mech_Proposal_Submission_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Elec_Proposal_Submission_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Comment_Remarks_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!opp.Remarks_for_Delay_Ad__c}"/></td>
+            </tr>
+            </apex:repeat>
+            </table>
+            <br></br>
+            <center><button type="button">Add Revised Plan</button></center>
+            
+            <left><table border="0"><tr><td><apex:commandLink action="{!addRow}" value="ADD ROW"/></td></tr></table></left>
+            <table style="border:1px solid black; border-collapse:collapse;">
+            <!-- <tr"style="border-top:0px;border-left:0px;"><td "style="border-top:0px;border-left:0px;"><apex:commandLink action="{!addRow}" value="ADD ROW"/></td></tr>  --> 
+               <tr>
+                    <th style="border:1px solid black; min-width: 123px;"><center>Action</center></th>
+                    <th style="border:1px solid black; min-width: 64px;"><center>Parameter</center></th>
+                    <th style="border:1px solid black;"><center>RFQ qualified</center></th>
+                    <th style="border:1px solid black;"><center>Customer Committed Date</center></th>
+                    <th style="border:1px solid black;"><center>Visit</center></th>
+                    <th style="border:1px solid black;"><center>Strategy Meeting</center></th>
+                    <th style="border:1px solid black;"><center>Concept validation</center></th>
+                    <th style="border:1px solid black;"><center>R1 Proposal Submission</center></th>
+                    <th style="border:1px solid black;"><center>Mech Proposal Submission</center></th>
+                    <th style="border:1px solid black;"><center>Elec Proposal Submission</center></th>
+                    <th style="border:1px solid black;"><center>Comments/Remarks</center></th>
+                    <th style="border:1px solid black;"><center>Remarks for delay</center></th>
+                </tr>
+                <apex:repeat value="{!lstWrapperRecPlan}" var="wrp">
+                <tr>
+                <td>
+                <center>
+                <apex:commandLink value="Del"  action="{!deleteRow}" target="_self" immediate="true" rerender="formId">
+                     <apex:param name="index" value="{!wrp.index}" />
+                </apex:commandLink>
+                </center>
+                </td>
+                <td style="border:1px solid black;">Revised Plan Date {!wrp.index}</td>
+                <td style="border:1px solid black;"><apex:inputField value="{!wrp.timePlan.RFQ_Qualified__c}"/></td>
+               <td style="border:1px solid black;"><apex:inputField value="{!wrp.timePlan.Customer_Commited_Date__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!wrp.timePlan.Visit__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!wrp.timePlan.Strategy_Meeting__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!wrp.timePlan.Concept_Validation__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!wrp.timePlan.R1_Proposal_Submission__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!wrp.timePlan.Mech_Propsal_Submission__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!wrp.timePlan.Elec_Proposal_Submission__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!wrp.timePlan.Comment_Remarks__c}"/></td>
+                <td style="border:1px solid black;"><apex:inputField value="{!wrp.timePlan.Remarks_for_Delay__c}"/></td>
+            </tr>
+            </apex:repeat>
+            </table>
+            </apex:outputPanel>
+            
+           <apex:outputPanel rendered="{!NOT(isEdit)}" >
+                 <table  style="border:1px solid black; border-collapse:collapse;">
+           
+                <tr>
+                    <th style="border:1px solid black; min-width: 123px;"><center>Activities Planned</center></th>
+                    <th style="border:1px solid black;min-width: 64px;"><center>Parameter</center></th>
+                    <th style="border:1px solid black;"><center>RFQ qualified</center></th>
+                    <th style="border:1px solid black;"><center>Customer Committed Date</center></th>
+                    <th style="border:1px solid black;"><center>Visit</center></th>
+                    <th style="border:1px solid black;"><center>Strategy Meeting</center></th>
+                    <th style="border:1px solid black;"><center>Concept validation</center></th>
+                    <th style="border:1px solid black;"><center>R1 Proposal Submission</center></th>
+                    <th style="border:1px solid black;"><center>Mech Proposal Submission</center></th>
+                    <th style="border:1px solid black;"><center>Elec Proposal Submission</center></th>
+                    <th style="border:1px solid black;"><center>Comments/Remarks</center></th>
+                    <th style="border:1px solid black;"><center>Remarks for delay</center></th>
+                </tr>
+            <apex:repeat value="{!listOppProposed}" var="opp">
+            <tr>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Activities_Planned__c}" /></td>
+                <td style="border:1px solid black;"><apex:outputText value="Planned Date" /></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.RFQ_qualified__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Customer_Committed_Date__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Visit__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Strategy_Meeting__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Concept_Validation__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.R1_Proposal_Submission__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Mech_Proposal_Submission__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Elec_Proposal_Submission__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Comment_Remarks__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Remarks_for_Delay__c}"/></td>
+            </tr>
+            <tr>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Activities_Planned_Ad__c}" /></td>
+                <td style="border:1px solid black;"><apex:outputText value="Actual Date" /></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.RFQ_Qualified_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Customer_Committed_Date_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Visit_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Strategy_Meeting_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Concept_Validation_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.R1_Proposal_Submission_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Mech_Proposal_Submission_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Elec_Proposal_Submission_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Comment_Remarks_Ad__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!opp.Remarks_for_Delay_Ad__c}"/></td>
+            </tr>
+            </apex:repeat>
+            </table>
+            <br></br>
+            <center><button type="button">Add Revised Plan</button></center>
+            
+            <br></br>
+            <table style="border:1px solid black; border-collapse:collapse;">
+               <tr>
+                    <th style="border:1px solid black;min-width: 123px;"><center>Action</center></th>
+                    <th style="border:1px solid black;min-width: 64px;"><center>Parameter</center></th>
+                    <th style="border:1px solid black;"><center>RFQ qualified</center></th>
+                    <th style="border:1px solid black;"><center>Customer Committed Date</center></th>
+                    <th style="border:1px solid black;"><center>Visit</center></th>
+                    <th style="border:1px solid black;"><center>Strategy Meeting</center></th>
+                    <th style="border:1px solid black;"><center>Concept validation</center></th>
+                    <th style="border:1px solid black;"><center>R1 Proposal Submission</center></th>
+                    <th style="border:1px solid black;"><center>Mech Proposal Submission</center></th>
+                    <th style="border:1px solid black;"><center>Elec Proposal Submission</center></th>
+                    <th style="border:1px solid black;"><center>Comments/Remarks</center></th>
+                    <th style="border:1px solid black;"><center>Remarks for delay</center></th>
+                </tr>
+                <apex:repeat value="{!lstWrapperRecPlan }" var="wrp">
+                <tr>
+                <td>
+                <center>
+                <apex:commandLink value="Del"  action="{!deleteRow}"  target="_self" immediate="true" rerender="formId" >
+                     <apex:param name="index" value="{!wrp.index}" />
+                </apex:commandLink></center></td>
+                <td style="border:1px solid black;">Revised Plan Date {!wrp.index}</td>
+                <td style="border:1px solid black;"><apex:outputField value="{!wrp.timePlan.RFQ_Qualified__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!wrp.timePlan.Customer_Commited_Date__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!wrp.timePlan.Visit__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!wrp.timePlan.Strategy_Meeting__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!wrp.timePlan.Concept_Validation__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!wrp.timePlan.R1_Proposal_Submission__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!wrp.timePlan.Mech_Propsal_Submission__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!wrp.timePlan.Elec_Proposal_Submission__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!wrp.timePlan.Comment_Remarks__c}"/></td>
+                <td style="border:1px solid black;"><apex:outputField value="{!wrp.timePlan.Remarks_for_Delay__c}"/></td>
+            </tr>
+            </apex:repeat>
+            </table>
+             <br></br>
+            </apex:outputPanel>
+            <center>
+            <apex:commandButton value="Edit" action="{!editRecord}" id="cbEdit" rendered="{!NOT(isEdit)}" />
+            <apex:commandButton value="Save" action="{!Save}" id="cbSave" rendered="{!isEdit}"/>
+            <apex:commandButton value="Cancel" action="{!Cancel}" id="cbCancel" rendered="{!isEdit}" reRender="errmsg"/>
+            </center>
+    </apex:form>
+</apex:page>

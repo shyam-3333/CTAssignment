@@ -1,0 +1,9 @@
+<apex:page controller="CategorySubmittedProductsController" contentType="application/vnd.ms-excel#AllContacts.xls" cache="true" >
+    <apex:pageBlock title="Products submitted today" >
+        <apex:pageBlockTable value="{!wrapList}" var="wa" style="width:100%" >
+         <apex:column value="{!wa.sl_no}" title="Sl No" />
+            <apex:column value="{!wa.pro.SKU_Code__c}" title="SKU No" />
+            <apex:column value="{!wa.pro.Actual_MRP__c}" title="Actual MRP" />
+        </apex:pageBlockTable>
+    </apex:pageBlock> 
+</apex:page>

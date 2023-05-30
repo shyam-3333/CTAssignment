@@ -1,0 +1,7 @@
+<apex:page >    
+    
+    <c:MultipleImageUplodVF />
+    
+    
+    
+</apex:page>

@@ -1,0 +1,66 @@
+<template>
+    <template if:true={isLoading}>
+        <div class="position: relative;background-color: #16325c;height: 80px;">
+            <lightning-spinner alternative-text="Loading" variant="inverse"></lightning-spinner>
+        </div>
+    </template>
+    <lightning-card title="Skinn NPD View Only" class="slds-p-around_large">
+        <div class="slds-section slds-is-open">
+            <div aria-hidden="false" class="slds-section__content">
+                <form class="slds-form slds-form_compound">
+                    <div class="slds-form-element__control">
+                        <fieldset class="slds-form-element">
+                            <div class="slds-form-element__group">
+                                <div class="slds-form-element__row">
+                                        <div class="slds-form-element slds-size_1-of-12 ">
+                                                
+                                            </div>
+                                    <div class="slds-form-element slds-size_3-of-12 ">
+                                        <lightning-combobox name="Collection" label="Select Collection"
+                                            value={CollectionValue} placeholder="Select Collection"
+                                            options={collectionRecords.data} required
+                                            onchange={handleChangeCollectionOwnerPickList}>
+                                        </lightning-combobox>
+                                    </div>
+                                    <div class="slds-form-element slds-size_8-of-12 ">
+                                            
+                                        </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+
+                    <template if:true={visibleModelRecords}>
+                            <div class="slds-form-element__row">
+                            <div class="slds-col slds-size_1-of-12">
+                                           
+                                </div>
+                        <div class="slds-col slds-size_11-of-12" >
+                            <template for:each={models} for:item="model">
+                                <input type="button" class="slds-button slds-button_brand" key={model.Id}
+                                    value={model.Name} name={model.Id} onclick={modelHandleClick} />
+                            </template>
+                        </div>
+                            </div>
+                        <div>
+                            <br />
+                        </div>
+                        <template if:true={visibleSkinnCollectionRecords}>
+                            <div class="slds-grid slds-gutters">
+                                    <div class="slds-form-element__row">
+                                    
+                                <div class="slds-col slds-size_5-of-5">
+                                        <template if:true={ProcessItems}>
+                                                <c-skinn-view-only-comp tentative-launch-date={parentTentativeLaunchDate} product-launch-date={productLaunchDateParent} skinn-collection-records={ProcessItems}></c-skinn-view-only-comp>                                                
+                                        </template>
+                                </div>
+                                </div>
+                            </div>
+                        </template>
+                    </template>
+                </form>
+            </div>
+        </div>
+    </lightning-card>
+
+</template>

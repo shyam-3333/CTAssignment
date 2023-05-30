@@ -1,0 +1,363 @@
+<apex:component controller="VFNA_07" extensions="VFNA_01,VFNA_02,VFNA_03,VFNA_04,VFNA_05,VFNA_06" access="global">
+    <head>
+         <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    </head>
+    <center><font size="5"><b>Proposals Submitted Non-Automotive</b></font></center>
+    <apex:outputPanel rendered="{!accounttotals.size>0}">
+    <table>
+    <table style="border:1px solid black;">
+                        <tr>
+                            <th style="border:1px solid black;background-color: #E085FF;">Account</th>
+                            <th style="border:1px solid black;background-color: #E085FF;">Opportunity</th>
+                            <th style="border:1px solid black;background-color: #00B8E6;">Amount In Lakhs</th>
+                            <th style="border:1px solid black;background-color: #E085FF;">Quote Name</th>
+                            <th style="border:1px solid black;background-color: #E085FF;">Quote Created Date</th> 
+                            <th style="border:1px solid black;background-color: #FFCC00;">Member1</th>
+                            <th style="border:1px solid black;background-color: #E085FF;">Member2</th>
+                        </tr>
+                    </table>
+  <apex:repeat value="{!accounttotals}" var="a" >
+        <tr>
+                   
+                    <table style="border:1px solid black;">
+      <apex:variable value="{!1}" var="index">
+       <apex:repeat value="{!a.quotes}" var="o">
+        <tr style="border:1px solid black; border-collapse:collapse;width:100%;">
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.account.name}" rendered="{! If(index == 1, true, false)}"/></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.opportunity.name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.opportunity.Amount_In_Lakhs__c}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+          <apex:param value="{!o.CreatedDate}" /> 
+          </apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Opportunity.Member1__r.Name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Opportunity.Member2__r.Name}"></apex:outputText></td>
+         <apex:variable value="{!index+1}" var="index"/>  
+        </tr>
+       </apex:repeat>
+      </apex:variable>
+       
+     </table>
+                
+           </tr> 
+       </apex:repeat>
+       </table>
+                <table style="border:1px solid black;">
+                    <tr>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"><b>Grand Total</b></th>
+                         <th style="border:1px solid black;"><apex:outputText value="{!grandTotal}"/></th>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"></th>
+                         
+                    </tr>
+                </table>
+  </apex:outputPanel>
+  <apex:outputPanel rendered="{!accounttotals.size=0}">
+      <center><font color="red"><b>No Records Found..!!</b></font></center>
+  </apex:outputPanel>              
+  <center><font size="5"><b>Revision Proposals Non-Automotive</b></font></center>
+    <apex:outputPanel rendered="{!accounttotals1.size>0}">
+    <table>
+    <table style="border:1px solid black;">
+                        <tr>
+                            <th style="border:1px solid black;background-color: #E085FF;">Account</th>
+                            <th style="border:1px solid black;background-color: #E085FF;">Opportunity</th>
+                            <th style="border:1px solid black;background-color: #00B8E6;">Amount In Lakhs</th>
+                            <th style="border:1px solid black;background-color: #E085FF;">Quote Name</th>
+                            <th style="border:1px solid black;background-color: #E085FF;">Quote Created Date</th>
+                            <th style="border:1px solid black;background-color: #FFCC00;">Member1</th>
+                            <th style="border:1px solid black;background-color: #E085FF;">Member2</th>
+                        </tr>
+                    </table>
+    <apex:repeat value="{!accounttotals1}" var="acc" >
+        <tr>
+                   
+                    <table style="border:1px solid black;">
+      <apex:variable value="{!1}" var="index">
+       <apex:repeat value="{!acc.quotes}" var="o">
+        <tr style="border:1px solid black; border-collapse:collapse;width:100%;">
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.account.name}" rendered="{! If(index == 1, true, false)}"/></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.opportunity.name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.opportunity.Amount_In_Lakhs__c}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+          <apex:param value="{!o.CreatedDate}" /> 
+          </apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Opportunity.Member1__r.Name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Opportunity.Member2__r.Name}"></apex:outputText></td>
+         <apex:variable value="{!index+1}" var="index"/>  
+        </tr>
+       </apex:repeat>
+      </apex:variable>
+      
+     </table>
+                
+           </tr> 
+       </apex:repeat>
+       </table>
+                <table style="border:1px solid black;">
+                    <tr>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"><b>Grand Total</b></th>
+                         <th style="border:1px solid black;"><apex:outputText value="{!grandTotal1}"/></th>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"></th>
+                         
+                    </tr>
+                    
+      </table>
+  </apex:outputPanel>
+  <apex:outputPanel rendered="{!accounttotals1.size=0}">
+      <center><font color="red"><b>No Records Found..!!</b></font></center>
+  </apex:outputPanel>
+  <center><font size="5"><b>Orders Recieved-Monthly Basis Non-Automotive</b></font></center>
+  <apex:outputPanel rendered="{!accounttotals2.size>0}">
+    <table>
+    <table style="border:1px solid black;">
+                        <tr>
+                           
+                            <th style="border:1px solid black;background-color: #E085FF">Account</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Opportunity</th>
+                            <th style="border:1px solid black;background-color: #00B8E6">Basic Price</th>
+                            <th style="border:1px solid black;background-color: #00B8E6">Turnover</th> 
+                            <th style="border:1px solid black;background-color: #E085FF">PO Date</th>
+                            <th style="border:1px solid black;background-color: #E085FF">LOI Date</th>
+                            <th style="border:1px solid black;background-color: #FFCC00">Member1</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Member2</th>
+                        </tr>
+                    </table>
+    <apex:repeat value="{!accounttotals2}" var="acc1" >
+        <tr>
+                   
+                    <table style="border:1px solid black;">
+      <apex:variable value="{!1}" var="index">
+       <apex:repeat value="{!acc1}" var="o">
+        <tr style="border:1px solid black; border-collapse:collapse;width:100%;">
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.account.name}" rendered="{! If(index == 1, true, false)}"/></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Basic_Price_INR_In_Lakhs__c}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Turnover_INR_In_Lakhs__c}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+          <apex:param value="{!o.PO_Date__c}" /> 
+          </apex:outputText></td>
+          <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+          <apex:param value="{!o.LOI_Date__c}" /> 
+          </apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Member1__r.Name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Member2__r.Name}"></apex:outputText></td>
+         <apex:variable value="{!index+1}" var="index"/>  
+        </tr>
+       </apex:repeat>
+      </apex:variable>
+     
+     </table>
+                
+           </tr> 
+       </apex:repeat>
+       </table>
+                <table style="border:1px solid black;">
+                    <tr>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"><b>Grand Total</b></th>
+                         <th style="border:1px solid black;"><apex:outputText value="{!grandTotal2}"/></th>
+                         <th style="border:1px solid black;"><apex:outputText value="{!grandTotal3}"/></th>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"></th>
+                         
+                    </tr>
+  </table>
+  </apex:outputPanel>
+  <apex:outputPanel rendered="{!accounttotals2.size=0}">
+      <center><font color="red"><b>No Records Found..!!</b></font></center>
+  </apex:outputPanel>
+  
+   <center><font size="5"><b>Oppourtunities Lost Non-Automotive</b></font></center>
+   <apex:outputPanel rendered="{!accounttotals3.size>0}">
+    <table>
+     <table style="border:1px solid black;">
+                        <tr>
+                            <th style="border:1px solid black;background-color: #E085FF">Account</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Opportunity</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Sub Stage</th> 
+                            <th style="border:1px solid black;background-color: #00B8E6">Amount In Lakhs</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Opportunity Lost date</th>
+                            <th style="border:1px solid black;background-color: #FFCC00">Member1</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Member2</th>
+                        </tr>
+                    </table>
+    <apex:repeat value="{!accounttotals3}" var="acc2">
+    
+        <tr>
+                 
+                    <table style="border:1px solid black;">
+      <apex:variable value="{!1}" var="index">
+       <apex:repeat value="{!acc2}" var="o">
+        <tr style="border:1px solid black; border-collapse:collapse;width:100%;">
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.account.name}" rendered="{! If(index == 1, true, false)}"/></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Reason__c}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Amount_In_Lakhs__c}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+          <apex:param value="{!o.Opportunity_Lost_Date__c}" /> 
+          </apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Member1__r.Name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Member2__r.Name}"></apex:outputText></td>
+         
+         <apex:variable value="{!index+1}" var="index"/>  
+        </tr>
+       </apex:repeat>
+      </apex:variable>
+      
+     </table>
+                
+           </tr> 
+       </apex:repeat>
+       </table>
+                <table style="border:1px solid black;">
+                    <tr>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"><b>Grand Total</b></th>
+                         <th style="border:1px solid black;"><apex:outputText value="{!grandTotal4}"/></th>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"></th>
+                         
+                    </tr>
+  </table>
+  </apex:outputPanel>
+  <apex:outputPanel rendered="{!accounttotals3.size=0}">
+      <center><font color="red"><b>No Records Found..!!</b></font></center>
+  </apex:outputPanel>
+
+  <center><font size="5"><b>Pending Proposals Non-Automotive</b></font></center>
+      <apex:outputPanel rendered="{!accounttotals4.size>0}">
+  <table>
+   <table style="border:1px solid black;">
+                        <tr>
+                            <th style="border:1px solid black;background-color: #E085FF">Account</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Opportunity</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Oppourtunity Created Date</th> 
+                            <th style="border:1px solid black;background-color: #FFCC00">Member1</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Member2</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Stage</th>
+                        </tr>
+                    </table>
+  <apex:repeat value="{!accounttotals4}" var="acc3" >
+        <tr>
+                  
+                    <table style="border:1px solid black;">
+      <apex:variable value="{!1}" var="index">
+       <apex:repeat value="{!acc3}" var="o">
+        <tr style="border:1px solid black; border-collapse:collapse;width:100%;">
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.account.name}" rendered="{! If(index == 1, true, false)}"/></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+          <apex:param value="{!o.CreatedDate}" /> 
+          </apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Member1__r.Name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Member2__r.Name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.StageName}"></apex:outputText></td>
+         <apex:variable value="{!index+1}" var="index"/>  
+        </tr>
+       </apex:repeat>
+      </apex:variable>
+     </table>
+                
+           </tr> 
+       </apex:repeat>
+       </table>
+  </apex:outputPanel>
+  <apex:outputPanel rendered="{!accounttotals4.size=0}">
+      <center><font color="red"><b>No Records Found..!!</b></font></center>
+  </apex:outputPanel>
+
+  <center><font size="5"><b>Pending Proposals more than 4 Weeks Non-Automotive</b></font></center>  
+  <apex:outputPanel rendered="{!accounttotals5.size>0}">
+  <table>
+   <table style="border:1px solid black;">
+                        <tr>
+                            <th style="border:1px solid black;background-color: #E085FF">Account</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Opportunity</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Oppourtunity Created Date</th> 
+                            <th style="border:1px solid black;background-color: #FFCC00">Member1</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Member2</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Stage</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Age</th>
+                        </tr>
+                    </table>
+  <apex:repeat value="{!accounttotals5}" var="acc4" >
+        <tr>
+                  
+                    <table style="border:1px solid black;">
+      <apex:variable value="{!1}" var="index">
+       <apex:repeat value="{!acc4}" var="o">
+        <tr style="border:1px solid black; border-collapse:collapse;width:100%;">
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.account.name}" rendered="{! If(index == 1, true, false)}"/></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+          <apex:param value="{!o.CreatedDate}" /> 
+          </apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Member1__r.Name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Member2__r.Name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.StageName}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Opportunity_Age__c}"></apex:outputText></td>
+         <apex:variable value="{!index+1}" var="index"/>  
+        </tr>
+       </apex:repeat>
+      </apex:variable>
+     </table>
+                
+           </tr> 
+       </apex:repeat>
+       </table>
+   </apex:outputPanel>
+  <apex:outputPanel rendered="{!accounttotals5.size=0}">
+      <center><font color="red"><b>No Records Found..!!</b></font></center>
+  </apex:outputPanel>
+
+  <center><font size="5"><b>Unallocated Projects Non-Automotive</b></font></center>  
+  <apex:outputPanel rendered="{!accounttotals6.size>0}">
+  <table>
+    <table style="border:1px solid black;">
+                        <tr>
+                            <th style="border:1px solid black;background-color: #E085FF">Account</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Opportunity</th>
+                            <th style="border:1px solid black;background-color: #E085FF">Oppourtunity Created Date</th> 
+                            <th style="border:1px solid black;background-color: #E085FF">Age</th>
+                        </tr>
+                    </table>
+  <apex:repeat value="{!accounttotals6}" var="acc5" >
+        <tr>
+                 
+                    <table style="border:1px solid black;">
+      <apex:variable value="{!1}" var="index">
+       <apex:repeat value="{!acc5.account.opportunities}" var="o">
+        <tr style="border:1px solid black; border-collapse:collapse;width:100%;">
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!acc5.account.name}" rendered="{! If(index == 1, true, false)}"/></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.name}"></apex:outputText></td>
+        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+          <apex:param value="{!o.CreatedDate}" /> 
+          </apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Opportunity_Age__c}"></apex:outputText></td>
+         <apex:variable value="{!index+1}" var="index"/>  
+        </tr>
+       </apex:repeat>
+      </apex:variable>
+     </table>
+                
+           </tr> 
+       </apex:repeat>
+       </table>
+      </apex:outputPanel>
+   <apex:outputPanel rendered="{!accounttotals6.size=0}">
+      <center><font color="red"><b>No Records Found..!!</b></font></center>
+  </apex:outputPanel>
+</apex:component>

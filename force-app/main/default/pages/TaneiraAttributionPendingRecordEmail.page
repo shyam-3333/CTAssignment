@@ -1,0 +1,17 @@
+<apex:page controller="TaneiraAttributionPendingRecordEmail">
+    <apex:form >
+    	<apex:pageBlock >
+        	<apex:pageBlockTable value="{!TaneiraList5To7}" var="lstTan5" border="1px" cellpadding="5px">
+            	<apex:column value="{!lstTan5.Vendor_custom__r.Name}" />
+                <apex:column value="{!lstTan5.CreatedDate}" />
+                <apex:column value="{!lstTan5.Pending_Days__c}" />
+            </apex:pageBlockTable> 
+            <br/>
+            <apex:pageBlockTable value="{!TaneiraList7Plus}" var="lstTan7" border="1px" cellpadding="5px">
+            	<apex:column value="{!lstTan7.Vendor_custom__r.Name}" />
+                <apex:column value="{!lstTan7.CreatedDate}" />
+                <apex:column value="{!lstTan7.Pending_Days__c}" />
+            </apex:pageBlockTable> 
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

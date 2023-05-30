@@ -1,0 +1,135 @@
+<aura:component controller="QC_SelectionOptionClass" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction,lightning:actionOverride"  access="global" >
+   
+  <!--  <aura:attribute name="SampleCategory" type="List" default="[{'label': 'None', 'value': 'None', 'selected': true},
+                                                             {'label': 'New', 'value': 'New', 'selected': false},
+                                                             {'label': 'Alternate Development', 'value': 'Alternate Development', 'selected': false},
+															 {'label': 'Re-Submission', 'value': 'Re-Submission', 'selected': false},
+															 {'label': 'Re-Certification', 'value': 'Re-Certification', 'selected': false},
+                                                             {'label': 'Competitor Products', 'value': 'Competitor Products', 'selected': 'false'}]"/>
+    <aura:attribute name="SampleType" type="list" />    
+    <aura:attribute name="SampleCategoryValue" type="String" />                                                     
+    <aura:attribute name="selectedSubType" type="String"/>
+    <aura:attribute name="subType" type="String[]"/>
+    <aura:attribute name="toggleGer" type="boolean" default="false" />
+    <aura:attribute name="sampleTypeValue" type="String" />
+    <aura:attribute name="qCAccessComponentId" type="String" />
+    <aura:attribute name="finalverCounter" type ="Integer" default="0" />
+    <aura:attribute name="toggleSec1" type="boolean" default="true" />
+    <aura:attribute name="showApprovalHistoryCmp" type="boolean" default="false" />
+    <aura:attribute name="showApproval" type="boolean" default="false" />
+    <aura:attribute name="toggleSec2" type="boolean" default="false" />
+    <aura:attribute name="countValidateAccInput" type="Integer" default="0" />
+    <aura:attribute name="parentSampleCategory" type="String"/>
+    <aura:attribute name="parentSType" type="String"/>
+    <aura:attribute name="parentSubCategory" type="String"/>
+    <aura:attribute name="isReadonly" type="Boolean" default="true"/>
+    <aura:attribute name="inputIsReadonly" type="Boolean" default="true"/>
+    <aura:attribute name="isReSubmission" type="Boolean" default="false"/>
+    <aura:attribute name="callSaveFromParent" type="integer" default="0" />
+    <aura:attribute name="countSaveAccInput" type="Integer" default="0" />
+    <aura:attribute name="depnedentFieldMap" type="map" description="store controller(key)-> dependent(values) picklist value as a map." />
+    <aura:attribute name="isDependentDisable" type="boolean" default="true" description="used to, make disable dependent field." />
+    <aura:attribute name="ObsrvtnEvntList" type ="String" description="This list will hold the value from Evnt which will help us to rollback the save if data is not undefined/blank"/>
+    <aura:attribute name="selectedLookUpRecordForReSub" type="sObject" default="{}"/> -->
+    
+    <!--handlers -->
+   <!-- <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="ObservatnDataEvnt" event="c:ObservationParamValidation" action="{!c.fetchObservatnEvntValue}"/>
+    <aura:handler name="QcAccessComponentSavedEvent" event="c:QcAccessComponentSaved" action="{!c.callAccInputSave}"/>
+    <aura:handler name="oSelectedRecordEvent" event="c:LookUpEvent" action="{!c.handleLookupComponentEvent}"/>
+    <aura:handler name ="FinalVerdStatEvnt" event ="c:QC_Acc_FinalVerdictValEvnt" action="{!c.validateApproval}"/>
+    
+    <aura:if isTrue="{!v.toggleSec1}">
+        <lightning:card title="" class="slds-p-around_large" >
+   		<div class="slds-section slds-is-open ">
+           <h3 class="slds-section__title slds-theme_info">
+               <span class="slds-truncate slds-p-horizontal_small" title="Section Title">Section Title</span>
+           </h3>
+           <div aria-hidden="false" class="slds-section__content">
+      
+        		<form class="slds-form_stacked slds-align_absolute-center">
+                    <div class="slds-form-element__control">
+                        <div class="slds-form-element ">
+                            <lightning:select name="mySelect" aura:id="mySelect" label="Sample Type" required="true" value="{!v.sampleTypeValue}" onchange="{!c.toggle}">
+                                <aura:iteration items="{!v.SampleCategory}" var="category">
+                                    <option text="{!category.label}" value="{!category.value}" selected="{!category.selected}"></option>
+                                </aura:iteration>
+                            </lightning:select>	
+                        </div>
+                        
+                        <aura:if isTrue="{!v.toggleGer}">
+                            <div class="slds-form-element slds-align_absolute-center">
+                                <lightning:select name="selectType"  aura:id="samCat" label="Sample Category" required="true" value="{!v.SampleCategoryValue}" onchange="{!c.onControllerFieldChange}">
+                                    <aura:iteration items="{!v.SampleType}" var="type">
+                                        <option text="{!type.label}" value="{!type.value}" ></option>
+                                    </aura:iteration>
+                                </lightning:select>	
+                            </div>
+                        
+                           <div class="slds-form-element">
+                                <lightning:select aura:id="sampleSubTypeId" label="Sample Sub Category" required="true" value="{!v.selectedSubType}" name="picklist1" onchange="{!c.setSubCatValue}">
+                                    <aura:iteration items="{!v.subType}" var="subCategory">
+                                        <option value="{!subCategory.value}" text="{!subCategory.label}"></option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+                    	</aura:if>
+                        <aura:if isTrue="{!v.isReSubmission}">
+                            <div class="slds-form-element">
+                                 <c:CustomLookupComponentParentAcc aura:id="lookupId"  customId = "qCAccessComponentNumber"  objectAPIName="QC_Access_Component__c" whereCondition="{!'Sample_Category__c = \'' + v.parentSampleCategory+'\' AND Sub_Category__c = \''+ v.parentSubCategory+'\' AND Record_Status__c = \'Active\' AND Document_Status__c = \'Published\' AND Final_Verdict__c = \'Reject\''}" IconName="standard:account" selectedRecord="{!v.selectedLookUpRecordForReSub}" label="Report Reference Number"/>   
+                            </div>
+                        </aura:if>
+                        
+                         
+                        <div class="slds-form-element">
+							<lightning:button variant="brand" aura:id="saveId" label ="Next" onclick="{!c.saveData}"/>  
+                        </div>
+                    </div>
+      
+               </form>
+            </div>
+           </div>
+        </lightning:card> 
+    </aura:if>
+    
+    <aura:if isTrue="{!v.toggleSec2}"> 
+        <lightning:card title="" class=" c-container slds-p-around_large">
+           <div class="slds-m-bottom_x-small">
+               <aura:if isTrue="{!v.qCAccessComponentId != undefined }"> 
+                   <center>
+                        <lightning:button variant="brand" aura:id="reliabilityPdfId" label ="Construction Report" onclick="{!c.showReliabilityReport}"/>
+                        <lightning:button variant="brand" aura:id="detailedPdfId" label ="Detailed Report" onclick="{!c.showDetailedReport}"/>
+                    
+                    </center>
+               </aura:if>
+            </div> 
+            <center>
+            	<aura:if isTrue="{!v.isReadonly}">
+                <lightning:button variant="brand" aura:id="editDataId" label ="Edit" onclick="{!c.enableSaveMode}"/>
+            
+            </aura:if>
+            <aura:if isTrue="{!!v.isReadonly}">
+                <lightning:button variant="brand" aura:id="saveDataId" label ="Save" onclick="{!c.saveDataFromParent}"/>  
+        		<lightning:button variant="brand" aura:id="cancelDataId" label ="Cancel" onclick="{!c.cancelData}"/>
+            </aura:if>
+            </center>
+            
+                <c:QC_SOptionConstrTesting callSaveFromParent="{!v.callSaveFromParent}" isReadonly="{!v.isReadonly}" childSampleType="{!v.parentSType}" childSampleCategory="{!v.parentSampleCategory}" childSubCategory="{!v.parentSubCategory}" referenceComponentNo="{!v.selectedLookUpRecordForReSub}" finalverCounter="{!v.finalverCounter}" />
+                <c:QC_AccInput countSaveAccInput="{!v.countSaveAccInput}" qCAccessComponentId = "{!v.qCAccessComponentId}" isReadonly="{!v.isReadonly}" cat="{!v.parentSampleCategory}" referenceComponentNo="{!v.selectedLookUpRecordForReSub}" subChildSampleType="{!v.sampleTypeValue}" countValidateAccInput="{!v.countValidateAccInput}" />
+            
+           
+                <center>
+                <aura:if isTrue="{!and(v.qCAccessComponentId != undefined, v.showApproval) }">
+                    <lightning:button variant="brand" aura:id="submitForAppId" label ="Submit For Approval" onclick="{!c.submitRecordForApproval}"/>
+                    <lightning:button variant="brand" aura:id="goToAppHistoryListId" label ="Approve/Reject" onclick="{!c.gotoRelatedList}"/>
+                </aura:if>
+                <aura:if isTrue="{!v.showApprovalHistoryCmp}">
+                    <c:ApprovalHistoryComponent recordId="{!v.qCAccessComponentId}"/>
+                </aura:if>
+            </center>
+        </lightning:card>
+        
+       
+       
+    </aura:if> -->
+</aura:component>

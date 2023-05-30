@@ -1,0 +1,79 @@
+<!--
+  @description       : 
+  @author            : Mutturaj Haeroor
+  @group             : 
+  @last modified on  : 06-02-2021
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+  Modifications Log 
+  Ver   Date         Author                               Modification
+  1.0   04-26-2021   Mutturaj Haeroor                    Initial Version
+-->
+ <aura:component controller = "LookupFieldCompHandler" access="Global">
+<!--
+    <aura:handler name="init" value="{!this}" action = "{!c.doinit}" /> 
+    <aura:attribute name="label" type="string" default="report ref number" />
+    <aura:attribute name="recordList" type="list" />
+    <aura:attribute name="selectedRecord" type="sObject"  />
+    <aura:attribute name="objectName" type="String" />
+    <aura:attribute name="whereCondition" type="String" /> 
+    <aura:attribute name="searchStr" type="String"  />
+    <aura:attribute name="searchFieldName" type="String" default="Name" />
+    <aura:attribute name="isdisable" type="boolean" default="false" />
+    <aura:attribute name="required" type="Boolean" default="false" />
+
+    <aura:registerEvent name="selectedRecordEvent" type="c:LookUpEvent"/>
+
+    <div class="slds-form-element__control" aria-expanded="false" aria-haspopup="listbox" role="combobox"    >
+      
+        <div class=" slds-input-has-icon slds-input-has-icon_right" role="none">
+            
+          <span class="slds-show" aura:id = "searchBox">
+            <lightning:icon size="x-small" class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default" iconName="utility:search"></lightning:icon>
+              <input type="text" 
+                      class="slds-input " 
+                      id="{!v.label}" 
+                      aria-controls="listbox-id-4" 
+                      autocomplete="off" 
+                      aria-hidden="true" 
+                      placeholder="Select an Option…" 
+                      value="{!v.searchStr}"
+                      onkeyup ="{!c.changeSearchStr}"
+                      onfocus="{!c.showLookupDropdown}"
+                      disabled = "{!v.isdisable}"
+                      />
+          </span>
+            
+            <div class="slds-pill_container slds-hide slds-align_absolute-center" aura:id = "lookupPill">
+            <div class="slds-align_absolute-center slds-pill slds-pill_link"  >
+                <a href="" class="slds-pill__action" title="Pill label that is longer than the area that contains it">
+                  <div class="slds-align_absolute-center slds-pill__label"> 
+                    {!v.selectedRecord.Name}
+                  </div>
+                </a>
+                <button class="slds-button slds-button_icon slds-button_icon slds-pill__remove" iconName="utility:close" onclick="{!c.removeSelectedRec}" disabled = "{!v.isdisable}" >
+                  <lightning:icon iconName="utility:close"/>
+                </button>
+                
+            </div>
+            </div>
+        </div>
+        <div id="listbox-id-4" aura:id="dropdown" onmouseleave="{!c.hideLookupDropdown}" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid slds-hide" role="listbox">
+            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+              <aura:iteration items="{!v.recordList}" var="rec" indexVar ="index">
+              <li id="{!index }"  role="presentation" class="slds-listbox__item" onclick="{!c.selectRecord}">
+                <div id="{!index }" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
+                  <span id="{!index }" class="slds-media__figure slds-listbox__option-icon">
+                    <lightning:icon iconName="standard:account"  />
+                  </span>
+                  <span id="{!index }" class="slds-media__body slds-p-left_medium">
+                    <span id="{!index }" class="slds-truncate " title="{!rec.record.Name}"> {!rec.displayName}  </span>
+                    
+                  </span>
+                </div>
+              </li>
+            </aura:iteration>
+            </ul>
+        </div>
+    </div> -->
+
+</aura:component>

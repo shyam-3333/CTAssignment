@@ -1,0 +1,1002 @@
+<apex:page controller="BDReportsNewLead_Clone1"  extensions="BDReports_ExistingAccounts_Clone1" contentType="application/vnd.ms-excel#BDReport Summary.xls"  cache="true" standardStylesheets="false" showHeader="false"> <!--  -->
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    </head>
+    <center><font size="5"><b>Summary</b></font></center>
+    <apex:outputPanel >
+       
+            <table style="border:1px solid black; width:100%;">
+                <tr>
+                    <th style="border:1px solid black;width:50px"><b>S No.</b></th>
+                    <th style="border:1px solid black;  "><b>Description</b></th>
+                    <th style="border:1px solid black;  "><b>Industry</b></th>
+                    <th style="border:1px solid black;  " colspan="5"><b><apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!fromDate}" />  
+                        </apex:outputText> to <apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!toDate }" /> </apex:outputText></b></th>
+                   
+                    
+                </tr>
+                <tr>
+                    <th style="border:1px solid black;  "></th>
+                    <th style="border:1px solid black;  "></th>
+                    <th style="border:1px solid black;  "></th>
+                    
+                    <th style="border:1px solid black;  "><b>South</b></th>
+                    <th style="border:1px solid black;  "><b>West</b></th>
+                    <th style="border:1px solid black;  "><b>North</b></th>
+                    <th style="border:1px solid black;  "><b>East</b></th>
+                    <th style="border:1px solid black;  "><b>Head<br/>Office</b></th>
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"><center><b>1</b></center></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"><b>New Leads</b></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"></td>
+                    
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                  
+               </tr>
+               
+               <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Automotive</b></td>
+
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['AutomotiveS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['AutomotiveW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['AutomotiveN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['AutomotiveE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['AutomotiveH']}</b></center></td>
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Electrical</b></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['ElectricS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['ElectricW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['ElectricN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['ElectricE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['ElectricH']}</b></center></td>
+                    
+                    
+                   
+                    
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>FMCG</b></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['FmcgS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['FmcgW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['FmcgN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['FmcgE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['FmcgH']}</b></center></td>
+                </tr>
+                
+                 
+                
+                 <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Medical &amp; Health Care</b></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['MedicS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['MedicW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['MedicN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['MedicE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['MedicH']}</b></center></td>                    
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>General Engineering</b></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['GenEngS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['GenEngW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['GenEngN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['GenEngE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['GenEngH']}</b></center></td>
+                    
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Internal Projects</b></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['InterProS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['InterProW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['InterProN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['InterProE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['InterProH']}</b></center></td> 
+                    
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Solar</b></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['SolarS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['SolarW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['SolarN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['SolarE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['SolarH']}</b></center></td> 
+                    
+                </tr>
+                
+                 <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Other Engg</b></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['OtherS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['OtherW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['OtherN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['OtherE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['OtherH']}</b></center></td>                    
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+                
+                <tr>
+                   <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;background-color: #92d050"><b>Total</b></td>
+                    <td style="border:1px solid black;background-color:#92d050"></td>
+                    
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['TotalS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['TotalW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['TotalN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['TotalE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewLeadCount['TotalH']}</b></center></td>
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"><center><b>2</b></center></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"><b>New Accounts</b></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"></td>
+                    
+                     <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "> </td>
+               </tr>
+                    
+                    
+               <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Automotive</b></td>
+
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['AutomotiveS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['AutomotiveW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['AutomotiveN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['AutomotiveE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['AutomotiveH']}</b></center></td>
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Electrical</b></td>
+                     <td style="border:1px solid black;"><center><b>{!NewAccountCount['ElectricS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['ElectricW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['ElectricN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['ElectricE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['ElectricH']}</b></center></td>                    
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>FMCG</b></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['FmcgS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['FmcgW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['FmcgN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['FmcgE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['FmcgH']}</b></center></td>
+               </tr>
+                
+                 
+                
+                 <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Medical &amp; Health Care</b></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['MedicS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['MedicW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['MedicN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['MedicE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['MedicH']}</b></center></td>                    
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>General Engineering</b></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['GenEngS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['GenEngW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['GenEngN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['GenEngE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['GenEngH']}</b></center></td> 
+                    
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Internal Projects</b></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['InterProS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['InterProW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['InterProN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['InterProE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['InterProH']}</b></center></td> 
+                    
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Solar</b></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['SolarS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['SolarW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['SolarN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['SolarE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['SolarH']}</b></center></td> 
+                    
+                </tr>
+                
+                 <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Other Engg</b></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['OtherS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['OtherW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['OtherN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['OtherE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['OtherH']}</b></center></td>                    
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+                
+                <tr>
+                   <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;background-color: #92d050"><b>Total</b></td>
+                    <td style="border:1px solid black;background-color:#92d050"></td>
+                    
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['TotalS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['TotalW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['TotalN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['TotalE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewAccountCount['TotalH']}</b></center></td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+                 <tr>
+                    <td style="border:1px solid black; width:5%"><center><b>3</b></center></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"><b>Existing Accounts/Customers</b></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"></td>
+                    
+                     <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;"> </td>                    
+                    
+               </tr>
+                
+                
+               <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Automotive</b></td>
+
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['AutomotiveS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['AutomotiveW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['AutomotiveN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['AutomotiveE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['AutomotiveH']}</b></center></td>                   
+                    
+                    
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Electrical</b></td>
+                     <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['ElectricS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['ElectricW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['ElectricN']}</b></center></td>
+                     <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['ElectricE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['ElectricH']}</b></center></td>                
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>FMCG</b></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['FmcgS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['FmcgW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['FmcgN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['FmcgE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['FmcgH']}</b></center></td>
+                </tr>
+                
+                 
+                
+                 <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Medical &amp; Health Care</b></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['MedicS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['MedicW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['MedicN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['MedicE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['MedicH']}</b></center></td>
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>General Engineering</b></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['GenEngS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['GenEngW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['GenEngN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['GenEngE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['GenEngH']}</b></center></td> 
+                    
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Internal Projects</b></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['InterProS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['InterProW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['InterProN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['InterProE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['InterProH']}</b></center></td> 
+                    
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Solar</b></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['SolarS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['SolarW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['SolarN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['SolarE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['SolarH']}</b></center></td> 
+                    
+                </tr>
+                
+                 <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Other Engg</b></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['OtherS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['OtherW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['OtherN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['OtherE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['OtherH']}</b></center></td>                    
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+                
+                <tr>
+                   <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;background-color: #92d050"><b>Total</b></td>
+                    <td style="border:1px solid black;background-color:#92d050"></td>
+                    
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['TotalS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['TotalW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['TotalN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['TotalE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!ExistingAccountCount['TotalH']}</b></center></td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"><center><b>4</b></center></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"><b>Global Accounts/Customers</b></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"></td>
+                    
+                     <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;"> </td>
+                    
+                    
+               </tr>
+               <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Automotive</b></td>
+
+                    <td style="border:1px solid black;"><center><b>{!GlobalAccountCount['AutomotiveS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!GlobalAccountCount['AutomotiveW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!GlobalAccountCount['AutomotiveN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!GlobalAccountCount['AutomotiveE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!GlobalAccountCount['AutomotiveH']}</b></center></td>
+                    
+                    
+                    
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Non Automotive</b></td>
+                    <td style="border:1px solid black;"><center><b>{!GlobalAccountCount['NonAutoS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!GlobalAccountCount['NonAutoW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!GlobalAccountCount['NonAutoN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!GlobalAccountCount['NonAutoE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!GlobalAccountCount['NonAutoH']}</b></center></td>
+                </tr>
+                 <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+
+                <tr>
+                   <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;background-color: #92d050"><b>Total</b></td>
+                    <td style="border:1px solid black;background-color:#92d050"></td>
+                    
+                    <td style="border:1px solid black;"><center><b>{!GlobalAccountCount['TotalS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!GlobalAccountCount['TotalW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!GlobalAccountCount['TotalN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!GlobalAccountCount['TotalE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!GlobalAccountCount['TotalH']}</b></center></td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"><center><b>5</b></center></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"><b>Visits-Existing Customers</b></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"></td>
+                    
+                     <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;"> </td>
+               </tr>
+               <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Automotive</b></td>
+
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingCustCount ['AutomotiveS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingCustCount ['AutomotiveW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingCustCount ['AutomotiveN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingCustCount ['AutomotiveE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingCustCount ['AutomotiveH']}</b></center></td>
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Non Automotive</b></td>
+                     <td style="border:1px solid black;"><center><b>{!VisitExistingCustCount['NonAutoS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingCustCount['NonAutoW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingCustCount['NonAutoN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingCustCount['NonAutoE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingCustCount['NonAutoH']}</b></center></td>
+                </tr>
+                 <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+
+                <tr>
+                   <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;background-color: #92d050"><b>Total</b></td>
+                    <td style="border:1px solid black;background-color:#92d050"></td>
+                    
+                   <td style="border:1px solid black;"><center><b>{!VisitExistingCustCount['TotalS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingCustCount['TotalW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingCustCount['TotalN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingCustCount['TotalE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingCustCount['TotalH']}</b></center></td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+
+                <tr>
+                    <td style="border:1px solid black; width:5%"><center><b>6</b></center></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"><b>Visits-Existing Account</b></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"></td>
+                    
+                     <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;"> </td>
+                    
+                    
+               </tr>
+               <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Automotive</b></td>
+
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingAccountCount['AutomotiveS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingAccountCount['AutomotiveW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingAccountCount['AutomotiveN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingAccountCount['AutomotiveE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingAccountCount['AutomotiveH']}</b></center></td>
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Non Automotive</b></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingAccountCount['NonAutoS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingAccountCount['NonAutoW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingAccountCount['NonAutoN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingAccountCount['NonAutoE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingAccountCount['NonAutoH']}</b></center></td>
+                </tr>
+                 <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+
+                <tr>
+                   <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;background-color: #92d050"><b>Total</b></td>
+                    <td style="border:1px solid black;background-color:#92d050"></td>
+                    
+                   <td style="border:1px solid black;"><center><b>{!VisitExistingAccountCount['TotalS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingAccountCount['TotalW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingAccountCount['TotalN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingAccountCount['TotalE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingAccountCount['TotalH']}</b></center></td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"><center><b>7</b></center></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"><b>Visits-Existing Leads</b></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"></td>
+                    
+                     <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;"> </td>
+                    
+                    
+                    
+               </tr>
+               <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Automotive</b></td>
+
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingLeadCount ['AutomotiveS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingLeadCount ['AutomotiveW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingLeadCount ['AutomotiveN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingLeadCount ['AutomotiveE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingLeadCount ['AutomotiveH']}</b></center></td>
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Non Automotive</b></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingLeadCount ['NonAutoS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingLeadCount ['NonAutoW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingLeadCount ['NonAutoN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingLeadCount ['NonAutoE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingLeadCount ['NonAutoH']}</b></center></td>
+                </tr>
+                 <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+
+                <tr>
+                   <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;background-color: #92d050"><b>Total</b></td>
+                    <td style="border:1px solid black;background-color:#92d050"></td>
+                    
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingLeadCount ['TotalS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingLeadCount ['TotalW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingLeadCount ['TotalN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingLeadCount ['TotalE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!VisitExistingLeadCount ['TotalH']}</b></center></td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+                
+				<tr>
+                    <td style="border:1px solid black; width:5%"><center><b>8</b></center></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"><b>New Opportunity</b></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"></td>
+                    
+                     <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;"> </td>
+               </tr>
+               <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Automotive</b></td>
+
+                    <td style="border:1px solid black;"><center><b>{!NewOpportunityCount ['AutomotiveS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewOpportunityCount ['AutomotiveW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewOpportunityCount ['AutomotiveN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewOpportunityCount ['AutomotiveE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewOpportunityCount ['AutomotiveH']}</b></center></td>
+              </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Non Automotive</b></td>
+                    <td style="border:1px solid black;"><center><b>{!NewOpportunityCount ['NonAutoS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewOpportunityCount ['NonAutoW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewOpportunityCount ['NonAutoN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewOpportunityCount ['NonAutoE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewOpportunityCount ['NonAutoH']}</b></center></td>
+                </tr>
+                
+                 <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+
+                <tr>
+                   <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;background-color: #92d050"><b>Total</b></td>
+                    <td style="border:1px solid black;background-color:#92d050"></td>
+                    
+                    <td style="border:1px solid black;"><center><b>{!NewOpportunityCount ['TotalS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewOpportunityCount ['TotalW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewOpportunityCount ['TotalN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewOpportunityCount ['TotalE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!NewOpportunityCount ['TotalH']}</b></center></td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+				<tr>
+                    <td style="border:1px solid black; width:5%"><center><b>9</b></center></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"><b>Existing Opportunity</b></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"></td>
+                    
+                     <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;"> </td>
+               </tr>
+               <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Automotive</b></td>
+
+                    <td style="border:1px solid black;"><center><b>{!OppQuoteCount['AutomotiveS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppQuoteCount['AutomotiveW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppQuoteCount['AutomotiveN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppQuoteCount['AutomotiveE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppQuoteCount['AutomotiveH']}</b></center></td>
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Non Automotive</b></td>
+                    <td style="border:1px solid black;"><center><b>{!OppQuoteCount['NonAutoS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppQuoteCount['NonAutoW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppQuoteCount['NonAutoN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppQuoteCount['NonAutoE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppQuoteCount['NonAutoH']}</b></center></td>
+                </tr>
+                 <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+
+                <tr>
+                   <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;background-color: #92d050"><b>Total</b></td>
+                    <td style="border:1px solid black;background-color:#92d050"></td>
+                    
+                   <td style="border:1px solid black;"><center><b>{!OppQuoteCount['TotalS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppQuoteCount['TotalW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppQuoteCount['TotalN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppQuoteCount['TotalE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppQuoteCount['TotalH']}</b></center></td>
+                </tr>
+				
+				<tr>
+                    <td style="border:1px solid black; width:5%"><center><b>10</b></center></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"><b>Existing On-Hold Opportunity</b></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"></td>
+                    
+                     <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    
+                    
+                    
+               </tr>
+               <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Automotive</b></td>
+
+                    <td style="border:1px solid black;"><center><b>{!OppOnHoldQuoteCount['AutomotiveS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppOnHoldQuoteCount['AutomotiveW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppOnHoldQuoteCount['AutomotiveN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppOnHoldQuoteCount['AutomotiveE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppOnHoldQuoteCount['AutomotiveH']}</b></center></td>
+                    
+                    
+                    
+                </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Non Automotive</b></td>
+                    <td style="border:1px solid black;"><center><b>{!OppOnHoldQuoteCount['NonAutoS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppOnHoldQuoteCount['NonAutoW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppOnHoldQuoteCount['NonAutoN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppOnHoldQuoteCount['NonAutoE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppOnHoldQuoteCount['NonAutoH']}</b></center></td>
+                </tr>
+                 <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+
+                <tr>
+                   <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;background-color: #92d050"><b>Total</b></td>
+                    <td style="border:1px solid black;background-color:#92d050"></td>
+                    
+                   <td style="border:1px solid black;"><center><b>{!OppOnHoldQuoteCount['TotalS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppOnHoldQuoteCount['TotalW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppOnHoldQuoteCount['TotalN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppOnHoldQuoteCount['TotalE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!OppOnHoldQuoteCount['TotalH']}</b></center></td>
+                </tr>
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+				
+                 <tr>
+                    <td style="border:1px solid black; width:5%"><center><b>11</b></center></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"><b>Investment Followup </b></td>
+                    <td style="border:1px solid black;background-color:#00b0f0"></td>
+                    
+                     <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;  "></td>
+                    <td style="border:1px solid black;"> </td>
+               </tr>
+               
+              
+
+              <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Automotive</b></td>
+
+                     <td style="border:1px solid black;"><center><b>{!InvestmentFollowCount['AutomotiveS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!InvestmentFollowCount['AutomotiveW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!InvestmentFollowCount['AutomotiveN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!InvestmentFollowCount['AutomotiveE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!InvestmentFollowCount['AutomotiveH']}</b></center></td>
+              </tr>
+                
+                <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b>Non Automotive</b></td>
+                     <td style="border:1px solid black;"><center><b>{!InvestmentFollowCount['NonAutoS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!InvestmentFollowCount['NonAutoW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!InvestmentFollowCount['NonAutoN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!InvestmentFollowCount['NonAutoE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!InvestmentFollowCount['NonAutoH']}</b></center></td>
+                </tr>
+                
+                 <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr>
+
+                <tr>
+                   <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;background-color: #92d050"><b>Total</b></td>
+                    <td style="border:1px solid black;background-color:#92d050"></td>
+                    
+                   <td style="border:1px solid black;"><center><b>{!InvestmentFollowCount['TotalS']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!InvestmentFollowCount['TotalW']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!InvestmentFollowCount['TotalN']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!InvestmentFollowCount['TotalE']}</b></center></td>
+                    <td style="border:1px solid black;"><center><b>{!InvestmentFollowCount['TotalH']}</b></center></td>
+                </tr>
+                <!-- <tr>
+                    <td style="border:1px solid black; width:5%"></td>
+                    <td style="border:1px solid black;"></td>
+                    <td style="border:1px solid black;"> <b></b></td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                    <td style="border:1px solid black;"> </td>
+                </tr> -->
+   
+            </table>
+            
+    </apex:outputPanel>
+   
+</apex:page>

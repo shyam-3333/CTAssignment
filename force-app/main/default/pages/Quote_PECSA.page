@@ -1,0 +1,151 @@
+<apex:page standardController="Quote" sidebar="false" showHeader="false" renderAs="PDF" docType="html-5.0">
+<head>
+ <style>
+@page{
+      <!--  font-size:10px; -->
+        size: A4;
+        margin-bottom:100px;
+        @PageBreak{
+            page-break:always;
+            page-break-inside:avoid;
+            }
+       // table {page-break-inside:auto;-fs-table-paginate: paginate;}
+@media print
+{
+thead {display: table-header-group;}
+table {page-break-inside:auto }
+ tr    { page-break-inside:avoid; page-break-after:auto }
+ 
+ thead { display:table-header-group }
+}
+        tr{
+        page-break-inside:avoid;
+        page-break-after:always;page-break-before:auto 
+        }
+        @bottom-center {
+
+                                     content: element(footer);
+
+                               }
+
+      }  
+      
+      div.footer {
+
+                                display: block;
+
+                             padding: 5px;
+
+                               position: running(footer);
+
+                      }
+    
+</style>
+</head>
+ <div class="footer"> 
+      
+     <div > 
+     <table width="100%" border="0" cellspacing="0" cellpadding="0" >
+          <tr>
+           <td align="left">
+                <center><apex:outputText style="color:blue;font-size:10px" value="PRECISION ENGINEERING DIVISION"/><br/>
+                <apex:outputText style="color:blue;font-size:10px" value="15B,Bommasandra Industrial Area, Bommasandra Anekal Taluk, Bangalore 560099, INDIA, Tel 91-8040119403, Fax 91-8040119300."/><br/>
+                <apex:outputText style="color:blue;font-size:10px" value="Corporate Office: Golden Enclave Tower A Old Airport Road, Bangalore 560017, INDIA Tel 91-8066609000 Fax 91-8025263001, 2526, 9923"/><br/>
+                <apex:outputText style="color:blue;font-size:10px" value="www.titan.co.in"/><br/>
+                <apex:outputText style="color:blue;font-size:10px" value="A TATA Enterprise"/></center>
+          </td>
+           <tr><td style="font-family:Calibri"><b></b></td></tr>
+          </tr>         
+     </table>
+     </div>      
+  </div> 
+
+  
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName=='Under-Study'||
+ Quote.Opportunity.StageName=='Order_Won'|| Quote.Opportunity.StageName=='PO Received'|| Quote.Opportunity.StageName=='On Hold'
+ || Quote.Opportunity.StageName=='Opportunity Regret'|| Quote.Opportunity.StageName=='Opportunity Lost'}">
+ 
+<h1>Opportunity Stage should be Await Customer Feedback </h1>
+</apex:panelgroup>
+
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName=='Quotation Submission'||Quote.Opportunity.StageName=='Revised Quotation' && 
+Quote.Opportunity.Approval_Status__c!='Approved'}">
+
+<p style="color:red; font-style:italic;font-size:14px">Indicative Quote</p>
+</apex:panelgroup>
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName=='Quotation Submission'||Quote.Opportunity.StageName=='Revised Quotation' ||Quote.Opportunity.StageName=='Await Customer Feedback'&& 
+Quote.Opportunity.Approval_Status__c=='Approved'||Quote.Opportunity.Approval_Status__c!='Approved'}">
+
+<table width = "100%">
+<tr>
+<td align = "left"><apex:image value="{!$Resource.New_titan_logo}" width="1800%" height="1800%"/></td>
+<td align = "center" style="font-size:22px;color:blue;font-family:Calibri"><center><b>Titan Company Limited</b></center></td></tr>
+</table>
+
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName=='Quotation Submission'||Quote.Opportunity.StageName=='Revised Quotation'||Quote.Opportunity.StageName=='Await Customer Feedback'}">
+
+<br/>
+<table width="100%" style="font-size:14px">
+    
+    <tr>
+      <td> <b>Quote Ref: </b>{!Quote.Name}</td>
+      <td> <b>Date : </b> <apex:outputText value="{0,Date,dd/MM/YYYY}"  style="font-align:right"> <apex:param value="{!Today()}"/></apex:outputText></td>
+    </tr>
+    <tr colspam="1"> <td>&nbsp;</td></tr>
+    <tr colspam="1">
+        <td> <b>To : </b>
+         {!Quote.Opportunity.Account.name}</td>
+    </tr>
+    <tr colspam="1"> <td>&nbsp;</td></tr>
+     <tr colspam="1">
+        <td><b> Kind Attention : </b> {!Quote.Salutation__c} &nbsp;{!Quote.Contact.Name}</td>
+    </tr>
+    <tr><td>&nbsp;</td></tr>
+    <tr colspam="1">
+        <td> <b>Dear </b>
+        <apex:Panelgroup rendered="{!Quote.Salutation__c=='Mr.'}">
+        <b>Sir,</b>
+        </apex:panelgroup>
+        <apex:Panelgroup rendered="{!Quote.Salutation__c=='Ms.' || Quote.Salutation__c=='Mrs.' }">
+        <b>Madam,</b>
+        </apex:panelgroup>
+        </td>
+    </tr>
+    <tr colspam="1"> <td>&nbsp;</td></tr>
+    <tr colspam="1">
+        <td> <b>Sub : </b>Quotation  for {!Quote.Opportunity.Name}.</td>
+    </tr>
+    <tr colspam="1">
+        <td> <b>Quotation No : </b>{!Quote.Quotation_No__c}</td>
+    </tr> 
+    <tr colspam="1"> <td>&nbsp;</td></tr>
+     
+</table>
+<p style="font-size:14px">With reference to the above, we are herewith furnishing our Quote with Commercial Terms and Conditions for manufacturing and supply of Parts.<br/><br/>
+Please refer Annexure - I for Pricing details.</p>
+
+<p style="font-size:14px"><b>Quote Terms and Conditions</b>  
+
+ <apex:outputField value="{!Quote.T_C__c}" style="text-align:left"/> </p>
+
+<p style="font-size:14px">We hope our Quotation is inline with your requirement, and looking forward to receive your valuable Purchase Order/Contract at the earliest.<br/><br/><br/><br/>
+
+
+ Thanking you,<br/>
+
+For Titan Company Limited.,<br/>
+
+{!Quote.Opportunity.SYS_Approver_Name__c}
+<apex:panelGroup rendered="{!Quote.Opportunity.SYS_Approver_Name__c=='Ramana Rao D.V'}">-Senior Manager</apex:panelGroup>
+<apex:panelGroup rendered="{!Quote.Opportunity.SYS_Approver_Name__c=='Sridhar N.P'}">-Business Head</apex:panelGroup>
+<apex:panelGroup rendered="{!Quote.Opportunity.SYS_Approver_Name__c=='Admin User'}">-System Administrator</apex:panelGroup>
+
+<b><br/><br/>Note: This is a system generated document and hence does not require any signature.</b></p> 
+
+
+</apex:panelgroup>
+</apex:panelgroup>
+
+
+
+</apex:page>

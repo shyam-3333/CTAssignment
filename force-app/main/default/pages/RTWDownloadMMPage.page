@@ -1,0 +1,32 @@
+<apex:page controller="RTWProductViewController" cache="true" readOnly="true" contentType="application/vnd.ms-excel#ZTANMM_{!param}.xls; charset=UTF-8">
+     <style> .red {   background: red; } </style>
+    <table class="slds-table slds-table--bordered slds-resizable pt20 ">
+        <tr>
+            <th>Material Number</th>
+            <th>Plant</th>
+            <th>Storage Location</th>
+            <th>Unit of Measure</th>
+            <th>Material Description</th>
+            <th>Material group</th>
+            <th>ECOM Material</th>
+            <th>Profit Center</th>
+            <th>Control code</th>
+            <th>Product hierarchy</th>
+        </tr>
+        
+        <apex:repeat value="{!productMMList}" var="pro">
+            <tr>
+                <td align="center"> {!pro.materialNumber}</td>
+                <td align="center"> {!pro.plant}</td>
+                <td align="center"> {!pro.storageLocation}</td> 
+                <td align="center">{!pro.UnitofMeasure}</td>
+                <td align="center" class="{!pro.cellHighlight}">{!pro.MaterialDescription} </td>
+                <td align="center"> {!pro.MaterialGroup}</td>
+                <td align="center"> {!pro.ECOMMaterial}</td>
+                <td align="center"> {!pro.ProfitCenter}</td>
+                <td align="center">{!pro.ControlCode}</td>
+                <td align="center" class="{!pro.cellHighlightHierarchy}">{!pro.ProductHierarchy} </td>
+            </tr>
+        </apex:repeat>
+        </table>
+</apex:page>

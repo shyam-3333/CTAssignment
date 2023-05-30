@@ -1,0 +1,2525 @@
+<apex:page standardController="Product__c" extensions="product_PageController" standardStylesheets="false" showHeader="false" sidebar="false" id="productPage" lightningStylesheets="true">
+    <apex:includeScript value="{!URLFOR($Resource.JqueryA, 'js/jquery-1.6.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.JqueryA, 'js/jquery-ui-1.8.16.custom.min.js')}"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>   
+    <script src="../../soap/ajax/36.0/connection.js" type="text/javascript"></script>
+
+    <style type="text/css">
+    body{
+    background:#d9ecf1;
+    }
+    .slds-page-header{background:#1c91b3;}
+    .slds-page-header__title,.slds-text-title--caps{color:#fff;}
+    .slds-section-title--divider{background:#1c91b3;}
+    .slds-section__title-action{background:#1c91b3;color:#fff;}
+    
+    .slds-section__title-action:active, .slds-section__title-action:focus, .slds-section__title-action:hover{
+    background:#1c91b3;color:#fff;
+    }
+    .slds-button--brand{
+    background-color: #0d4150;
+    border: 1px solid #0d4150;
+    }
+
+    .slds-form-element__label{color:#0d4150;}
+    .slds-button--brand:focus, .slds-button--brand:hover{
+    
+    background-color: #1c91b3;
+    border: 1px solid #1c91b3;
+    }
+        .lookup_img {
+            position: absolute;
+            right: 5px;
+            top: 2px;
+            width: 30px;
+        }
+        #detail {margin-bottom:5px;}
+            .lookup_block {
+            position: relative;
+        }
+        .loader
+        {
+            background: url("/resource/1449581861000/loaderImage");
+            background-repeat: no-repeat;
+            background-position: right;
+        }
+
+        .lookup_block a {
+            background: rgba(0, 0, 0, 0) url("/resource/1484545177000/lookupIcon_Taneira") no-repeat scroll right center / 65% auto;
+            border-left: medium none;
+            height: 32px;
+            position: absolute;
+            right: 0;
+            width: 30px;
+            z-index: 100;
+        }
+        .slds-notify-container, .slds-notify_container {
+            position: relative; 
+            width: 100%;
+            left: 0;
+            top: 0;
+            z-index: 10000;
+            text-align: center;
+        }
+        .errorMsg {
+            color: red !important;
+        }
+
+        .dummy {
+            padding-left: 0cm;
+        }
+        .col--padded {
+            padding-right: .100rem;
+            padding-left: .100rem;
+        }
+        body {
+        //  background-color:#F0FFF0;
+        }
+        .slds-form--inline .slds-form-element, .slds-form--inline .slds-form-element__control, .slds-form--inline .slds-form-element__label {
+            display: block!important;
+        }
+     
+
+    </style>
+
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <apex:stylesheet value="{!$Resource.Slds215}" /> 
+        <body onload="">
+
+            <div class="Titan">
+                <div class="slds-grid slds-wrap" id="theDivId">
+                    <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2 col--padded">  
+                        <apex:message id="errId"/>
+                        <apex:form id="prodForm1" styleClass="slds-form--inline" rendered="{!isLocked}" >
+                             <div class="slds stockit" height="100%">
+                                <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+                                    <div class="slds-modal__container">
+                                        
+                                        <div class="slds-modal__content slds-p-around--medium">
+                                            <h4>Error: Record is locked</h4>                                
+                                        </div>
+                                        <div class="slds-modal__footer">                            
+                                             <input type="Button" value="Cancel" Class="slds-button slds-button--neutral" onclick="invokeCancel('{!Product__c.id}')"/>
+                                                
+                                        </div>
+                                   </div>
+                               </div>
+                               <div class="slds-backdrop slds-backdrop--open"></div>
+                            </div>
+                        </apex:form>   
+                        <apex:form id="prodForm2" styleClass="slds-form--inline" rendered="{!if(reordered == 'yes',true,false)}">
+                        <div class="slds stockit" height="100%">
+                            <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+                                <div class="slds-modal__container">
+
+                                    <div class="slds-modal__content slds-p-around--medium">
+                                        <h4>Product with new SKU will be generated. Are you sure?</h4>
+                                    </div>
+                                    <div class="slds-modal__footer">
+                                        <input type="Button" value="OK" Class="slds-button slds-button--neutral" onclick="getRemoteProduct();" />
+                                        <input type="Button" value="Cancel" Class="slds-button slds-button--neutral" onclick="invokeCancel('{!Product__c.id}')" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-backdrop slds-backdrop--open"></div>
+                        </div>
+                    </apex:form>                     
+                        <apex:form id="prodForm" styleClass="slds-form--inline" rendered="{!!isLocked}" >
+                           <!--  <h3 class="slds-section-title--divider" style="width:100%" >
+                                <p class="slds-section__title-action" >
+                                New Product Information</p>
+                            </h3> -->
+                            <div class="slds-page-header">
+                                <div class="slds-grid">
+                                    <div class="slds-col slds-has-flexi-truncate">
+                                        <div class="slds-media slds-no-space slds-grow">
+                                            <div class="slds-media__body"> 
+                                                <!--<p class="slds-text-title--caps slds-line-height--reset">Product</p> -->
+                                                <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate" title="this should match the Record Title">New Product Information</h1>
+                                                
+                                            </div> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+
+                            <apex:outputPanel id="prodId" layout="block" style="height:100%;overflow:visible;">
+                            <apex:outputPanel rendered="{!isClicked}">
+                            <div class="slds-notify_container">
+                              <div class="slds-notify slds-notify--alert slds-theme--success slds-theme--alert-texture" role="alert">
+                                <button class="slds-button slds-notify__close slds-button--icon-inverse" title="Close">
+                                  <svg class="slds-button__icon" aria-hidden="true">
+                                    <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                                  </svg>
+                                  <span class="slds-assistive-text">Close</span>
+                                </button>
+                                <span class="slds-assistive-text">Success</span>
+                                <h2>
+                                  <svg class="slds-icon slds-icon--small slds-m-right--x-small" aria-hidden="true">
+                                    <use xlink:href="/assets/icons/custom-sprite/svg/symbols.svg#custom19"></use>
+                                  </svg>Record has been Saved</h2>
+                              </div>
+                            </div>
+                            </apex:outputPanel> 
+                           
+                    
+                           
+                        <apex:actionFunction name="saveProd" action="{!saveProd}" /> 
+                        <apex:actionFunction name="Cancel" action="{!doCancel}" immediate="true" /> <br/>
+                         <apex:actionFunction name="doSave" action="{!doSave}" />
+                         <apex:actionFunction name="doClone" action="{!doClone}" />
+                         <apex:actionRegion >
+                            <apex:outputPanel rendered="{!isSku}" id="skuId">       
+                            <div class="slds stockit" height="100%">
+                                <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+                                    <div class="slds-modal__container">
+                                        
+                                        <div class="slds-modal__content slds-p-around--medium">
+                                            <h4>{!skuMessage}</h4>                                
+                                        </div>
+                                        <div class="slds-modal__footer">                            
+                                             <apex:commandButton value="OK" StyleClass="slds-button slds-button--neutral" onclick="invokePopup('{!Product__c.Id}','{!SkuMessage}')" reRender="skuId"/>
+                                              <input type="Button" value="Cancel" Class="slds-button slds-button--neutral" onclick="actioninvoke('{!Product__c.Account__c}','{!productSource}','{!Product__c.Id}')"/>  
+                                        </div>
+                                   </div>
+                               </div>
+                               <div class="slds-backdrop slds-backdrop--open"></div>
+                            </div>
+                             </apex:outputPanel> 
+                             <apex:outputPanel rendered="{!isSkuClone}" id="clonSkuId">       
+                          
+                            <div class="slds stockit" height="100%">
+                                <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+                                    <div class="slds-modal__container">
+                                        
+                                        <div class="slds-modal__content slds-p-around--medium">
+                                            <h4>{!skuMessage}</h4>                                
+                                        </div>
+                                        <div class="slds-modal__footer">                            
+                                             <apex:commandButton value="OK" StyleClass="slds-button slds-button--neutral" onclick="invokeSaveClone('{!SkuMessage}')" reRender="clonSkuId"/>
+                                              <input type="Button" value="Cancel" Class="slds-button slds-button--neutral" onclick="actioninvoke('{!Product__c.Account__c}','{!productSource}','{!Product__c.Id}')"/>  
+                                        </div>
+                                   </div>
+                               </div>
+                               <div class="slds-backdrop slds-backdrop--open"></div>
+                            </div>
+                             </apex:outputPanel> 
+                            
+                             </apex:actionRegion>  
+                            <apex:pageMessages ></apex:pageMessages>
+                             <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large"> 
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Vendor Prod Code</b>
+                                                <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputText value="{!Product__c.name}" styleClass="slds-input" id="namId" />
+                                            <p id="errNam" style="display:none;color:red">Please Enter the Vendor Prod Code</p>
+                                        </div>
+                                    </div><br/>
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element slds-lookup" data-select="single">
+                                            <div class="slds-input-has-icon slds-input-has-icon--right">
+                                                <label class="slds-form-element__label labeltxt" for="lookup-348"><b>Vendor</b>
+                                                    <abbr class="slds-required" title="required">*</abbr>
+                                                </label>
+                                                <svg aria-hidden="true" class="slds-input__icon">
+                                                    <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#search"></use> 
+                                                </svg> 
+                                                <div class="">
+                                                    <div class="lookup_block" id="divId">
+                                                        <apex:inputField value="{!Product__c.Vendor_custom__c}" styleClass="slds-lookup__search-input slds-input" id="thelookup" /><br/>
+                                                        <p id="error1" style="display:none;color:red">Please Enter the Vendor Reference</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div><br/> 
+                                </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">                                   
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Buyer Cost</b>
+                                                <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputField styleClass="slds-input" id="costId1" value="{!Product__c.Buyers_Cost__c}" />
+                                            <!-- <input type="Text" Class="" id="costId1" /> -->
+                                            <p id="error2" style="display:none;color:red">Please Enter the valid Cost</p>
+                                            <p id="errorCost" style="display:none;color:red">Cost should be greater than 0</p>
+                                        </div>
+                                    </div><br/>
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">                                   
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Cost Price</b>
+                                                <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputField styleClass="slds-input" id="costId" value="{!Product__c.Procurement_Cost__c}" />
+                                            <!-- <input type="Text" Class="" id="costId" /> -->
+                                            <p id="error2" style="display:none;color:red">Please Enter the valid Cost</p>
+                                            <p id="errorCost" style="display:none;color:red">Cost should be greater than 0</p>
+                                        </div>
+                                    </div><br/>
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>MRP</b>
+                                               
+                                            </label>
+                                            <apex:inputField value="{!Product__c.Suggested_MRP__c}" styleClass="slds-input" id="mrp" />
+                                           
+                                        </div>
+                                    </div><br/>
+                                </div> 
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Quantity</b>
+                                                <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputField value="{!Product__c.Quantity__c}" styleclass="slds-input" id="quantId" />
+                                            <p id="err" style="display:none;color:red">Please Enter the Quantity</p>
+                                            <p id="errQua" style="display:none;color:red">Please Enter atleast 1 Quantity</p>
+                                        </div>
+                                    </div><br/>
+                                </div>
+                                 <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Proc-Source</b>
+                                                
+                                            </label>
+                                            <apex:inputField value="{!Product__c.Proc_Source__c}" styleClass="slds-input" id="procSrc" />
+                                            
+                                        </div>
+                                    </div><br/>
+                                </div>  
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"> 
+                                    <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Proc-Type</b>
+                                                <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputField value="{!Product__c.Proc_Type__c}" styleclass="slds-input autoFillProcTyp" id="procTypId" />
+                                            <p id="errProc" style="display:none;color:red">Please Enter the Proc-Type</p>
+                                            
+                                        </div>
+                                    <br/>
+                                </div>
+                                
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/> 
+                            </div>
+                            <h3 class="slds-section-title--divider" style="width:100%" >
+                                <p class="slds-section__title-action" >
+                                Design Team</p>
+                            </h3> <br/>
+                            <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large"> 
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Origin</b>
+                                                <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Cluster__c}" styleClass="slds-input autoFillOrigin" id="values3"  />
+                                        </div>
+                                        <p id="error6" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/>
+                                </div>
+                                
+                                <div id="designId" class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="" >
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Design Story</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Design_Story__c}" styleClass="slds-input" id="values1"  />
+                                            
+                                        </div>
+                                    </div><br/>
+                                </div> 
+                                <div id="designId" class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="" >
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Story 1</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Story_1__c}" styleClass="slds-input" id="story1"  />
+                                            
+                                        </div>
+                                    </div><br/>
+                                </div> 
+                                <div id="designId" class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="" >
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Story 2</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Story_2__c}" styleClass="slds-input" id="story2"  />
+                                            
+                                        </div>
+                                    </div><br/>
+                                </div> 
+                                <div id="designId" class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="" >
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Design Description</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Design_Description__c}" styleClass="slds-input" id="descp1"  />
+                                            
+                                        </div>
+                                    </div><br/>
+                                </div> 
+                              <!---  <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Design Type</b>
+                                               
+                                            </label>
+                                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right slds-picklist__input">
+                                                <apex:inputtext value="{!Product__c.Design_Type__c}" styleClass="slds-input autoFillDesignType" id="valuesType" />
+                                              
+                                                <p id="errorType" style="display:none;color:red">Please Select a value</p>
+                                            </div>
+                                        </div>
+                                    </div><br/>
+                                </div> --->
+                             <!---   <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Article Number</b>
+                                                
+                                            </label>
+                                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right slds-picklist__input">
+                                                <apex:inputtext value="{!Product__c.Article_Number__c}" styleClass="slds-input autoFillArticleNum" id="article" />
+                                               <p id="errorArticle" style="display:none;color:red">Please Select a value</p>
+                                            </div>
+                                        </div>
+                                    </div><br/>
+                                </div> --->
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Warp</b>
+                                                <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Material_Wrap__c}" styleClass="slds-input autoFillWrap" id="values2" />
+                                        </div> 
+                                        <p id="error5" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/>
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Weft</b>
+                                                <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Taneira_Material_Weft__c}" styleClass="slds-input autoFillWeft" id="valuematerial" />                                           
+                                        </div>
+                                        <p id="errorWeft" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/>
+                                </div>
+
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Zari</b>
+                                                <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Zari_Type__c}" styleClass="slds-input autoFillZari" id="values4" />
+                                        </div>
+                                        <p id="error7" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/>
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Base Colour</b>
+                                                <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Base_Colour__c}" styleClass="slds-input autoFillColor" id="values5" />
+                                        </div>
+                                        <p id="error8" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/>
+                                </div>
+                                 <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Detailed Colour</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Detailed_Colour__c}" styleClass="slds-input" id="detailColId" />
+                                        </div>
+                                        <p id="errDetailCol" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/>
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Craft</b>
+                                                <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Workmanship__c}" styleClass="slds-input autoFillCraft" id="values6" />
+                                        </div>
+                                        <p id="error9" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/>
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Loom</b>
+                                                <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Loom__c}" styleClass="slds-input autoFillLoom" id="values7" />
+                                        </div>
+                                        <p id="error10" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/>
+                                </div>
+                             <!---   <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Route</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Route__c}" styleClass="slds-input autoFillRoute" id="values8" />
+                                        </div>
+                                        <p id="error11" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/>
+                                </div> --->
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Occasion</b>
+                                                
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Occasion__c }" styleClass="slds-input autoFillOcc" id="values9" />
+                                        </div>
+                                        <p id="error12" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/>
+                                </div>
+                              <!----  <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Fold</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Fold__c }" styleClass="slds-input" id="foldId" />
+                                           
+                                        </div>
+                                    </div><br/> 
+                                </div> --->
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Collection</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Collection__c }" styleClass="slds-input" id="collid" />
+                                           
+                                        </div>
+                                    </div><br/> 
+                                </div>
+                                 <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Silkmark</b>
+                                               
+                                            </label>
+                                            <apex:inputField value="{!Product__c.Silkmark__c }" styleClass="slds-input slds-combobox__input" id="smId" />
+                                           
+                                        </div>
+                                    </div><br/> 
+                                </div>
+                              <!---  <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Washcare</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Washcare__c }" styleClass="slds-input" id="washId" />
+                                           
+                                        </div>
+                                    </div><br/> 
+                                </div> --->
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Saree Dimensions</b>
+                                                
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Saree_Dimensions__c}" styleClass="slds-input autoFillSareeDimnsion" id="sariDimensn" />
+                                        </div>
+                                        <p id="dimensionErr" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/>
+                                
+                                </div> 
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Blouse Type</b>
+                                                <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputField value="{!Product__c.Blouse_Type__c }" styleClass="slds-input slds-combobox__input" id="blouseTypeId" />
+                                            <p id="errBlouseTyp" style="display:none;color:red">Please Select a value</p>
+                                        </div>
+                                    </div><br/> 
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Blouse Size</b>
+                                               
+                                            </label>
+                                            <apex:inputField value="{!Product__c.Blouse_Size__c }" styleClass="slds-input slds-combobox__input" id="blouseSizeId" />
+                                           
+                                        </div>
+                                    </div><br/> 
+                                </div>
+                                <!--Adding here values for Warehouse-->
+                                     <div id="designId" class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="" >
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>WareHouse Stock</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Warehouse_Stock__c}" styleClass="slds-input" id="WarehouseStock"  />
+                                            
+                                        </div>
+                                    </div><br/>
+                                </div> 
+                                <!--Till here-->
+                                 <!--Adding here values for Sold Stock-->
+                                     <div id="designId" class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="" >
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Sold Stock</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Sold_Stock__c}" styleClass="slds-input" id="SoldStock"  />
+                                            
+                                        </div>
+                                    </div><br/>
+                                </div> 
+                                <!--Till here-->
+                                 <!--Adding here values for Store Stock-->
+                                     <div id="designId" class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="" >
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Store Stock</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Store_Stock__c}" styleClass="slds-input" id="StoreStock"  />
+                                            
+                                        </div>
+                                    </div><br/>
+                                </div> 
+                                <!--Till here-->
+                                 <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/>
+                                  <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/>
+                                 </div>
+                                <h3 class="slds-section-title--divider" style="width:100%" >
+                                <p class="slds-section__title-action" >Attribution Team</p>
+                            </h3><br/>  
+                            <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large"> 
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Body Pattern</b>
+                                               <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Body_Pattern__c}" styleClass="slds-input autoBodyPattern" id="bodyPatId" />
+                                           
+                                        </div>
+                                        <p id="errbodyPat" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/> 
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Body Des Element</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Body_Des_Element__c}" styleClass="slds-input autoBodyElement" id="bodyEleId" />
+                                           
+                                        </div>
+                                        <p id="errBodyEle" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/> 
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Body Des Material</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Body_Des_Material__c}" styleClass="slds-input autoBodyMaterial" id="bodyMatId" />
+                                           
+                                        </div>
+                                        <p id="errBodyMat" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/> 
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Body Des Density</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Body_Des_Density__c}" styleClass="slds-input autoBodyDensity" id="bodyDenId" />
+                                           
+                                        </div>
+                                        <p id="errBodyDes" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/> 
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Border Pattern</b>
+                                               <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Border_Pattern__c}" styleClass="slds-input autoBorderPattern" id="borderPatId" />
+                                           
+                                        </div>
+                                        <p id="errBorderPat" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/> 
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Border Des Element</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Border_Des_Element__c}" styleClass="slds-input autoBorderElement" id="borderEleId" />
+                                           
+                                        </div>
+                                        <p id="errBorderEle" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/> 
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Border Des Material</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Border_Des_Material__c}" styleClass="slds-input autoBorderMaterial" id="borderMatId" />
+                                           
+                                        </div>
+                                        <p id="errBorderMat" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/> 
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Border Size</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Border_Size__c}" styleClass="slds-input autoBorderSize" id="borderSizeId" />
+                                           
+                                        </div>
+                                        <p id="errBorderSize" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/> 
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Pallu Size</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Pallu_Size__c}" styleClass="slds-input autoPalluSize" id="PalluSizeId" />
+                                           
+                                        </div>
+                                        <p id="errPalluSiz" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/> 
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Pallu Pattern</b>
+                                               <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Pallu_Pattern__c}" styleClass="slds-input autoPalluPattern" id="palluPatId" />
+                                           
+                                        </div>
+                                        <p id="errPalluPat" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/> 
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Pallu Des Material</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Pallu_Des_Material__c}" styleClass="slds-input autoPalluMaterial" id="palluMatId" />
+                                           
+                                        </div>
+                                        <p id="errPalluMat" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/> 
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Pallu Des Density</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Pallu_Des_Density__c}" styleClass="slds-input autoPalluDensity" id="palluDenId" />
+                                           
+                                        </div>
+                                        <p id="errPalluDes" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/> 
+                                </div>
+                                <!--Apex changes made-->
+                               <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Pallu Design</b>
+                                               
+                                            </label>
+                                            <apex:inputtext value="{!Product__c.Pallu_Design__c}" styleClass="slds-input autoPalluDesign" id="palluDesignId" />
+                                           
+                                        </div>
+                                        <p id="errPalluDesign" style="display:none;color:red">Please Select a value</p>
+                                    </div><br/> 
+                                </div>                 
+                               <!--Till here--> 
+                                
+                             <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/> 
+                             <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/> 
+                             </div>
+                             
+                            <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/>
+                            <h3 class="slds-section-title--divider" style="width:100%" >
+                                <p class="slds-section__title-action" >Comments And Attachments </p>
+                            </h3><br/>
+                            <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large"> 
+                             <!--   <apex:actionRegion > -->
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2">
+                                        <div class="">
+                                            <div class="slds-form-element__control">
+                                                <label class="slds-form-element__label" for="text-input-01"><b>Add Picture</b>
+                                                    <abbr class="slds-required" title="required">*</abbr>
+                                                </label><br/>
+                                                <div >
+                                                <apex:outputField value="{!Product__c.Photo__c}" id="photoId1" rendered="{!if(productSource == 'New',false,true)}"/>
+                                                
+                                                    <apex:image url="/servlet/servlet.FileDownload?file={!attachId}" rendered="{!if(attachId != null,true,false)}" height="281px" width="500px"/>
+                                                    <apex:inputFile id="photo" accept="image/*;capture=camera" value="{!image}" fileName="{!attachImage.Name}" onchange="checkFileSize(this)"/> 
+                                                    <p id="errPhoto" style="display:none;color:red">Please Choose a file</p>
+                                            <p id="errorSize" style="display:none;color:red">File size is too large - Please choose a file that is 5Mb or less</p>
+                                                </div><br/>
+                                            </div>
+                                            
+                                            
+                                        </div>
+                                    </div>
+
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2"/>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2"/>
+                            <!--    </apex:actionRegion> -->
+                            </div>
+                           <!-- <h3 class="slds-section-title--divider" style="width:100%" >
+                                <p class="slds-section__title-action" >Comments</p>
+                            </h3> -->
+                            <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large"> 
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-3"> <br/>
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Comments</b></label>
+                                            <apex:inputField value="{!Product__c.Comments__c}" styleClass="slds-textarea slds-text-body--regular" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-panel__section">
+                                <div style="width:100%">
+                                    <div class="slds-form-element" role="group" style="width:100%">
+                                        <center>
+                                            <input type="Button" value="Save" Class="slds-button slds-button--brand" id="SaveProdId1"/>
+                                                
+                                            <input type="Button" value="Cancel" Class="slds-button slds-button--neutral" onclick="actioninvoke('{!Product__c.Account__c}','{!productSource}','{!Product__c.Id}')"/>
+                                                 <br/><br/>
+                                            <apex:outputPanel rendered="{!if(productSource == 'New',true,false)}">
+                                                <input type="Button" value="Save And New" Class="slds-button slds-button--neutral" id="saveId" />
+                                                    
+                                                <input type="Button" value="Save And Clone" Class="slds-button slds-button--neutral" id="cloneId"/>
+                                                   
+                                            </apex:outputPanel>
+                                        </center>
+                                    </div>
+                                </div>
+                            </div> 
+                            </apex:outputPanel>
+                        </apex:form>
+                         
+                    </div>
+                </div>
+            </div>
+
+    <script>
+       var isErr; 
+       var errSiz ;
+       var reorderImage = '';
+        $(document).load(function() {
+            
+        });
+        
+        function getRemoteProduct() {
+            var productId = '{!Product__c.Id}';
+             console.log('here'+'{!image}');
+            Visualforce.remoting.Manager.invokeAction(
+                '{!$RemoteAction.product_PageController.getProduct}',
+                productId , '{!$CurrentPage.parameters.reorder}' ,
+                function(result, event){
+                    if (event.status) {
+                        console.log("status--"+event.status);
+                        console.log("status--"+result.prodWrap.Id);
+                        if('{!$CurrentPage.parameters.reorder}' !='' ){
+                            window.location.replace("/apex/ProductPageSaree?Category="+result.prodWrap.Product_Category_Taneira__c+"&id="+result.prodWrap.Id+"&prodId="+productId+"&attId="+result.attachmentId);
+                        }
+                        
+                        
+                    } 
+                    else if (event.type === 'exception') {
+                        console.log("status--"+event.status);
+                    } 
+                    else {
+                        console.log("status--"+event.status);
+                    }
+                }, 
+                {escape: true}
+            );
+        }
+        
+        $(document).ready(function() {
+      //  getRemoteProduct();
+        console.log('--ready--');
+           var clickId;
+            isErr = false;
+            if('{!attachId}' != ''){
+                reorderImage = '{!attachId}';
+            }
+            console.log('**reorderImage**'+reorderImage);
+            $('[id$=sariDimensn]').val('5.3m x 1.1m');
+            
+          $( ".autoFillSareeDimnsion" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Saree Dimensions' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var sareeVal= new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                    var saree= records[i];
+                    sareeVal.push(saree.Name);
+                }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(sareeVal, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#dimensionErr").text("No results found");
+                     $("#dimensionErr").show();
+                  //   jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 
+                 else{
+                     response(arr);
+                
+                     $("#dimensionErr").hide();
+                     isErr = false;
+                 }
+                 if($("#dimensionErr").is(":visible")){
+                $("ul").hide();  
+                }
+                 
+             },
+             close: function(e, ui) {   
+                  $(this).blur();  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoFillSareeDimnsion" ).focus(function () {
+                $(this).autocomplete("search", "");
+                
+            });
+      /*    $( ".autoFillBlouseDimnsion" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Blouse Dimensions' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var blouseVal= new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                    var blouse= records[i];
+                    blouseVal.push(blouse.Name);
+                }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep( blouseVal, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#blouseErr").text("No results found");
+                     $("#blouseErr").show();
+                  //   jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+                
+                     $("#blouseErr").hide();
+                     isErr = false;
+                 }
+                 if($("#blouseErr").is(":visible")){
+                    $("ul").hide();
+                }
+                
+             },
+             close: function(e, ui) {   
+                  $(this).blur();  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoFillBlouseDimnsion" ).focus(function () {
+                $(this).autocomplete("search", "");
+            }); */ 
+           
+          $( ".autoFillWeft" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Weft' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var weftVal= new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                    var weft= records[i];
+                    weftVal.push(weft.Name);
+                }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(weftVal, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#errorWeft").text("No results found");
+                     $("#errorWeft").show();
+                   //  jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+                
+                     $("#errorWeft").hide();
+                     isErr = false;
+                 }
+                 if($("#errorWeft").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {   
+                  $(this).blur();  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoFillWeft" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });
+          
+          $( ".autoFillZari" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Zari Type' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var zariVal= new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                    var zari= records[i];
+                    zariVal.push(zari.Name);
+                }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep( zariVal, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#error7").text("No results found");
+                     $("#error7").show();
+                   //  jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#error7").hide();
+                     isErr = false;
+                 }
+                 if($("#error7").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoFillZari" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });
+          $( ".autoFillColor" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Base Colour' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var colorVal= new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                    var color= records[i];
+                    colorVal.push(color.Name);
+                }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep( colorVal, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#error8").text("No results found");
+                     $("#error8").show();
+                   //  jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#error8").hide();
+                     isErr = false;
+                 }
+                 if($("#error8").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoFillColor" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });
+            
+
+          $( ".autoFillCraft" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Craft' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var craftVal= new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                    var craft= records[i];
+                    craftVal.push(craft.Name);
+                }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep( craftVal, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#error9").text("No results found");
+                     $("#error9").show();
+                    // jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#error9").hide();
+                     isErr = false;
+                 }
+                 if($("#error9").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+            minLength:0,
+         });
+           $( ".autoFillCraft" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });
+          $( ".autoFillLoom" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Loom' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var loomVal= new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var loom= records[i];
+                        loomVal.push(loom.Name);
+                }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(loomVal, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#error10").text("No results found");
+                     $("#error10").show();
+                    // jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#error10").hide();
+                     isErr = false;
+                 }
+                 if($("#error10").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoFillLoom" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });
+        /*  $( ".autoFillRoute" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Route' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var routeVal = new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var route= records[i];
+                        routeVal.push(route.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep( routeVal , function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#error11").text("No results found");
+                     $("#error11").show();
+                    // jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#error11").hide();
+                     isErr = false;
+                 }
+                 if($("#error11").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoFillRoute" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });    */      
+            $( ".autoBodyPattern" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Body Pattern' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var bodyVal = new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var bodyPat= records[i];
+                        bodyVal.push(bodyPat.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(bodyVal, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#errbodyPat").text("No results found");
+                     $("#errbodyPat").show();
+                   //  jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#errbodyPat").hide();
+                     isErr = false;
+                 }
+                 if($("#errbodyPat").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoBodyPattern" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });
+            
+           $( ".autoBodyElement" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Body Des Element' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var bodyEle = new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var bodyElement= records[i];
+                        bodyEle.push(bodyElement.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(bodyEle, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#errBodyEle").text("No results found");
+                     $("#errBodyEle").show();
+                   //  jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#errBodyEle").hide();
+                     isErr = false;
+                 }
+                 if($("#errBodyEle").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoBodyElement" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });    
+            
+        $( ".autoBodyPattern" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });
+            
+           $( ".autoBodyMaterial" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Body Des Material' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var bodyMat = new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var bodyMaterial= records[i];
+                        bodyMat.push(bodyMaterial.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(bodyMat, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#errBodyMat").text("No results found");
+                     $("#errBodyMat").show();
+                   //  jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#errBodyMat").hide();
+                     isErr = false;
+                 }
+                 if($("#errBodyMat").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoBodyMaterial" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });    
+        
+                 $( ".autoBodyDensity" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Body Des Density' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var bodyDen = new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var bodyDensity= records[i];
+                        bodyDen.push(bodyDensity.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(bodyDen, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#errBodyDes").text("No results found");
+                     $("#errBodyDes").show();
+                   //  jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#errBodyDes").hide();
+                     isErr = false;
+                 }
+                 if($("#errBodyDes").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoBodyDensity" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });    
+            
+            $( ".autoFillOcc" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Occasion' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var occasionVal = new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var occasn= records[i];
+                        occasionVal.push(occasn.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(occasionVal, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#error12").text("No results found");
+                     $("#error12").show();
+                   //  jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#error12").hide();
+                     isErr = false;
+                 }
+                 if($("#error12").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoFillOcc" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });
+               $( ".autoBorderPattern" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Border Pattern' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var bodyPat = new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var bodyPattern = records[i];
+                        bodyPat.push(bodyPattern.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(bodyPat, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#errBorderPat").text("No results found");
+                     $("#errBorderPat").show();
+                   //  jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#errBorderPat").hide();
+                     isErr = false;
+                 }
+                 if($("#errBorderPat").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoBorderPattern" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });  
+        
+        
+        $( ".autoBorderElement" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Border Des Element' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var borderEle = new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var borderElement = records[i];
+                        borderEle.push(borderElement.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(borderEle, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#errBorderEle").text("No results found");
+                     $("#errBorderEle").show();
+                   //  jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#errBorderEle").hide();
+                     isErr = false;
+                 }
+                 if($("#errBorderEle").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoBorderElement" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });  
+        
+        
+        $( ".autoBorderMaterial" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Border Des Element' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var borderEle = new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var borderElement = records[i];
+                        borderEle.push(borderElement.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(borderEle, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#errBorderEle").text("No results found");
+                     $("#errBorderEle").show();
+                   //  jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#errBorderEle").hide();
+                     isErr = false;
+                 }
+                 if($("#errBorderEle").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $(".autoBorderMaterial").focus(function () {
+                $(this).autocomplete("search", "");
+            });  
+        
+        $( ".autoBorderSize" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Border Size' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var borderSiz = new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var borderSize = records[i];
+                        borderSiz.push(borderSize.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(borderSiz, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#errBorderSize").text("No results found");
+                     $("#errBorderSize").show();
+                   //  jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#errBorderSize").hide();
+                     isErr = false;
+                 }
+                 if($("#errBorderSize").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $(".autoBorderSize").focus(function () {
+                $(this).autocomplete("search", "");
+            });  
+            
+            $( ".autoPalluSize" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Pallu Size' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var palluSiz = new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var palluSize = records[i];
+                        palluSiz.push(palluSize.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(palluSiz, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#errPalluSiz").text("No results found");
+                     $("#errPalluSiz").show();
+                   //  jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#errPalluSiz").hide();
+                     isErr = false;
+                 }
+                 if($("#errPalluSiz").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $(".autoPalluSize").focus(function () {
+                $(this).autocomplete("search", "");
+            }); 
+        
+        
+        $( ".autoPalluPattern" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Pallu Pattern' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var palluPat = new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var palluPattern = records[i];
+                        palluPat.push(palluPattern.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(palluPat, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#errPalluPat").text("No results found");
+                     $("#errPalluPat").show();
+                   //  jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#errPalluPat").hide();
+                     isErr = false;
+                 }
+                 if($("#errPalluPat").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $(".autoPalluPattern").focus(function () {
+                $(this).autocomplete("search", "");
+            }); 
+            
+        
+        $( ".autoPalluMaterial" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Pallu Des Material' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var palluMat = new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var palluMaterial = records[i];
+                        palluMat.push(palluMaterial.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(palluMat, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#errPalluMat").text("No results found");
+                     $("#errPalluMat").show();
+                   //  jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#errPalluMat").hide();
+                     isErr = false;
+                 }
+                 if($("#errPalluMat").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $(".autoPalluMaterial").focus(function () {
+                $(this).autocomplete("search", "");
+            }); 
+            
+            $( ".autoPalluDensity" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Pallu Des Density' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var palluDen = new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var palluDensity = records[i];
+                        palluDen.push(palluDensity.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(palluDen, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#errPalluDes").text("No results found");
+                     $("#errPalluDes").show();
+                   //  jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#errPalluDes").hide();
+                     isErr = false;
+                 }
+                 if($("#errPalluDes").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $(".autoPalluDensity").focus(function () {
+                $(this).autocomplete("search", "");
+            }); 
+            
+            <!--Changes for Pallu Design-->
+           $( ".autoPalluDesign" ).autocomplete({
+                
+                 source: function( request, response ) {
+                     sforce.connection.sessionId = "{!$Api.Session_ID}";
+                     var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Pallu Design' and Active__c = True");
+                     var records = queryResult.getArray('records');
+                     var palluDesign = new Array();
+                     
+                     for (var i = 0; i <records.length; i++) {
+                            var palluDesign1 = records[i];
+                            palluDesign.push(palluDesign1.Name);
+                        }
+                     var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                     var arr = $.grep(palluDesign, function( item ){  return matcher.test( item );    })
+                     if(arr.length == 0){
+                     
+                         $("#errPalluDesign").text("No results found");
+                         $("#errPalluDesign").show();
+                       //  jQuery('[id$=values]').css("border-color", "red");
+                         isErr = true;
+                     }
+                     else{
+                         response(arr);
+                   
+                         $("#errPalluDesign").hide();
+                         isErr = false;
+                     }
+                     if($("#errPalluDesign").is(":visible")){
+                        $("ul").hide();
+                    }
+                 },
+                 close: function(e, ui) {  
+                      
+                  $(this).blur();
+                      
+                  },
+                 
+                 minLength:0,
+             });
+               $(".autoPalluDesign").focus(function () {
+                    $(this).autocomplete("search", "");
+                });
+         <!--Inside this region-->
+            
+           /*    $( ".autoFillRoute" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Route' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var routeVal = new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var route= records[i];
+                        routeVal.push(route.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep( routeVal , function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#error11").text("No results found");
+                     $("#error11").show();
+                    // jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+               
+                     $("#error11").hide();
+                     isErr = false;
+                 }
+                 if($("#error11").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {  
+                  
+                  $(this).blur();
+                  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoFillRoute" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });
+            */
+            $( ".autoFillWrap" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}";
+                var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Warp' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var wrapVal = new Array();
+                 
+                 for (var i = 0; i <records.length; i++) {
+                        var wrap = records[i];
+                        wrapVal.push(wrap.Name);
+                }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep(wrapVal, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#error5").text("No results found");
+                     $("#error5").show();
+                  //   jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+                
+                     $("#error5").hide();
+                     isErr = false;
+                 }
+                 if($("#error5").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {   
+                  $(this).blur();  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoFillWrap" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });
+             $( ".autoFillOrigin" ).autocomplete({
+        
+             source: function( request, response ) {
+               //   $("#loading").show();
+                sforce.connection.sessionId = "{!$Api.Session_ID}";
+                var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Origin' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var originVal = new Array();
+             
+                 for (var i = 0; i <records.length; i++) {
+                        var origin= records[i];
+                        originVal.push(origin.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep( originVal, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#error6").text("No results found");
+                     $("#error6").show();
+                    // jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     
+                     response(arr);
+                     
+                     $("#error6").hide();
+                     isErr = false;
+                 }
+                 if($("#error6").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+            
+             minLength:0,
+             
+             select: function(e, ui) {  
+                   
+                  console.log('selected');
+                  console.log('$( ".autoFillOrigin" ).val()'+$( ".autoFillOrigin" ).val());
+                   
+                  // autoDesignType();
+              },
+               change: function() {
+                 
+                   jQuery('[id$=valuesType]').val("");
+                  jQuery('[id$=article]').val(""); 
+                  
+              },
+              close: function(e, ui) {  
+                  
+                  console.log('close');
+                  console.log('$( ".autoFillOrigin" ).val()1'+$( ".autoFillOrigin" ).val());
+                  zariValueFunction($( ".autoFillOrigin" ).val());
+                  if($(".autoFillOrigin" ).val() != ''){
+                    //  jQuery('[id$=valuesType]').prop('disabled', false);
+                     
+                  }         
+                 // autoDesignStory($( ".autoFillOrigin" ).val());
+                 // autoDesignType($(".autoFillOrigin" ).val());
+                  $(this).blur();
+              }
+                
+              
+         });
+         
+          
+           $( ".autoFillOrigin" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });
+            
+            $( ".autoFillProcTyp" ).autocomplete({
+        
+             source: function( request, response ) {
+               //   $("#loading").show();
+                sforce.connection.sessionId = "{!$Api.Session_ID}";
+                var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Proc-Type' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var procVal = new Array();
+             
+                 for (var i = 0; i <records.length; i++) {
+                        var proc= records[i];
+                        procVal.push(proc.Name);
+                    }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep( procVal, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#errProc").text("No results found");
+                     $("#errProc").show();
+                     isErr = true;
+                 }
+                 else{
+                     
+                     response(arr);
+                     
+                     $("#errProc").hide();
+                     isErr = false;
+                 }
+                 if($("#errProc").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+            
+             minLength:0,
+             
+             select: function(e, ui) {  
+                   
+                  console.log('selected');
+                  console.log('$( ".autoFillProcTyp" ).val()'+$( ".autoFillProcTyp" ).val());
+                   
+                  // autoDesignType();
+              },
+              
+         });
+         
+          
+           $( ".autoFillProcTyp" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });
+            
+            $('input[id$=photo]').change(function () {
+                console.log('-photo--');
+                var val = $(this).val().toLowerCase();
+                var regex = new RegExp("(.*?)\.(png|jpg|jpeg|gif|bmp|tiff|pbm)$");
+                 if(!(regex.test(val))) {
+                $(this).val('');
+                    alert('Please uplaod an image file');
+                } 
+            }); 
+        /*    $('input[id$=audio]').change(function () {
+                console.log('-photo--');
+                var val = $(this).val().toLowerCase();
+                var regex = new RegExp("(.*?)\.(mp4|mp3|wma|3gp|m4v|mov)$");
+                 if(!(regex.test(val))) {
+                $(this).val('');
+                    alert('Please upload a Voice/Video File');
+                } 
+            }); */
+                        
+       
+            $('[id$=saveId],[id$=cloneId],[id$=SaveProdId1]').click(function() {
+              //  alert('te==='+jQuery('[id$=photoId1]').find("img").length);
+                 console.log('reorderImage***'+reorderImage);
+                 var isErr1 = false;
+                 debugger;
+                 console.log('---photo---'+jQuery('[id$=photo]').val());
+                 console.log('---isErr1---'+isErr1);
+                 console.log('---errSiz ---'+errSiz );
+                clickId = this.id;
+                
+                if (jQuery('[id$=values2]').val() == '' || jQuery('[id$=values2]').val() == null) {   //Wrap
+                    isErr1 = true;
+                    console.log('---isErr122---'+isErr1);
+                    jQuery('[id$=error5]').show();
+                    jQuery('[id$=values2]').css("border-color", "red");
+                }
+                
+                if (jQuery('[id$=values3]').val() == '' || jQuery('[id$=values3]').val() == null) {
+                    isErr1= true;
+                    console.log('---isErr13---'+isErr1);
+                    jQuery('[id$=error6]').show();
+                    jQuery('[id$=values3]').css("border-color", "red");
+                }
+                
+                if (jQuery('[id$=values6]').val() == '' || jQuery('[id$=values6]').val() == null) {
+                    isErr1 = true;
+                    console.log('---isErr16---'+isErr1);
+                    jQuery('[id$=error9]').show();
+                    jQuery('[id$=values6]').css("border-color", "red");
+                }
+                
+                if (jQuery('[id$=blouseTypeId]').val() == '' || jQuery('[id$=blouseTypeId]').val() == null) {
+                    isErr1 = true;
+                    console.log('---isErr16---'+isErr1);
+                    jQuery('[id$=errBlouseTyp]').show();
+                    jQuery('[id$=blouseTypeId]').css("border-color", "red");
+                }
+                if (jQuery('[id$=procTypId]').val() == '' || jQuery('[id$=procTypId]').val() == null) {
+                    isErr1 = true;
+                    console.log('---isErr16---'+isErr1);
+                    jQuery('[id$=errProc]').show();
+                    jQuery('[id$=procTypId]').css("border-color", "red");
+                }
+                
+                if (jQuery('[id$=thelookup]').val() == '' || jQuery('[id$=thelookup]').val() == null) {
+                    isErr1 = true;
+                    console.log('---isErr1lo---'+isErr1);
+                    jQuery('[id$=error1]').show();
+                    jQuery('[id$=thelookup]').css("border-color", "red");
+                    $(".slds-lookup__search-input").css("border-color", "red");
+                }
+                if (jQuery('[id$=costId]').val() == '' || jQuery('[id$=costId]').val() == null) {
+                    isErr1 = true;
+                    console.log('---isErr1cos---'+isErr1);
+                    jQuery('[id$=error2]').show();
+                    jQuery('[id$=costId]').css("border-color", "red");
+                }
+                if(parseInt(jQuery('[id$=costId]').val()) <= 0){
+                    isErr1 = true;
+                    console.log('---isErr1co---'+isErr1);
+                    jQuery('[id$=error2]').hide();
+                    jQuery('[id$=errorCost]').show();
+                    jQuery('[id$=costId]').css("border-color", "red");
+                } 
+                if (jQuery('[id$=quantId]').val() == '' || jQuery('[id$=quantId]').val() == null ) {
+                   
+                    isErr1 = true;
+                    console.log('---isErr1q---'+isErr1);
+                    jQuery('[id$=err]').show();
+                    jQuery('[id$=quantId]').css("border-color", "red");
+                }
+                if( parseInt(jQuery('[id$=quantId]').val()) <= 0){
+                    isErr1 = true;
+                    console.log('---isErr1qq---'+isErr1);
+                    jQuery('[id$=err]').hide();
+                    jQuery('[id$=errQua]').show();
+                    jQuery('[id$=quantId]').css("border-color", "red");
+                }
+                if (jQuery('[id$=valuematerial]').val() == '' || jQuery('[id$=valuematerial]').val() == null) {
+                    isErr1 = true;
+                    console.log('---isErr1wef---'+isErr1);
+                    jQuery('[id$=errorWeft]').show();
+                    jQuery('[id$=valuematerial]').css("border-color", "red");
+                }
+                if (jQuery('[id$=namId]').val() == '' || jQuery('[id$=namId]').val() == null) {
+                    isErr1 = true;
+                    console.log('---isErr1nam---'+isErr1);
+                    jQuery('[id$=errNam]').show();
+                    jQuery('[id$=namId]').css("border-color", "red");
+                }
+           
+                
+                if (jQuery('[id$=values7]').val() == '' || jQuery('[id$=values7]').val() == null) {
+                    //alert('other=='+jQuery('[id$=values1]').val());
+                    isErr1 = true;
+                    console.log('---isErr1---'+isErr1);
+                    jQuery('[id$=error10]').show();
+                    jQuery('[id$=values7]').css("border-color", "red");
+                    
+                }
+                
+                if(jQuery('[id$=photoId1]').find("img").length <= 0 && reorderImage == ''){
+                    
+                    if (jQuery('[id$=photo]').val() == '' || jQuery('[id$=photo]').val() == null) {
+                      
+                        isErr1 = true;
+                        console.log('---isErr1---'+isErr1);
+                        console.log('---isErr1Pho---'+isErr1);
+                        jQuery('[id$=errPhoto]').show();
+                        jQuery('[id$=photo]').css("border-color", "red");
+                    }
+                }
+                
+                /*** Attribution Team Required Fields***/
+                console.log('{!attributeTeamId}' +'==='+'{!$Profile.Id}');
+                if('{!attributeTeamId}' == '{!$Profile.Id}'){
+                    if (jQuery('[id$=values4]').val() == '' || jQuery('[id$=values4]').val() == null) {
+                        isErr1 = true;
+                        console.log('---isErr14---'+isErr1);
+                        jQuery('[id$=error7]').show();
+                        jQuery('[id$=values4]').css("border-color", "red");
+                    }
+                    if (jQuery('[id$=values5]').val() == '' || jQuery('[id$=values5]').val() == null) {
+                        isErr1 = true;
+                        console.log('---isErr1---'+isErr1);
+                        jQuery('[id$=error8]').show();
+                        jQuery('[id$=values5]').css("border-color", "red");
+                    }
+                    if (jQuery('[id$=bodyPatId]').val() == '' || jQuery('[id$=bodyPatId]').val() == null) {
+                        isErr1 = true;
+                        console.log('---isErr1---'+isErr1);
+                        jQuery('[id$=errbodyPat]').show();
+                        jQuery('[id$=bodyPatId]').css("border-color", "red");
+                    }
+                    if (jQuery('[id$=borderPatId]').val() == '' || jQuery('[id$=borderPatId]').val() == null) {
+                        isErr1 = true;
+                        console.log('---isErr1---'+isErr1);
+                        jQuery('[id$=errBorderPat]').show();
+                        jQuery('[id$=borderPatId]').css("border-color", "red");
+                    }
+                    if (jQuery('[id$=palluPatId]').val() == '' || jQuery('[id$=palluPatId]').val() == null) {
+                        isErr1 = true;
+                        console.log('---isErr1---'+isErr1);
+                        jQuery('[id$=errPalluPat]').show();
+                        jQuery('[id$=palluPatId]').css("border-color", "red");
+                    }
+                     
+                }
+                
+                console.log('---isErr++---'+isErr);
+                 console.log('---isErr1++---'+isErr1);
+                 console.log('---errSiz ++---'+errSiz );
+                if (!isErr && !isErr1 && !errSiz && (clickId == 'saveId' || clickId == 'saveId1')) {
+                     console.log('--dosaveNew--');
+                    doSave();
+                    
+                } else if (!isErr && !isErr1 && !errSiz &&  (clickId == 'cloneId' || clickId == 'cloneId1')) {
+                    console.log('--dosaveClone--');
+                    doClone();
+                } else if (!isErr && !isErr1 && !errSiz &&  (clickId == 'SaveProdId' || clickId == 'SaveProdId1')) {
+                     console.log('--dosaveProduct--');
+                    saveProd();
+                } else {}
+            });
+             
+             
+        });
+  
+          
+             
+          /*  $( ".autoFillDesignType" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}"; //Used for Session out
+                 var originValue =jQuery('[id$=values3]').val();
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Design Type' and Dependency_1__r.Name = '" + originValue + "' and Active__c = True");
+
+                 var records = queryResult.getArray('records');
+                 var designValue = new Array();
+                 if(records.length == 0){
+                     designValue.push('XXX');
+                 }
+                 for (var i = 0; i <records.length; i++) {
+                        var design = records[i];
+                        designValue.push(design.Name);
+                    }
+                console.log(designValue);
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep( designValue, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#errorType").text("No results found");
+                     $("#errorType").show();
+                   //  jQuery('[id$=values1]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+                
+                     $("#errorType").hide();
+                     isErr = false;
+                 }
+                 if($("#errorType").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             
+             minLength:0,
+             select: function(e, ui) {  
+                  
+                  console.log('selected');
+                  console.log('$( ".autoFillArticleNum" ).val()'+$( ".autoFillArticleNum" ).val());
+                  
+                  // autoDesignType();
+              },
+              change: function() {
+                  jQuery('[id$=article]').val("");
+                 
+              },
+              close: function(e, ui) {  
+                  console.log('close');
+                   
+                  console.log('$( ".autoFillArticleNum" ).val()== '+$( ".autoFillArticleNum" ).val());
+                  if($( ".autoFillDesignType" ).val() != ''){
+                      jQuery('[id$=article]').prop('disabled', false);
+                  }
+                 // autoArticleNum($( ".autoFillDesignType" ).val(),originValue);
+                   $(this).blur();
+              }
+            });
+           
+               $( ".autoFillDesignType" ).focus(function () {
+                    $(this).autocomplete("search", "");
+                });
+                 
+          
+            $( ".autoFillArticleNum" ).autocomplete({
+            
+             source: function( request, response ) {
+                 sforce.connection.sessionId = "{!$Api.Session_ID}"; //Used for Session out
+                 var originValue =jQuery('[id$=values3]').val();
+                 var designTypeValue =jQuery('[id$=valuesType]').val();
+                 var queryResult = sforce.connection.query("SELECT Name FROM Master__c WHERE Name__c = 'Article Number' and Dependency_1__r.Name = '" + originValue + "' and Dependency_2__r.Name= '" + designTypeValue + "' and Active__c = True");
+                 var records = queryResult.getArray('records');
+                 var designValue = new Array();
+                 if(records.length == 0){
+                     designValue.push('XXX');
+                 }
+                 for (var i = 0; i <records.length; i++) {
+                        var design = records[i];
+                        designValue.push(design.Name);
+                }
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep( designValue, function( item ){  return matcher.test( item );    })
+                 if(arr.length == 0){
+                 
+                     $("#errorArticle").text("No results found");
+                     $("#errorArticle").show();
+                   //  jQuery('[id$=values1]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+                
+                     $("#errorArticle").hide();
+                     isErr = false;
+                 }
+                 if($("#errorArticle").is(":visible")){
+                    $("ul").hide();
+                }
+             },
+             close: function(e, ui) {   
+                   $(this).blur();
+              },
+             minLength:0
+             
+         });
+           $( ".autoFillArticleNum" ).focus(function () {
+                $(this).autocomplete("search", "");
+            }); */
+        
+        function zariValueFunction(originValue){
+             sforce.connection.sessionId = "{!$Api.Session_ID}"; //Used for Session out
+             var originValue =jQuery('[id$=values3]').val();
+             console.log('originValue'+originValue);
+             var queryResult = sforce.connection.query("SELECT Dependency_1__r.Name FROM Master__c WHERE Name__c = 'Origin' and Name = '" + originValue + "' and Active__c = True");
+             var records = queryResult.getArray('records');
+             var zariVal = new Array();
+             var zariTyp = records[0];
+             zariVal.push(zariTyp.Dependency_1__r.Name);  
+             $('[id$=values4]').val(zariVal);
+                 
+        }
+    </script>
+    <script> 
+    function actioninvoke(accountId,prodSource,prodId){
+            //  alert('accountId==='+accountId);
+               if ( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ){
+                   
+                   if(prodSource == 'New' && accountId != null && accountId != ''){
+                       sforce.one.navigateToSObject(accountId);
+                   }
+                   else if(prodSource != 'New' &&( accountId != null || accountId != '' ) && prodId != null){
+                       sforce.one.navigateToSObject(prodId);
+                   }
+                   else if(prodSource == 'New' && (accountId == null || accountId == '')){
+                   
+                        sforce.one.navigateToList('00Bc0000001HxxdEAC','null','Product__c');
+                   }
+                }       
+                else {
+                   //  alert('***$$');                   
+                    Cancel();
+                }
+               
+           
+         }
+         
+         
+        function checkFileSize(a){
+       errSiz = false;
+        var imgSize = true;
+        if(typeof a.files[0] !== 'undefined'){
+            var file = a.files[0];
+            size = typeof ActiveXObject !== 'undefined' ? getIEFileSize(file) : file.fileSize || file.size;
+            imgSize = 3145728 > size;
+            
+                if(!imgSize ){
+                       if(jQuery('[id$=photoId1]').find("img").length <= 0){
+                           errSiz= true;
+                       }
+                      
+                      $("#errorSize").show();
+                    a.files[0].name = null;
+                    a.files[0].size = 0;
+                    jQuery('[id$=photo]').val("");
+                    
+                }
+                else{
+                    errSiz= false;
+                    $("#errorSize").hide();
+                }
+                
+            
+            return imgSize;
+            
+        }
+        
+        return imgSize;
+    }
+   /*  function checkVoiceSize(a){
+       errSiz = false;
+        var voiceSize = true;
+        if(typeof a.files[0] !== 'undefined'){
+            var file = a.files[0];
+            size = typeof ActiveXObject !== 'undefined' ? getIEFileSize(file) : file.fileSize || file.size;
+            voiceSize = 5242880 > size;
+            if(!voiceSize ){
+               
+                 $("#errorVoiceSize").show();
+                console.log(a.files[0]);
+                a.files[0].name = null;
+                a.files[0].size = 0;
+                console.log('before audio----'+jQuery('[id$=audio]').val());
+
+                jQuery('[id$=audio]').val("");
+                console.log('aft audio----'+jQuery('[id$=audio]').val());
+              //  console.log('after----'+a.files[0].name);
+                
+            }
+            else{
+               
+                $("#errorVoiceSize").hide();
+            }
+           
+            return voiceSize;
+        }
+        
+        return voiceSize;
+    } */
+      /*  function disableField(productSrc){
+             if(productSrc == 'New'){
+                 if(document.getElementById("productPage:prodForm:valuesType").value == ''){
+                      document.getElementById("productPage:prodForm:valuesType").disabled = true;
+                 }
+                 if(document.getElementById("productPage:prodForm:article").value == ''){
+                      document.getElementById("productPage:prodForm:article").disabled = true;
+                 } 
+                
+                 
+             }  
+             
+         } */
+         function invokeCancel(pId){              
+               if ( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ){                   
+                   if(pId != null && pId != ''){
+                       sforce.one.navigateToSObject(pId);
+                   }
+                }
+             else{
+                 window.open('/'+pId,"_self");
+             }
+
+         }
+         
+         function invokePopup(pId,skuMsg){ 
+             sforce.connection.sessionId = "{!$Api.Session_ID}"; 
+             console.log('---pId=='+pId); 
+             console.log('---skuMsg=='+skuMsg);            
+               if ( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ){   
+                    if(pId != null && pId != ''){
+                       sforce.one.navigateToSObject(pId);
+                   }
+                   
+                }
+             else{
+                     console.log('--save--');
+                     saveProd();
+                 
+             }
+
+         }
+         
+         function invokeSaveNew(skuMsg){ 
+              
+             console.log('---skuMsg=='+skuMsg);            
+               
+                     console.log('--savenew--');
+                      doSave();              
+
+         }
+         function invokeSaveClone(skuMsg){  
+                     doClone();
+                     console.log('--saveclone1--');
+
+         }
+         
+    
+ </script> 
+ 
+        </body>
+    </html>
+
+</apex:page>

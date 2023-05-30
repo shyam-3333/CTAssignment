@@ -1,0 +1,60 @@
+<apex:page controller="VF_002" contentType="application/vnd.ms-excel#Pending Proposal AO.xls" cache="true" readOnly="true"> 
+    <center><h1>Pending Proposal more than 4 Weeks AO</h1></center>
+    <table>
+  <apex:repeat value="{!accounttotals}" var="a" >
+        <tr>
+                   <table style="border:1px solid black;">
+                        <tr>
+                            <th style="border:1px solid black;">Account</th>
+                            <th style="border:1px solid black;">Opportunity</th>
+                            <th style="border:1px solid black;">Amount In Lakhs</th>
+                            <th style="border:1px solid black;">Member1</th>
+                            <th style="border:1px solid black;">Member2</th>
+                            <th style="border:1px solid black;">Stage</th>
+                        </tr>
+                    </table>
+                    <table style="border:1px solid black;">
+      <apex:variable value="{!1}" var="index">
+       <apex:repeat value="{!a.account.opportunities}" var="o">
+        <tr style="border:1px solid black; border-collapse:collapse;width:100%;">
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!a.account.name}" rendered="{! If(index == 1, true, false)}"/></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.name}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Amount_In_Lakhs__c}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Member1__r.FirstName}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.Member2__r.FirstName}"></apex:outputText></td>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!o.StageName}"></apex:outputText></td>
+         <apex:variable value="{!index+1}" var="index"/>  
+        </tr>
+       </apex:repeat>
+      </apex:variable>
+      <table style="border:1px solid black;">
+       <apex:variable value="{!1}" var="index">
+       <tr>
+         <th style="border:1px solid black;"></th>
+         <th style="border:1px solid black;">Total Amount</th>
+         <td style="border:1px solid black; border-collapse:collapse;width:100%;"><b><apex:outputText value="{!a.individualAmount}" rendered="{! If(index == 1, true, false)}"/></b></td>
+         <th style="border:1px solid black;"></th>
+         <th style="border:1px solid black;"></th>
+         <th style="border:1px solid black;"></th>
+         <apex:variable value="{!index+1}" var="index"/>  
+       </tr>
+       </apex:variable>
+      </table>     
+     </table>
+                
+           </tr> 
+       </apex:repeat>
+       </table>
+                <table style="border:1px solid black;">
+                    <tr>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"><b>Grand Total</b></th>
+                         <th style="border:1px solid black;"><apex:outputText value="{!grandTotal}"/></th>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"></th>
+                         <th style="border:1px solid black;"></th>
+                         
+                    </tr>
+                </table>
+    
+</apex:page>

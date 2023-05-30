@@ -1,0 +1,19 @@
+<apex:page controller="OfflineProdTestingClass"  showHeader="false" renderAs="PDF" cache="true">
+    <apex:stylesheet value="{!$Resource.pdfdownloadCSS}" />
+    <apex:pageBlock >
+        <apex:pageBlockTable value="{!wrraperList}" var="dwnld" border="1px solid black" style="font-size:14px">
+            <apex:column value="{!dwnld.productRec.vendor_custom__r.Vendor_Code__c}" style="text-align:center"/>
+            <apex:column value="{!dwnld.productRec.Vendor_Name__c}"/>
+            <apex:column value="{!dwnld.productRec.SKU_Code__c}"/>
+            <apex:column value="{!dwnld.productRec.Photo__c}"  styleClass="img_width" />
+            <apex:column headerValue="Vendor Prod Code" value="{!dwnld.productRec.name}" style="text-align:center"/>
+            <apex:column value="{!dwnld.productRec.Product_Category_Taneira__c}"/>
+            <apex:column value="{!dwnld.productRec.Order_Id__c}"/>
+            <apex:column value="{!dwnld.productRec.Cluster__c}"/>
+            <apex:column value="{!dwnld.productRec.Quantity__c}" style="text-align:center"/>
+            <apex:column value="{!dwnld.productRec.Buyers_Cost__c}"/>            
+            <apex:column value="{!dwnld.productRec.Procurement_Cost__c}"/>
+            <apex:column value="{!dwnld.productRec.Base_Colour__c}"/>
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+</apex:page>

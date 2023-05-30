@@ -1,0 +1,79 @@
+<aura:component
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+    access="global">
+    <!--Attribute-->
+    <aura:attribute name="testingType" type="List"
+        default="[{'label': '--None--', 'value': '', 'selected': true},
+                                                             {'label':'Raw Material IDI Input CSV Upload', 'value' :'Raw Material', 'selected' :false},
+                                                             {'label':'Plating CSV Uploading', 'value' :'Plating', 'selected' :false},
+                                                             {'label':'Plating and Material Composition CSV Uploading', 'value' :'Plating and Material Composition', 'selected' :false}]" />
+    <aura:attribute name="Spinner" type="boolean" default="false" />
+    <aura:attribute name="testingTypeValue" type="String" default="" />
+
+    <!--Handler-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <!--loading spinner start... style=Brand Medium (blue dots)-->
+
+    <lightning:card title="Upload CSV File" class="slds-p-around_large">
+        <aura:if isTrue="{!v.Spinner}">
+            <div aura:id="spinnerId" class="slds-spinner_container" style="position: fixed;">
+                <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </aura:if>
+        <div class="slds-m-around--xx-large">
+            <table>
+                <tr>
+                    <td colspan="2">
+                        <div class="slds-box">
+                            <p>Notes.</p>
+                            <p>1. please Select the Uploading action</p>
+                            <p style="color: red;font-weight: bold;">
+                                2. Beforce Uploading
+                                new CSV file in System, please remove all commas from
+                                CSV file
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <lightning:select name="testingTypedropdownfieldname" aura:id="testingTypeId"
+                            label="Select Uploading Action" value="{!v.testingTypeValue}"
+                            onchange="{!c.onchangeTestingType}">
+                            <aura:iteration items="{!v.testingType}" var="testTp">
+                                <option text="{!testTp.label}" value="{!testTp.value}" selected="{!testTp.selected}">
+                                </option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </td>
+                </tr>
+                <aura:if isTrue="{!v.testingTypeValue == 'Raw Material'}">
+                    <tr>
+                        <td>
+                            <c:IDICSVfileUplaodComponent parentTestingType="{!v.testingTypeValue}" />
+                        </td>
+                    </tr>
+                </aura:if>
+                <aura:if isTrue="{!v.testingTypeValue == 'Plating'}">
+                    <tr>
+                        <td>
+                            <c:IDICSVfileUplaodComponent parentTestingType="{!v.testingTypeValue}" />
+                        </td>
+                    </tr>
+                </aura:if>
+                <aura:if isTrue="{!v.testingTypeValue == 'Plating and Material Composition'}">
+                    <tr>
+                        <td>
+                            <c:IDICSVfileUplaodComponent parentTestingType="{!v.testingTypeValue}" />
+                        </td>
+                    </tr>
+                </aura:if>
+            </table>
+        </div>
+    </lightning:card>
+</aura:component>

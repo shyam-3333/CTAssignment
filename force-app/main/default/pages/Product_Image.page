@@ -1,0 +1,10 @@
+<apex:page controller="ProductImageCtrl">
+    <apex:form >
+        
+        <apex:pageBlock id="imgId">
+                <!--<apex:image url="/servlet/servlet.FileDownload?file={!Image}"/> -->    
+           <apex:image url="/servlet/servlet.FileDownload?file={!imageDisplay}"/> 
+        </apex:pageBlock> 
+  
+    </apex:form>
+</apex:page>

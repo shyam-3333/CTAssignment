@@ -1,0 +1,143 @@
+<apex:page controller="NPD_Overall_NP_Status_Report" sidebar="false" id="mypage" docType="HTML-5.0">
+   <div style = "text-align: center;font-size:20px;color:blue;">
+        <h1>Collection Wise Details</h1>&nbsp;
+   </div>
+   <apex:form id="myForm"> 
+       <style>
+            table {
+                border-collapse: collapse;
+                }
+                /* This is for the full screen DIV */
+                
+                .popupBackground {
+                    /* Background color */
+                    background-color: black;
+                    opacity: 0.20;
+                    filter: alpha(opacity=20);
+                    /* Dimensions */
+                    width: 100%;
+                    height: 100%;
+                    top: 0;
+                    left: 0;
+                    z-index: 998;
+                    position: absolute;
+                    /* Mouse */
+                    cursor: wait;
+                }
+                /* This is for the message DIV */
+                
+                .PopupPanel {
+                    /* Background color */
+                    /* border: solid 2px blue;*/
+                    left: 50%;
+                    width: 200px;
+                    margin-left: -100px;
+                    top: 50%;
+                    height: 250px;
+                    margin-top: -25px;
+                    z-index: 999;
+                    position: fixed;
+                    /* Mouse */
+                    cursor: pointer;
+                }
+                .table_design td{
+                    white-space: nowrap;
+                }
+                 .table_design1 td{
+                    white-space: nowrap;
+                }
+                }
+    
+        </style>
+        
+        <apex:actionStatus id="actStatusId" stopText="">
+            <apex:facet name="start">
+                <div>
+                    <div class="popupBackground" />
+                    <div class="PopupPanel">
+                        <table border="0" width="100%" height="100%">
+    
+                            <tr>
+                                <td align="center"><img src="/img/loading.gif" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionStatus>
+           
+     
+        <table class="table_design1" border="1" align="center" width="1000" style="background-color:#bee076;">
+            <tr align="center">
+                <td colspan="2" style="color:#4c76ad;font-weight:bold;font-size:16px;"><b>Basic Search</b></td>
+            </tr>
+            <td style="font-size:12px;">
+                <apex:outputPanel id="brandId"> <b>Brand:</b>
+                    <apex:selectList size="1" value="{!selectedBrandName}">
+                        <apex:selectoptions value="{!npdBrandOption}" />
+                        <apex:actionSupport event="onchange" action="{!selectCollection}" reRender="collectionId" status="actStatusId"/>
+                    </apex:selectList>
+                </apex:outputPanel>
+            </td> 
+            <td style="font-size:12px;">
+                <apex:outputPanel id="collectionId"> <b>Collections:</b> &nbsp;
+                    <apex:selectList size="1" value="{!selectedCollectionName}">
+                        <apex:selectoptions value="{!npdCollectionOption}" />
+                    </apex:selectList>
+                </apex:outputPanel>
+            </td>
+        </table>
+        
+         <table class="table_design1" border="0" align="center" width="100" style="">
+            <tr align="center">
+                <td style="color:#ff9f80;font-weight:bold;font-size:14px;">
+                    <apex:commandButton id="reportId" value="Display Report"  action="{!totalCount}" reRender="mainContainerOP" status="actStatusId"/> 
+                </td>
+            </tr>
+        </table>
+        
+        <apex:outputPanel id="mainContainerOP" >
+            <apex:outputPanel id="TableRecordId"  rendered="{!isDisplayTable}">
+                 <table class="table_design" width="100%" border="1" cellspacing="0" cellpadding="1" align="center" style=" border-bottom-style: none;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">
+                     <tr style="background:#D3D3D3;font-weight:bold;" align="center">
+                        <td rowspan = "2">
+                            <apex:outputText value="Collection Name" />
+                        </td>
+                        <td rowspan = "2" align="center">
+                            <apex:outputText value="Make" />
+                        </td> 
+                         <td rowspan = "2" align="center">
+                            <apex:outputText value="Buy" />
+                        </td>
+                        <td colspan = "4"><apex:outputText value="Plant Source" /></td>
+                     </tr>
+                     <tr style="background:#D3D3D3;font-weight:bold;" align="center"> 
+                              
+                        <td>
+                            <apex:outputText value="INH" />
+                        </td>
+                        <td >
+                            <apex:outputText value="INDG" />
+                        </td>
+                         <td >
+                            <apex:outputText value="CBE" />
+                        </td>
+                        <td>
+                            <apex:outputText value="NIBULA" />
+                        </td>
+                     </tr>
+                     <tr style="background:#ccffe6;" align="center">
+                        <td><apex:outputText value="{!npChk.CollectionName__c}" /></td>
+                        <td><apex:outputText value="{!makeCount }" /></td>
+                        <td><apex:outputText value="{!buyCount}" /></td>
+                        <td><apex:outputText value="{!caseCount }" /></td>
+                        <td><apex:outputText value="{!INDGCount }" /></td>
+                        <td><apex:outputText value="{!CBEPlantCount }" /></td>
+                        <td><apex:outputText value="{!nebulaMfgCount }" /></td>
+                      </tr>                              
+                 </table>
+                       
+              </apex:outputPanel> 
+          </apex:outputPanel>     
+       </apex:form>
+</apex:page>

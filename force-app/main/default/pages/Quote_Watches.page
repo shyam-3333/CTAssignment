@@ -1,0 +1,169 @@
+<apex:page standardController="Quote" sidebar="false" showHeader="false" renderAs="PDF">
+<p align='center'><b>TITAN INDUSTRIES LTD</b></p>
+To,{!Quote.Contact.Name}<p align='right'>Date :&nbsp;&nbsp;<apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+     <apex:param value="{!Today()}" />
+</apex:outputText></p>
+Dear Ms.{!Quote.Contact.Account.Name}<br/><br/>
+Thank you for your interest and enquiry.<br/><br/>
+We are pleased to append below our offer for the models you have selected.<br/><br/><br/>Some Table
+<table border="1" cellspacing="0">
+    <tr>
+        <th>MODEL NO.</th>
+        <apex:repeat value="{!Quote.QuoteLineItems}" var="line">
+        <td>
+          <apex:outputLabel value="{!line.PricebookEntry.Product2.Name}"/> 
+        </td>  </apex:repeat>
+       
+    </tr>
+    <tr>
+        <th>&nbsp;</th>
+    </tr>
+    <tr>
+        <td>UNIFORM CONSUMER PRICE PER UNIT</td>
+         <apex:repeat value="{!Quote.QuoteLineItems}" var="line">
+        <td>
+          <apex:outputLabel value="{!line.UnitPrice}"/> 
+        </td> 
+ 
+        </apex:repeat>
+    </tr>
+    <tr>
+        <th>&nbsp;</th>
+    </tr>
+    <tr>
+        <td>INSTITUTIONAL DISCOUNT</td>
+         <apex:repeat value="{!Quote.QuoteLineItems}" var="line">
+        <td>
+          <apex:outputLabel value="{!line.Discount_in_Rupees__c}"/> 
+        </td> 
+ 
+        </apex:repeat>
+    </tr>
+    <tr>
+        <th>&nbsp;</th>
+    </tr>
+    <tr>
+        <td>PRICE PER UNIT AFTER DISCOUNT</td>
+        <apex:repeat value="{!Quote.QuoteLineItems}" var="line">
+        <td>
+          <apex:outputLabel value="{!line.Price_Per_Unit_After_Discount__c}"/> 
+        </td> 
+ 
+        </apex:repeat>
+    </tr>
+    <tr>
+        <th>&nbsp;</th>
+    </tr>
+    <tr>
+        <th>CUSTOMISATION</th>
+    </tr>
+    <tr>
+        <th>&nbsp;</th>
+    </tr>
+    <tr>
+        <td>DIAL PRINTING CHARGES DOUBLE COLOUR PER UNIT</td>
+        <apex:repeat value="{!Quote.QuoteLineItems}" var="line">
+        <td>
+          <apex:outputLabel value="{!line.Dial_Printing_Charges__c}"/> 
+        </td> 
+ 
+        </apex:repeat>
+    </tr>
+    <tr>
+        <th>&nbsp;</th>
+    </tr>
+    <tr>
+        <td>BACK COVER ENGRAVING PER UNIT</td>
+        <apex:repeat value="{!Quote.QuoteLineItems}" var="line">
+        <td>
+          <apex:outputLabel value="{!line.Back_Cover_Engraving__c}"/> 
+        </td> 
+ 
+        </apex:repeat>
+    </tr>
+    <tr>
+        <th>&nbsp;</th>
+    </tr>
+    <tr>
+        <td>PRICE PER UNIT CUSTOMISATION</td>
+        <apex:repeat value="{!Quote.QuoteLineItems}" var="line">
+        <td>
+          <apex:outputLabel value="{!line.Price_Per_Unit_Customization__c}"/> 
+        </td> 
+ 
+        </apex:repeat>
+    </tr>
+    <tr>
+        <th>&nbsp;</th>
+    </tr>
+    <tr>
+        <td>QUANTITY REQUIRED</td>
+        <apex:repeat value="{!Quote.QuoteLineItems}" var="line">
+        <td>
+          <apex:outputLabel value="{!line.Quantity}"/> 
+        </td> 
+ 
+        </apex:repeat>
+    </tr>
+    <tr>
+        <th>&nbsp;</th>
+    </tr>
+    <tr>
+        <td>TOTAL PRICE</td>
+        <apex:repeat value="{!Quote.QuoteLineItems}" var="line">
+        <td>
+          <apex:outputLabel value="{!line.Total_Price_Custom__c}"/> 
+        </td> 
+ 
+        </apex:repeat>
+    </tr>
+     <tr>
+        <th>&nbsp;</th>
+    </tr>
+    <tr>
+        <td>TOTAL ORDER VALUE</td>
+        <apex:repeat value="{!Quote.QuoteLineItems}" var="line">
+        <td>
+          <apex:outputLabel value="{!line.Total_Price_Custom__c}"/> 
+        </td> 
+ 
+        </apex:repeat>
+    </tr>
+
+
+</table>
+
+
+<br/><br/><br/>
+All prices quoted are Inclusive of Sales Tax, Excise Duty and all other Levis as ruling on date.<br/><br/>
+Prices are also Inclusive of customization charges (waived off). While placing the order<br/><br/>
+Kindly quote your VAT TIN NO and CST registration numbers.<br/><br/>
+<br/><br/><br/>Some Table
+<table border="1" cellspacing="0" width="700">
+<tr>
+<td>Delivery :- &nbsp;&nbsp;&nbsp; {!Quote.Delivery__c}</td>
+</tr>
+
+</table><br/>
+<table border="1" cellspacing="0" width="700">
+
+<tr>
+<td>Validity :- &nbsp;&nbsp;&nbsp; {!Quote.ValidityforGV__c}</td>
+<td>Date Of Quotation :- &nbsp;&nbsp;&nbsp;<apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+     <apex:param value="{!Quote.CreatedDate}" />
+</apex:outputText> </td>
+</tr>
+
+</table><br/>
+<table border="1" cellspacing="0" width="700">
+
+<tr>
+<td>Payments Terms :- &nbsp;&nbsp;&nbsp; {!Quote.Payment_Term_Corporate__c} </td>
+</tr>
+
+</table><br/><br/><br/>
+Thanking you for your enquiry once again and we look forward to hearing fro you soon.<br/><br/><br/>
+Yours faithfully,<br/>
+For TITAN INDUSTRIES LTD.<br/><br/><br/>
+Authorized signatory
+</apex:page>

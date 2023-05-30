@@ -1,0 +1,42 @@
+<apex:page standardController="Quote" extensions="NotesAttachmentModelController">
+  <apex:form ><apex:outputPanel layout="block" style="overflow:auto;width:1300px;height:300px" >
+      <apex:pageBlock >
+      <apex:pageBlockButtons >
+         <!-- <apex:commandButton value="Add Note"/> -->
+         <!-- <a href="/002/e?parent_id={!Quote.Id}" target="_new"><button type="button" >Add Note</button></a>-->
+          
+          <!--<apex:commandButton value="Attach file" >
+          <a href = "" target="_new">{!attachfile}</a></apex:commandButton>-->
+         <!--<a href="/p/attach/NoteAttach?pid={!Quote.Id}" target="_new"><button type="button" >Attach File</button></a> -->
+          
+          <a href="/ui/content/ViewAllNotesPage?id={!Quote.Id}" target="_new"><button type="button" >View All</button></a>        
+        
+      </apex:pageBlockButtons>
+       <apex:outputPanel id="panelId">
+       </apex:outputpanel>
+          <apex:pageBlockTable value="{!modelList}" var="mod">
+          <apex:column headerValue="Sr.No" value="{!mod.srno}"/>
+              <apex:column headervalue="Email" >
+              <apex:commandButton reRender="panelId"   value="Email" onclick="parent.window.location.href ='/apex/SendAtt?attid={!mod.att.id}&retURl={!currentQuoteId}';">
+              <apex:param name="Attch" value="{!mod.att.id}" ></apex:param>
+              </apex:commandButton>
+<!-- <a href="/_ui/core/email/author/EmailAuthor?p2_lkid={!Quote.contact.id}&p3_lkid={!Quote.Id}&doc_id={!mod.att.id}&ta&retURL=/{!Quote.Id}" target="_new">
+<button type="button" action="fg" >Email</button></a> -->
+             
+              </apex:column>
+              
+              
+              <apex:column width="500" headerValue="Name">
+                  <a href="/{!mod.att.id}" target="_new" >{!mod.att.name}</a>
+              </apex:column>
+             
+             
+              <apex:column width="500" headerValue="Owner">
+              <apex:outputText value="{!mod.att.Owner.Name}"/>
+              </apex:column> 
+              
+          </apex:pageBlockTable>
+      </apex:pageBlock>
+      </apex:OutputPanel>
+  </apex:form>
+</apex:page>

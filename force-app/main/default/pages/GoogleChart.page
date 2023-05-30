@@ -1,0 +1,49 @@
+<!-- T01 iterating and displaying report link -->
+<apex:page controller="Googlechartclass" showHeader="false" sidebar="false">
+    <head>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+            google.load("visualization", "1", {packages:["corechart"]});
+        google.setOnLoadCallback(drawChart);
+        function drawChart() {
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'OpportunityStage'); // Implicit domain label col.
+            data.addColumn('number', 'OpportunityValue'); // Implicit series 1 data col.
+            data.addRows([
+                ['QuotesSubmitted',{!QuotesSubmitted}],
+                ['Under Consideration',{!ProSubmittedUnderConsideration }],
+                ['Awarded', {!Awarded}],
+                ['Projects Shelved',{!ProjectsShelved}],
+                ['Orders Won',{!OrdersWon}],
+                ['LostOnCost',{!LostOnCost}],
+                ['Lost On Strategic Reason',{!LostOnStrategicReason}],
+                ['Lost on lead time',{!lostOnLeadTime}]
+            ]);
+            
+            var options = {
+                title: 'Company Performance',
+                hAxis: {title: '', titleTextStyle: {color: 'red'}},         
+                vAxis: {title: 'Rs.Lakhs', titleTextStyle: {color: 'red'}}
+            };
+            
+            var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
+            chart.draw(data, options);
+        }
+        </script>
+    </head>
+    <body>
+        <div id="chart_div"></div>
+        <div>
+            <table width="100%" border="1" style="border-collapse:collapse;">
+                <!-- T01-->
+                <apex:repeat value="{!ReportLinksForGoogleChart}" var="obj">
+                    <tr>
+                        <td><a href="{!obj['reportPath']}" target="_blank">{!obj['linkName']}</a></td>
+                    </tr>
+                </apex:repeat>
+                <!-- T01-->
+            </table>
+        </div>
+    </body>
+    
+</apex:page>

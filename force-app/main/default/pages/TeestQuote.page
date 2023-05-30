@@ -1,0 +1,31 @@
+<apex:page standardController="Quote" showHeader="false" sidebar="false" renderAs="pdf" >
+ <head>
+ 
+ <html>
+  
+    
+   <apex:form >
+  <apex:panelgroup rendered="{!Quote.Opportunity.Approval_Status__c!='Approved'}">
+ <h1>This opportunity is not approved for discount/payment 
+ Please check and contact your Manager</h1>
+</apex:panelGroup>
+<apex:panelgroup rendered="{!Quote.Opportunity.Approval_Status__c=='Approved'}">
+   <body>
+   
+  
+
+
+<table width="100%" align="right" cellspacing="0" cellpadding="1" style="border-top:none;border-left:none; border-bottom:none;border-right:none;"> 
+    <tr>
+    <td width="100%"  align="left" >
+      Test Quote Page
+         </td>
+         
+  </tr>
+  </table>
+  </body>
+</apex:panelgroup>
+</apex:form>
+ </html>
+</head>
+</apex:page>

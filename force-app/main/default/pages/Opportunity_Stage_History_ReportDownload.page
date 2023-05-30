@@ -1,0 +1,61 @@
+<apex:page controller="Opportunity_Stage_History_ReportClass" id="page1" sidebar="false" showHeader="false" action="{!getOpportunityInfoDownLoad}"  contentType="application/vnd.ms-excel#SalesForceExport.xls" cache="true" standardStylesheets="false">
+     
+        <head>
+            <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        </head>
+      
+<apex:outputPanel >
+    	<apex:dataTable value="{!oppHistoryList}" var="oppHistory" id="theTable" rowClasses="odd,even" styleClass="tableClass" >
+ 
+        <apex:column >
+            <apex:facet name="header">Opportunity Name</apex:facet>
+            <apex:outputText value="{!oppHistory.Opportunity.Name}"/>
+        </apex:column>
+ 		
+        <apex:column >
+            <apex:facet name="header"> Account Name</apex:facet>
+            <apex:outputText value="{!oppHistory.Opportunity.Account.Name}"/>
+        </apex:column>    
+            
+        <apex:column >
+            <apex:facet name="header">Amount</apex:facet>
+            <apex:outputText value="{!oppHistory.Amount}"/>
+        </apex:column>
+            
+        <apex:column >
+            <apex:facet name="header">Stage</apex:facet>
+            <apex:outputText value="{!oppHistory.StageName}"/>
+        </apex:column>
+        
+        <apex:column >
+            <apex:facet name="header">Machanical User</apex:facet>
+            <apex:outputText value="{!oppHistory.Opportunity.Member1__r.Name}"/>
+        </apex:column><!--
+ 		<apex:column >
+            <apex:facet name="header">Machanical User2</apex:facet>
+            <apex:outputText value="{!oppHistory.Opportunity.Mechanical_2__r.Name}"/>
+        </apex:column>
+            <apex:column >
+            <apex:facet name="header">Machanical User3</apex:facet>
+            <apex:outputText value="{!oppHistory.Opportunity.Mechanical_3__r.Name}"/>
+        </apex:column> -->
+        <apex:column >
+            <apex:facet name="header">Electrical User </apex:facet>
+            <apex:outputText value="{!oppHistory.Opportunity.Member2__r.Name}"/>
+        </apex:column><!--
+            <apex:column >
+            <apex:facet name="header">Electrical User 2</apex:facet>
+            <apex:outputText value="{!oppHistory.Opportunity.Electrical_2__r.Name}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Electrical User 3</apex:facet>
+            <apex:outputText value="{!oppHistory.Opportunity.Electrical_3__r.Name}"/>
+        </apex:column> -->
+        <apex:column >
+            <apex:facet name="header">Created date</apex:facet>
+            <apex:outputText value="{!oppHistory.CreatedDate}"/>
+        </apex:column> 
+    </apex:dataTable>
+    </apex:outputPanel>
+
+</apex:page>

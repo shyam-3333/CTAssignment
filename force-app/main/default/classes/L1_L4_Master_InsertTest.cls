@@ -1,0 +1,61 @@
+@isTest
+public class L1_L4_Master_InsertTest {
+    static testMethod void method1() { 
+        TriggerStatus__c tt = new TriggerStatus__c();
+        tt.Name = 'RollUpNoOfFiles';
+        tt.Active__c = false;
+        insert tt;
+        TriggerStatus__c tt1 = new TriggerStatus__c();
+        tt1.Name = 'L1_L5_MasterTrigger';
+        tt1.Active__c = false;
+        insert tt1;
+        String str = 'product category 1,product category values 1,product category 2,product category values 2,product category 3,product category values 3,product category 4,product category values 4,l1,l2,l3,l4,l5,rule\n';
+        str = str + 'Fabric,synthetic,Craft,crepe,Zari type,craftone,Origin,tested,abc,def,nnn,tets,value,1'; 
+        String str1 = 'product category 1,product category values 1,product category 2,product category values 2,product category 3,product category values 3,product category 4,product category values 4,l1,l2,l3,l4,l5,rule\n';
+        str1 = str1 + 'Fabric,synthetic,Origin,crepe,Craft,craftone,Zari type,tested,abc,def,nnn,tets,value,1\nFabric,synthetic,Origin,crepe,Craft,craftone,Zari type,tested,abc,def,nnn,tets,value,1'; 
+        String str2 = 'product category 1,product category values 1,product category 2,product category values 2,product category 3,product category values 3,product category 4,product category values 4,l1,l2,l3,l4,l5,rule\n';
+        str2 = str2 +'Fabri,synthetic,Orig,crepe,Crt,craftone,Zri tpe,tested,abc,def,nnn,tets,value,1';
+        String str3 = 'product category 1,product category values 1,product category 2,product category values 2,product category 3,product category values 3,product category 4,product category values 4,l1,l2,l3,l4,l5,l6,,rule\n';
+        str3 = str3 +'Fabric,synthetic,Origin,crepe,Zari type,craftone,Craft,tested,abc,def,nnn,tets,value,1';
+        String str4 = 'product category 1,product category values 1,product category 2,product category values 2,product category 3,product category values 3,product category 4,product category values 4,l1,l2,l3,l4,l5,rule\n';
+        str4 = str4 +'';
+        String str5 = 'product category 1,product category values 1,product category 2,product category values 2,product category 3,product category values 3,product category 4,product category values 4,l1,l2,l3,l4,l5,rule\n';
+        str5 = str5 +'Fabric,\"\",Origin, ,Craft, ,Zari type, ,abc,def,nnn,tets,value,1';
+        String str6 = 'product category 1,product category values 1,product category 2,product category values 2,product category 3,product category values 3,product category 4,product category values 4,l1,l2,l3,l4,l5,rule\n';
+        str6 = str6 +'Fabric,synthetic,Origin,crepe,Craft,craftone,Zari type,tested,abc,def,nnn,tets,value,1\r\n,,,,,,,,,,,,,\r\nFabric,synthetic,Origin,crepe,Craft,craftone,Zari type,tested,abc,def,nnn,tets,value,1';
+        String str7 = 'product category 1,product category values 1,product category 2,product category values 2,product category 3,product category values 3,product category 4,product category values 4,l1,l2,l3,l4,l5,rule\n';
+        str7 = str7 +'Zari type,synthetic,Fabric,crepe,Fabric,craftone,Fabric,tested,abc,def,nnn,tets,value,1\nOrigin,synthetic,Origin,crepe,Origin,craftone,Origin,tested,abc,def,nnn,tets,value,1\nCraft,synthetic,Craft,crepe,Craft,craftone,Craft,tested,abc,def,nnn,tets,value,1\nOrigin,synthetic,Zari type,crepe,Zari type,craftone,Fabric,tested,abc,def,nnn,tets,value,1';
+        String str8 = 'product category 1,product category values 1,product category 2,product category values 2,product category 3,product category values 3,product category 4,product category values 4,l1,l2,l3,l4,l5,rule\n';
+        str8 = str8 + 'Fabric,synthetic,Zari type,crepe,Origin,craftone,Craft,tested,abc,def,nnn,tets,value,1';  
+        String str9 = 'product category 1,product category values 1,product category 2,product category values 2,product category 3,product category values 3,product category 4,product category values 4,l1,l2,l3,l4,l5,rule\n';
+        str9 = str9 + 'Fabric,\"synt;hetic\",Zari type,crepe,Origin,craftone,Craft,tested,abc,def,nnn,tets,value,1';  
+        String str10 = 'product category 1,product category values 1,product category 2,product category values 2,product category 3,product category values 3,product category 4,product category values 4,l1,l2,l3,l4,l5,rule\n';
+        str10 = str10 + 'Fabric,synthetic,Craft,crepe,Origin,craftone,Zari type,tested,abc,def,nnn,tets,value,1';  
+        L1_L4_Master_Insert.csvFileRead(JSON.serialize(str));
+        L1_L4_Master_Insert.csvFileRead(JSON.serialize(str1));
+        L1_L4_Master_Insert.csvFileRead(JSON.serialize(str2));
+        L1_L4_Master_Insert.csvFileRead(JSON.serialize(str3));
+        L1_L4_Master_Insert.csvFileRead(JSON.serialize(str4));
+        L1_L4_Master_Insert.csvFileRead(JSON.serialize(str5));
+        L1_L4_Master_Insert.csvFileRead(JSON.serialize(str6));
+        L1_L4_Master_Insert.csvFileRead(JSON.serialize(str7));
+        L1_L4_Master_Insert.csvFileRead(JSON.serialize(str8));
+        L1_L4_Master_Insert.csvFileRead(JSON.serialize(str9));
+        L1_L4_Master_Insert.csvFileRead(JSON.serialize(str10));
+        L1_L4_Master_Insert.precedenceCheck(JSON.serialize(str));
+        L1_L4_Master_Insert.precedenceCheck(JSON.serialize(str4));
+        L1_L4_Master_Insert.precedenceCheck(JSON.serialize(str6));
+        L1_L5_Master__c l1l4Master = [select id from L1_L5_Master__c Limit 1 ];
+        String str11 = 'L1-L5 Master: ID,Rule,Product Category 1,Product category value 1,Product Category 2,Product category value 2,Product Category 3,Product category value 3,Product Category 4,Product category value 4,L1,L2,L3,L4,L5\n';
+        str11 = str11+l1l4Master.id+',1,Fabric,Cotton,Origin,Surat,Zari Type,No zari,Craft,Digital,Cotton,Any,Any,Gold,Surat\n';
+        String str12 = 'L1-L5 Master: ID,Rule,Product Category 1,Product category value 1,Product Category 2,Product category value 2,Product Category 3,Product category value 3,Product Category 4,Product category value 4,L1,L2,L3,L4,L5\n';
+        str12 = str12+'';
+        String str13 = 'L1-L5 Master: ID,Rule,Product Category 1,Product category value 1,Product Category 2,Product category value 2,Product Category 3,Product category value 3,Product Category 4,Product category value 4,L1,L2,L3,L4,L5\n';
+        str13 = str13+l1l4Master.id+',1,Fabric,Cotton,Origin,Surat,Zari Type,No zari,Craft,Digital,Cotton,Any,Any,Gold,Surat\r\n,,,,,,,,,,,,,,\r\n';
+        L1_L4_Master_Insert.deleteCSVdata(JSON.serialize(str11) );
+        L1_L4_Master_Insert.deleteCSVdata(JSON.serialize(str12) );
+        L1_L4_Master_Insert.deleteCSVdata(JSON.serialize(str13));
+        String s = 'Fabric,synthetic,Craft,crepe,Origin,craftone,Zari type,tested,abc,def,nnn,tets,value,"1"';
+        List<String> mainList= CsvRowUtility.parseCSVRow(s);
+    }
+}

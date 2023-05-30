@@ -1,0 +1,641 @@
+<aura:component controller="JWL_Reliabilty_controller" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="objInfo" type="object" default="{sobjectType : 'JWL_Component__c',
+                                                          'Final_Verdict__c':'',
+                                                          'General_Observation__c':'',
+                                                          'Publish_Date__c':''}" />
+    <aura:attribute name="JWlComponenToAddVendor" type="object" default="{sobjectType : 'JWL_Component__c',
+                                                                         'Final_Verdict__c':'',
+                                                                         'General_Observation__c':'',
+                                                                         'Publish_Date__c':''}" />
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="nameVal" type="String"/>
+    <aura:attribute name="QaEmailIdList" type="List" />
+    
+    <aura:attribute name="recordId" type="String"/>
+    <aura:attribute name="alwaystrue" type="Boolean" default="true"/>
+    <aura:attribute name="isReadonly" type="Boolean" default="true"/>
+    <aura:attribute name="Readonly" type="Boolean" default="false"/>
+    <aura:attribute name="isReadonly22" type="Boolean" default="false"/>
+    <aura:attribute name="jwlid" type="String"/>
+    <aura:attribute name="indexVar" type="Integer"/>
+    <aura:attribute name="indexValue" type="integer" default="0"/>
+    <aura:attribute name="options" type="List"/>
+    <aura:attribute name="Locationlist" type="List" />
+    <aura:attribute name="TestTypeList" type="List" />
+    <aura:attribute name="SampleTypeList" type="List" />
+    <aura:attribute name="ProductTypeList" type="List" />
+    <aura:attribute name="karatageList" type="List" />
+    <aura:attribute name="finalVerdict" type="List" />
+    <aura:attribute name="conclusionlist" type="List" />
+    <aura:attribute name="routeOfManufactureList" type="List" />
+    <aura:attribute name="Activetestlist" type="List" />
+    <aura:attribute name="displayTestList" type="List" />
+    <aura:attribute name="addNewTestValueList" type="List" default="[]" />
+    <aura:attribute name="generateRegularTest" type="List" />
+    <aura:attribute name="responselist" type="object" default="{sobjectType : 'JWL_Response__c'}" />
+    
+    
+    
+    <aura:attribute name="disabled" type="Boolean" default="false" />
+    <aura:attribute name="saved" type="Boolean" default="false" />
+    <aura:attribute name="showSpinner" type="Boolean" default="true" />
+    <aura:attribute name="JWL_Component" type="JWL_Component__c" default="{'sobjectType':'JWL_Component__c',}" />
+    <aura:attribute name="JWLrecorddetail" type="list" />
+    <aura:attribute name="recdetail" type="list"/>
+    <aura:attribute name="JWLrecordlist" type="list"/>
+    <aura:attribute name="editflag"  type="boolean" default="true"/>
+    <aura:attribute name="jwlTestList" type="List"  />
+    <aura:attribute name="jwltestListSize" type="Integer"  />
+    <aura:attribute name="checkedJwltestList" type="List" default='[]' />
+    <aura:attribute name="JWL_Response" type="JWL_Response__c" default="{'sobjectType':'JWL_Response__c',}" />
+    <aura:attribute name="testGenarationFlsg" type="boolean" default="false" />
+    
+    
+    <!-- ######### Spinner handler and element######### -->
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+    <lightning:spinner aura:id="Spinner" size="medium" variant="brand"/>
+    <!-- ######### ######### -->
+    
+    <!-- ##################### Vendor Lookup attributes #####################-->
+    <aura:attribute name="openVendModal" type="boolean" default="false" />
+    <aura:attribute name="jwlVendorList" type="List" />
+    <aura:attribute name="searchVendor" type="String" default=""/>
+    
+    <!--filedupload-->
+    <!-- 'parentId' Aura Attribute for store the Id for Parent Record where we are attach our file -->  
+    <aura:attribute name="parentId" type="Id" default="0016F000024nYzwQAE" />
+    <!-- 'showLoadingSpinner' attribute for show/hide the uploading image and msg in aura:if-->
+    <aura:attribute name="showLoadingSpinner" type="boolean" default="false" />
+    <!-- 'fileName' attribute for display the selected file name -->  
+    <aura:attribute name="fileName" type="String" default="No File Selected.." />
+    <!-- Lightning Input with file type and on file change call the 'handleFilesChange' controller -->
+    
+    
+    <aura:attribute name="accept" type="List" default="['.jpg', '.jpeg','.png']"/>
+    <aura:attribute name="multiple" type="Boolean" default="true"/>
+    <aura:attribute name="nextbutton" type="Boolean" default="true"/>
+    
+    <aura:attribute name="disable" type="Boolean" default="false"/>
+    <!--filedupload--><!--filedupload--><!--filedupload--><!--filedupload--><!--filedupload--><!--filedupload-->
+    
+    <div class="slds-m-around_xx-large slds-card slds-show" aura:id="divid">
+        <p class="slds-text-heading_medium" style="text-align:center;font-size:20px: bold;background-color:DodgerBlue;">JWL Reliability</p>
+        <p>Please search with Report reference number</p>
+        <lightning:input  type="text" name="search" value="{!v.nameVal}"  />
+        <lightning:button variant="brand" label="Search" onclick="{! c.openModel }"  /> 
+        <lightning:button variant="brand" label="next" onclick="{!c.redirecttorecord}" disabled="{!v.nextbutton}"/>
+        
+        <!--Use aura:if tag to display Model Box, on the bese of conditions. [isOpen boolean attribute] -->   
+        <aura:if isTrue="{!v.isOpen}">
+            
+            <!--###### MODAL BOX Start######--> 
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- ###### MODAL BOX HEADER Start ######-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/> 
+                        <div>
+                            <table>
+                                <tr>
+                                    <th>
+                                        <b>Name</b></th>
+                                    <th>
+                                        
+                                        <b>Report Reference no</b>
+                                    </th>
+                                    
+                                </tr>
+                                <aura:iteration items="{!v.JWLrecordlist}" var="jwl" indexVar="index">
+                                    <tr>  
+                                        <td> <a id="{!jwl.Id}" onclick ="{!c.closeModel}"> {!jwl.Name}</a> </td>
+                                        <td> {!jwl.Report_Reference_Number__c}  </td>
+                                        
+                                        
+                                    </tr> 
+                                </aura:iteration>                                           
+                            </table>      
+                        </div>
+                    </header>
+                    <!--###### MODAL BOX BODY Part Start######-->
+                    
+                    
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+            <!--###### MODAL BOX Part END Here ######-->
+            
+        </aura:if>
+    </div>
+    
+    <div class="slds-card slds-hide" aura:id="Recorddetail">
+        <div class="slds-align_absolute-center" >
+            
+            <lightning:fileUpload  name="fileUploader"
+                                  label= "Image 1"
+                                  
+                                  accept="{!v.accept}" disabled="{!v.editflag}"
+                                  
+                                  recordId="{!v.recordId}"
+                                  onuploadfinished="{! c.handleUploadFinished }"/>&nbsp;&nbsp;
+            <lightning:fileUpload  name="fileUploader"
+                                  label= "Image 2"
+                                  multiple="{!v.multiple}"
+                                  accept="{!v.accept}" disabled="{!v.editflag}"
+                                  
+                                  recordId="{!v.recordId}"
+                                  onuploadfinished="{! c.handleUploadFinished2 }"/>&nbsp;&nbsp;
+            <lightning:fileUpload  name="fileUploader"
+                                  label= "Image 3"
+                                  multiple="{!v.multiple}" disabled="{!v.editflag}"
+                                  accept="{!v.accept}"
+                                  
+                                  recordId="{!v.recordId}"
+                                  onuploadfinished="{! c.handleUploadFinished3 }"/>
+        </div> 
+        <div  aura:id="Edit" class=" slds-align_absolute-center" >
+            <li class="slds-align_absolute-center slds-m-top_small " >
+                <lightning:button  class="slds-button slds-align_absolute-center" variant="brand" label="Edit" onclick="{!c.editablefields}"  aura:id="editbutton" />
+                <lightning:button class="slds-button slds-align_absolute-center" variant="destructive"  label="cancel" onclick="{!c.cancel}"  />
+            </li></div>
+        <div aura:id="Save/Cancle" class="slds-hide"> 
+            <li class="slds-align_absolute-center slds-m-top_small " >
+                <lightning:button class="slds-m-left_xx-large" variant="brand" label="Save" onclick="{!c.OnSave}" />
+                <lightning:button class="slds-m-left_xx-large" variant="destructive" label="Cancel" onclick="{!c.cancel}" />
+            </li>
+        </div>
+        
+        <div class="slds-align_absolute-center slds-card slds-hide" aura:id="enableonedit" >
+            <li class="slds-align_absolute-center slds-m-top_small " >
+                <lightning:button variant="brand" label="View PDF"  onclick="{!c.pdfpreview}"  /> 
+                <!--<lightning:button variant="brand" label="Download PDF" />-->
+                <lightning:button variant="brand" label="Publish" onclick="{!c.publishjwl}">
+                </lightning:button>
+                <lightning:button variant="brand" label="Send Email" onclick="{!c.sendEmail}">
+                </lightning:button>
+            </li>
+            
+        </div>
+        
+        
+        <br/>
+        
+        
+        <div class="slds-align_absolute-left" style="Background-color:">
+            <br/><br/>
+            <div aura:id="{!v.recordId}">
+                <form class="slds-form slds-form_compound" >
+                    <aura:iteration items="{!v.recdetail}" var="jwl" indexVar="index">
+                        
+                        <div class="slds-align_absolute-center slds-theme_success slds-section__title" style="font-size:20px;" >
+                            Jewellery Type Information
+                        </div>
+                        <div class="slds-grid slds-wrap"  style = "margin-left:10%;">
+                            <div class="slds-has-flexi-truncate slds-p-vertical_medium full forcePageBlockItem forcePageBlockItemEdit" role="listitem" style="">
+                                <div class="slds-form-element slds-form-element_edit slds-hint-parent slds-p-horizontal_xx-small">
+                                    <div class="slds-form-element__control">
+                                        
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label">Image 1</label>
+                                            <div class="slds-form-element__control">
+                                                <img src="{!jwl.Image_1__c}"  alt="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                            <div class="slds-has-flexi-truncate slds-p-vertical_medium full forcePageBlockItem forcePageBlockItemEdit" role="listitem" style="">
+                                <div class="slds-form-element slds-form-element_edit slds-hint-parent slds-p-horizontal_xx-small">
+                                    <div class="slds-form-element__control">
+                                        
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label">Image 2</label>
+                                            <div class="slds-form-element__control">
+                                                <img src="{!jwl.Image_2__c}"   alt="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                            <div class="slds-has-flexi-truncate slds-p-vertical_medium full forcePageBlockItem forcePageBlockItemEdit" role="listitem" style="">
+                                <div class="slds-form-element slds-form-element_edit slds-hint-parent slds-p-horizontal_xx-small">
+                                    <div class="slds-form-element__control">
+                                        
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-form-element__label">Image 3</label>
+                                            <div class="slds-form-element__control">
+                                                <img src="{!jwl.Image_3__c}"  alt=""  />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                        </div>
+                        
+                        <div class="slds-form-element__control">
+                            
+                            <div class="slds-grid slds-wrap">
+                                
+                                <ul class="slds-grid slds-wrap">
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <lightning:input type="text" name="Report Reference Number" value="{!jwl.Report_Reference_Number__c}" disabled="{!v.alwaystrue}" label="Report Reference Number"/>
+                                    </li>
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static"><lightning:input type="text" name="Test type" value="{!jwl.Test_Type__c}" disabled="{!v.alwaystrue}" label="Test type"/></span>
+                                    </li><br/><br/><br/><br/>
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static"><lightning:input type="text" name="Sample Type" value="{!jwl.Sample_Type__c}" disabled="{!v.alwaystrue}" label="Sample Type"/></span>
+                                    </li>
+                                    
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static"><lightning:input label="Product Category" type="Text" name="product Category" value="{!jwl.Product_Category__c}" disabled="{!v.alwaystrue}"/></span>
+                                    </li><br/><br/><br/><br/>
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static">
+                                            
+                                            <lightning:input label="Record status" type="Text" name="Record status" value="{!jwl.Record_Status__c}" disabled="{!v.alwaystrue}"/>    
+                                        </span>          
+                                    </li>
+                                    
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static">
+                                            <lightning:input label="Document status" type="Text" name="Document status" value="{!jwl.Document_Status__c}" disabled="{!v.alwaystrue}"/>
+                                            
+                                        </span>          
+                                    </li><br/><br/><br/><br/>
+                                    
+                                    
+                                </ul>
+                                
+                                
+                                
+                            </div>
+                            
+                            
+                        </div>
+                        
+                        
+                        
+                        <br/><br/>
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        <div class="slds-align_absolute-center slds-theme_success slds-section__title" style="font-size:20px;text-align:center;">
+                            Jewellery Test Information
+                        </div>
+                        <div class="slds-form-element__control">
+                            
+                            <div class="slds-grid slds-wrap">
+                                
+                                <ul class="slds-grid slds-wrap">
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <lightning:input type="Email" name="Submitted by" value="{!jwl.Submitted_By__c}" disabled="{!v.editflag}" label="Submitted by"/>
+                                    </li>
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static"><lightning:input type="text" name="additional email"  aura:id="additionalEmail" value="{!jwl.Additional_Emails__c}" disabled="{!v.editflag}" label="Additional Email:"/></span>
+                                    </li><br/><br/><br/><br/>
+                                    
+                                    
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static"><lightning:input label="Product Code" type="Text" name="additional email" value="{!jwl.Product_Code__c}" disabled="{!v.editflag}"/></span>
+                                    </li>
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static"><lightning:input  label="Lot no" type="text" name="lot no" value="{!jwl.Lot_no__c}" disabled="{!v.editflag}"/></span>
+                                    </li><br/><br/><br/><br/>
+                                    <!--
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static">
+                                            
+                                            <lightning:select name="collection"  value="{!jwl.Collection__c}" disabled="{!v.editflag}"  label="Collection">
+                                                <aura:iteration items="{!v.collectionList}" var="collection">
+                                                    <option text="{!collection.label}" value="{!collection.value}" ></option>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </span>          
+                                    </li> -->
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static">
+                                            
+                                            <lightning:input name="collection" type="text" value="{!jwl.Collection__c}" disabled="{!v.editflag}"  label="Collection" />
+                                            
+                                        </span>          
+                                    </li>
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static">
+                                            
+                                            <lightning:select name="location" label="Location" value="{!jwl.Location__c}" disabled="{!v.editflag}" >
+                                                <aura:iteration items="{!v.Locationlist}" var="location">
+                                                    <option text="{!location.label}" value="{!location.value}" ></option>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </span>          
+                                    </li><br/><br/><br/><br/>
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static">
+                                            
+                                            <lightning:select name="Karatage" label="Karatage" value="{!jwl.Karatage__c}" disabled="{!v.editflag}" >
+                                                <aura:iteration items="{!v.karatageList}" var="Karatage">
+                                                    <option text="{!Karatage.label}" value="{!Karatage.value}" ></option>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </span>          
+                                    </li>
+                                    
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static">
+                                            
+                                            <lightning:select name="route" label="Route of Manufacturing" value="{!jwl.Route_of_Manufacturing__c}" disabled="{!v.editflag}" >
+                                                <aura:iteration items="{!v.routeOfManufactureList}" var="route">
+                                                    <option text="{!route.label}" value="{!route.value}" ></option>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </span>          
+                                    </li><br/><br/><br/><br/>
+                                    
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static"><lightning:input type="text" name="additional Info" value="{!jwl.Additional_Info__c}" disabled="{!v.editflag}" label="Additional Product Info"/></span>
+                                    </li>
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static"><lightning:input  label="Process Change/Concept" type="text" name="process" value="{!jwl.Process__c}" disabled="{!v.editflag}"/></span>
+                                    </li><br/><br/><br/><br/>
+                                    <!--     <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static"><lightning:input  label="Sample Details" type="text" name="Sample Details" value="{!jwl.Sample_Details__c}" disabled="{!v.editflag}"/></span>
+                                    </li> -->
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static">
+                                            
+                                            <lightning:select name="selectUser" label="QA Email ID" value="{!jwl.QA_User_Email_Id__c}" disabled="{!v.editflag}" >
+                                                <option value="" label="--None--">
+                                                </option>
+                                                
+                                                <aura:iteration items="{!v.QaEmailIdList}" var="item" >
+                                                    <option value="{!item.QA_Email_Id__c}" label="{!item.QA_Email_Id__c}" >
+                                                    </option>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </span>          
+                                    </li>
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2"> 
+                                        
+                                        <span class="slds-form-element__static">
+                                            <!-- Vendor Lookup -->
+                                            <Lightning:input name="vendor" label="Vendor/Dept" type="Search" value="{!v.searchVendor}"  onchange="{!c.openVendorModal}" onclick="{!c.openVendorModal}"  placeholder="Search Vendors..." disabled="{!v.editflag}"/>
+                                            <aura:if isTrue="{!v.openVendModal}" >
+                                                <section role="dialog" id="vendSection">
+                                                    <div class="slds-box slds-box_xx-small">
+                                                        <div class="slds-p-around_medium" id="modal-content-id-1">
+                                                            <aura:iteration items="{!v.jwlVendorList}" var="jwlVend" indexVar="vindex">
+                                                                <div id="{!vindex}" onclick="{!c.selectVendor}"> {!jwlVend.Name} </div>
+                                                            </aura:iteration>
+                                                        </div>
+                                                    </div>
+                                                </section>
+                                            </aura:if>
+                                        </span>
+                                    </li>
+                                    
+                                    
+                                    <li class="slds-col_padded slds-p-horizontal_xx-large slds-col slds-size_1-of-2">
+                                        
+                                        <span class="slds-form-element__static"><lightning:input  label="Submitted by (Name)" type="text" name="SubmittedbyName" value="{!jwl.Submitted_by_Name__c}" disabled="{!v.editflag}"/></span>
+                                    </li>
+                                </ul>
+                                
+                                
+                                <!-- <span class=" slds-col_padded slds-p-vertical_xxx-small slds-col slds-size_1-of-2" ><lightning:input type="text" name="additional email" value="{!jwl.Additional_Emails__c}" disabled="{!v.editflag}"/></span>
+                                    <span class=" slds-col_padded slds-p-vertical_xxx-small slds-col slds-size_1-of-2" ><lightning:input type="text" name="additional email" value="{!jwl.Additional_Emails__c}" disabled="{!v.editflag}"/></span>
+                                    <span class=" slds-col_padded slds-p-vertical_xxx-small slds-col slds-size_1-of-2" ><lightning:input type="text" name="additional email" value="{!jwl.Additional_Emails__c}" disabled="{!v.editflag}"/></span>
+                                    <span class=" slds-col_padded slds-p-vertical_xxx-small slds-col slds-size_1-of-2" ><lightning:input type="text" name="additional email" value="{!jwl.Additional_Emails__c}" disabled="{!v.editflag}"/></span>-->
+                            </div>
+                            
+                            
+                        </div>
+                        
+                        
+                    </aura:iteration></form><br/><br/>
+                
+                <div class="slds-align_absolute-center slds-p-left_xx-large slds-section__title " style="font-size:20px;background-color:Orange;text-align:center;">
+                    Predefined Tests
+                </div>
+                <div class="slds-card slds-p-around_x-large">
+                    
+                    <div class="slds-grid slds-wrap ">
+                        <aura:iteration items="{!v.jwlTestList}" var="jwlTest" indexVar="testIndex"> 
+                            <aura:if isTrue="{!jwlTest.Name != 'Others'}" >
+                                <ul  class="slds-grid slds-wrap slds-size_1-of-3">
+                                    <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-10">
+                                        <lightning:input type="Checkbox"
+                                                         id="{!testIndex}"
+                                                         checked="{!jwlTest.isChecked__c}"
+                                                         
+                                                         disabled="{!v.editflag}"/><!--onchange="{!c.checkTest}"-->
+                                    </li>
+                                    <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                                        <span class="slds-form-element__static"><H1>{!jwlTest.Test_Name__c}</H1> </span>
+                                    </li>
+                                </ul> 
+                            </aura:if>
+                        </aura:iteration>
+                        <!--<ul  class="slds-grid slds-wrap slds-size_1-of-3">
+                                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-10">
+                                    <Lightning:input type="Checkbox"
+                                                     id="othertest"
+                                                     value="false"
+                                                     onchange="{!c.otherCheck}"
+                                                     disabled="{!v.editflag}"/>   
+                                </li>
+                                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                                    <span class="slds-form-element__static"><H1>Others</H1> </span>
+                                </li>
+                                <li class=" slds-col slds-size_1-of-1 slds-hide" aura:id="otherSpec"> 
+                                    <Lightning:input type="text" name="If Others Specification"
+                                                     label="If Others"
+                                                     required="true"
+                                                     value="{!v.JWL_Response.If_Others__c}"/>  
+                                </li>
+                            </ul>-->
+                    </div>
+                    
+                    
+                </div>
+                
+            </div>
+        </div>
+        <div style = "margin-left: 15px;">
+            <h2 style="font-size:20px;color: blue;"> Generate Test</h2>
+            <input type="checkbox" name="Generate Test"
+                   label=""
+                   required="true"
+                   value="false" onchange="{!c.generatetest}" disabled="{!v.editflag}"/><br/></div>
+        
+        <aura:iteration items="{!v.recdetail}" var="jwllist" indexVar="index">
+            <div class="slds-form-element__control">
+                
+                <ul class="slds-grid slds-wrap">
+                    
+                    <li class="  slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2 ">
+                        <span class="slds-form-element__label">General observation</span>
+                        <lightning:textarea      aura:id="genobserv"  
+                                            value="{!jwllist.General_Observation__c}"
+                                            disabled="{!v.editflag}" /></li>
+                    <li class="  slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2 ">
+                        <span class="slds-form-element__label ">Final verdict  <abbr class="slds-required" title="required">* </abbr> </span>
+                        <lightning:select  name="finalverd" label="" aura:id="finalverd" value="{!jwllist.Final_Verdict__c }"  disabled="{!v.editflag}">
+                            <aura:iteration items="{!v.finalVerdict}" var="finalVerd">
+                                <option text="{!finalVerd.label}" value="{!finalVerd.value}" selected="{!finalVerd.selected}" ></option>
+                            </aura:iteration>
+                        </lightning:select></li>
+                </ul>
+                
+            </div>
+        </aura:iteration><br/>
+        
+        <!--<aura:if isTrue="{!v.generateRegularTest.length!=0}">-->
+        <h3 style="background-color:Orange;" >
+            <span class="slds-align_absolute-center slds-truncate slds-p-horizontal_small" title="Section Title" style="font-size:20px;">Test Parameters</span>
+        </h3>
+        <table aura:id="thetable" class="t_design table table-striped slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered slds-table_resizable-cols slds-table_fixed-layout slds-max-medium-table_stacked-horizontal" >
+            <thead>
+                <tr>
+                    <th  style="font-size: 15px;"><div class="slds-truncate">Test Name</div></th>
+                    <th  style="font-size: 15px;"><div class="slds-truncate">Dimensional Parameters</div></th>
+                    <th  style="font-size: 15px;"><div class="slds-truncate">Specification</div></th>
+                    
+                    <th  class="slds-size_1-of-4" style="font-size: 15px;"><div class="slds-truncate "> Observation</div></th>
+                    
+                    <th  style="font-size: 15px;"> <div class="slds-truncate">Result</div></th>
+                    
+                </tr>
+            </thead>
+            <tbody>
+                
+                <aura:iteration items="{!v.Activetestlist}" var="testvar" indexVar="index" >
+                    
+                    <aura:if isTrue="{!testvar.isChecked__c}" >
+                        
+                        <tr>
+                            <td scope="row" data-label="Select" ><lightning:input disabled="{!v.isReadonly}" type="String" value="{!testvar.Test_Name__c}" /></td>
+                            <td scope="row" data-label="Select"><lightning:input disabled="{!v.isReadonly22}" type="String" value="{!testvar.Dimension_Mannual_test__c}" /> </td>
+                            
+                            <td scope="row" data-label="Select"><lightning:input disabled="{!v.isReadonly22}" type="String" value="{!testvar.Specification_mannual_test__c}" /></td><!--Jwellery_Test__r.Specification__c-->
+                            <td scope="row" data-label="Select"><lightning:textarea  value="{!testvar.Observation__c}" disabled="{!v.isReadonly22}"/></td>
+                            <td scope="row" data-label="Select">
+                                <lightning:select   name="Verdict"  aura:id="verdictId" value="{!testvar.Conclusion__c }"  disabled="{!v.isReadonly22}">
+                                    <aura:iteration items="{!v.conclusionlist}" var="finalVerd">
+                                        <option text="{!finalVerd.label}" value="{!finalVerd.value}" selected="{!finalVerd.selected}" ></option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </td>
+                            
+                            <td scope="row" data-label="Select"  >
+                                <a onclick="{!c.deleteRow}"  aura:id="{!index}" id="{!index}"  >
+                                    <lightning:buttonIcon   disabled="{!v.isReadonly22}" variant="brand" iconName="utility:delete" class="slds-icon slds-icon_small" size="small" alternativeText="delete"/>
+                                    <span class="slds-assistive-text">Delete Icon</span>
+                                </a>
+                            </td>
+                            
+                            <aura:if isTrue="{!and(v.Activetestlist.length == index+1,v.addNewTestValueList.length == 0)}"  >
+                                <td scope="row" data-label="Select" >
+                                    
+                                    <a onclick="{!c.addrow}" disabled="{!v.isReadonly22}"  >
+                                        <lightning:buttonIcon  iconName="utility:add"  variant="brand" disabled="{!v.isReadonly22}" class="slds-icon slds-icon_small" size="small" alternativeText="add"/>
+                                        <span class="slds-assistive-text">Add Icon</span>
+                                    </a>  
+                                    
+                                    
+                                </td>
+                            </aura:if>
+                            
+                        </tr>  
+                        <aura:set attribute="else">
+                            {!index - 1}
+                        </aura:set>
+                    </aura:if>
+                </aura:iteration >
+                
+                <aura:if isTrue="{!v.addNewTestValueList.length > 0}">
+                    <aura:iteration items="{!v.addNewTestValueList}" var="testvar" indexVar="index">
+                        <tr>
+                            <td scope="row" data-label="Select"><lightning:input type="String" value="{!testvar.Test_Name__c}" aura:id="addname" disabled="{!v.Readonly}"/></td>
+                            <td scope="row" data-label="Select"><lightning:input type="String" value="{!testvar.Dimension_Mannual_test__c}" disabled="{!v.Readonly}" /> </td>
+                            <td scope="row" data-label="Select"><lightning:input type="String" value="{!testvar.Specification_mannual_test__c}"   disabled="{!v.Readonly}"/></td>
+                            
+                            
+                            <td scope="row" data-label="Select"><lightning:textarea  value="{!testvar.Observation__c}" /></td>
+                            <td scope="row" data-label="Select">
+                                <lightning:select name="Verdict"  aura:id="verdictId" value="{!testvar.Conclusion__c }" disabled="{!v.Readonly}">
+                                    <aura:iteration items="{!v.conclusionlist}" var="finalVerd">
+                                        <option text="{!finalVerd.label}" value="{!finalVerd.value}" selected="{!finalVerd.selected}" ></option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </td>
+                            <td scope="row" data-label="Select" >
+                                <a onclick="{!c.deleteRow1}"  aura:id="{!index}" id="{!index}" disabled="{!v.isReadonly22}" >
+                                    <lightning:buttonIcon   disabled="{!v.isReadonly22}" variant="brand" iconName="utility:delete" class="slds-icon slds-icon_small" size="small" alternativeText="delete"/>
+                                    <span class="slds-assistive-text">Delete Icon</span>
+                                </a>
+                            </td>
+                            <aura:if isTrue="{!v.addNewTestValueList.length == index+1}"  >
+                                <td scope="row" data-label="Select" >
+                                    
+                                    <a onclick="{!c.addrow}" disabled="{!v.isReadonly22}" >
+                                        <lightning:buttonIcon   disabled="{!v.isReadonly22}" variant="brand" iconName="utility:add" class="slds-icon slds-icon_small" size="small" alternativeText="add"/>
+                                        <span class="slds-assistive-text">Add Icon</span>
+                                    </a>  
+                                    
+                                    
+                                </td>
+                            </aura:if>
+                        </tr>  
+                    </aura:iteration>
+                </aura:if>
+                
+            </tbody>
+        </table> 
+        <!--</aura:if>-->
+        
+        
+        
+        
+    </div>
+    
+    
+    
+    
+    
+    
+</aura:component>

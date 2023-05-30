@@ -1,0 +1,98 @@
+<!-- 
+    Name: QC_PackagingTestFindingReport 
+    Created By:Shamsher Singh
+    Created Date:06/02/2015
+    Modified By:
+    Last Modified Date:
+    Description:Packaging report. All the test finding are displayed in the the report.
+ -->
+<apex:page controller="QC_PackagingTestFindingReport" standardStylesheets="false" renderas="pdf" showHeader="false" doctype="html-5.0" id="pge">          
+        
+        <c:StylingPdfContent type="header" >  
+        <div style="page-break-after:always;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;text-align:right;">Page <span class="pagenumber" /> of <span class="pagecount"/></div>
+        
+    </c:StylingPdfContent>
+
+    <c:StylingPdfContent type="footer">
+          <div align="left" style="color:#808080;">
+              <!--Product Approval : {!component.Final_Verdict__c}<br></br>-->
+              Product Approval : &nbsp;<apex:outputtext value="{!component.Final_Verdict__c}"  style="color:{!IF(component.Final_Verdict__c == 'Accept', 'green', 'red')}"/> <br></br>
+              Inspected : {!component.Owner.name}  
+          </div>
+          
+    </c:StylingPdfContent>
+    
+    <c:StylingPdfContent type="footer1">
+          <div align="center" style="color:#808080;"><br></br>Checked : {!l1l2UserName.L1_Approver__r.Name}</div>
+    </c:StylingPdfContent>
+    
+     <c:StylingPdfContent type="footer2">
+         <div align="right" style="color:#808080;"><br></br>Approved : {!l1l2UserName.L2_Approver__r.Name}</div>
+    </c:StylingPdfContent>
+    
+         <div align="center" style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px;"><b>Reliability Observation Record  {!component.Name__c}&nbsp;&nbsp;&nbsp;</b></div><br></br>       
+           <!-- <table width="100%" cellspacing="0" border="0" align="left" style="font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;">
+                           
+                 <tr style="line-height: 25px;">    
+                     <td class="fieldLabel">Sample Department</td>
+                     <td><apex:outputtext value="{!component.Sample_Department__c}"  /></td>
+                     <td class="fieldLabel">No. of Samples Received</td>
+                     <td><apex:outputtext value="{!component.No_Of_Sample_Received__c}"/></td>
+                 </tr> 
+                 <tr style="line-height: 25px;">
+                    <td class="fieldLabel">Vendor</td>
+                    <td><apex:outputLabel value="{!component.Vendor__r.Name}"></apex:outputLabel></td>
+                  </tr>         
+            </table>
+        <br></br>
+               
+        <table width="1280" cellspacing="0" align="left" border="1" style="font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;">
+             <th align="center"><b>Note: Values marked with red are deviation from standard</b></th>              
+        </table>-->
+       
+    <br />
+    <table width="100%" cellspacing="0" cellpadding="2" align="left" border="1" style="font-family:Arial,Helvetica,sans-serif;font-size:9pt;color:#808080;">       
+        <tr >
+            <td colspan="7" align="center" style="color:#2CA8F5;"><i>Reliability Test Certificate</i></td>
+        </tr>           
+               <!--  <tr>
+                    <td width="15%"><b>Test Parameter</b></td>
+                    <td width="15%"><b>Test Condition</b></td>
+                    <td width="15%"><b>Test Specification</b></td>
+                    <td width="15%"><b>Acceptance Criteria</b></td>
+                    <td width="15%"><b>Observation</b></td>
+                    <td width="10%"><b>Conclusion</b></td>
+                    <td width="15%"><b>Comments and Remarks</b></td>
+                </tr>                
+                <apex:repeat value="{!packagingTestParamList}" var="packagingFind">
+                    <tr>
+                        <td><apex:outputText value="{!packagingFind.testName}" /></td>
+                        <td><apex:outputText value="{!packagingFind.uUOM}" /></td>
+                        <td><apex:outputText value="{!packagingFind.specification}" /></td>
+                        <td><apex:outputText value="{!packagingFind.acceptanceCritaria}" /></td>
+                        <td><apex:outputText value="{!packagingFind.observation}" /></td>
+                        <td><apex:outputText value="{!packagingFind.verdict}" /></td>
+                        <td width="15%"><apex:outputText value="{!packagingFind.commentAndRemarks}" /></td>
+                    </tr> -->
+                    <tr>
+                    <td><b>Test Parameter</b></td>
+                    <td><b>Test Condition</b></td>
+                    <td><b>Test Specification</b></td>
+                    <td><b>Acceptance Criteria</b></td>
+                    <td><b>Observation</b></td>
+                    <td><b>Conclusion</b></td>
+                    <td><b>Comments and Remarks</b></td>
+                </tr>                
+                <apex:repeat value="{!packagingTestParamList}" var="packagingFind">
+                    <tr>
+                        <td><apex:outputText value="{!packagingFind.testName}" /></td>
+                        <td><apex:outputText value="{!packagingFind.uUOM}" /></td>
+                        <td><apex:outputText value="{!packagingFind.specification}" /></td>
+                        <td><apex:outputText value="{!packagingFind.acceptanceCritaria}" /></td>
+                        <td><apex:outputText value="{!packagingFind.observation}" /></td>
+                        <td><apex:outputText value="{!packagingFind.verdict}" /></td>
+                        <td><apex:outputText value="{!packagingFind.commentAndRemarks}" /></td>
+                    </tr>
+                </apex:repeat> 
+          </table>
+</apex:page>

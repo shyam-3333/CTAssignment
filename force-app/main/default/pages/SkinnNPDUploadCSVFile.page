@@ -1,0 +1,67 @@
+<apex:page controller="SkinnNPDCsvUploadController1" contentType="{!renderAsExcel}" sidebar="false">
+    <apex:form >
+        <Apex:pageBlock Title="Skinn model item" id="pb1" rendered="{!pb1}" >
+                <apex:pageMessages id="showmsg"></apex:pageMessages>
+            <style>
+                .rg1 {background-color: lightblue; color:black; background-image:none}
+                .rg2 {background-color: white; color:black; background-image:none}
+                .SelectlistStyle {background-color: lightblue; color:black; font-size: 100%; background-image:none}
+                .myClass{
+                color:white !important;
+                background: #66b3ff !important;
+                }
+            </style> 
+            
+            <Apex:commandButton value="Export as Excel" action="{!SaveAsExcel}" StyleClass="myClass"/>
+            <apex:pageBlockSection columns="4"> 
+                  <apex:inputFile value="{!contentFile}"  accept="csv" contentType="csv"/>
+                  <apex:commandButton value="Import CSV" action="{!UploadDataFromCsv}"/>
+            </apex:pageBlockSection>
+        </Apex:pageBlock>
+        <Apex:pageBlock >
+            <apex:outputPanel id="SmiTable">
+                <apex:PageblockTable value="{!recordsinfo}" var="smi" border="1" cellpadding="2" cellspacing="1" rowClasses="rg1,rg2">
+                    <apex:column value="{!smi.record.id}">
+                        <apex:facet name="header">Record Id</apex:facet>
+                    </apex:column>
+                    <apex:column value="{!smi.record.Order_No__c}">
+                        <apex:facet name="header">Order Number</apex:facet>
+                    </apex:column>
+                    <apex:column value="{!smi.record.Serial_No__c}">
+                        <apex:facet name="header">Serial Number</apex:facet>
+                    </apex:column>
+                    <apex:column value="{!smi.record.Item_Name__c}">
+                        <apex:facet name="header">Item Name</apex:facet>
+                    </apex:column>
+                    
+                    
+                    
+                    <apex:column value="{!smi.record.Type__c}">
+                        <apex:facet name="header">Type</apex:facet>
+                    </apex:column>
+                    
+                    <apex:column value="{!smi.record.Parent_Id__r.Order_No__c }">
+                        <apex:facet name="header">Parent Order Number</apex:facet>
+                    </apex:column>
+                    
+                    <apex:column value="{!smi.record.Assigned_Team__c }">
+                        <apex:facet name="header">Assigned Team(Marketing User, Fragrance Expert, NPD Packaging, QA, Sourcing)</apex:facet>
+                    </apex:column>
+                    <apex:column value="{!smi.record.Planned_Lead_Time__c }">
+                        <apex:facet name="header">Planned Lead Time</apex:facet>
+                    </apex:column>
+                    <apex:column value="{!smi.record.TemplateType__c }">
+                        <apex:facet name="header">Template Name</apex:facet>
+                    </apex:column>
+                    <apex:column value="{!smi.userEmailId }" >
+                        <apex:facet name="header">User email</apex:facet>
+                    </apex:column>
+                    <apex:column value="{!smi.approvalRequired }" >
+                    <apex:facet name="header">Approval Required(true/false)</apex:facet>
+                    </apex:column>
+                </apex:PageblockTable>
+            </apex:outputPanel>
+            
+        </Apex:pageBlock>
+    </apex:form>
+</apex:page>

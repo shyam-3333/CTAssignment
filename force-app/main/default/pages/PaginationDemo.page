@@ -1,0 +1,958 @@
+<apex:page controller="PaginationDemoController" id="pageId" showHeader="true" sidebar="false" readOnly="true" cache="false">
+    
+    <html>
+        <head>            
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/scroller/1.5.1/css/scroller.dataTables.min.css" />
+            <script type="text/javascript" src="https://lokeshdhakar.com/projects/lightbox2/js/lightbox-plus-jquery.min.js"></script>
+            <link rel="stylesheet" href="https://lokeshdhakar.com/projects/lightbox2/css/lightbox.css" type="text/css" media="screen" />
+            
+            <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js" />
+            <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" />
+            <script type="text/javascript" src="https://cdn.datatables.net/scroller/1.5.1/js/dataTables.scroller.min.js" />
+            
+            <apex:includeScript value="{!URLFOR($Resource.CustomApp, 'js/jquery.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.CustomApp, 'js/angular.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.CustomApp, 'js/angular-datatables.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.CustomApp, 'js/jquery.dataTables.min.js')}"/>
+             
+            <style>
+                
+                #mydiv img {
+                    
+                    width: 40px;
+                    height: 40px;
+                    left: 5%;
+                    top: 0%;
+                    position: absolute;
+                }
+                
+                table td img.img-thumbnail {
+                    
+                    width: 204px;
+                    height: auto;
+                }
+                .srch_box {                    
+                    margin-bottom: 5px;
+                    margin-top: 5px;
+                    width: 223px;
+                }
+                div.dataTables_scrollBody1 {
+                    
+                    width: 700px !important;
+                }
+                table th, table td {
+                    
+                    text-align: left !important;
+                    padding-left: 0px !important;
+                    
+                }
+                .dataTables_filter{
+                    float:left!important;
+                    margin-left:5px!important;
+                    }
+            
+            </style>
+        </head>
+        <body ng-app="app" ng-controller="formController" style="min-height: 400px;">
+           <apex:form id="formId"> 
+            <div style="width: 100%; clear: both; ">
+                
+                <h1>Filter Results</h1>
+                   
+                <div style="width: 1320px;clear: both;/* float: left; */height: 175px;overflow-y: auto;overflow-x: auto;">
+                    
+                 <div style="width: 230px; float: left; padding: 4px; margin-top: 5px;" class="Vendor">
+                        <div style=""><b>Vendor Name</b></div>
+                        <div style=""><input type="text" maxlength="20" name="srchVendorChkBox" id="srchVendorChkBox" value="" placeholder="Search Vendor..." class="srch_box" /></div>
+                        <div style="height: 150px; overflow: auto; border: 1px solid #ececec;">
+                                <apex:repeat value="{!jsonstringList}" var="val">
+                                    <div id="sec_{!val.VendorId}"><input type="checkbox" name="Vendor" id="vendorchk_{!val.VendorId}" class="vendor filterFields {!val.Name} {!masterMap[val.VendorId]}" value="{!val.VendorId}" />{!val.Name}</div>
+                                </apex:repeat>   
+                        </div>
+                     </div>
+                     
+                     
+                    <div style="width: 230px; float: left; padding: 4px; margin-top: 5px;" class="MRP">
+                        <div style=""><b>MRP</b></div>
+                        <div style=""><input type="text" maxlength="20" name="srchMRPChkBox" id="srchMRPChkBox" value="" placeholder="Search MRP..." class="srch_box" /></div>
+                        <div style="height: 150px; overflow: auto; border: 1px solid #ececec;">
+                                <apex:repeat value="{!costBandCustSetList}" var="val">
+                                    <div id="sec_{!val.dispVal}"><input type="checkbox" name="MRP" id="mrpchk_{!val.dispVal}" class="vendor filterFields {!val.paramVal} {!masterMap[val.dispVal]}" value="{!val.paramVal}" />{!val.dispVal}</div>
+                                </apex:repeat>   
+                        </div>
+                     </div>
+                     
+                      <div style="width: 230px; float: left; padding: 4px; margin-top: 5px;" class="CostPrice">
+                        <div style=""><b>Cost Price Band</b></div>
+                        <div style=""><input type="text" maxlength="20" name="srchCostPriceChkBox" id="srchCostPriceChkBox" value="" placeholder="Search Cost Price..." class="srch_box" /></div>
+                        <div style="height: 150px; overflow: auto; border: 1px solid #ececec;">
+                                <apex:repeat value="{!costPriceRangeList}" var="val1">
+                                    <div id="sec_{!val1.costPriceDisp}"><input type="checkbox" name="CostPrice" id="CostPricechk_{!val1.costPriceDisp}" class="CostPrice filterFields {!val1.costPriceParam} {!masterMap[val1.costPriceDisp]}" value="{!val1.costPriceParam}" />{!val1.costPriceDisp}</div>
+                                </apex:repeat>   
+                        </div>
+                     </div>
+                        
+                <apex:repeat value="{!dataSearchOptionsKeys}" var="key">
+                    <div style="width: 230px; float: left; padding: 4px; margin-top: 5px;" class="{!classKeyMap[key]}">
+                        <div style=""><b>{!classKeyMap[key]}</b></div>
+                        
+                        <div style=""><input type="text" maxlength="20" class="srchChkBoxLabel srch_box {!key}" name="srch{!key}ChkBox" id="srch{!key}ChkBox" value="" placeholder="Search {!key}..." /></div>
+                        <div style="height: 150px; overflow: auto; border: 1px solid #ececec;">
+                                <apex:repeat value="{!dataSearchOptions[key]}" var="val">
+                                    
+                                    <div class="sec_{!masterMap[val]}"><input type="checkbox" name="{!key}" id="{!key}_chk_{!masterMap[val]}" class="{!key} filterFields {!masterMap[val]}" value="{!val}" />{!val}</div>
+                                    
+                                </apex:repeat>
+                        </div>
+                     </div>
+                </apex:repeat>
+
+                 <apex:actionFunction action="{!dosubmit}" name="passFilterSearch" reRender="product-details">
+                 <apex:param name="filterSearch" value="" assignTo="{!filterDataString}"/>
+                 </apex:actionFunction>
+                 
+                 
+                </div>
+                <div style="width: 100%; clear: both; float: left; padding: 4px; margin-top: 5px;">
+                    
+                    
+                    <input type="button" name="srchProds" id="srchProds" value="Search" ng-click="filterRecords();" />
+                    <input type="button" name="srchProds1" id="srchProds1" value="Refresh" ng-click="loadFreshRecords();" />
+                </div>
+            </div>
+            
+            
+                <table id="product-details" class="display nowrap" style="">
+                    <thead>                       
+                        <tr>
+                                                <th>Image</th>
+                        <th>SKU</th>                     
+                        <th>Cost</th>      <!--- Added by Mayur 29/11/2018 --->
+                        <th>MRP</th>       <!--- Added by Mayur 29/11/2018 ---> 
+                        <th>Origin</th>
+                        <th>Fabric</th>
+                        <th>Base Color</th>                    
+                        <th>Vendor</th>                      
+                        <th>Craft</th>
+                        <th>Occasion</th>  <!--- Added by Mayur 29/11/2018 --->                     
+                        <th>Color</th>     <!--- Added by Mayur 29/11/2018 ---> 
+                        <th>Design Story</th>
+                        <th>Story1</th>
+                        <th>Story2</th>
+                        <th>Design Description</th>                     
+                        <th>Collection</th>                        
+                        <th>Quantity</th>
+                        <th>Zari Type</th>
+                        <th>Loom</th>
+                        <th>Body Pattern</th> 
+                        <th>Body Des Element</th> 
+                        <th>Body Des Material</th>
+                        <th>Body Des Density</th>
+                        <th>Material</th>   <!--- Added by Mayur 21/12/2018 --->                        
+                        <th>Border Pattern</th>
+                        <th>Border Des Element</th>
+                        <th>Border Des Material</th>                        
+                        <th>Border Size</th>
+                        <th>Pallu Pattern</th>
+                        <th>Pallu Design</th>
+                        <th>Pallu Des Material</th>
+                        <th>Pallu Des Density</th>
+                        <th>Pallu Size</th>
+                        <th>Warp</th>
+                        <th>Weft</th>
+                        <th>Comments</th>
+                        <th>Blouse Dimensions</th>
+                        <th>Blouse Type</th>
+                        <th>Blouse Size</th>
+                        <th>WareHouse Stock</th>
+                        <th>Sold Stock</th>
+                        <th>Store Stock</th>
+                        <th>Category</th>
+                        <th>Detailed Color</th>
+                        <th>Order Id</th>
+                        
+                        </tr>                       
+                    </thead>
+                </table>                                         
+           </apex:form> 
+       </body>
+        
+        <script type="text/javascript">
+            
+            var tmp1;
+            var table;
+            var lastProdId = '';
+            var firstTime = 0;
+            var srchPrds = 0;
+            var prods = [];
+            var app = angular.module('app', ['datatables']);
+            app.controller('formController', function($scope,$http,$window,$timeout,DTOptionsBuilder, DTColumnBuilder,DTColumnDefBuilder, $log) {
+            
+            var build_tree = function(depth) {
+                
+                if(srchPrds == 1) {
+                    
+                    srchPrds = 0;
+                    $scope.lastProdId = '';
+                    lastProdId = '';
+                }    
+                
+                var param = '';
+                var delay = 100 * depth;
+                $log.log('build_tree', depth);
+                var tot = '{!totalAPICalls}';
+               
+                console.log('tot-depth:::'+tot+'---'+depth);
+                if($scope.lastProdId && tot != depth) {
+                    
+                    console.log('check----');
+                    lastProdId = $scope.lastProdId;
+                }
+                
+                var mapHasVal = 0;
+                var filtersMap = new Map();
+                /*
+                $('.filterFields:checkbox:checked').each(function(){
+                        
+                    var id = $(this).attr('name');
+                    id = id.split(" ").join("");
+                    id = id.replace('-', '');
+                    if(filtersMap.get(id)) {
+                        
+                        filtersMap.put(id, filtersMap.get(id)+','+$(this).val());
+                    } else {
+                        
+                        filtersMap.put(id, $(this).val());
+                    }
+                  //  alert(':::srchChkBoxLabel srch_box:::'+filtersMap);
+                });
+                
+                
+                for (var [key, value] of filtersMap.entries()) {
+                    
+                    //alert(key + ' = ' + value);
+                    mapHasVal = 1;
+                    param += '&'+key+'='+value;
+                    console.log(key + ' = ' + value);
+                }
+                */
+                
+                if($('#product-details_filter input[type="search"]').val() && 
+                  $('#product-details_filter input[type="search"]').val() != 'Search') {
+                    
+                    url += '&srch='+$('#product-details_filter input[type="search"]').val();
+                }
+                
+                var filterOptions = '';
+                filterOptions += 'lastProdId:::'+lastProdId+'###';
+                filterOptions += 'Vendor:::'+'{!$CurrentPage.parameters.Vendor}'+'###';
+                filterOptions += 'ProductCategory:::'+'{!$CurrentPage.parameters.ProductCategory}'+'###';
+                filterOptions += 'ProcType:::'+'{!$CurrentPage.parameters.ProcType}'+'###';
+                filterOptions += 'Origin:::'+'{!$CurrentPage.parameters.Origin}'+'###';
+                filterOptions += 'Fabric:::'+'{!$CurrentPage.parameters.Fabric}'+'###';
+                filterOptions += 'Loom:::'+'{!$CurrentPage.parameters.Loom}'+'###';             
+                filterOptions += 'Weft:::'+'{!$CurrentPage.parameters.Weft}'+'###';
+                filterOptions += 'Warp:::'+'{!$CurrentPage.parameters.Warp}'+'###';
+                filterOptions += 'ZariType:::'+'{!$CurrentPage.parameters.ZariType}'+'###';
+                filterOptions += 'Craft:::'+'{!$CurrentPage.parameters.Craft}'+'###';               
+                filterOptions += 'Occasion:::'+'{!$CurrentPage.parameters.Occasion}'+'###';  <!--- Added by Mayur 29/11/2018 --->
+                filterOptions += 'Color:::'+'{!$CurrentPage.parameters.Color}'+'###';        <!--- Added by Mayur 29/11/2018 --->           
+                filterOptions += 'BorderDesElement:::'+'{!$CurrentPage.parameters.BorderDesElement}'+'###';
+                filterOptions += 'BodyDesMaterial:::'+'{!$CurrentPage.parameters.BodyDesMaterial}'+'###';
+                filterOptions += 'BodyDesDensity:::'+'{!$CurrentPage.parameters.BodyDesDensity}'+'###';  <!--- Added by Mayur 21/12/2018 --->
+                filterOptions += 'BodyDesElement:::'+'{!$CurrentPage.parameters.BodyDesElement }'+'###';  <!--- Added by Mayur 21/12/2018 --->
+                filterOptions += 'BodyDesPattern:::'+'{!$CurrentPage.parameters.BodyPattern}'+'###';  <!--- Added by Mayur 21/12/2018 --->
+                filterOptions += 'Material:::'+'{!$CurrentPage.parameters.Material}'+'###';                  <!--- Added by Mayur 21/12/2018 --->
+                filterOptions += 'BorderDesMaterial:::'+'{!$CurrentPage.parameters.BorderDesMaterial}'+'###';
+                filterOptions += 'BorderSize:::'+'{!$CurrentPage.parameters.BorderSize}'+'###';
+                filterOptions += 'PalluDesDensity:::'+'{!$CurrentPage.parameters.PalluDesDensity}'+'###';
+                filterOptions += 'PalluDesMaterial:::'+'{!$CurrentPage.parameters.PalluDesMaterial}'+'###';
+                filterOptions += 'PalluPattern:::'+'{!$CurrentPage.parameters.PalluPattern}'+'###';
+                filterOptions += 'PalluSize:::'+'{!$CurrentPage.parameters.PalluSize}'+'###';
+                filterOptions += 'WareHouse:::'+'{!$CurrentPage.parameters.WareHouse}'+'###';
+                filterOptions +='MRP:::'+'{!$CurrentPage.parameters.MRP}'+'###';
+               
+                filterOptions += 'Store:::'+'{!$CurrentPage.parameters.Store}'+'###';
+                filterOptions += 'Sold:::'+'{!$CurrentPage.parameters.Sold}'+'###';
+                filterOptions += 'CostPrice:::'+'{!$CurrentPage.parameters.CostPrice}';
+                
+                console.log('lastProdId:::'+lastProdId+'******'+JSON.stringify(filterOptions));
+                
+                $timeout(function () {
+                    Visualforce.remoting.Manager.invokeAction(
+                        "PaginationDemoController.getProductList", lastProdId, filterOptions, 
+                        function(res, event) {
+                            if(res) {
+                                                                
+                                if(res['STATUS'] == 'SUCCESS') {
+                                    
+                                    if(tot == depth) {
+                                        
+                                        prods = res['PRODUCTS'];
+                                        
+                                    } else {
+                                        
+                                        prods.push(...res['PRODUCTS']);
+                                    }
+                                    
+                                    $scope.lastProdId = res['LAST_PROD_ID'];  
+                                    build_tree(depth-1);
+                                    
+                                    console.log('SPC PRODS::'+prods.length);
+                                    
+                                } else {
+                                    
+                                }
+                                
+                            } else {
+                                console.log("There was an error");
+                            } 
+                        },
+                        {escape: false} // No escaping, please
+                    );
+                }, delay);
+            }
+            
+            $scope.tree = build_tree('{!totalAPICalls}');
+            
+            $scope.loadFreshRecords = function() {
+                
+                var param1;
+                passFilterSearch(param1);
+            };
+            $scope.filterRecords = function() {
+                
+                var param1;
+                var mapHasVal = 0;
+                var filtersMap = new Map();
+                $('.filterFields:checkbox:checked').each(function(){
+                        
+                    var id = $(this).attr('name');
+                    console.log('id:: '+id);
+                    id = id.split(" ").join("");
+                    id = id.replace(/-/,'');
+                    var valD;
+                    if(filtersMap.get(id)) {
+                                               
+                        filtersMap.put(id, filtersMap.get(id)+','+$(this).val());
+                        //console.log('$(this).val():: '+$(this).val() )
+                    } 
+                    else {
+
+                        filtersMap.put(id, $(this).val());
+                        //console.log('$(this).val()11:: '+$(this).val() )
+                    }
+                });
+                console.log('filtersMap:: '+filtersMap);
+                
+                for (var [key, value] of filtersMap.entries()) {
+                    
+                    mapHasVal = 1;
+                    param1 += '&'+key+'='+value;
+                    console.log(key + ' = ' + value);
+                }
+                
+                passFilterSearch(param1);
+                
+            };
+            
+        });
+            
+            $(document).ready(function() {
+                
+                $('#srchVendorChkBox').on('keyup', function() {
+                    var query = this.value;
+                    query = query.toLowerCase();
+                    var class1 = '';
+                    var id = '';
+                    $('[id^="vendorchk_"]').each(function(i, elem) {
+                        
+                        id = $(this).attr('id').split('_');
+                        class1 = $(this).attr('class');
+                        class1 = class1.toLowerCase();
+                        class1 = class1.replace(/vendor filterfields/g, '').trim();
+                      //  alert(class1);                      
+                        if(class1.indexOf(query) != -1) {
+                            $('#sec_'+id[1]).show();
+                        }else{
+                            $('#sec_'+id[1]).hide();
+                        }
+                    });
+                });
+                
+                $('.srchChkBoxLabel').on('keyup', function() {
+                    var query = this.value;
+                    query = query.toLowerCase();
+                    var class1 = '';
+                    var id = '';
+                    var name1 = $(this).attr('class');
+                    name1 = name1.replace('srchChkBoxLabel srch_box', '');
+                    name1 = name1.trim();
+                    
+                    $('[id^="'+name1+'_chk_"]').each(function(i, elem) {
+                        
+                        id = $(this).attr('id').split('_chk_');
+                        class1 = $(this).attr('class');
+                        //class1 = class1.toLowerCase();
+                        class1 = class1.split('filterFields ');
+                        class1 = class1[1].trim();
+                        class1 = class1.toLowerCase();
+                        
+                        if(class1.indexOf(query) != -1) {
+                            $('.sec_'+id[1]).show();
+                           
+                        }else{
+                            
+                            $('.sec_'+id[1]).hide();
+                        }
+                    });
+                });
+                
+                var checkboxes = [];
+                checkboxElem = '{!$CurrentPage.parameters.Vendor}';
+               
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    
+                    for(var i =0; i < checkboxElem.length; i++) {
+                       
+                         tmp1 = checkboxElem[i].toLowerCase();
+                         
+                       
+                        $('.Vendor .'+tmp1).prop('checked', true);
+                    }
+                    console.log('checkboxElem::'+JSON.stringify(checkboxElem));
+                }
+                
+                
+                var checkboxElem = '{!$CurrentPage.parameters.ProductCategory}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    
+                     for(var i =0; i < checkboxElem.length; i++) {
+                      
+                         tmp1 = checkboxElem[i].toLowerCase();
+                         tmp1=tmp1.split(' ').join('_');
+                        
+                        $('.Product_Category .'+tmp1).prop('checked', true);
+                    }
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.Weft}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                  
+                     for(var i =0; i < checkboxElem.length; i++) {
+           
+                        tmp1 = checkboxElem[i].toLowerCase();
+                        tmp1=tmp1.split(' ').join('_');
+                       
+                        $('.Weft .'+tmp1).prop('checked', true);
+                    }
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.Origin}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    
+                     for(var i =0; i < checkboxElem.length; i++) {
+                        
+                         tmp1 = checkboxElem[i].toLowerCase();
+                         tmp1=tmp1.split(' ').join('_');
+                        
+                        $('.Origin .'+tmp1).prop('checked', true);
+                    }
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.fabric}';
+                
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    for (var i = 0; i < checkboxElem.length; i++) {
+                        tmp1 = checkboxElem[i].toLowerCase();
+                        tmp1=tmp1.split(' ').join('_');
+                        
+                        $('.Fabric .'+tmp1).prop('checked', true);
+                    }
+                    
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.Loom}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    //checkboxes.push(...checkboxElem);
+                     for(var i =0; i < checkboxElem.length; i++) {
+                        
+
+                        tmp1 = checkboxElem[i].toLowerCase();
+                        tmp1=tmp1.split(' ').join('_');
+                        $('.Loom .'+tmp1).prop('checked', true);
+                    }
+                }
+                checkboxElem = '{!$CurrentPage.parameters.ProcType}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    
+                     for(var i =0; i < checkboxElem.length; i++) {
+                        
+
+                        tmp1 = checkboxElem[i].toLowerCase();
+                        tmp1=tmp1.split(' ').join('_');
+                      
+                        $('.Proc-Type .'+tmp1).prop('checked', true);
+                    }
+                    
+                }            
+                checkboxElem = '{!$CurrentPage.parameters.warp}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    //checkboxes.push(...checkboxElem);
+                     for(var i =0; i < checkboxElem.length; i++) {
+
+                        tmp1 = checkboxElem[i].toLowerCase();
+                        tmp1=tmp1.split(' ').join('_');
+                       
+                        $('.Warp .'+tmp1).prop('checked', true);
+                    }
+                }
+                checkboxElem = '{!$CurrentPage.parameters.ZariType}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    
+                     for(var i =0; i < checkboxElem.length; i++) {
+                        tmp1 = checkboxElem[i].toLowerCase();
+                        tmp1=tmp1.split(' ').join('_');
+                       
+                        $('.Zari_Type .'+tmp1).prop('checked', true);
+                    }
+                }
+                checkboxElem = '{!$CurrentPage.parameters.Craft}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    
+                     for(var i =0; i < checkboxElem.length; i++) {
+             
+                        tmp1 = checkboxElem[i].toLowerCase();
+                        tmp1=tmp1.split(' ').join('_');
+                       
+                        $('.Craft .'+tmp1).prop('checked', true);
+                    }
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.Occasion }';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    
+                     for(var i =0; i < checkboxElem.length; i++) {       <!--- Added by Mayur 29/11/2018 --->
+             
+                        tmp1 = checkboxElem[i].toLowerCase();
+                        
+                        tmp1=tmp1.split(' ').join('_');
+                       // alert(tmp1);
+                        
+                        
+                       
+                        $('.Occasion .'+tmp1).prop('checked', true);
+                    }
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.Color }';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    
+                     for(var i =0; i < checkboxElem.length; i++) {       <!--- Added by Mayur 29/11/2018 --->
+             
+                        tmp1 = checkboxElem[i].toLowerCase();
+                        tmp1=tmp1.split(' ').join('_');
+                       
+                        $('.Color .'+tmp1).prop('checked', true);
+                    }
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.BorderDesElement}';    <!--- Added by Mayur 29/11/2018 --->
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    
+                     for(var i =0; i < checkboxElem.length; i++) {
+                        tmp1 = checkboxElem[i].toLowerCase();
+                        tmp1=tmp1.split(' ').join('_');
+                       
+                        $('.Border_Des_Element .'+tmp1).prop('checked', true);
+                    }
+                }
+                
+               
+                checkboxElem = '{!$CurrentPage.parameters.BodyDesMaterial}';             <!--- Added by Mayur 29/11/2018 --->
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    //checkboxes.push(...checkboxElem);
+                     for(var i =0; i < checkboxElem.length; i++) {
+                       
+                       tmp1 = checkboxElem[i].toLowerCase();
+                       tmp1=tmp1.split(' ').join('_');
+                        
+                        $('.Body_Des_Material .'+tmp1).prop('checked', true);
+                       
+                    }
+                     
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.BodyDesDensity}';   <!--- Added by Mayur 21/12/2018 --->
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    //checkboxes.push(...checkboxElem);
+                     for(var i =0; i < checkboxElem.length; i++) {
+                       
+                       tmp1 = checkboxElem[i].toLowerCase();
+                       tmp1=tmp1.split(' ').join('_');
+                        
+                        $('.Body_Des_Density .'+tmp1).prop('checked', true);
+                    }
+
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.BodyDesElement}';          <!--- Added by Mayur 21/12/2018 --->
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    //checkboxes.push(...checkboxElem);
+                     for(var i =0; i < checkboxElem.length; i++) {
+                       
+                       tmp1 = checkboxElem[i].toLowerCase();
+                       tmp1=tmp1.split(' ').join('_');
+                        
+                        $('.Body_Des_Element .'+tmp1).prop('checked', true);
+                    }
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.BodyPattern}';     <!--- Added by Mayur 21/12/2018 --->
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    //checkboxes.push(...checkboxElem);
+                     for(var i =0; i < checkboxElem.length; i++) {
+                       
+                       tmp1 = checkboxElem[i].toLowerCase();
+                       tmp1=tmp1.split(' ').join('_');
+                        
+                        $('.Body_Des_Pattern .'+tmp1).prop('checked', true);
+                    }
+                }
+                
+                
+                checkboxElem = '{!$CurrentPage.parameters.Material}';   <!--- Added by Mayur 21/12/2018 --->
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    //checkboxes.push(...checkboxElem);
+                     for(var i =0; i < checkboxElem.length; i++) {
+                       
+                       tmp1 = checkboxElem[i].toLowerCase();
+                       tmp1=tmp1.split(' ').join('_');
+                        
+                        $('.Material .'+tmp1).prop('checked', true);
+                    }
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.BlouseDimensions}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    
+                     for(var i =0; i < checkboxElem.length; i++) {
+                       
+                        tmp1 = checkboxElem[i].toLowerCase();
+                        tmp1=tmp1.split(' ').join('_');
+                        
+                        $('.Blouse_Dimensions .'+tmp1).prop('checked', true);
+                    }
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.BorderDesMaterial}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                   
+                     for(var i =0; i < checkboxElem.length; i++) {
+                        
+                        tmp1 = checkboxElem[i].toLowerCase();
+                        tmp1=tmp1.split(' ').join('_');
+                       
+                        $('.Border_Des_Material .'+tmp1).prop('checked', true);
+                    }
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.BorderSize}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    
+                     for(var i =0; i < checkboxElem.length; i++) {
+                     
+                        tmp1 = checkboxElem[i].toLowerCase();
+                        tmp1=tmp1.split(' ').join('_');
+                      
+                        $('.Border_Size .'+tmp1).prop('checked', true);
+                    }
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.PalluDesDensity}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                   
+                     for(var i =0; i < checkboxElem.length; i++) {
+                      
+                       tmp1 = checkboxElem[i].toLowerCase();
+                       tmp1=tmp1.split(' ').join('_');
+                        
+                        $('.Pallu_Des_Density .'+tmp1).prop('checked', true);  
+                    }
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.PalluDesMaterial}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    
+                     for(var i =0; i < checkboxElem.length; i++) {
+           
+                         tmp1 = checkboxElem[i].toLowerCase();
+                         tmp1=tmp1.split(' ').join('_');
+                       
+                        $('.Pallu_Des_Material .'+tmp1).prop('checked', true);  
+                    }
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.PalluPattern}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                 
+                     for(var i =0; i < checkboxElem.length; i++) {
+                      
+                         tmp1 = checkboxElem[i].toLowerCase();
+                         tmp1=tmp1.split(' ').join('_');
+                    
+                        $('.Pallu_Pattern .'+tmp1).prop('checked', true);
+                    }
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.PalluSize}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                 
+                     for(var i =0; i < checkboxElem.length; i++) {
+ 
+                          tmp1 = checkboxElem[i].toLowerCase();
+                          tmp1=tmp1.split(' ').join('_');
+                       
+                        $('.Pallu_Size .'+tmp1).prop('checked', true);
+                         
+                    }
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.WareHouse}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    for (var i = 0; i < checkboxElem.length; i++) {
+                         tmp1 = checkboxElem[i].toLowerCase();
+                         tmp1=tmp1.split(' ').join('_');
+                       
+                        $('.WareHouse .'+tmp1).prop('checked', true);
+                        
+                    }
+                    
+                }
+                               
+                
+                checkboxElem = '{!$CurrentPage.parameters.Store}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    for (var i = 0; i < checkboxElem.length; i++) {
+    
+                         tmp1 = checkboxElem[i].toLowerCase();
+                         tmp1=tmp1.split(' ').join('_');
+                       
+                        $('.Store .'+tmp1).prop('checked', true);
+                    }
+                  
+                }
+                //added new
+                checkboxElem = '{!$CurrentPage.parameters.MRP}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    
+                    for (var i = 0; i < checkboxElem.length; i++) {
+    
+                         tmp1 = checkboxElem[i].toLowerCase();
+                        
+                         tmp1=tmp1.split(' ').join('_');
+                                                   
+                        $('.MRP .'+tmp1).prop('checked', true);
+                    }
+                  
+                }
+                
+                
+                checkboxElem = '{!$CurrentPage.parameters.Sold}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    for (var i = 0; i < checkboxElem.length; i++) {
+                      
+                        tmp1 = checkboxElem[i].toLowerCase();
+                        tmp1=tmp1.split(' ').join('_');
+                       
+                        $('.Sold .'+tmp1).prop('checked', true);
+                    }
+                   
+                }
+                
+                checkboxElem = '{!$CurrentPage.parameters.CostPrice}';
+                if(checkboxElem) {
+                    checkboxElem = checkboxElem.split(',');
+                    for (var i = 0; i < checkboxElem.length; i++) {
+   
+                        tmp1 = checkboxElem[i].toLowerCase();
+                          
+                        $('.CostPrice .'+tmp1).prop('checked', true);
+                    }
+                   
+                }
+                
+               
+                var prds = '{!prods}';
+                prods = JSON.parse(prds);
+                lastProdId = prods[prods.length - 1].Id;
+                var produtsDump;
+                
+                table = $('#product-details').DataTable( {
+                    
+                    "columnDefs": [{
+                        "defaultContent": "",
+                         "width":"130px",
+                        "targets":"_all"
+                    }],
+                    "scrollX": true,
+                    serverSide: true,
+                    ordering: false,
+                    searching: true,
+                    ajax: function ( data, callback, settings ) {
+                        var out = [];
+                        var prds = '{!prods}';
+                        
+                        produtsDump = prods;
+                        console.log('TOT PRODS::'+prods.length+'###'+(data.start+data.length));
+                        
+                        if(prods && prods.length > 0) {
+                            
+                            if(data.length > produtsDump.length) {
+                                
+                                data.length = produtsDump.length;
+                            }
+                            for ( var i=data.start, ien=data.start+data.length ; i < ien ; i++ ) {
+                                
+                                if(produtsDump[i]) {
+                                    
+                                    out.push( [ '<a data-lightbox="image-'+produtsDump[i].Id+'" href="/servlet/servlet.FileDownload?file='+produtsDump[i].Photo_Backup__c+'&SKU='+produtsDump[i].SKU_Code__c+'" target="_blank"><img src="/servlet/servlet.FileDownload?file='+produtsDump[i].Photo_Backup__c+'" alt="" class="img-thumbnail" /></a><a href="/apex/ImagePreview?PrdId='+produtsDump[i].Id+'&SKUCode='+produtsDump[i].SKU_Code__c+'" target="_blank"><br>View Images</a>',
+                                    produtsDump[i].SKU_Code__c,
+                                     produtsDump[i].Cost__c,             <!--- Added by Mayur 29/11/2018 --->
+                                    produtsDump[i].Suggested_MRP__c,    <!--- Added by Mayur 29/11/2018 --->                              
+                                    produtsDump[i].Cluster__c,
+                                    produtsDump[i].Fabric__c, 
+                                    produtsDump[i].Base_Colour__c ,                      
+                                    produtsDump[i].Vendor_Name__c,                                                                     
+                                    produtsDump[i].Workmanship__c,
+                                    produtsDump[i].Occasion__c,          <!--- Added by Mayur 29/11/2018 --->
+                                    produtsDump[i].Colour__c,            <!--- Added by Mayur 29/11/2018 --->
+                                    produtsDump[i].Design_Story__c,
+                                    produtsDump[i].Story_1__c,
+                                    produtsDump[i].Story_2__c,
+                                    produtsDump[i].Design_Description__c,                                   
+                                    produtsDump[i].Collection__c, 
+                                    produtsDump[i].Quantity__c, 
+                                    produtsDump[i].Zari_Type__c,    
+                                    produtsDump[i].Loom__c,
+                                    produtsDump[i].Body_Pattern__c,     
+                                    produtsDump[i].Body_Des_Element__c, 
+                                    produtsDump[i].Body_Des_Material__c, 
+                                    produtsDump[i].Body_Des_Density__c,
+                                    produtsDump[i].Material__c,       <!--- Added by Mayur 21/12/2018 --->
+                                    produtsDump[i].Border_Pattern__c ,
+                                    produtsDump[i].Border_Des_Element__c, 
+                                    produtsDump[i].Border_Des_Material__c,
+                                    produtsDump[i].Border_Size__c, 
+                                    produtsDump[i].Pallu_Pattern__c, 
+                                    produtsDump[i].Pallu_Design__c,
+                                    produtsDump[i].Pallu_Des_Material__c,
+                                    produtsDump[i].Pallu_Des_Density__c, 
+                                    produtsDump[i].Pallu_Size__c, 
+                                    produtsDump[i].Material_Wrap__c, 
+                                    produtsDump[i].Taneira_Material_Weft__c,
+                                    produtsDump[i].Comments__c,
+                                    produtsDump[i].Blouse_Dimensions__c, 
+                                    produtsDump[i].Blouse_Type__c,
+                                    produtsDump[i].Blouse_Size__c,
+                                    produtsDump[i].Warehouse_Stock__c, 
+                                    produtsDump[i].Sold_Stock__c,
+                                    produtsDump[i].Store_Stock__c,
+                                    produtsDump[i].Product_Category_Taneira__c,
+                                    produtsDump[i].Detailed_Colour__c,
+                                    produtsDump[i].Order_Id__c] );
+                                }
+                            }
+                 
+                            setTimeout( function () {
+                                
+                                callback( {
+                                    draw: data.draw,
+                                    data: out,
+                                    recordsTotal: '{!totalProducts}',
+                                    recordsFiltered: '{!totalProducts}'
+                                } );
+                            }, 50 );
+                        }
+                    },
+                    scrollY: 700,
+                    scroller: {
+                        loadingIndicator: true
+                    },
+                    stateSave: false
+                } );
+                
+                $("#srchProds").on('click', function(event) {
+                    
+                    srchPrds = 1;                
+                });
+                
+                $('#product-details_filter input[type="search"]').on('blur', function(event) {
+                   
+                    var param1;
+                    var mapHasVal = 0;
+                    var filtersMap = new Map();
+                    param1 = '&srch='+$(this).val();
+                    console.log('::param1:: '+param1);
+                    $('.filterFields:checkbox:checked').each(function(){
+                            
+                        var id = $(this).attr('name');
+                        id = id.split(" ").join("");    
+                        
+                        if(filtersMap.get(id)) {
+                            
+                            filtersMap.put(id, filtersMap.get(id)+','+$(this).val());
+                        } else {
+                            
+                            filtersMap.put(id, $(this).val());
+                        }
+                        console.log('filtersMap::: '+filtersMap);
+                    });
+                    
+                    for (var [key, value] of filtersMap.entries()) {
+                        
+                        mapHasVal = 1;
+                        param1 += '&'+key+'='+value;
+                        console.log(key + ' = ' + value);
+                    }
+                    
+                    passFilterSearch(param1);
+                    
+                });
+            });
+            
+            
+        </script> 
+    </html>
+    
+</apex:page>

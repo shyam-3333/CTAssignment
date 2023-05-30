@@ -1,0 +1,12 @@
+.THIS.c-container {
+    border: 1px solid #000;
+    margin: 20px;
+}
+.THIS .pillSize{width:auto!important;}
+
+.THIS .customIcon div{
+    vertical-align: top !important;
+}
+.THIS.customIcon div{
+    vertical-align: top !important;
+}

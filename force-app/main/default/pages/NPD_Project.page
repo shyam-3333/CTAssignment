@@ -1,0 +1,560 @@
+<!-- *********************************************************************
+   Name         : NPD_Project
+   Description  : This page is used to create project 
+   Created By   : Manjula@KVP
+   Created Date : 05/27/2015
+   
+   REVISION HISTORY
+   ================
+   
+   Date          By                  Description
+   ---------------------------------------------------------------
+********************************************************************* -->
+<apex:page controller="NPD_ProjectController"  sidebar="false" action="{!myOwnConstructor}" >
+<apex:stylesheet value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+<apex:stylesheet value="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+<link href='https://fonts.googleapis.com/css?family=Mako' rel='stylesheet' type='text/css'/>
+<apex:pageMessages id="pageMsg"></apex:pageMessages>
+<style>
+
+ .inputui{
+      background:transparent !important;
+      border:none !important;
+      width:100% !important;
+      
+      } 
+      
+   .selectui{
+    border: none !important;
+    width: 100% !important;
+}
+
+ body .apexp .bPageBlock.apexDefaultPageBlock .pbBottomButtons {
+        margin-top: 0px !important;
+    } 
+    
+.requiredInput select {
+    width: 100%;
+}
+.date-design textarea {
+    border: medium none;
+    width: 100%;
+}
+.btn {
+    background-color: #095d80 !important;
+    background-image: none !important;
+    border: medium none !important;
+    color: #fff !important;
+    padding: 5px 10px !important;
+}
+.pbSubheader {
+    margin-top: 0!important;
+}
+.marginbottom15 {
+    margin-bottom: 15px;
+}
+.clearfix {
+    clear: both;
+}
+.bPageBlock .detailList tr td, .bPageBlock .detailList tr th, .hoverDetail .bPageBlock .detailList tr td, .hoverDetail .bPageBlock .detailList tr th {
+    border-bottom: none;
+}
+.project_bg {
+    background: #cae5e4 none repeat scroll 0 0;
+    border: 1px solid #00B6B0;
+}
+.homeTab .tertiaryPalette, .individualPalette .homeBlock .tertiaryPalette, .layoutEdit .individualPalette .homeBlock .tertiaryPalette {
+    background-color: #00b6b0;
+    border-color: #00b6b0;
+}
+#blockbckanim {
+    background-color: rgba(0, 14, 44, 0.7);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 1000;
+ rgba(0, 0, 0, 0.71);
+    cursor: wait;
+}
+.customImage {
+    height: 40px !important;
+    width: 80px;
+}
+.date-design {
+    background: #cae5e4 none repeat scroll 0 0;
+    border: 1px solid #00B6B0;
+    display: inline-block;
+    margin-bottom: 15px;
+    width: 100%;
+    font-family: 'Mako', sans-serif;
+}
+.date-design label {
+    font-size: 13px;
+    padding: 0;
+    font-family: 'Mako', sans-serif;
+    font-weight: normal;
+}
+.date-design .text {
+    background-color: #fff;
+    border-radius: 5px;
+    color: #444;
+    min-height: 25px;
+    padding: 2px 5px;
+    font-family: 'Mako', sans-serif;
+}
+.heading-title {
+    background-color: #00b6b0;
+    color: #fff;
+    font-size: 16px;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+}
+.lookupimg {
+    position: absolute;
+    top: 3px;
+    right: -15px;
+}
+.zen .zen-tabMenu a {
+    font-size: 12px;
+}
+</style>
+<script>
+       function ShowLoading() {
+            document.getElementById('blockbckanim').style.display="block";
+            }
+            function HideLoading() {
+            document.getElementById('blockbckanim').style.display="none";
+            }
+        
+        </script>
+<script> var previousOnload = window.onload; window.onload = function() { if (previousOnload) { previousOnload(); } ShowLoading(); } </script>
+<div id="blockbckanim" style="display:none;text-align:center;"> 
+  <!--                <img id="apimgld" style="" src="081f00000000XKH/loaderImage" /> -->
+  <apex:image id="theImage" value="{!$Resource.loaderImage}" width="35" height="30" style="margin-top:200px"/>
+</div>
+<apex:form enctype="multipart/form-data">
+  <apex:actionRegion id="actionreg" >
+    <apex:pageBlock id="imageblock" >
+      <div class="project_bg">
+        <apex:pageBlockSection title="Model Image" columns="1"  id="block1">
+          <apex:inputFile value="{!attch.body}" filename="{!attch.name}" id="file"/>
+          <apex:image url="{!imageURL}" id="image"  width="70px" height="70px" rendered="{!if(imageURL!=NULL,true,false)}" />
+        </apex:pageBlockSection>
+      </div>
+      <!--<div class="text-center"> <apex:commandButton value="UploadImage"   action="{!upload}"  /></div>-->
+      <apex:pageBlockButtons ><apex:commandButton value="UploadImage"  action="{!upload}"  /> 
+      
+      </apex:pageBlockButtons>
+    </apex:pageBlock>
+  </apex:actionRegion>
+  
+ </apex:form>
+  <!-- <iframe src="uploadAttachmentForNPD_Project1?ActivID={!actid}&ProjID={!projId}&stageId={!stageid}" width="1200"></iframe> -->
+
+<apex:form > 
+
+
+  <apex:actionStatus id="actStatusId" onStart="ShowLoading();" onstop="HideLoading();" />
+  <apex:actionFunction name="onload"  rerender="pblk" immediate="true" status="actStatusId"> </apex:actionFunction>
+  <apex:actionFunction name="callMY"  action="{!upload}" rerender="imageblock"  oncomplete=""/>
+  <apex:pageBlock id="pblk">
+    <div class="">
+      <div class="date-design">
+        <div class="heading-title">Project Information</div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Model No</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Model_No__c}" styleClass="inputui" required="true" id="model" >
+                <apex:image styleClass="lookupimg " url="{!$Resource.lookupicon2}" width="20" height="20"  onclick="openModelPopup('{!$Component.model}','{!actid}','{!stage.Source__c}')"/>
+                <script>document.getElementById('{!$Component.model}').disabled = true;</script> </apex:inputField>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Case Material</label>
+            <div class="col-md-6 text">
+            <apex:inputField styleClass="inputui" value="{!currProjRec.Case_Material__c}" required="true"/> 
+          
+            </div>
+          </div>
+          <!--<div class="form-group clearfix">
+            <label class="col-md-6">Movement/Function</label>
+            <div class="col-md-5 multipicklist"><c:MultiselectCounsellorComponent leftLabel="Available Fields" leftOptions1="{!options}" rightLabel="Selected Fields" rightOptions1="{!lstSelectedValue}" size="8" width="250px"> </c:MultiselectCounsellorComponent></div>
+            </div>-->
+    
+          <div class="form-group clearfix">
+            <label class="col-md-6">Project Owner</label>
+            <div class="col-md-6 text">
+              <apex:inputField styleClass="inputui" value="{!currProjRec.Project_Owner__c}" />
+            </div>
+          </div>
+        <div class="form-group clearfix">
+            <label class="col-md-6">Case Source</label>
+            <div class="col-md-6 text">
+             <apex:inputField value="{!currProjRec.Case_Source__c}" styleClass="casesrc inputui" id="cssrc"/>
+              <script>document.getElementById('{!$Component.cssrc}').disabled = true;</script> 
+            </div>
+          </div>
+          
+        </div>
+        <div class="col-md-3">
+       
+          <div class="form-group clearfix">
+           
+            <label class="col-md-6">Project Type</label>
+            <div class="col-md-6 text">
+           
+              <apex:inputField styleClass="selectui" value="{!currProjRec.Project_Type__c}" required="true"/>
+              
+     
+            </div>
+          </div>
+          
+            
+          <apex:outputPanel rendered="{!if((stage.Source__c='IDS'),true,false)}" >
+          <div class="form-group clearfix">
+           
+            <label class="col-md-6">PSY No</label>
+            <div class="col-md-6 text">
+           
+              <apex:inputField value="{!currProjRec.PSY_No__c}" styleClass="psyno inputui" id="psyn" rendered="{!if((stage.Source__c='IDS'),true,false)}"/>
+              <script>document.getElementById('{!$Component.psyn}').disabled = true;</script>
+     
+            </div>
+          </div>
+                  </apex:outputPanel>
+                 
+            <apex:outputPanel rendered="{!if((stage.Source__c='OSD'),true,false)}">
+            <div class="form-group clearfix">
+            <label class="col-md-6">Vendor Reference No </label>
+            <div class="col-md-6 text">
+             <apex:inputField value="{!currProjRec.Vendor_Ref_No__c}" styleClass="venno inputui" id="vendrefno" rendered="{!if((stage.Source__c='OSD'),true,false)}"/>
+              <script>document.getElementById('{!$Component.vendrefno}').disabled = true;</script> 
+              
+            </div>
+          </div>
+          </apex:outputPanel>
+          
+          
+          <div class="form-group clearfix">
+            <label class="col-md-6">Strap Material</label>
+            <div class="col-md-6 text">
+              <apex:inputField styleClass="inputui" value="{!currProjRec.Strap_Material__c}" required="true"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Project Complexity</label>
+            <div class="col-md-6 text">
+              <apex:inputField styleClass="selectui" value="{!currProjRec.Project_Complexity__c}" required="true" />
+            </div>
+          </div>
+ <!--         <div class="form-group clearfix">
+            <label class="col-md-6">Movement/Function</label>
+            <div class="col-md-6 ">
+              <div class="col-md-5 multipicklist"><c:MultiselectCounsellorComponent leftLabel="Available Fields" leftOptions1="{!options}" rightLabel="Selected Fields" rightOptions1="{!lstSelectedValue}" size="8" width="250px"> </c:MultiselectCounsellorComponent></div>
+            </div>
+          </div>
+      <!--    <div class="form-group clearfix">
+            <label class="col-md-6">Development Route</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Development_Route__c}" required="true"/>
+            </div>
+          </div>-->
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Project Category</label>
+            <div class="col-md-6 text">
+              <apex:inputField styleClass="tag" value="{!currProjRec.Project_Category__c}"   required="true"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Strap Source</label>
+            <div class="col-md-6 text">
+               <apex:inputField styleClass="selectui" value="{!currProjRec.Strap_Source__c}" required="true"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Project Status</label>
+            <div class="col-md-6 text">
+             <apex:inputField styleClass="selectui" value="{!currProjRec.Project_Status__c}" required="true"/>
+            </div>
+          </div>
+          
+          
+           <div class="form-group clearfix">
+            <label class="col-md-6">Movement/Function</label>
+            <div class="col-md-6 " style="padding: 0px;">
+           <!--   <div class="col-md-5 multipicklist" style="padding: 0px;"><c:MultiselectCounsellorComponent leftLabel="Available Fields" leftOptions1="{!options}" rightLabel="Selected Fields" rightOptions1="{!lstSelectedValue}" size="8" width="250px"> </c:MultiselectCounsellorComponent></div> -->
+
+<c:MultiselectPicklist leftLabel="Available Values"
+    leftOptions="{!allmovementlist}"
+    rightLabel="Selected Values"
+    rightOptions="{!SelectedMovementlist}"
+    size="14"
+    width="150px"/>
+    
+    
+            </div>
+          </div>
+        <!--<div class="form-group clearfix">
+            <label class="col-md-6">Case Material</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Case_Material__c}" required="true"/>
+            </div>
+          </div>-->
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Development Route</label>
+            <div class="col-md-6 text">
+              <apex:inputField styleClass="selectui" value="{!currProjRec.Development_Route__c}" required="true"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Strap Type</label>
+            <div class="col-md-6 text">
+              <apex:inputField styleClass="inputui" value="{!currProjRec.Strap_Type__c}" required="true"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Reasons for Drop</label>
+            <div class="col-md-6 text">
+             <apex:inputField value="{!currProjRec.Reasons_for_Drop__c}" />
+            </div>
+          </div>
+         <!-- <div class="form-group clearfix">
+            <label class="col-md-6">Case Source</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Case_Source__c}" styleClass="casesrc" id="cssrc"/>
+              <script>document.getElementById('{!$Component.cssrc}').disabled = true;</script> 
+            </div>
+          </div>-->
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+    
+     <div class="">
+      <div class="date-design">
+        <div class="heading-title">Schedule/Status</div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Planned Project End Date</label>
+            <div class="col-md-6 text">
+            <apex:outputField value="{!currProjRec.Planned_Project_End_Date1__c}"/> 
+                
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Planned Project Lead Time</label>
+            <div class="col-md-6 text">
+              <apex:inputField styleClass="inputui" value="{!currProjRec.Planned_Project_Lead_Time__c}"/>
+            </div>
+          </div>
+          
+    
+          
+        
+      
+          
+        </div>
+        <div class="col-md-3">
+       
+          <div class="form-group clearfix">
+           
+            <label class="col-md-6">Actual Project Start Date</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Actual_Project_Start_Date__c}"/>
+             
+     
+            </div>
+          </div>
+                  
+            
+          
+          
+          <div class="form-group clearfix">
+            <label class="col-md-6">Actual Project End Date</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Actual_Project_End_Date__c}"/>
+            </div>
+          </div>
+          
+      <!--    <div class="form-group clearfix">
+            <label class="col-md-6">Development Route</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Development_Route__c}" required="true"/>
+            </div>
+          </div>-->
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Actual Project Lead Time</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Actual_Project_Lead_Time__c}"/>
+            </div>
+          </div>
+          
+         
+        <!--<div class="form-group clearfix">
+            <label class="col-md-6">Case Material</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Case_Material__c}" required="true"/>
+            </div>
+          </div>-->
+        </div>
+        
+      </div>
+    </div>
+  
+  
+       
+    
+    
+    
+    
+    
+    <div ></div>
+    <div class="">
+      <div class="date-design">
+        <div class="heading-title">Marketing Information</div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Collection</label>
+            <div class="col-md-6 text">
+               <apex:outputField value="{!currProjRec.NPD_Collections__c}" id="coll"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Marketing brief/concept Ref Num</label>
+            <div class="col-md-6 text">
+               <apex:outputField value="{!currProjRec.Marketing_brief_concept_reference_number__c}"  id="markting1"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Comments/Remarks</label>
+            <div class="col-md-6 text">
+              <apex:inputField styleclass="inputui" value="{!currProjRec.Comments_Remarks__c}"/>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Brand</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Brand1__c}" id="brand"/>
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Sub Brand</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Sub_Brand1__c}" id="Subbrand"/>
+            </div>
+          </div>
+          
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Gender</label>
+            <div class="col-md-6 text">
+              <apex:inputField value="{!currProjRec.Gender__c}"  styleClass="gender inputui" id="gender"/>
+              <script>document.getElementById('{!$Component.gender}').disabled = true;</script> 
+            </div>
+          </div>
+          <div class="form-group clearfix">
+            <label class="col-md-6">Design Source</label>
+            <div class="col-md-6 text">
+              <apex:outputField value="{!currProjRec.Source__c}" styleClass="Source" />
+            </div>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="form-group clearfix">
+            <label class="col-md-6">Market</label>
+            <div class="col-md-6 text">
+              <apex:inputField styleClass="selectui" value="{!currProjRec.Market__c}" required="true"/>
+            </div>
+          </div>
+          
+          
+      <!--    <apex:outputPanel rendered="{!if((stage.Source__c='IDS'),true,false)}" >
+          <div class="form-group clearfix">
+           
+            <label class="col-md-6">Project Type</label>
+            <div class="col-md-6 text">
+           
+              <apex:inputField value="{!currProjRec.PSY_No__c}" styleClass="psyno" id="psyn" rendered="{!if((stage.Source__c='IDS'),true,false)}"/>
+              <script>document.getElementById('{!$Component.psyn}').disabled = true;</script>
+     
+            </div>
+          </div>
+                  </apex:outputPanel> 
+            <apex:outputPanel rendered="{!if((stage.Source__c='OSD'),true,false)}">
+            <div class="form-group clearfix">
+            <label class="col-md-6">Vendor Reference No </label>
+            <div class="col-md-6 text">
+             <apex:inputField value="{!currProjRec.Vendor_Ref_No__c}" styleClass="venno" id="vendrefno" rendered="{!if((stage.Source__c='OSD'),true,false)}"/>
+              <script>document.getElementById('{!$Component.vendrefno}').disabled = true;</script> 
+              
+            </div>
+          </div>
+          </apex:outputPanel>-->
+          
+        </div>
+        
+      </div>
+    </div>
+    
+   
+    <apex:pageBlockButtons >
+      <apex:commandButton value="Save" action="{!Save}" reRender="pageMsg"  status="actStatusId"/>
+      <apex:commandButton Value="Cancel"  action="{!Cancel}" immediate="true" status="actStatusId"/>
+      <apex:commandButton value="Save & Clone" action="{!CloneCall}" rerender="pblk,pageMsg" status="actStatusId"/>
+    </apex:pageBlockButtons>
+  </apex:pageBlock>
+</apex:form>
+<script>
+ 
+  function openModelPopup(ModelComponent,ActID,SorIO)
+    {     
+        //var psyno= document.getElementsByClassName("psyno");
+          //alert(psyno[0].value);
+       
+        var url="/apex/NPD_Model_Popup?"+"&ModelComponent="+ModelComponent+"&ActID="+ActID+"&SRC="+SorIO;
+        newWin=window.open(url, 'Popup3','height=400,width=300,left=100,top=50,resizable=no,scrollbars=yes,toolbar=no,status=no');
+        
+        if (window.focus) 
+        {
+            newWin.focus();
+        }    
+         
+        return false;
+    }
+    
+    
+    function closeComplexitypopup() { 
+     if (null!=newWin) {
+          newWin.close(); 
+      }
+     } 
+     
+     function CloseWindow1() { 
+     if (null!=newWin) {
+          newWin.close(); 
+      }
+     } 
+     
+ function doUiCheck(){
+ alert('hi');
+ callMY();
+ alert('hi');
+ }
+ 
+ </script>
+</apex:page>

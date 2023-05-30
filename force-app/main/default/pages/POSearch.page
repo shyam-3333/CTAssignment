@@ -1,0 +1,56 @@
+<apex:page Controller="POSearchController">
+    <html>
+        <body>
+            <apex:form >
+                <apex:inputText value="{!searchKey}" size="30" label="Enter PO Number"/>
+                &nbsp;
+                <apex:commandButton value="Search PO/SKU" action="{!searchmethod}"/>
+                &nbsp;
+                
+                <apex:commandButton value="Clear records" action="{!clear}"/>
+                &nbsp;
+                <apex:commandButton value="Download To Excel" action="{!excelDownload}"/> 
+                &nbsp;
+                <apex:pageBlock id="details" title="{!seachResult} : {!totalRecs}" >
+                        <apex:pageBlockTable value="{!prodList}" var="a" rendered="{!prodList.size!=0}">
+                            <apex:column value="{!a.SKU_Code__c}" ondblclick="openRecordView('{!a.Id}')"/>
+                             <apex:column value="{!a.Photo__c}"/>
+                            <apex:column value="{!a.Product_Category_Taneira__c}"/>
+                            <apex:column value="{!a.vendor_custom__r.name}"/>
+                          
+                         
+                            <apex:column value="{!a.Suggested_MRP__c}"/>
+                          
+                            
+                            <apex:column value="{!a.Material_Wrap__c}"/>
+                            <apex:column value="{!a.Taneira_Material_Weft__c}"/>
+                           
+                            <apex:column value="{!a.Base_Colour__c}"/>
+                           
+                            <apex:column value="{!a.Fabric__c}"/>
+                           
+                            <apex:column value="{!a.Zari_Type__c}"/>
+                           
+                            <apex:column value="{!a.Workmanship__c}"/>
+                           
+                        </apex:pageBlockTable>
+                        <apex:pageblockButtons >
+                            <!--<apex:commandButton value="First Page" rerender="details" action="{!FirstPage}" disabled="{!prev}" />-->
+<apex:commandButton value="Previous" rerender="details" action="{!previous}" disabled="{!prev}"/>
+<apex:commandButton value="Next" rerender="details" action="{!next}" disabled="{!nxt}"/>
+<!--<apex:commandButton value="Last Page" rerender="details" action="{!LastPage}" disabled="{!nxt}"/>-->
+</apex:pageblockButtons>
+                </apex:pageBlock>
+            </apex:form>
+        </body>
+    </html>
+    <script>
+    function openRecordView(proId) {
+        if ((typeof sforce != 'undefined') && sforce && (!!sforce.one)) {
+            sforce.one.navigateToSObject(proId);
+        } else {
+            window.open('/' + proId);
+        }
+    }
+    </script>
+</apex:page>

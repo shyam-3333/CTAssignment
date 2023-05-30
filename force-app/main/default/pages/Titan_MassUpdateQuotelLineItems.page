@@ -1,0 +1,132 @@
+<apex:page Controller="Titan_MassUpdateQLiClass" >
+<apex:includeScript value="{!URLFOR($Resource.jquery1, 'js/jquery-1.6.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquery1, 'js/jquery-ui-1.8.16.custom.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.jquery1, 'css/ui-lightness/jquery-ui-1.8.16.custom.css')}"/>
+<script type="text/javascript">
+      
+    
+    function changeDiscountPer(valueOf,salesprice,discountValue,subtotal){
+    
+        //var x = document.getElementById(subtotal).value;
+        
+        //var v =x.replace(/,/g, '');
+        //v = parseFloat(v);
+        //alert(v);
+        var result = (valueOf * subtotal)/100;
+        //alert(result);
+        var amount = subtotal-result;
+        //alert(amount);
+        amount = subtotal - amount;
+        amount = amount.toFixed(2);
+        
+        document.getElementById(discountValue).value = amount;
+        
+    }
+    function changeDiscountVal(valueOff,salesprice,discountPer,subtotal){
+        var x = document.getElementById(salesprice).value;
+        //alert(valueOff);
+        if(valueOff == '' ){
+            //alert('hyyy');
+            var  k = 0.00;
+            alert(k);
+            document.getElementById(discountPer).value = k;
+            return;
+        }
+        //var v =x.replace(/,/g, '');
+        //valueOff =valueOff.replace(/,/g, '');
+        //valueOff = parseFloat(valueOff);
+        //v = parseFloat(v); 
+        var result = (valueOff*100)/ subtotal ;
+        result = result.toFixed(2);
+        //alert(result);
+        document.getElementById(discountPer).value = result;
+    
+    
+    }
+    function setSubmit() {
+            submit = true;
+            temp = true;
+        }
+ </script>
+    <apex:form id="formId1">
+        <apex:pageBlock Id="pgBlkId" >
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!updateQuoteLineItem}" value="Save"/>
+                 <apex:commandButton action="{!cancelQuoteLineItem}" value="Cancel"/>
+            </apex:pageBlockButtons>
+            <apex:outputpanel id="formId">
+            <table class="list" border="0" cellpadding="0">
+                <tr class="headerRow" >
+                    <th width = '17%'> Product   </th>
+                    <th width = '16%'>  List Price </th>
+                    <th width = '16%'>  UCP </th> 
+                     <th width = '18%'> Discount in %  </th>
+                    <th width = '18%'> Discount in Values </th>
+                    <th width = '16%'> Net Price</th>
+                    <th width = '16%'> Quantity </th>
+<!--                     <th width = '16%'> Net Price</th> -->
+                   
+                    <th width = '18%'> Total Price    </th>
+                </tr>
+                
+                <apex:repeat value="{!lstCurrentAppointments}" var="qli">
+                 <tr class="dataRow" >
+                    <td width = '17%'>
+                      <apex:outputText value="{!qli.PricebookEntry.Product2.Name}" />
+                    </td>
+                    <td width = '16%'>
+                         <apex:outputText styleClass="percent" value="{!qli.ListPrice}" /> 
+                    </td>     
+                     <td width = '16%'>
+                        <apex:inputField id="salesprice" value="{!qli.Sales_Price_c__c}" />   
+                    </td>  
+                    <td width = '18%'>
+                        <apex:inputField value="{!qli.Discount_c__c}" id="discountPer" onchange="changeDiscountPer(this.value,'{!$Component.salesprice}','{!$Component.discountValue}','{!qli.Subtotal}')" styleClass="discount"/>
+                    </td>
+                    <td width = '16%'>
+                        <apex:inputField value="{!qli.Discount_In_Values_For_Corporate__c}" id="discountValue"  onchange="changeDiscountVal(this.value,'{!$Component.salesprice}','{!$Component.discountPer}','{!qli.Subtotal}')" styleClass="DiscountInValues" />  
+                    </td> 
+                   	<td width = '16%'>
+                        <apex:outputText value="{!qli.Price_Per_Unit_After_Discount__c}"  />  
+                    </td>
+                    <td width = '16%'>
+                        <apex:inputField value="{!qli.Quantity}" />   
+                    </td>
+<!--                     <td width = '16%'> -->
+<!--                         <apex:outputText value="{!qli.Price_Per_Unit_After_Discount__c}"  />   -->
+<!--                     </td> -->
+                   
+                    <td width = '18%'>
+                        <apex:outputText value="{!qli.Subtotal}" />
+                    </td>
+            </tr>
+             
+            </apex:repeat>
+
+        </table>
+        </apex:outputpanel>
+        <div style="border: 1px solid #D7D7D7;border-radius:10px;width: 95%;margin: 10px auto auto auto;margin-bottom: 10px;">
+            <table width="100%" cellpadding="0" cellspacing="0" style="padding-top: 15px;">
+                <tr>
+                    <td style="padding-bottom: 20px;" align="center" width="40%">
+                        <apex:outputPanel id="pnlPagination">
+                            <apex:commandLink value="<< First   " onclick="setSubmit();" action="{!GoToFirstPage}" reRender="formId,pnlPropertyList,pnlPageShown,pnlPagination" status="splashStatus" onmouseover="this.style.color='blue';this.style.fontWeight='bold';" onmouseout="this.style.color='black';this.style.fontWeight='normal';" rendered="{!hasRecords}"></apex:commandLink>&nbsp;&nbsp;
+                            <apex:commandLink value="< Previous    " onclick="setSubmit();" rendered="{!isPreviousDisable}" action="{!GoToPreviousPage}" reRender="formId,pnlPropertyList,pnlPageShown,pnlPagination" status="splashStatus" onmouseover="this.style.color='blue';this.style.fontWeight='bold';" onmouseout="this.style.color='black';this.style.fontWeight='normal';"></apex:commandLink> 
+                           <!-- <b><apex:outputText value="GoToPage" rendered="{!hasRecords}" style="font-size: 12px;"></apex:outputText></b>&nbsp;<apex:selectList value="{!currentPageNumber}" size="1" onchange="setSubmit();GoToPageNumber();" rendered="{!hasRecords}"><apex:selectOptions value="{!lstPageNumber}"></apex:selectOptions></apex:selectList>&nbsp;&nbsp;-->
+                            <apex:commandLink value="Next >    " onclick="setSubmit();" rendered="{!isNextDisable}" action="{!GoToNextPage}" reRender="formId,pnlPropertyList,pnlPageShown,pnlPagination" status="splashStatus" onmouseover="this.style.color='blue';this.style.fontWeight='bold';" onmouseout="this.style.color='black';this.style.fontWeight='normal';"></apex:commandLink>&nbsp;&nbsp; 
+                            <apex:commandLink value="Last >>" rendered="{!hasRecords}" onclick="setSubmit();" action="{!GoToLastPage}" reRender="formId,pnlPropertyList,pnlPageShown,pnlPagination" status="splashStatus" onmouseover="this.style.color='blue';this.style.fontWeight='bold';" onmouseout="this.style.color='black';this.style.fontWeight='normal';"></apex:commandLink>
+                        </apex:outputPanel>     
+                    </td>   
+                    <td style="padding-bottom: 20px;font-size: 13px;" align="center" width="30%">
+                        <apex:outputPanel id="pnlPageShown" >
+                            <apex:outputPanel rendered="{!hasRecords}">
+                                Currently showing {!fromRecord} to {!toRecord} of {!totalRecord} Products.
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                    </td>
+                </tr>
+            </table>                    
+        </div>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

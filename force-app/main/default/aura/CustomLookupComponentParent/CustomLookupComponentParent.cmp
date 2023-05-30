@@ -1,0 +1,86 @@
+<aura:component controller="customLookUpController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global">
+    <!--declare attributes--> 
+    <aura:attribute name="selectedRecord" type="sObject" default="{}" description="Use,for store SELECTED sObject Record"/>
+    <aura:attribute name="listOfSearchRecords" type="List" description="Use,for store the list of search records which returns from apex class"/>
+    <aura:attribute name="SearchKeyWord" type="string"/>
+    <aura:attribute name="objectAPIName" type="string" default=""/>
+    <aura:attribute name="IconName" type="string" default=""/>
+    <aura:attribute name="label" type="string" default=""/>
+    <aura:attribute name="prepopulateCount" type="integer" default="0"/> <!--used to get the selected value of the account without calling the record from Event -->
+    <aura:attribute name="prepopulateBrandCount" type="integer" default="0"/>
+	<aura:attribute name="Message" type="String" default=""/>
+    <aura:attribute name="whereCondition" type="String" default=""/>
+    <aura:attribute name="customId" type="String" default="" />
+    <aura:attribute name="isDisabled" type="boolean" default="false" />
+    <aura:attribute name="required" type="boolean" default="false" />
+    <aura:attribute name="lookupValueIncrementerForTitanSpec" type="Integer" default="0"  /><!--This variable is used to get the value from QC_MTL_InputParam in order to set the value for Titan Spec Ref No without calling event  -->
+    <aura:attribute name="lookupValueIncrementerForSupplrGrd" type="Integer" default="0" /><!--This variable is used to fetch the value from QC_MTL_Input_Param from a look up component of Supplier Grade without calling the event-->
+    <aura:attribute name ="lookupValueIncrmntrForSuplrName" type="Integer" default ="0"/>
+    <aura:attribute name ="lookupValueIncrmntrForPlaterName" type="Integer" default ="0"/>
+    <!--declare events handlers-->  
+    <aura:handler name="oSelectedRecordEvent" event="c:LookUpEvent" action="{!c.handleComponentEvent}"/>
+    <aura:handler name="change" value="{!v.prepopulateCount}" action="{!c.prepoulateSelectedValue}"/>
+    <aura:handler name="change" value="{!v.lookupValueIncrementerForTitanSpec}" action="{!c.prePopulateTitanSpecValue}"/>
+    <aura:handler name="change" value="{!v.prepopulateBrandCount}" action="{!c.prepoulateSelectedBrandValue}"/>
+    <aura:handler name="change" value="{!v.lookupValueIncrementerForSupplrGrd}" action="{!c.prePopulateSupplrGrade}" />
+    <aura:handler name ="change" value ="{!v.lookupValueIncrmntrForSuplrName}" action ="{!c.prePopulateSuplrName}" />   
+    <aura:handler name ="change" value ="{!v.lookupValueIncrmntrForPlaterName}" action ="{!c.prePopulatePlaterName}" />
+    
+    <aura:method name="clearValue" action="{!c.clear}" access="PUBLIC"></aura:method>
+    <!-- https://www.lightningdesignsystem.com/components/lookups/ --> 
+    
+    <div onmouseleave="{!c.onblur}" aura:id="searchRes" class="slds-form-element slds-lookup slds-is-close" data-select="single">
+        <label class="slds-form-element__label" for="lookup-348">{!v.label} 
+        	<aura:if isTrue="{!v.required}">
+                <abbr class="slds-required" title="required">* </abbr>
+            </aura:if>
+        </label>
+        <!--This part is for display search bar for lookup-->  
+        <div class="slds-form-element__control">
+            
+            <div class="slds-input-has-icon slds-input-has-icon--right">
+              <lightning:icon class="slds-input__icon slds-show" iconName="utility:search" size="x-small" alternativeText="search"/> 
+                <!-- This markup is for when an record is selected -->
+                <div aura:id="lookup-pill" class="slds-pill-container slds-hide">
+                    <aura:if isTrue="{!v.objectAPIName == 'QC_Access_Component__c'}">
+                    	<lightning:pill class="pillSize" label="{!v.selectedRecord.Report_Ref_Number__c}" name="{!v.selectedRecord.Report_Ref_Number__c}" onremove="{! c.clear }">
+                          <aura:set attribute="media">
+                             <lightning:icon iconName="{!v.IconName}" size="x-small" alternativeText="{!v.IconName}"/>
+                          </aura:set>
+                      </lightning:pill>
+                    </aura:if>
+                    <aura:if isTrue="{!v.objectAPIName == 'QC_MTL_Component__c'}">
+                    	<lightning:pill class="pillSize" label="{!v.selectedRecord.Report_Reference_Number__c}" name="{!v.selectedRecord.Report_Reference_Number__c}" onremove="{! c.clear }">
+                          <aura:set attribute="media">
+                             <lightning:icon iconName="{!v.IconName}" size="x-small" alternativeText="{!v.IconName}"/>
+                          </aura:set>
+                      </lightning:pill>
+                    </aura:if>
+                    <aura:if isTrue="{!and(v.objectAPIName != 'QC_Access_Component__c',v.objectAPIName != 'QC_MTL_Component__c')}">
+                      <lightning:pill class="pillSize" label="{!v.selectedRecord.Name}" name="{!v.selectedRecord.Name}" onremove="{! c.clear }">
+                          <aura:set attribute="media">
+                             <lightning:icon iconName="{!v.IconName}" size="x-small" alternativeText="{!v.IconName}"/>
+                          </aura:set>
+                      </lightning:pill>
+                    </aura:if>
+                    
+                </div>
+                <div aura:id="lookupField" class="slds-show">
+                    <span class="slds-icon_container  slds-combobox__input-entity-icon" title="record">
+                        <lightning:icon class="slds-icon slds-icon slds-icon_small slds-icon-text-default" iconName="{!v.IconName}" size="x-small" alternativeText="icon"/>
+                        <span class="slds-assistive-text"></span>
+                    </span>
+                    <ui:inputText disabled="{!v.isDisabled}" click="{!c.onfocus}" updateOn="keyup" keyup="{!c.keyPressController}" class="slds-lookup__search-input slds-input leftPaddingClass" value="{!v.SearchKeyWord}" placeholder="search.." required="{!v.required}"/>
+                </div>   
+            </div>
+        </div>
+        <!--This part is for Display typehead lookup result List-->  
+        <ul style="min-height:40px;margin-top:0px !important" class="slds-listbox slds-listbox_vertical slds-dropdown slds-dropdown_fluid slds-lookup__menu slds" role="listbox">
+            <!-- <lightning:spinner class="slds-hide" variant="brand" size="small" aura:id="mySpinner"/> -->
+            <center> {!v.Message}</center>
+            <aura:iteration items="{!v.listOfSearchRecords}" var="singleRec">
+                <c:CustomLookupComponent customId = "{!v.customId}" oRecord="{!singleRec}" IconName="{!v.IconName}" objectAPIName="{!v.objectAPIName}" />
+            </aura:iteration>
+        </ul>
+    </div>
+</aura:component>

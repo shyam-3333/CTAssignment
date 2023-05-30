@@ -1,0 +1,15 @@
+<apex:page controller="RTWpriceupdate" Readonly="true" sidebar="false" action="{!loadDataExcel}" contentType="application/vnd.ms-excel#Agentli.xls">
+    
+    <table style="width:100%;border:1px solid;">
+        <tr style="text-align:center; border:1px solid;">
+            <th>SKU</th>
+            <th>Actual MRP</th>
+        </tr>
+        <apex:repeat value="{!datalist}" var="a">
+            <tr style="text-align:center; border:1px solid;">
+                <td>{!a.SKU__c}</td>
+                <td>{!a.Actual_MRP__c}</td>
+             </tr>
+        </apex:repeat>
+    </table>
+</apex:page>

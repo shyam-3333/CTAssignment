@@ -1,0 +1,379 @@
+<apex:page controller="TaneiraProdClsAnglr" id="pageId" showHeader="true" sidebar="false" readOnly="true" cache="false" contentType="{!mimeType}">
+    
+    <html>
+        <head>            
+             <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" />
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css" />
+            <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/scroller/1.5.1/css/scroller.dataTables.min.css" />
+            <script type="text/javascript" src="https://lokeshdhakar.com/projects/lightbox2/js/lightbox-plus-jquery.min.js"></script>
+            <link rel="stylesheet" href="https://lokeshdhakar.com/projects/lightbox2/css/lightbox.css" type="text/css" media="screen" />
+            
+            <script type="text/javascript" src="https://code.jquery.com/jquery-3.3.1.js" />
+            <script type="text/javascript" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js" />
+            <script type="text/javascript" src="https://cdn.datatables.net/scroller/1.5.1/js/dataTables.scroller.min.js" />
+            <script type="text/javascript" src="jquery-1.12.0.min.js"></script> 
+      <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+      <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/buttons/1.1.2/js/dataTables.buttons.min.js"></script>
+      <script type="text/javascript" language="javascript" src="//cdn.datatables.net/buttons/1.1.2/js/buttons.flash.min.js"></script>
+            
+            <apex:includeScript value="{!URLFOR($Resource.CustomApp, 'js/jquery.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.CustomApp, 'js/angular.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.CustomApp, 'js/angular-datatables.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.CustomApp, 'js/jquery.dataTables.min.js')}"/>
+      
+            <style>
+                
+                #mydiv img {
+                    
+                    width: 40px;
+                    height: 40px;
+                    left: 5%;
+                    top: 0%;
+                    position: absolute;
+                }
+                
+             .d_title {
+            background: #099ad6 none repeat scroll 0 0;
+            color: #fff;
+            display: inline-block;
+            font-size: 24px;
+            padding: 5px;
+            width: 100%;
+        }
+                
+                table td img.img-thumbnail {
+                    
+                    width: auto;
+                    height: auto;
+                }
+                .srch_box {                    
+                    margin-bottom: 5px;
+                    margin-top: 5px;
+                    width: 223px;
+                }
+                div.dataTables_scrollBody1 {
+                    
+                   
+                }
+                table th, table td {
+                    
+                    text-align: left !important;
+                    padding-left: 0px !important;
+                    
+                    
+                }
+                .dataTables_filter{
+                    float:left!important;
+                    margin-left:5px!important;
+                    }
+             .success {
+                color: lime ;
+                font-weight: bold;
+
+                }
+            .error {
+                color: red;
+                font-weight: bold;
+
+                }
+            
+            </style>
+        </head>
+        <body ng-app="app" ng-controller="formController" style="min-height: 400px;">
+           <apex:form id="formId"> 
+               
+               <div class="d_title">
+                <apex:outputPanel onclick="moveBack();" style="cursor:pointer;">
+                    <apex:image value="{!$Resource.BackIcon_Taneira}" height="32px" width="32"/> 
+               </apex:outputPanel>
+                <apex:outputLabel value="Product View" style=" margin-left: 29px;" />
+            </div><br/><br/>
+                <apex:actionFunction action="{!dosubmit}" name="passFilterSearch" reRender="Inside-Table">
+                 <apex:param name="filterSearch" value="" assignTo="{!filterDataString}"/>
+                 </apex:actionFunction>
+                    
+                  <div id="refSrcButn" style="width: 100%; clear: both; float: left; padding: 4px; margin-top: 5px;">
+                   
+                    <input type="button" name="srchProds1" id="srchProds1" value="Refresh" ng-click="loadFreshRecords();" />
+                    
+                    <input type="button" name="downloadCSV" id="downloadCSV" value="Download As CSV" ng-click="downloadCSV();" />
+                                        
+                </div>
+                <div>
+                    Search:  <input type ="text" name="SearchBox" id="srchbox" />
+                    <input type="button" name="srchRes" id="srchResId" value="Search"/>
+                </div>
+                  <apex:outputPanel id="Inside-Table">  
+                <table id="product-details" class="display nowrap" style="width: 100%;">
+                    <thead>                       
+                        <tr>
+                        <th>Sl.No</th>
+                        <th>Vendor</th>
+                        <th>Product Category</th>
+                        <th>Origin</th>
+                         <th>PO Status</th>
+                        <th>SKU</th>
+                        <th>Total Quantity</th>
+                        <th>Total Value</th>
+                        <th>Created Date</th>
+                       
+                       
+                        </tr>                       
+                    </thead>
+                </table>
+                        </apex:outputPanel>
+           </apex:form> 
+       </body>
+        
+        <script type="text/javascript">
+            
+            var tmp1;
+            var table;
+            var lastProdId = '';
+            var firstTime = 0;
+            var srchPrds = 0;
+            var prods = [];
+            var app = angular.module('app', ['datatables']);
+            app.controller('formController', function($scope,$http,$window,$timeout,DTOptionsBuilder, DTColumnBuilder,DTColumnDefBuilder, $log) {
+            
+            var build_tree = function(depth) {
+              
+                var param = '';
+                var delay = 100 * depth;
+                $log.log('build_tree', depth);
+                var tot = '{!totalAPICalls}';
+               
+                if($scope.lastProdId && tot != depth) {
+                    
+                    console.log('check----');
+                    lastProdId = $scope.lastProdId;
+                    
+                }
+                
+                var mapHasVal = 0;
+                var filtersMap = new Map();
+                var filterOptions = '';
+                
+                if($('#product-details_filter input[type="search"]').val() && 
+                  $('#product-details_filter input[type="search"]').val() != 'Search') {
+                    
+                    url += '&srch='+$('#product-details_filter input[type="search"]').val();
+                }
+                
+                
+                
+                    filterOptions='{!$CurrentPage.parameters.srch}';
+               
+                $timeout(function () {
+                    
+                    Visualforce.remoting.Manager.invokeAction(
+                        "TaneiraProdClsAnglr.allData", lastProdId,filterOptions,     
+                        function(res, event) {
+                            if(res) {
+                                                                               
+                                if(res['STATUS'] == 'SUCCESS') {
+                                    
+                                    if(tot == depth) {
+                                       
+                                        prods = res['PRODUCTS'];
+                                        
+                                    } else {
+                                            
+                                        prods.push(...res['PRODUCTS']);
+                                    }
+                                    
+                                    $scope.lastProdId = res['LAST_PROD_ID']; 
+                                    build_tree(depth-1);
+                                    
+                                    console.log('SPC PRODS::'+prods.length);
+                                    
+                                } else {
+                                    
+                                }
+                                
+                            } else {
+                                console.log("There was an error");
+                            } 
+                        },
+                        {escape: false} // No escaping, please
+                    );
+                }, delay);
+            }
+            
+            $scope.tree = build_tree('{!totalAPICalls}');
+             $scope.loadFreshRecords = function() {
+                
+                var param1;
+                passFilterSearch(param1);
+            };
+                
+            $scope.downloadCSV = function() {
+                
+               let csvContent = "data:text/csv;charset=utf-8,";
+                
+                //header
+                let row = 'Sl.No,Vendor,Product Category,Origin,PO Status,SKU,Total Quantity,Total Value,Created Date';
+                csvContent += row + "\r\n";
+                prods.forEach(function(rowArray){
+                   
+                   let row = rowArray['SL_Number__c']+','+rowArray['Vendor_Acc_Name__c']+','+rowArray['Product_Category__c']+','+rowArray['Origin__c']+','+rowArray['PO_status__c']+','+rowArray['SKU__c']+','+rowArray['Total_Quantity__c']+','+rowArray['Total_Value__c']+','+rowArray['Product_Key_Finder1__c'].substring(0,10);
+                    //var arr = Array.from(Object.keys(rowArray), k=>rowArray[k]);
+                    //let row = arr.join(",");
+                   csvContent += row + "\r\n";
+                }); 
+                
+                var d = new Date();
+                var encodedUri = encodeURI(csvContent);
+                var link = document.createElement("a");
+                link.setAttribute("href", encodedUri);
+                link.setAttribute("download", "products_"+d+".csv");
+                document.body.appendChild(link); // Required for FF
+                
+                link.click();
+            };
+            
+        });
+            
+            
+            
+            
+            $(document).ready(function() {
+                
+                var prds = '{!prods}';
+                prods = JSON.parse(prds);
+                //lastProdId = prods[prods.length - 1].Id;
+                var produtsDump;
+                
+                table = $('#product-details').DataTable( {
+                
+                 "columnDefs": [
+                          { "width": "5%", "targets": 0 },
+                          { "width": "15%", "targets": 1 },
+                          { "width": "15%", "targets": 2 },
+                          { "width": "15%", "targets": 3 },
+                          { "width": "15%", "targets": 4 },
+                          { "width": "15%", "targets": 5 },
+                          {"width": "15%",  "target": 6}
+                     //{"width": "15%",  "target": 7}
+                         
+                    ],
+                    "scrollX": true,
+                    serverSide: true,
+                    ordering: false,
+                    searching: false,
+                    rowCallback: function (row, data , index) {
+                        if(data[4] === 'YES') {
+                            $('td:eq(4)', row).addClass('success')
+                        }
+                        else {
+                            $('td:eq(4)', row).addClass('error')
+                            }
+                    },
+                    ajax: function ( data, callback, settings ) {
+                        var out = [];
+                        var prds = '{!prods}';
+                        
+                        produtsDump = prods;
+                        console.log('TOT PRODS::'+prods.length+'###'+(data.start+data.length));
+                        
+                        if(prods && prods.length > 0) {
+                            
+                            if(data.length > produtsDump.length) {
+                                
+                                data.length = produtsDump.length;
+                            }
+                            for ( var i=data.start, ien=data.start+data.length ; i < ien ; i++ ) {
+                                
+                                if(produtsDump[i]) {
+                                    
+                                    out.push( [
+                                        produtsDump[i].SL_Number__c,
+                                        '<a href="/apex/TestingOfflineProdView?Account='+produtsDump[i].Account_Id__c + '&Category='+ produtsDump[i].Product_Category__c+'&serialnumber='+ produtsDump[i].SL_Number__c+'&Origin='+produtsDump[i].Origin__c+'&CDate='+produtsDump[i].Custom_Created_Date__c+'&ProductKeyFinder='+produtsDump[i].Product_Key_Finder1__c+'">'+produtsDump[i].Vendor_Acc_Name__c+'</a>',
+                                    produtsDump[i].Product_Category__c,
+                                    produtsDump[i].Origin__c,
+                                    produtsDump[i].PO_status__c,
+                                    produtsDump[i].SKU__c, 
+                                    produtsDump[i].Total_Quantity__c ,
+                                    produtsDump[i].Total_Value__c,
+                                    produtsDump[i].Product_Key_Finder1__c.substring(0,10)    
+                                   ] );
+                                }
+                            }
+                 
+                            setTimeout( function () {
+                                
+                                callback( {
+                                    draw: data.draw,
+                                    data: out,
+                                    recordsTotal: '{!totalProducts}',
+                                    recordsFiltered: '{!totalProducts}'
+                                } );
+                            }, 50 );
+                        }
+                    },
+                    scrollY: 500,
+                    scroller: {
+                        loadingIndicator: true
+                    },
+                    stateSave: false
+                } );
+                
+                $("#srchProds").on('click', function(event) {
+                    
+                    srchPrds = 1;                
+                });
+                
+                $('#srchResId').on('click', function(event) {
+                   //alert('coming inside to filters::');
+                    console.log('Filtering the data/sorting::');
+                    var param1;
+                    var mapHasVal = 0;
+                    var filtersMap = new Map();
+                    param1 = '&srch='+$('#srchbox').val();
+                    //alert('::param1::'+param1);
+                    $('.filterFields:checkbox:checked').each(function(){
+                            
+                        var id = $('#srchbox').attr('name');
+                        id = id.split(" ").join("");
+                        
+                        if(filtersMap.get(id)) {
+                            
+                            filtersMap.put(id, filtersMap.get(id)+','+$('#srchbox').val());
+                        } else {
+                            
+                            filtersMap.put(id, $('#srchbox').val());
+                        }
+                    });
+                    
+                    for (var [key, value] of filtersMap.entries()) {
+                        
+                        mapHasVal = 1;
+                        param1 += '&'+key+'='+value;
+                        console.log(key + ' = ' + value);
+                    }
+                    
+                    passFilterSearch(param1);
+                    
+                });
+            });
+            
+                 function moveBack(){
+           
+            if ((typeof sforce != 'undefined') && sforce && (!!sforce.one)){ 
+                                     
+                sforce.one.navigateToURL("/home/home.jsp");
+            }
+             else{
+                 console.log('**');
+                 window.open('/home/home.jsp','_self');
+                
+                 
+             }
+        }
+            
+            
+   
+        </script> 
+    </html>
+    
+</apex:page>

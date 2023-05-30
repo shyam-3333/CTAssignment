@@ -1,0 +1,3 @@
+<apex:page standardController="Quote" extensions="CloneQuote_Actual" action="{!AutoRun}"    >
+ 
+</apex:page>

@@ -1,0 +1,300 @@
+<apex:page controller="BDActivitiesCustomizationClass" sidebar="false" id="pageID">
+  
+              <style>
+    /* This is for the full screen DIV */
+    .popupBackground {
+        /* Background color */
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+    
+        /* Dimensions */
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 998;
+        position: absolute;
+        
+        /* Mouse */
+        cursor:wait;
+    }
+ 
+    /* This is for the message DIV */
+    .PopupPanel {
+        /* Background color */
+        /* border: solid 2px blue;*/
+   
+ 
+       left: 50%;
+        width: 200px;
+        margin-left: -100px;
+        top: 50%;
+        height: 250px;
+        margin-top: -25px;
+        z-index: 999;
+        position: fixed;
+        
+        /* Mouse */
+        cursor:pointer;
+    
+                  
+    }
+        </style>
+      <apex:actionStatus id="statusSaveTrip" stopText="">
+    <apex:facet name="start">
+        <div>
+            <div class="popupBackground" />
+            <div class="PopupPanel">
+                <table border="0" width="100%" height="100%">
+                   
+                    <tr>
+                        <td align="center"><img src="{!$Resource.Spinner}"/></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </apex:facet>
+</apex:actionStatus>
+    <apex:form id="form1">
+        <script>
+        function CallName(val)
+        {
+            var rowNum = val.split(':');
+            console.log(rowNum)
+          var b = document.getElementById('pageID:form1:block1:table1:'+rowNum[4]+':nameforselect').value;
+            
+            if(b==null||b=='')
+                {
+                    var b='test';
+                }    
+            
+            
+        }  
+       
+        methOnChangeRec()
+        {
+            
+        }
+     
+    </script>
+        <apex:actionFunction action="{!selectAccounts}" name="methOnChangeRec" reRender="acc,accReg" />
+           <div class="CSSTableGenerator" >
+               <TABLE BORDER="5" align="center"     CELLPADDING="4" CELLSPACING="3" style="background-color:pink;">
+   <TR>
+       <TH><apex:commandButton value="Create Activity" action="{!createActivity}" status="statusSaveTrip"  dir="justify"  style="color:green;"  reRender="ms,one,two"   />
+           </TH>
+       <TH><apex:commandButton value="Save Activity" action="{!saveTask}" status="statusSaveTrip" reRender="ms,mns,two"  />
+           </TH>
+       <th>   <apex:commandButton value="Delete Activity" action="{!DeleteActivity}"   status="statusSaveTrip"  dir="justify" style="color:red;"  reRender="ms,two" />
+                    
+          </th>
+      
+   </TR>
+  
+   
+</TABLE>
+            </div>
+        <br/>            
+
+        <apex:pageBlock id="block1">
+         
+          <apex:pageMessages id="ms"/>
+          <apex:pageMessages id="mns"/> 
+       <apex:outputPanel id="one" >
+   
+             
+            <apex:pageBlockTable title="Task Entry " style="background-color:#808080;" value="{!TaskList}" var="Tas"   id="table1">
+                 
+                <apex:column headerValue="Action" style="background-color:ash;"   >
+                     
+                    <apex:commandButton value="cancel" action="{!cancelRow}"  immediate="true"/>
+             
+                </apex:column>
+               
+                <apex:column headerValue="BD Owner" style="width:2px;"   >
+                    <apex:outputField value="{!UserData.name}"  />
+                </apex:column>
+                <apex:column headerValue="Date" style="width:2px;" >
+                    <apex:inputField value="{!Tas.ActivityDate}"/>
+                </apex:column>
+                <apex:column headerValue="Grouping" style="width:2px;" >
+                    <apex:inputField value="{!Tas.Grouping__c}"/>
+                </apex:column>
+                <apex:column headerValue="Activities" style="width:3px;" >
+                    <apex:inputField value="{!Tas.Activities__c}" />
+                </apex:column>
+                 
+                <apex:column headerValue="Object">
+                    <apex:selectList multiselect="false" value="{!selectedObject}" size="1"  rendered="{!IF(selectedObject=='None',false,true)}"  >
+                        <apex:selectOptions value="{!forObjects}" />   
+                             <apex:actionSupport event="onchange" action="{!refreshName}" status="statusSaveTrip" reRender="searchId,forRec"  />
+                    </apex:selectList>
+                    </apex:column>
+                    
+                  <apex:column headerValue="Search By Name" style="width:3px;" id="searchId">
+                    <apex:inputText value="{!searchName}"> 
+                    <apex:actionSupport event="onchange" action="{!selectedObjectRecord}" status="statusSaveTrip" reRender="nameforselect,ms"  />
+                     </apex:inputText>          
+                  </apex:column>
+                
+                
+                <apex:column headerValue="Records" id="forRec">
+             
+                        <apex:selectList size="1" value="{!selectedRecord}"  id="nameforselect" multiselect="false" rendered="{!IF(selectedObject!='None',true,false)}" onchange="CallName(this.id),methOnChangeRec()"    >
+                            <apex:selectoptions value="{!forRecords}" id="sltid"/>
+                         </apex:selectList>
+                    
+                 </apex:column>
+                
+                 <apex:column headerValue="Account" style="width:2px;"  id="acc" >
+                    <apex:outputField value="{!selectedAcc.Name}"/>
+                </apex:column>
+                
+                <apex:column headerValue="Region" style="width:2px;"  id="accReg" >
+                    <apex:outputField value="{!selectedAcc.Region_Picklist__c}"/>
+                </apex:column>
+                
+                <apex:column headerValue="Status" style="width:2px;"  >
+                    <div class="requiredInput"><div class="requiredBlock"></div>  <apex:inputField value="{!Tas.status}"  id="st" required="false"   /></div>
+                  
+                </apex:column>
+                  <apex:column headerValue="Priority" style="width:2px;" >
+                      <div class="requiredInput"><div class="requiredBlock"></div> <apex:inputField value="{!Tas.priority}" id="pt" required="false"   /></div>
+                </apex:column>
+             
+                <apex:column headerValue="Description" style="width:2px;" >
+                    <apex:inputField value="{!Tas.Description}"/>
+                </apex:column>
+                
+                <apex:column headerValue="Remarks" style="width:2px;" >
+                    <apex:inputField value="{!Tas.Remarks__c}"/>
+                </apex:column>
+                <apex:column headerValue="Comments" style="width:2px;" >
+                    <apex:inputField value="{!Tas.Description__c}"/>
+                </apex:column>
+                             
+            </apex:pageBlockTable>
+                </apex:outputPanel>
+         
+        </apex:pageBlock>
+     
+               <apex:outputPanel id="two">
+             <apex:variable var="rowNum" value="{!0}"  />      
+        <apex:pageBlock >
+               
+           <apex:variable var="rowNum" value="{!0}"  />
+            <apex:pageBlockTable value="{!wrapperForTask}" var="wrap" >
+                  
+                   <apex:column headerValue="S.No." >
+                    <apex:outputText value="{0,number, ###}" style="text-align:center;">   
+                        <apex:param value="{!rowNum+1}" />   
+                    </apex:outputText>
+                       
+                        <apex:variable var="rowNum" value="{!rowNum+1}"/>
+                </apex:column>        
+                <apex:column headerValue="Delete Action">
+                    <apex:inputCheckbox value="{!wrap.check}" />
+                </apex:column>
+                 <apex:column headerValue="Action">
+                 
+                 <apex:commandlink value="Edit" rerender="two" rendered="{!NOT(wrap.isEdit)}" action="{!editmethid}">
+          <apex:param name="rowNumber" value="{!wrap.rowNum}" assignTo="{!rowIndex}"/>
+          </apex:commandLink> &nbsp;&nbsp;
+          
+      <apex:commandlink value="Cancel" rerender="two" rendered="{!wrap.isEdit}" action="{!cancelmethid}">
+          <apex:param name="rowNumber" value="{!wrap.rowNum}" assignTo="{!rowIndex}"/>
+          </apex:commandLink>&nbsp;&nbsp;
+      
+      <apex:commandlink value="Save" rerender="two" rendered="{!wrap.isEdit}" action="{!savemethid}">
+         <apex:param name="rowNumber" value="{!wrap.rowNum}" assignTo="{!rowIndex}"/>
+      </apex:commandLink>         
+  </apex:column>
+ 
+           
+                <apex:column headerValue="BD Owner"   >
+                     <apex:outputField value="{!wrap.TaskWrapper.OwnerId}" rendered="{!NOT(wrap.isEdit)}"/>
+                     <apex:outputField value="{!wrap.TaskWrapper.OwnerId}" rendered="{!wrap.isEdit}"/>
+                </apex:column>
+                <apex:column headerValue="Date"  >
+                    <apex:outputField value="{!wrap.taskWrapper.ActivityDate}" rendered="{!NOT(wrap.isEdit)}" />
+                     <apex:inputField value="{!wrap.TaskWrapper.ActivityDate}" rendered="{!wrap.isEdit}"/>
+                </apex:column>
+                
+                <apex:column headerValue="Grouping"  >
+                    <apex:outputField value="{!wrap.taskWrapper.Grouping__c}" rendered="{!NOT(wrap.isEdit)}"  />
+                    <apex:inputField value="{!wrap.taskWrapper.Grouping__c}" rendered="{!wrap.isEdit}"/>
+                </apex:column>
+                <apex:column headerValue="Activities"  >
+                    <apex:outputField value="{!wrap.taskWrapper.Activities__c}" rendered="{!NOT(wrap.isEdit)}" />
+                    
+                    <apex:inputField value="{!wrap.taskWrapper.Activities__c}" rendered="{!wrap.isEdit}"/>
+                </apex:column>
+               
+                <apex:column headerValue="Object/Record"  rendered="{!IF(wrap.taskWrapper.WhatId!=null,true,false)}" >
+                    <apex:outputField value="{!wrap.taskWrapper.whatId}" rendered="{!NOT(wrap.isEdit)}" />
+                    
+                    <apex:inputField value="{!wrap.taskWrapper.whatId}" rendered="{!wrap.isEdit}"/>
+                </apex:column>
+                   <apex:column headerValue="Object/Record"  rendered="{!IF(wrap.taskWrapper.WhoId!=null,true,false)}" >
+                    <apex:outputField value="{!wrap.taskWrapper.whoId}" rendered="{!NOT(wrap.isEdit)}" />
+                    
+                    <apex:inputField value="{!wrap.taskWrapper.whoId}" rendered="{!wrap.isEdit}"/>
+                </apex:column>
+
+                
+                <apex:column headervalue="Account"  >
+                    <apex:outputPanel rendered="{!NOT(ISNULL(wrap.taskWrapper.Account__c))}" layout="none" >
+                        <apex:outputField value="{!wrap.taskWrapper.Account__r.Name}" rendered="{!NOT(wrap.isEdit)}" />
+                        <apex:outputField value="{!wrap.taskWrapper.Account__r.Name}" rendered="{!wrap.isEdit}"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!ISNULL(wrap.taskWrapper.Account__c)}" layout="none" >
+                        <apex:outputField value="{!wrap.taskWrapper.Account.Name}" rendered="{!NOT(wrap.isEdit)}" />
+                        <apex:outputField value="{!wrap.taskWrapper.Account.Name}" rendered="{!wrap.isEdit}"/>
+                    </apex:outputPanel>
+                </apex:column>
+                
+                <apex:column headervalue="Region"  >
+                    
+                    <apex:outputPanel rendered="{!NOT(ISNULL(wrap.taskWrapper.Account__c))}" layout="none" >
+                        <apex:outputField value="{!wrap.taskWrapper.Account__r.Region_Picklist__c}" rendered="{!NOT(wrap.isEdit)}" />
+                        <apex:outputField value="{!wrap.taskWrapper.Account__r.Region_Picklist__c}" rendered="{!wrap.isEdit}"/>
+                    </apex:outputPanel>
+                    <apex:outputPanel rendered="{!ISNULL(wrap.taskWrapper.Account__c)}" layout="none" >
+                        <apex:outputField value="{!wrap.taskWrapper.Account.Region_Picklist__c}" rendered="{!NOT(wrap.isEdit)}" />
+                        <apex:outputField value="{!wrap.taskWrapper.Account.Region_Picklist__c}" rendered="{!wrap.isEdit}"/>
+                    </apex:outputPanel>
+                </apex:column>
+                
+                <apex:column headerValue="Status"  >
+                    <apex:outputField value="{!wrap.taskwrapper.status}" rendered="{!NOT(wrap.isEdit)}" />
+                    <apex:inputField value="{!wrap.taskWrapper.status}" rendered="{!wrap.isEdit}"/>
+                </apex:column>
+                  <apex:column headerValue="Priority"  >
+                    <apex:outputField value="{!wrap.taskWrapper.priority}" rendered="{!NOT(wrap.isEdit)}" />
+                      <apex:inputField value="{!wrap.taskWrapper.priority}" rendered="{!wrap.isEdit}"/>
+                </apex:column>
+             
+                <apex:column headerValue="Description"  >
+                    <apex:outputField value="{!wrap.taskWrapper.Description}" rendered="{!NOT(wrap.isEdit)}"  />
+                      <apex:inputField value="{!wrap.taskWrapper.Description}" rendered="{!wrap.isEdit}"/>
+                </apex:column>
+                
+                <apex:column headerValue="Remarks">
+                    <apex:outputField value="{!wrap.taskWrapper.Remarks__c}" rendered="{!NOT(wrap.isEdit)}"  />
+                    
+                      <apex:inputField value="{!wrap.taskWrapper.Remarks__c}" rendered="{!wrap.isEdit}"/>
+                </apex:column>
+                
+                <apex:column headerValue="Comments" >
+                    <apex:outputField value="{!wrap.taskWrapper.Description__c}" rendered="{!NOT(wrap.isEdit)}" />
+                    
+                      <apex:inputField value="{!wrap.taskWrapper.Description__c}" rendered="{!wrap.isEdit}"/>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+            </apex:outputPanel>
+       
+       
+    </apex:form>
+</apex:page>

@@ -1,0 +1,228 @@
+<aura:component controller="ReliabilityNewData" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" >
+	<aura:attribute name="recordStatusValue" type="String"/>
+    <aura:attribute name="documentStatusValue" type="String"/>
+    <aura:attribute name="SKURef" type="String" />
+    <aura:attribute name="prepopulateCount" type="integer" default="0"/>
+    <aura:attribute name="sampleRecvd" type="Integer" />
+    <aura:attribute name="sampleDate" type="Date" />
+    <aura:attribute name="sampleRecvdFrom" type="String" />
+    <aura:attribute name="sampleRecvdFrom2" type="String" />
+    <aura:attribute name="sampleRecvdFrom3" type="String" />
+    <aura:attribute name="sampleRecvdFrom4" type="String" />
+    <aura:attribute name="sampleRecvdFrom5" type="String" />
+    <aura:attribute name="reportReferenceValue" type="String" />
+    <aura:attribute name="observatnComments" type="String" />
+    <aura:attribute name="finalVerdCounterReliabFromParent" type="Integer" default="0"/>
+    <aura:attribute name="isReadonly" type="Boolean" default="true"/> <!-- used to make the fields read only while viewing the data before save -->
+    <aura:attribute name="callSaveFromParent" type="integer" default="0" />
+    <aura:attribute name="selectedLookUpRecordForVendor" type="sObject" default="{}"/>
+    <aura:attribute name="selectedLookUpRecordForBrand" type="sObject" default="{}"/>
+    <aura:attribute name="childSampleType" type="String" /> <!-- used to fetch the sample type value from the parent component-->
+    <aura:attribute name="childSampleCategory" type="String" /> <!-- used to fetch the sample category value from the parent component-->
+    <aura:attribute name="childSubCategory" type="String" /> <!-- used to fetch the sample Sub Category value from the parent component-->
+    <aura:attribute name="test2" type="Boolean" default="false"/> <!-- used to set the value for isreliabilityTesting Checkbox -->
+    <aura:attribute name="vendorRef" type="String" />
+    <aura:attribute name="qcCompIdForReliab" type="String" />
+    <aura:attribute name="prepopulateBrandCount1" type="integer" default="0"/>
+    <aura:attribute name="prepopulateCount1" type="integer" default="0"/>
+    <aura:attribute name="constructRefNo" type="sObject" />
+    <aura:attribute name="isMasterReliability" type="boolean" default="false" />
+    <aura:attribute name="finalVerdict" type="List" default="[{'label': 'None', 'value': 'None', 'selected': true},
+                                                            {'label': 'Accept', 'value': 'Accept', 'selected': false},
+                                                            {'label': 'Reject', 'value': 'Reject', 'selected': false},
+                                                            {'label': 'Conditional Accept', 'value': 'Conditional Accept', 'selected': false},
+															{'label': 'Clearance for Pilot', 'value': 'Clearance for Pilot', 'selected': false}]"/>
+   <aura:attribute name="genderValLst" type="List" default="[{'label': 'None', 'value': 'None', 'selected': true},
+                                                            {'label': 'Guys', 'value': 'Guys', 'selected': false},
+                                                            {'label': 'Girls', 'value': 'Girls', 'selected': false},
+                                                             {'label': 'Unisex', 'value': 'Unisex', 'selected': false}
+                                                            ]"/>
+    
+    <aura:attribute name="referenceComponentNo" type="sObject" />
+    
+    <!-- handler starts here -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="oSelectedRecordEvent" event="c:LookUpEvent" action="{!c.handleLookupComponentEvent}"/>
+    <aura:handler name="change" value="{!v.callSaveFromParent}" action="{!c.saveData}"/>
+    <aura:registerEvent name="QcAccessComponentRelaibSavedEvnt" type="c:QcAccessCompReliabilitytSavedEvent"/>
+    <aura:handler name="change" value="{!v.finalVerdCounterReliabFromParent}" action="{!c.fetchVerdStatReliab}"/>
+    <aura:registerEvent name ="FinalVerdEvntForReliab" type="c:QcAccFinalVerdForReliabEvnt"/>	
+   		
+    <div class="slds-section slds-is-open slds-p-around_small" >
+        <h3 class="slds-section__title slds-theme_success" style="background-color: rgb(121, 53, 130);">
+            <span class="slds-truncate slds-p-horizontal_small" title="Section Title" style="font-weight: bold;">Product Information</span>
+        </h3>
+        <div aria-hidden="false" class="slds-section__content">
+            <form class="slds-form slds-form_compound" >
+                <div class="slds-form-element__control">
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <span class="slds-form-element__label">Report Reference No</span>
+                                    <span class="slds-form-element__static">{!v.reportReferenceValue}</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                    <span class="slds-form-element__label">Record Status</span>
+                                    <span class="slds-form-element__static">{!v.recordStatusValue}</span>  
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <span class="slds-form-element__label">Sample Type</span>
+                                    <span class="slds-form-element__static">{!v.childSampleType}</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                    <span class="slds-form-element__label">Sample Category</span>
+                                    <span class="slds-form-element__static">{!v.childSampleCategory}</span>  
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <span class="slds-form-element__label">Sample Sub Category</span>
+                                    <span class="slds-form-element__static">{!v.childSubCategory}</span>    
+                                </div> 
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <span class="slds-form-element__label">Document Status</span>
+                                    <span class="slds-form-element__static">{!v.documentStatusValue}</span>    
+                                </div> 
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-1">
+                                    <span class="slds-form-element__label">Construction Reference Number</span>
+                                    <span class="slds-form-element__static">{!v.constructRefNo.Report_Ref_Number__c}</span>
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <lightning:input aura:id="constructionTestingId" label="SKU Reference" value="{!v.SKURef}" disabled="{!v.isReadonly}"/> 
+                                </div>
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <label class="slds-form-element__label" style="margin-right: 0.5rem;">No Of Sample Recieved</label>
+                                    <lightning:helptext content="Please enter positive number!!" class="customIcon"/>
+                                    <lightning:input aura:id="NoSampleRecvdId" label="No Of Sample Recieved" type="number" value="{!v.sampleRecvd}" disabled="{!v.isReadonly}" placeholder="Enter number of samples!" onchange="{!c.onchangeSamplesize}" variant="label-hidden"/>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row">             
+                                <div class="slds-form-element slds-size_1-of-2">     
+                                    <lightning:input aura:id="sampleDateId" label="Sample Recieved Date" type="Date" value="{!v.sampleDate}" disabled="{!v.isReadonly}"/>
+                                </div>  
+                                <div class="slds-form-element slds-size_1-of-2">       
+                                    <lightning:input type="email" aura:id="sampleRecvFrmId" label="Sample Recieved From 1" value="{!v.sampleRecvdFrom}" disabled="{!v.isReadonly}" placeholder="Enter email address!"/>
+                                    <ui:inputCheckbox aura:id="additionalEmail" label="check For Additional Email" disabled="{!v.isReadonly}" change="{!c.onCheck}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    
+                    <div class="slds-hide" aura:id="additionalEmailFieldShow" >
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row">             
+                                <div class="slds-form-element slds-size_1-of-2">       
+                                    <lightning:input type="email" aura:id="sampleRecvFrmId2" label="Sample Recieved From 2" value="{!v.sampleRecvdFrom2}" disabled="{!v.isReadonly}" placeholder="Enter email address!"/>
+                                </div> 
+                                <div class="slds-form-element slds-size_1-of-2">       
+                                    <lightning:input type="email" aura:id="sampleRecvFrmId3" label="Sample Recieved From 3" value="{!v.sampleRecvdFrom3}" disabled="{!v.isReadonly}" placeholder="Enter email address!"/>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row">             
+                                <div class="slds-form-element slds-size_1-of-2">       
+                                    <lightning:input type="email" aura:id="sampleRecvFrmId4" label="Sample Recieved From 4" value="{!v.sampleRecvdFrom4}" disabled="{!v.isReadonly}" placeholder="Enter email address!"/>
+                                </div> 
+                                <div class="slds-form-element slds-size_1-of-2">       
+                                    <lightning:input type="email" aura:id="sampleRecvFrmId5" label="Sample Recieved From 5" value="{!v.sampleRecvdFrom5}" disabled="{!v.isReadonly}" placeholder="Enter email address!"/>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                    </div>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <c:CustomLookupComponentParentAcc isDisabled="{!v.isReadonly}" customId = "vendorId" objectAPIName="QC_Access_Master__c" whereCondition="RecordType.Name = 'Qc Access Vendor Details' " IconName="standard:account" selectedRecord="{!v.selectedLookUpRecordForVendor}" label="Vendor Name"/>
+                                    
+                                </div> 
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <c:CustomLookupComponentParentAcc isDisabled="{!v.isReadonly}" customId = "brandId"  objectAPIName="QC_Access_Master__c" whereCondition="RecordType.Name = 'Qc Access Brand Details' " IconName="standard:account" selectedRecord="{!v.selectedLookUpRecordForBrand}" label="Brand Name"/>   
+                                </div> 
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row">             
+                                <div class="slds-form-element slds-size_1-of-2">     
+                                    <lightning:select name="Gender" aura:id="genderId" label="Gender" disabled="{!v.isReadonly}">
+                                        <aura:iteration items="{!v.genderValLst}" var="genderVar">
+                                            <option text="{!genderVar.label}" value="{!genderVar.value}" selected="{!genderVar.selected}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>	
+                                </div> 
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <lightning:input aura:id="vendorRefId" label="Vendor Reference" value="{!v.vendorRef}" disabled="{!v.isReadonly}"/> 
+                                </div>  
+                            </div>
+                        </div>
+                    </fieldset>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-1">
+                                    <lightning:select name="Verdict" aura:id="verdictId" label="Final Verdict" disabled="{!v.isReadonly}">
+                                        <aura:iteration items="{!v.finalVerdict}" var="finalVerd">
+                                            <option text="{!finalVerd.label}" value="{!finalVerd.value}" selected="{!finalVerd.selected}"></option>
+                                        </aura:iteration>
+                                    </lightning:select>	
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
+                </div> 
+            </form>
+        </div>
+    </div>
+    <div class="slds-section slds-is-open slds-p-around_small">
+        <h3 class="slds-section__title slds-theme_success" style="background-color: rgb(121, 53, 130);">
+            <span class="slds-truncate slds-p-horizontal_small" title="Section Title" style="font-weight: bold;">General Observation</span>
+        </h3>
+        <div aria-hidden="false" class="slds-section__content">
+            <div class="slds-form-element__control">
+                <fieldset class="slds-form-element"> 
+                    <div class="slds-form-element__group"> 
+                        <div class="slds-form-element__row"> 
+                            <div class="slds-form-element slds-size_1-of-1"> 
+                                <lightning:textarea aura:id="observationCommntId" label="Observation Comments" value="{!v.observatnComments}" disabled="{!v.isReadonly}"/>    
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>	
+</aura:component>

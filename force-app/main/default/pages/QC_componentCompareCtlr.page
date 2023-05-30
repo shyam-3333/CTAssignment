@@ -1,0 +1,70 @@
+<apex:page controller="QC_componentCompareCtlr" id="pge" sidebar="false">
+<head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8" /></head>
+    <apex:actionstatus id="counterStatus">
+        <apex:facet name="start">
+            <div class="waitingSearchDiv" id="el_loading" style="background-color: #fbfbfb; height:100%;opacity:0.65;width:100%;">
+                <div class="waitingHolder" style="top: 100px; width: 91px;">
+                <img class="waitingImage" src="/img/loading.gif" title="Please Wait..." />
+                <span class="waitingDescription">Loading...</span>
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionstatus>
+    <style type="text/css">
+    table {
+        border-collapse: collapse;
+    }
+    tr
+    {
+    border:1px black;
+    border-collapse:collapse;
+    }
+    </style>
+    <apex:sectionHeader title="Compare Component"  subtitle="Component" />
+
+      <apex:form id="myForm">
+      <apex:outputPanel id="op1" style="display:block;"> 
+        <apex:PageBlock id="PageBlock">        
+          <apex:pageBlockSection columns="1" title="Product Compare" id="pb1">
+            <apex:inputfield id="Account1" label="Component1" value="{!Master1.Master_Variant__c}"  />
+            <apex:inputfield id="Account2" label="Component2" value="{!Master2.Master_Variant__c}"  />
+            <apex:inputfield id="Account3" label="Component3" value="{!Master3.Master_Variant__c}"  />
+            <apex:inputfield id="Account4" label="Component4" value="{!Master4.Master_Variant__c}"  />
+            <apex:inputfield id="Account5" label="Component5" value="{!Master5.Master_Variant__c}"  />
+          </apex:pageBlockSection>
+          <apex:commandButton value="compare" action="{!compare}" status="counterStatus" oncomplete="HidePanel(); return false;" reRender="op1,op2"/> 
+        </apex:PageBlock>
+      </apex:outputPanel> 
+       
+        <apex:outputPanel id="op2" style="display:none;">
+          <apex:commandButton value="Click to Download" action="{!ClickToDownload}" id="op3" reRender="myForm">
+                    <apex:param value="{!Master1.Master_Variant__c}" assignTo="{!ids1}"/>   
+                    <apex:param value="{!Master2.Master_Variant__c}" assignTo="{!ids2}"/>
+                    <apex:param value="{!Master3.Master_Variant__c}" assignTo="{!ids3}"/>
+                    <apex:param value="{!Master4.Master_Variant__c}" assignTo="{!ids4}"/>
+                    <apex:param value="{!Master5.Master_Variant__c}" assignTo="{!ids5}"/>
+                  </apex:commandButton>
+      </apex:outputPanel>
+     </apex:form>
+     
+       <script>
+            function HidePanel(){
+                
+                document.getElementById('{!$Component.myForm.op1}').style.display = 'none';
+                document.getElementById('{!$Component.myForm.op2}').style.display = 'block';
+                }
+            
+       </script>
+       <style type="text/css">
+            .img{width:100px !important;} 
+            .bPageBlock .detailList tr td, .bPageBlock .detailList tr th, .hoverDetail .bPageBlock .detailList tr td, .hoverDetail .bPageBlock .detailList tr th { border-bottom: none !important;}
+            .OptPanel{width:50%;float:left;padding-top:20px;borde:none !important; }   
+            .Optpanel1{float:right;padding-right:100px;}   
+            .bPageBlock, .individualPalette .bPageBlock
+            {
+                border: none !important;
+                background:none !important;
+            }
+            
+        </style>
+    </apex:page>

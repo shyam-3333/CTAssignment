@@ -1,0 +1,543 @@
+<apex:page standardController="Vendor__c" extensions="VendorCreatePageController" showHeader="false" sidebar="false" id="productPage" standardStylesheets="false" lightningStylesheets="true">
+    <apex:includeScript value="{!URLFOR($Resource.JqueryA, 'js/jquery-1.6.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.JqueryA, 'js/jquery-ui-1.8.16.custom.min.js')}"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>   
+    <script src="../../soap/ajax/36.0/connection.js" type="text/javascript"></script>
+    <script type='text/javascript' src='/soap/ajax/29.0/connection.js'></script>
+    <script type='text/javascript' src='/soap/ajax/29.0/apex.js'></script>
+    <style type="text/css">
+    body{
+    background:#d9ecf1;
+    }
+    .slds-page-header{background:#1c91b3;}
+    .slds-page-header__title,.slds-text-title--caps{color:#fff;}
+    .slds-section-title--divider{background:#1c91b3;}
+    .slds-section__title-action{background:#1c91b3;color:#fff;}
+    
+    .slds-section__title-action:active, .slds-section__title-action:focus, .slds-section__title-action:hover{
+    background:#1c91b3;color:#fff;
+    }
+    .slds-button--brand{
+    background-color: #0d4150;
+    border: 1px solid #0d4150;
+    }
+
+    .slds-form-element__label{color:#0d4150;}
+    .slds-button--brand:focus, .slds-button--brand:hover{
+    
+    background-color: #1c91b3;
+    border: 1px solid #1c91b3;
+    }
+        .lookup_img {
+            position: absolute;
+            right: 5px;
+            top: 2px;
+            width: 30px;
+        }
+        #detail {margin-bottom:5px;}
+            .lookup_block {
+            position: relative;
+        }
+        
+        .lookup_block a {
+            background: rgba(0, 0, 0, 0) url("/resource/1484545177000/lookupIcon_Taneira") no-repeat scroll right center / 65% auto;
+            border-left: medium none;
+            height: 32px;
+            position: absolute;
+            right: 0;
+            width: 30px;
+            z-index: 100;
+        }
+
+        .errorMsg {
+            color: red !important;
+        }
+
+        .dummy {
+            padding-left: 0cm;
+        }
+        .col--padded {
+            padding-right: .100rem;
+            padding-left: .100rem;
+        }
+        body {
+        //  background-color:#F0FFF0;
+        }
+        .slds-form--inline .slds-form-element, .slds-form--inline .slds-form-element__control, .slds-form--inline .slds-form-element__label {
+            display: block!important;
+        }
+     
+
+    </style>
+
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <apex:stylesheet value="{!$Resource.Slds215}" />
+        <body>
+
+            <div class="Titan">
+                <div class="slds-grid slds-wrap" id="theDivId">
+                    <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2 col--padded">  
+                       
+                                               
+                        <apex:form id="prodForm" styleClass="slds-form--inline">
+                            <apex:actionStatus id="statusId" >       
+                             <apex:facet name="start">
+                             <div role="" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+                                 <div class="slds-spinner_container slds-is-fixed">
+                                     <div role="status" class="slds-spinner slds-spinner--large slds-spinner--brand slds-is-relative">
+                                         <span class="slds-assistive-text">Full Screen Loading</span>
+                                         <div class="slds-spinner__dot-a"></div>
+                                         <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                                </div>
+                             </apex:facet>          
+                          </apex:actionStatus>
+                            <div class="slds-page-header">
+                                <div class="slds-grid">
+                                    <div class="slds-col slds-has-flexi-truncate">
+                                        <div class="slds-media slds-no-space slds-grow">
+                                            <div class="slds-media__body"> 
+                                                <p class="slds-text-title--caps slds-line-height--reset">Vendor</p> 
+                                                <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate" title="this should match the Record Title">New Vendor Information</h1>
+                                            </div> 
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                           
+                            <apex:outputPanel id="prodId" layout="block" style="height:100%;overflow:visible;">
+                    <apex:pageMessages id="pageMsg" ></apex:pageMessages><br/><br/>
+                           
+                             
+                                   
+                            <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large"> 
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Vendor Name</b>
+                                                <abbr class="slds-required" title="required">*</abbr>
+                                            </label>
+                                            <apex:inputText value="{!Vendor__c.name}" styleClass="slds-input" id="vendorNamId" />
+                                           <p id="errorNam" style="display:none;color:red">Please Enter the Vendor Name</p>
+                                        </div>
+                                        
+                                    </div> 
+                                     <br/>
+                                    </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Vendor Code</b>
+                                               
+                                            </label>
+                                            <apex:inputText value="{!Vendor__c.Vendor_Code__c}" styleClass="slds-input" id="codeId" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Type</b>
+                                               
+                                            </label>
+                                            <apex:inputField value="{!Vendor__c.Type__c}" styleClass="slds-input" id="TypeId" />
+                                           
+                                        </div> <br/>
+                                    </div>
+                                    
+                                   
+                                </div>
+                                
+                                     <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Category</b>
+                                               
+                                            </label>
+                                            <apex:inputField value="{!Vendor__c.Category__c}" styleClass="slds-input" id="categoryId" rendered="{!IF($Profile.Name =='System Administrator', true,false)}" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    
+                                </div>
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Approval Status</b>
+                                               
+                                            </label>
+                                            <apex:outputField value="{!Vendor__c.Approval_Status__c}" styleClass="slds-input" id="approvalId" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    
+                                </div>
+                                
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Vendor Owner</b>
+                                                
+                                            </label>
+                                            <apex:outputText value="{!ownerName}" styleClass="" id="ownerId"  />
+                                           
+                                        </div>
+                                    </div><br/>
+                                    </div>
+                                     <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Pricing Type</b>
+                                             <abbr class="slds-required" title="required">*</abbr>  
+                                            </label>
+                                            <apex:inputField value="{!Vendor__c.Pricing_Type__c}" styleClass="slds-input" id="pricingTypeId" rendered="{!IF($Profile.Name =='System Administrator' || $Profile.Name =='Purchase', true,false)}" />
+                                           <p id="errorPricingType" style="display:none;color:red">Please Select Pricing Type</p>
+                                        </div>
+                                    </div> <br/>
+                                    
+                                </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/>
+                                    </div>
+                                    <h3 class="slds-section-title--divider" style="width:100%" >
+                                <p class="slds-section__title-action" >Address </p>
+                               </h3><br/> 
+                               <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large"> 
+                            <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Title</b>
+                                               
+                                            </label>
+                                            <apex:inputField value="{!Vendor__c.Title__c}" styleClass="slds-input" id="TitleId" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                     <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Name 1</b>
+                                               
+                                            </label>
+                                            <apex:inputField value="{!Vendor__c.Name_1__c}" styleClass="slds-input" id="Name1Id" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                     
+                                     <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Name 2</b>
+                                               
+                                            </label>
+                                            <apex:inputField value="{!Vendor__c.Name_2__c}" styleClass="slds-input" id="Name2Id" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Mobile/Phone</b>
+                                               
+                                            </label>
+                                            <apex:inputField value="{!Vendor__c.Mobile_Phone__c}" styleClass="slds-input" id="PhoneId" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Email Id</b>
+                                               
+                                            </label>&nbsp;
+                                                    <apex:inputText value="{!Vendor__c.Email_Id_Vendor__c}" styleClass="slds-input" id="emailId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Country</b>
+                                               
+                                            </label>
+                                            <apex:inputField value="{!Vendor__c.Country__c}" styleClass="slds-input" id="CountryId" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                                
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Postal Code</b>
+                                               
+                                            </label>
+                                            <apex:inputField value="{!Vendor__c.Postal_Code__c}" styleClass="slds-input" id="PostId" />
+                                           
+                                        </div> 
+                                    </div>  <br/>
+                                    </div>
+                                    
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/>
+                                </div>
+                                <h3 class="slds-section-title--divider" style="width:100%" >
+                                <p class="slds-section__title-action" >Vendor Control </p>
+                               </h3><br/> 
+                               <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large"> 
+                               
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>PAN Number</b>
+                                               
+                                            </label>
+                                            <apex:inputText value="{!Vendor__c.PAN_Number__c}" styleClass="slds-input" id="numId" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>GST</b></label>
+                                                                                           
+                                            <apex:inputText value="{!Vendor__c.TIN_CST_Number__c}" styleClass="slds-input" id="tinId" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/>
+                               </div>
+                                <h3 class="slds-section-title--divider" style="width:100%" >
+                                <p class="slds-section__title-action" >Payment Transaction Accounting </p>
+                               </h3><br/> 
+                               
+                               <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large"> 
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Payment Term</b>
+                                               
+                                            </label>
+                                            <apex:inputField value="{!Vendor__c.Payment_Terms__c}" styleClass="slds-input" id="payId" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Payment Methods</b></label>
+                                                                                           
+                                            <apex:inputField value="{!Vendor__c.Payment_Methods__c}" styleClass="slds-input" id="paymthdId" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/>
+                                    </div>
+                                    <h3 class="slds-section-title--divider" style="width:100%" >
+                                <p class="slds-section__title-action" >Purchasing data</p>
+                               </h3><br/> 
+                               <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large"> 
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Account Currency</b>
+                                               
+                                            </label>
+                                            <apex:inputField value="{!Vendor__c.CurrencyIsoCode}" styleClass="slds-input" id="currencyId" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Incoterms </b></label>
+                                                                                           
+                                            <apex:inputField value="{!Vendor__c.Incoterms__c}" styleClass="slds-input" id="incodId" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/>
+                                    </div>
+                                    <h3 class="slds-section-title--divider" style="width:100%" >
+                                <p class="slds-section__title-action" >Bank Details</p>
+                               </h3><br/> 
+                               <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large"> 
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Bank Name</b>
+                                               
+                                            </label>
+                                            <apex:inputField value="{!Vendor__c.Name__c}" styleClass="slds-input" id="nameId" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>IFSC</b></label>
+                                                                                           
+                                            <apex:inputField value="{!Vendor__c.IFSC__c}" styleClass="slds-input" id="ifscId" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Account Number</b></label>
+                                                                                           
+                                            <apex:inputField value="{!Vendor__c.Account_Number__c}" styleClass="slds-input" id="accNumdId" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/>
+                                    
+                                    </div>
+                                    <h3 class="slds-section-title--divider" style="width:100%" >
+                                <p class="slds-section__title-action" >Taneira Contacts</p>
+                               </h3><br/> 
+                                
+                                <div class="slds-grid slds-wrap slds-grid--pull-padded slds-m-horizontal--xx-large"> 
+                                   <p id="errorMail" style="display:none;color:red; align-left:10%"><b>Error:</b>Please Enter Mail Id or Phone No</p><br/>
+                               </div>
+                               <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large"> 
+                              
+                                <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Mail ID</b>
+                                               
+                                            </label>
+                                            <apex:inputText value="{!Vendor__c.Mail_ID__c}" styleClass="slds-input" id="taneiramailId" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                    <div class="">
+                                        <div>
+                                            <label class="slds-form-element__label" for="text-input-01"><b>Phone No</b></label>
+                                                                                           
+                                            <apex:inputText value="{!Vendor__c.Phone_No__c}" styleClass="slds-input" id="phoneNoId" />
+                                           
+                                        </div>
+                                    </div> <br/>
+                                    </div>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/>
+                                    <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4"/>
+                                    </div>
+                                     <div class="slds-panel__section">
+                                        <div style="width:100%">
+                                            <div class="slds-form-element" role="group" style="width:100%">
+                                                <center>
+                                               
+                                                    <input type="Button" value="Save" Class="slds-button slds-button--brand" id="SaveId"/> 
+                                                    <apex:actionFunction name="doSave" action="{!doSave}"  /> 
+                                                    <apex:outputPanel rendered="{!if(Vendor__c.Id== null,true,false)}">
+                                                        <input type="Button" value="Save And New" Class="slds-button slds-button--neutral" id="saveNewId" />
+                                                        <apex:actionFunction name="doSaveNew" action="{!doSaveNew}" reRender="pageMsg,prodForm" status="statusId"/>    
+                                                    </apex:outputPanel>  
+                                                    <input type="Button" value="Cancel" Class="slds-button slds-button--neutral" onclick="invokeCancel('{!Vendor__c.id}')"/>
+                                                    <apex:actionFunction name="Cancel" action="{!doCancel}" />  
+                                                    
+                                                         <br/><br/>
+                                                    
+                                                </center>
+                                            </div>
+                                        </div>
+                                    </div> 
+                                 </apex:outputPanel>
+                               </apex:form> 
+                                </div>
+                </div>
+            </div>
+            <script>
+                $(document).ready(function() {
+                    jQuery('[id$=approvalId]').val("Pending");
+                    $('[id$=SaveId], [id$=saveNewId]').click(function() {
+                         var clickId = this.id;
+                         var isErr = false;
+                         console.log('----Called');
+                         if ((jQuery('[id$=vendorNamId]').val() == '' || jQuery('[id$=vendorNamId]').val() == null)  )  { 
+                                isErr = true;
+                                jQuery('[id$=errorNam]').show();
+                                jQuery('[id$=vendorNamId]').css("border-color", "red");
+            
+                          }
+                          
+                          if(   (jQuery('[id$=pricingTypeId]').val() == '' || jQuery('[id$=pricingTypeId]').val() == null) ){
+                              	isErr = true;
+                                jQuery('[id$=errorPricingType]').show();
+                             	jQuery('[id$=pricingTypeId]').css("border-color", "red");
+                           }
+                          console.log('mail'+jQuery('[id$=taneiramailId]').val());
+                          console.log('phoneNoId'+jQuery('[id$=phoneNoId]').val());
+                          
+                          if ((jQuery('[id$=taneiramailId]').val() == null || jQuery('[id$=taneiramailId]').val() == '') && (jQuery('[id$=phoneNoId]').val() == null || jQuery('[id$=phoneNoId]').val() == '')) {
+                                console.log('---enter');
+                                isErr = true;
+                                jQuery('[id$=errorMail]').show();
+                                jQuery('[id$=taneiramailId]').css("border-color", "red");
+                                jQuery('[id$=phoneNoId]').css("border-color", "red");
+            
+                          }
+                          console.log('isErr '+isErr );
+                          if (!isErr && clickId == 'SaveId') {
+                              console.log('isErrsave '+isErr );
+                              doSave();
+                        } 
+                        else if (!isErr && clickId == 'saveNewId') {
+                            doSaveNew();
+                        }
+                    });
+                }); 
+                function invokeCancel(accId){
+               
+                  console.log('sforce ',sforce ); 
+                   if ( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ){
+                   console.log('accId '+accId ); 
+                       if(accId == null || accId == ''){
+                       console.log('accId '+accId ); 
+                           sforce.one.navigateToList('00B5B000000N6z5UAC','null','Account');
+                            
+                          
+                       }
+                       else if(accId != null || accId != ''){
+                           sforce.one.navigateToSObject(accId);
+                       }
+                            
+                   }
+                          
+                    else {
+                         console.log('docancel');           
+                        Cancel();
+                    }
+               
+           
+                 }
+            </script>
+
+       </body>
+       </html>
+</apex:page>

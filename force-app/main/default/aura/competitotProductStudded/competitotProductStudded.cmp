@@ -1,0 +1,830 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 03-18-2021
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+  Modifications Log 
+  Ver   Date         Author                               Modification
+  1.0   03-18-2021   ChangeMeIn@UserSettingsUnder.SFDoc   Initial Version
+-->
+<aura:component controller="CompetitorProductJewController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doinit}" /> 
+    <aura:attribute name="recTypeName" type="string" />
+    <aura:attribute name="CompetitorProduct" type="Competitor_Product_Jew__c" default="{'sobjectType':'Competitor_Product_Jew__c',
+                                                                                       'Name':'',
+                                                                                       }"/>
+    <aura:attribute name="settingType" type="list"/>
+    <aura:attribute name="platingBillingList" type="list"/>
+    <aura:attribute name="finishBillingList" type="list"/>
+    <aura:attribute name="finishPAList" type="list"/>
+    <aura:attribute name="competitorNamePicklist" type="list"/>
+    <aura:attribute name="attachmentList" type="list"/>
+    <aura:attribute name="recId" type="string"/>
+    <aura:attribute name="cityPicklist" type="list"/>
+    <aura:attribute name="ProdCategoryPickList" type="list"/>
+    <aura:attribute name="ProdGroupPickList" type="list"/>
+    <aura:attribute name="metalPickList" type="list"/>
+    <aura:attribute name="manufaRoutePickList" type="list"/>
+    <aura:attribute name="purchaseDepPickList" type="list"/>
+    <aura:attribute name="colorOfMetalPickList" type="list"/>
+    <aura:attribute name="colorOfMetalPickList2" type="list"/>
+    <aura:attribute name="purityPickList" type="list"/>
+    <aura:attribute name="stoneDetailPickList" type="list"/>
+    <aura:attribute name="stoneDetailPickList2" type="list"/>
+    <aura:attribute name="stoneQualityPickList" type="list"/>
+    <aura:attribute name="stoneQualityPickList2" type="list"/>
+    <aura:attribute name="colorPickList" type="list"/>
+    <aura:attribute name="settingTypeBill" type="list"/>
+    <aura:attribute name="settingTypePA" type="list"/>
+    <aura:attribute name="attachmentPickList" type="list"/>
+    <aura:attribute name="showDetail" type="Boolean" />
+    <aura:attribute name="isNew" type="Boolean" />
+    <aura:attribute name="newAttach" type="Boolean" default="false" />
+    <aura:attribute name="filetype" type="List" default="['.png', '.jpg', '.jpeg' , '.pdf', '.docx','.xlsx','.csv']"/>
+    <aura:attribute name="sendPDF" type="Boolean" default="false" />
+    <aura:handler name="MultivaluePicklistEvent" event="c:MultivaluePicklistEvent" action="{!c.onChangePickVal}" />
+    <!--<aura:handler name="refresh" event="c:SelectChange" action="{!c.doInit}" /> -->
+    
+    <aura:if isTrue="{!v.sendPDF}">
+        <section role="dialog" tabindex="1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open slds-modal_large">
+            <div class="slds-modal__container">
+                <div class="modal-header slds-modal__header slds-size_1-of-1">
+                    <h4 class="title slds-text-heading--medium">Send PDF</h4>
+                </div>
+                <!--End Modal Header-->  
+                
+                <!--Modal Body-->   
+                <div class="slds-modal__content slds-p-around--x-small slds-align_absolute-center slds-size_1-of-1 slds-is-relative">
+                    <!--<form class="slds-form-stacked">-->
+                    <iframe src="{!'/apex/competitorProdJewPDF?Id='+v.recId}" width="100%" height="400px;" frameBorder="0"/>
+                    <!-- </form> -->
+                </div>
+                <!--End of Modal Body--> 
+                
+                <!--Modal Footer-->
+                <div class="modal-footer slds-modal__footer slds-size_1-of-1">
+                    <lightning:button variant="Brand" class="slds-button" label="Send PDF" onclick="{!c.SendPdfCon}"/>
+                    <lightning:button variant="Neutral" class="slds-button" label="Cancel" onclick="{!c.handleClose}"/>
+                </div>
+                <!--End of Modal Footer-->
+            </div>
+            
+        </section>
+    </aura:if>
+    
+    
+    <div class="slds-align_absolute-center" style="    font-size: 30px;
+                                                   background-color: darkgray;
+                                                   font-family: none;
+                                                   ">
+        {!v.recTypeName} Competitor Product Analysis Report      
+    </div>
+    <br/>
+    <div class="slds-align_absolute-center">
+        <aura:if isTrue="{!v.showDetail}">
+            <button onclick="{!c.editMode}" class="slds-button slds-button_neutral">Edit</button>
+            <aura:if isTrue="true">
+            <button onclick="{!c.openModel}" class="slds-button slds-button_neutral">Attachments</button>
+            <button onclick="{!c.openPDF}" class="slds-button slds-button_neutral">PDF</button>
+            </aura:if>
+        </aura:if>
+    </div>
+    
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    
+    <!--Use "slds-m-around_xx-large" class to add standard X-Large padding to the component--> 
+    <div class="slds-m-around_xx-large">
+        
+        <!--Use aura:if tag to display Model Box, on the bese of conditions. [isOpen boolean attribute] -->   
+        <aura:if isTrue="{!v.isOpen}">
+            
+            <!--###### MODAL BOX Start######--> 
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- ###### MODAL BOX HEADER Start ######-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Attachments</h2>
+                    </header>
+                    <!--###### MODAL BOX BODY Part Start######-->
+                    
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        
+                        <span class="text-blue">
+                            <aura:if isTrue="{!v.newAttach}">
+                            <div class="slds-align_absolute-center" >
+                                
+                                <lightning:fileUpload  name="fileUploader"
+                                                      label= "Image 1"
+                                                      accept="{!v.filetype}"
+                                                      recordId="{!v.recId}"
+                                                      onuploadfinished="{! c.handleUploadFinished }"/>&nbsp;&nbsp;
+                            </div>
+                            </aura:if>
+                            <aura:if isTrue="{!!v.newAttach}">
+                            <div>
+                                <article class="slds-card">
+                                    <div class="slds-card__header slds-grid">
+                                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                            <div class="slds-media__figure">
+                                                <span class="slds-icon_container slds-icon-standard-account" title="account">
+                                                    
+                                                    <span class="slds-assistive-text">Attachments</span>
+                                                </span>
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <h2 class="slds-card__header-title">
+                                                    <a href="javascript:void(0);" class="slds-card__header-link slds-truncate" title="Attachments">
+                                                        <span>Attachments</span>
+                                                    </a>
+                                                </h2>
+                                            </div>
+                                            <div class="slds-no-flex">
+                                                <button class="slds-button slds-button_neutral" onclick="{!c.newUpload}">New</button>
+                                            </div>
+                                        </header>
+                                    </div>
+                                    <div class="slds-card__body slds-card__body_inner">
+                                        <table width="100%" >
+                                            <tr>
+                                            	<th colspan="2"> Name </th>
+                                                 
+                                            </tr>
+                                            <aura:iteration items="{!v.attachmentList}" var="obj">
+                                                
+                                                <tr>
+                                                    <td style="text-align:Left;" width="80%"> 
+                                                    	{!obj.Title}
+                                                    </td>
+                                                    <td width="20%" style="text-align:center;" > 
+                                                        <a href="{!'/' +obj.Id}" target="_blank" > Preview </a>
+                                                    </td>
+                                                </tr>
+                                                
+                                            </aura:iteration>
+                                        </table>
+                                    </div>
+                                    <footer class="slds-card__footer">
+                                            <span class="slds-assistive-text">Attachments</span>
+                                   </footer>
+                                </article>
+                                
+                            </div>
+                                </aura:if>
+                        </span>
+                    </div>
+                    <!--###### MODAL BOX FOOTER Part Start ######-->
+                    <footer class="slds-modal__footer">
+                        <lightning:button variant="neutral" 
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.closeModel }"/>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+            <!--###### MODAL BOX Part END Here ######-->
+            
+        </aura:if>
+    </div>
+    <div class="slds-grid" style="margin-left:20px;margin-right:20px;">
+        <div>
+            
+            <div>
+                <lightning:input disabled="true" label="Report ref number" value="{!v.CompetitorProduct.Name}" />
+            </div> 
+        </div>
+        
+       
+    </div>
+    <div class="slds-grid" style="margin-left:20px;margin-right:20px;">
+       <div>
+            
+            <div>
+                <lightning:input disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Competitor_name__c}" label="Competitor name" placeholder="Type here..." />
+            </div> 
+        </div>-
+        
+        <div class="slds-col_bump-left">
+            
+            <div>
+                <lightning:input disabled="{!v.showDetail}" type="date" label="Date of purchase" value="{!v.CompetitorProduct.Date_of_purchase__c}" />
+            </div> 
+        </div>
+    </div>
+    <div class="slds-grid" style="margin-left:20px;margin-right:20px;">
+       <div>
+            <div>
+                <lightning:input disabled="{!v.showDetail}" label="City" value="{!v.CompetitorProduct.City__c}" placeholder="Type here..." />
+            </div> 
+        </div>
+        
+        <div class="slds-col_bump-left">
+            
+            <div>
+                <lightning:combobox disabled="{!v.showDetail}" label="Product category" value="{!v.CompetitorProduct.Product_Category__c}" placeholder="Add Option" options="{!v.ProdCategoryPickList}"/>
+            </div> 
+        </div>
+    </div>   
+    <div class="slds-grid" style="margin-left:20px;margin-right:20px;">
+        <div>
+            <div>
+                <lightning:combobox disabled="{!v.showDetail}" label="Product group" value="{!v.CompetitorProduct.Product_Group__c}" placeholder="Add Option" options="{!v.ProdGroupPickList}"/>
+            </div> 
+        </div>
+        
+        <div class="slds-col_bump-left">
+            <div>
+                <lightning:combobox disabled="{!v.showDetail}" label="Metal" value="{!v.CompetitorProduct.Metal__c}" placeholder="Add Option" options="{!v.metalPickList}"/>
+            </div> 
+        </div>
+    </div>
+    <div class="slds-grid" style="margin-left:20px;margin-right:20px;">
+        <div>
+            <div>
+                <lightning:combobox disabled="{!v.showDetail}" label="Manufacturing route" value="{!v.CompetitorProduct.Manufacturing_route__c}" placeholder="Add Option" options="{!v.manufaRoutePickList}"/>
+            </div> 
+        </div>
+        
+        <div class="slds-col_bump-left">
+            <div>
+                <lightning:combobox disabled="{!v.showDetail}" label="Purchased department" value="{!v.CompetitorProduct.Purchased_Department__c}" placeholder="Add Option" options="{!v.purchaseDepPickList}"/>
+            </div> 
+        </div>
+    </div>
+    <div class="slds-grid" style="margin-left:20px;margin-right:20px;">
+        <div>
+            <lightning:input disabled="{!v.showDetail}" label="Email" name="input3" style="width: 204px;"  placeholder="Type Here..." value="{!v.CompetitorProduct.Email__c}" />
+            
+        </div>
+        <div class="slds-col_bump-left">
+            
+            <div>
+                <lightning:input  disabled="{!v.showDetail}" label="Purchased by" name="input3" style="width: 204px;"  placeholder="Type Here..." value="{!v.CompetitorProduct.Purchased_by__c}" />
+            </div> 
+        </div>
+    </div>
+    <br/>
+    <table  border="1">
+        <tr style="background-color: #3EBACB;">
+            <th>
+                
+            </th >
+            <th style="padding-left: 4px;text-align:center;">
+                Sl No
+            </th>
+            <th style="padding-left: 4px;text-align:center;">
+                Parameters
+            </th>
+            <th style="padding-left: 4px;text-align:center;">
+                As per bill
+            </th>
+            <th style="padding-left: 4px;text-align:center;">
+                Physical analysis
+            </th>
+            <th style="padding-left: 4px;text-align:center;">
+                Remarks
+            </th>
+        </tr>
+        <tr>
+            <th rowspan="4" style="text-align:center;">
+                Material
+            </th>
+            <td style="text-align:center;">
+                1
+            </td>
+            <td>
+                Color of the metal
+            </td>
+            <td>
+              <!--<lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Color_of_the_metal__c}" placeholder="Add Option" options="{!v.colorOfMetalPickList}"/>-->
+              <c:MultivaluePicklistComp options ="{!v.colorOfMetalPickList}" multiValpicklistName = "Color_of_the_metal__c" isdisabled="{!v.showDetail}" selectedOptions="{!v.CompetitorProduct.Color_of_the_metal__c}"/>
+            </td>
+            <td>
+              <!--<lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Color_of_the_metal_Physical_analysis__c}" placeholder="Add Option" options="{!v.colorOfMetalPickList}"/>-->
+                <c:MultivaluePicklistComp options ="{!v.colorOfMetalPickList2}" multiValpicklistName = "Color_of_the_metal_Physical_analysis__c" isdisabled="{!v.showDetail}" selectedOptions="{!v.CompetitorProduct.Color_of_the_metal_Physical_analysis__c}"/>
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Color_of_the_metal_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            
+            <td style="text-align:center;">
+                2
+            </td>
+            <td>
+                Purity (checked by fire assay/EDXRF)
+            </td>
+            <td>
+             <!--   <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Purity_Competitor_Billing__c}" placeholder="Add Option" options="{!v.purityPickList}"/>-->
+                    <c:MultivaluePicklistComp options ="{!v.purityPickList}" multiValpicklistName = "Purity_Competitor_Billing__c" isdisabled="{!v.showDetail}" selectedOptions="{!v.CompetitorProduct.Purity_Competitor_Billing__c}"/>            
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Purity_Physical_analysis__c}" />
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Purity_remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            
+            <td style="text-align:center;">
+                3
+            </td>
+            <td>
+                Gross weight in grams
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Gross_Weight_Competitor_Billing__c}" />
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Gross_Weight_Physical_analysis__c}" />
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Gross_Weight_Remarks__c}" />
+            </td>
+        </tr>
+
+        <tr>
+            
+            <td style="text-align:center;">
+                4
+            </td>
+            <td>
+                Net weight in grams
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Net_Weight_Competito_Billing__c}" onchange="{!c.handlechange}"/>
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Net_Weight_Physical_analysis__c}" />
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Net_Weight_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            <th rowspan="4" style="text-align:center;">
+                Stone
+            </th>
+            <td style="text-align:center;">
+                5
+            </td>
+            <td>
+                Stone detail
+            </td>
+            <td>
+                <!-- <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Stone_Detail_Competitor_Billing__c}" placeholder="Add Option" options="{!v.stoneDetailPickList}"/>-->
+                <c:MultivaluePicklistComp options ="{!v.stoneDetailPickList}" multiValpicklistName = "Stone_Detail_Competitor_Billing__c" isdisabled="{!v.showDetail}" selectedOptions="{!v.CompetitorProduct.Stone_Detail_Competitor_Billing__c}"/>            
+            </td>
+            <td>
+               <!-- <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Stone_Detail__c}" placeholder="Add Option" options="{!v.stoneDetailPickList}"/>-->
+                <c:MultivaluePicklistComp options ="{!v.stoneDetailPickList2}" multiValpicklistName = "Stone_Detail__c" isdisabled="{!v.showDetail}" selectedOptions="{!v.CompetitorProduct.Stone_Detail__c}"/>            
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Stone_detail_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:center;">
+                6
+            </td>
+            <td>
+                Stone quality
+            </td>
+            <td>
+               <!-- <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Stone_Quality_Competitor_Billing__c}" placeholder="Add Option" options="{!v.stoneQualityPickList}"/>-->
+               <c:MultivaluePicklistComp options ="{!v.stoneQualityPickList}" multiValpicklistName = "Stone_Quality_Competitor_Billing__c" isdisabled="{!v.showDetail}" selectedOptions="{!v.CompetitorProduct.Stone_Quality_Competitor_Billing__c}"/>
+            </td>
+            <td>
+               <!-- <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Stone_Quality_Physical_analysis__c}" placeholder="Add Option" options="{!v.stoneQualityPickList}"/>-->
+                <c:MultivaluePicklistComp options ="{!v.stoneQualityPickList2}" multiValpicklistName = "Stone_Quality_Physical_analysis__c" isdisabled="{!v.showDetail}" selectedOptions="{!v.CompetitorProduct.Stone_Quality_Physical_analysis__c}"/>
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Stone_quantity_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:center;">
+                7
+            </td>
+            <td>
+                Color
+            </td>
+            <td>
+                <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Colour__c}" placeholder="Add Option" options="{!v.colorPickList}"/>
+            </td>
+            <td>
+                <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Color__c}" placeholder="Add Option" options="{!v.colorPickList}"/>
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Color_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            <td style="text-align:center;">
+                8
+            </td>
+            <td>
+                Weight in carat
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Weight_in_Carat_Competitor_Billing__c}"  onchange="{!c.handlechange}" />
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Weight_in_Carat__c}" />
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Weight_in_Carat_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            <th rowspan="7" style="text-align:center;">
+                Finish
+            </th>
+            <td style="text-align:center;">
+                9
+            </td>
+            <td>
+                Prong thickness in mm
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Prong_thickness_in_mm_Competitor_Bill__c}" />
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Prong_thickness_Physical_analysis__c}" />
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Prong_thickness_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            
+            <td style="text-align:center;">
+                10
+            </td>
+            <td>
+                Setting type
+            </td>
+            <td>
+                <!-- <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Setting_Type_Competitor_Billling__c}" placeholder="Add Option" options="{!v.settingTypeBill}"/>-->
+               <c:MultivaluePicklistComp options ="{!v.settingTypeBill}" multiValpicklistName = "Setting_Type_Competitor_Billling__c" isdisabled="{!v.showDetail}" selectedOptions="{!v.CompetitorProduct.Setting_Type_Competitor_Billling__c}"/>            
+            </td>
+            <td>
+               <!-- <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Setting_Type_PA__c}" placeholder="Add Option" options="{!v.settingType}"/>-->
+               <c:MultivaluePicklistComp options ="{!v.settingType}" multiValpicklistName = "Setting_Type_PA__c" isdisabled="{!v.showDetail}" selectedOptions="{!v.CompetitorProduct.Setting_Type_PA__c}"/>            
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Setting_Type_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            
+            <td style="text-align:center;">
+                11
+            </td>
+            <td>
+                Stone visibility
+            </td>
+            <td>
+                
+            </td>
+            <td>
+                <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Stone_Visibility_Physical_analysis__c}" placeholder="Add Option" options="{!v.settingTypePA}"/>
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Stone_Visibility_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            
+            <td style="text-align:center;">
+                12
+            </td>
+            <td>
+                Finish
+            </td>
+            <td>
+                <!-- <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Finish_Competitor_Billing__c}" placeholder="Add Option" options="{!v.finishBillingList}"/>  -->
+                <c:MultivaluePicklistComp options ="{!v.finishBillingList}" multiValpicklistName = "Finish_Competitor_Billing__c" isdisabled="{!v.showDetail}" selectedOptions="{!v.CompetitorProduct.Finish_Competitor_Billing__c}"/>
+            </td>
+            <td>
+             <!-- <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Finish_Physical_analysis1__c}" placeholder="Add Option" options="{!v.settingTypePA}"/> -->
+                <c:MultivaluePicklistComp options ="{!v.finishPAList}" multiValpicklistName = "Finish_Physical_analysis1__c" isdisabled="{!v.showDetail}" selectedOptions="{!v.CompetitorProduct.Finish_Physical_analysis1__c}"/>                
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Finish_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            
+            <td style="text-align:center;">
+                13
+            </td>
+            <td>
+                Plating
+            </td>
+            <td>
+               <!-- <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Plating_Competitor_Billing__c}" placeholder="Add Option" options="{!v.platingBillingList}"/> -->
+               <c:MultivaluePicklistComp options ="{!v.platingBillingList}" multiValpicklistName = "Plating_Competitor_Billing__c" isdisabled="{!v.showDetail}" selectedOptions="{!v.CompetitorProduct.Plating_Competitor_Billing__c}"/>
+
+            </td>
+            <td>
+                <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Plating_Physical_analysis__c}" placeholder="Add Option" options="{!v.settingTypePA}"/>
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}"   placeholder="Type Here..." value="{!v.CompetitorProduct.Plating_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            
+            <td style="text-align:center;">
+                14
+            </td>
+            <td>
+                Marking
+            </td>
+            <td>
+                <!--<lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Marking_Competitor_Billing__c}" /> -->
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Marking_Physical_analysis__c}" />
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Marking_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            
+            <td style="text-align:center;">
+                15
+            </td>
+            <td>
+                Findings used
+            </td>
+            <td>
+                <!-- <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Findings_used_Competitor_Billing__c}" />  -->
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Findings_used_Physical_analysis__c}" />
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Findings_used_Remarks__c}" />
+            </td>
+        </tr>
+    </table>
+    <br/>
+    <table  border="1">
+        <tr style="background-color: #3EBACB;">
+            <th colspan="3" style="text-align:center;">
+                Pricing comparison
+            </th>
+            <th style="text-align:center;">
+                Competitor
+            </th>
+            <th style="text-align:center;">
+                Equalent at tanishq
+            </th>
+            <th style="text-align:center;">
+                Conclusion
+            </th>
+            <th style="text-align:center;">
+                Remarks
+            </th>
+        </tr>
+        <tr>
+            <th rowspan="7" style="text-align:center;">
+                Cost
+            </th>
+            <td style="text-align:center;">
+                16
+            </td>
+            <td>
+                Gold rate per gram
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Gold_Rate_Gram_Competitor_Billing__c }" onchange="{!c.handlechange}"/>
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Gold_Rate_per_Gram_Equalent_at_Tanishq__c}" />
+            </td>
+            
+            <td>
+                <lightning:input step="0.001" type="number"  disabled="{!true}" name="input3"  value="{!v.CompetitorProduct.Gold_Rate_per_Gram_Conclusion__c}" />
+                
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Gold_Rate_per_Gram_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            
+            <td style="text-align:center;">
+                17
+            </td>
+            <td>
+                Stone rate per carat
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Stone_Rate_per_Carat_Competitor__c}" onchange="{!c.handlechange}" />
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Stone_Rate_per_Carat_Equalent_at_Tanishq__c}" />
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number"  disabled="{!true}" name="input3"   value="{!v.CompetitorProduct.Stone_Rate_per_Carat_Conclusion__c}" />
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Stone_Rate_per_Carat_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            
+            <td style="text-align:center;">
+                18
+            </td>
+            <td>
+                Gold price (gold rate X weight)
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Gold_price_Competitor__c}" />
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Gold_price_Equalent_at_Tanishq__c}" />
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number"  disabled="{!true}" name="input3"  value="{!v.CompetitorProduct.Gold_price_Conclusion__c}" />
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Gold_price_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            
+            <td style="text-align:center;">
+                19
+            </td>
+            <td>
+                Stone price ( stone rate X weight)
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Stone_price_Competitor__c}" />
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Stone_price_Equalent_at_Tanishq__c}" />
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number"  disabled="{!true}" name="input3"   value="{!v.CompetitorProduct.Stone_price_Conclusion__c}" />
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Stone_price_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            
+            <td style="text-align:center;">
+                20
+            </td>
+            <td>
+                Making charges 
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Making_charges_Competitor__c}" />
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Making_charges_Equalent_at_Tanishq__c}" />
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number"  disabled="{!true}" name="input3"  value="{!v.CompetitorProduct.Making_charge_Conclusion__c}" />
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Making_charge_Remarks__c}" />
+            </td>
+        </tr>
+        <tr>
+            
+            <td style="text-align:center;">
+                21
+            </td>
+            <td>
+                Paid
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Total_amount_paid_Competitor__c}" />
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Total_amount_paid_Equalent_at_Tanishq__c}" />
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number"  disabled="{!true}"  value="{!v.CompetitorProduct.Total_amount_paid_Conclusion__c}" />
+            </td>
+            <td>
+                <lightning:input disabled="{!v.showDetail}" name="input3"   placeholder="Type Here..." value="{!v.CompetitorProduct.Total_amount_paid_Remarks__c}" />
+            </td>
+        </tr>
+        <!--
+        <tr>
+            
+            <td style="text-align:center;">
+                22
+            </td>
+            <td>
+                Difference
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" name="input3" disabled="{!v.showDetail}"  placeholder="Type Here..." value="{!v.CompetitorProduct.Difference_Competitor__c}" />
+            </td>
+            <td>
+                <lightning:input step="0.001" type="number" name="input3" disabled="{!v.showDetail}"  placeholder="Type Here..." value="{!v.CompetitorProduct.Difference_Equalent_at_Tanishq__c}" />
+            </td>
+            <td>
+                <lightning:input name="input3" disabled="{!v.showDetail}"  placeholder="Type Here..." value="{!v.CompetitorProduct.Difference_Conclusion__c}" />
+            </td>
+            <td>
+                <lightning:input name="input3" disabled="{!v.showDetail}"  placeholder="Type Here..." value="{!v.CompetitorProduct.Difference_Remarks__c}" />
+            </td>
+        </tr>  -->
+    </table>
+    <br/>
+    <br/>
+    
+    <div class="slds-grid slds-gutters" style="margin-left:20px;margin-right:20px;">
+        <div class="slds-col">
+            <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Workmenship_Aesthetics__c}" label="Workmenship/Aesthetics" placeholder="Add Option" options="{!v.settingTypePA}"/>
+        </div>
+        <div class="slds-col">
+            <lightning:input disabled="{!v.showDetail}" name="input3" label="Authenticity "  placeholder="Type Here..." value="{!v.CompetitorProduct.Authenticity__c}" />
+        </div>
+        <div class="slds-col">
+            <lightning:input disabled="{!v.showDetail}" name="input3" label="Other observation /Special features"   placeholder="Type Here..." value="{!v.CompetitorProduct.Other_observation_Special_features__c}" />
+        </div>
+    </div>
+    <div class="slds-grid slds-gutters" style="margin-left:20px;margin-right:20px;">
+        
+        <div class="slds-col">
+           <!-- <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Attachment__c}" label="Attachment" placeholder="Add Option" options="{!v.attachmentPickList}"/>-->
+            <label class="slds-form-element__label" for="combobox-unique-id-3">Attachment</label>
+            <c:MultivaluePicklistComp options ="{!v.attachmentPickList}" multiValpicklistName = "Attachment__c" isdisabled="{!v.showDetail}" selectedOptions="{!v.CompetitorProduct.Attachment__c}"/>
+        </div>
+        <div class="slds-col">
+            <lightning:combobox disabled="{!v.showDetail}" value="{!v.CompetitorProduct.Ovearall_Comment__c}" label="Ovearall comment" placeholder="Add Option" options="{!v.settingTypePA}"/>
+        </div>
+        <div class="slds-col">
+            <lightning:input disabled="{!v.showDetail}" name="input3" label="Remarks"   placeholder="Type Here..." value="{!v.CompetitorProduct.Remarks__c}" />
+        </div>
+    </div>
+    <br/>
+    <div style="padding-left: 35px;
+    padding-right: 35px;">
+        
+        <table >
+            <tr>
+                <th >
+                    Signature            
+                </th>
+                <td style="padding-right:8px;">
+                    <lightning:input disabled="{!v.showDetail}" type="text" label="Investigated by" value="{!v.CompetitorProduct.Investigated_by__c}" />
+                </td>
+                <td>
+                    <lightning:input disabled="{!v.showDetail}" type="text" label="Approved by" value="{!v.CompetitorProduct.Approved_by__c}" />
+                </td>
+            </tr>
+            <tr>
+                <th>
+                    Date
+                </th>
+                <td style="padding-right:8px;">
+                    <lightning:input disabled="{!v.showDetail}" type="date" value="{!v.CompetitorProduct.Investigated_date__c}" />
+                </td>
+                <td>
+                    <lightning:input disabled="{!v.showDetail}" type="date" value="{!v.CompetitorProduct.Approved_date__c}" />
+                </td>
+            </tr>
+        </table>
+    </div>
+    <br/>
+    <br/>
+    <div class="slds-align_absolute-center">
+        <aura:if isTrue="{!!v.showDetail}">
+            <button onclick="{!c.cancel}" class="slds-button slds-button_neutral">Cancel</button>
+            <aura:if isTrue="{!v.isNew}">
+                <button onclick="{!c.clickSave}" class="slds-button slds-button_brand">Save</button>
+            </aura:if>
+            <aura:if isTrue="{!!v.isNew}">
+                <button onclick="{!c.updateRec}" class="slds-button slds-button_brand">Update</button>
+            </aura:if>
+        </aura:if>
+    </div>
+    <br/>
+    <br/>
+    
+    <div >
+        <c:MultivaluePicklistComp options ="{!v.finishBillingList}" multiValpicklistName = "Finish_Competitor_Billing__c" isdisabled="{!v.showDetail}" />
+    </div>
+</aura:component>

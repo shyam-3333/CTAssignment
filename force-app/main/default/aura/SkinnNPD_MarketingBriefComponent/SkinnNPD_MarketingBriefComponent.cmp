@@ -1,0 +1,1148 @@
+<aura:component controller="SkinnNPD_PickListController"
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+    access="global">
+    <!--Attribute-->
+    <aura:attribute name="revisionActivation" type="List" />
+    <aura:attribute name="sObjectName" type="String" />
+    <aura:attribute name="fieldName" type="String" />
+    <aura:attribute name="PickListValues" type="Object" />
+    <aura:attribute name="OwnerPickListVal" type="Object" />
+    <aura:attribute name="TypePickListVal" type="Object" />
+    <aura:attribute name="selectedSkinnCollectionValue" type="String" />
+    <aura:attribute name="selectedOwnerVal" type="String" />
+    <aura:attribute name="selectedTypeVal" type="String" />
+    <aura:attribute name="skinnNPDTemplateItemId" type="String" />
+    <aura:attribute name="toggleSearch" type="boolean" default="false" />
+    <aura:attribute name="modelList" type="List" />
+    <aura:attribute name="toggleMod" type="boolean" default="false" />
+    <aura:attribute name="stageActList" type="List" />
+    <aura:attribute name="mapOfTypeWhithStageActivity" type="Map" />
+    <aura:attribute name="formToggle" type="boolean" default="false" />
+    <aura:attribute name="selectedModelId" type="String" default="" />
+    <aura:attribute name="stageActivitylevelDisplay" type="List" />
+    <aura:attribute name="planStartDate" type="Date" />
+    <aura:attribute name="planEndDate" type="Date" />
+    <aura:attribute name="rollingStartDate" type="Date" />
+    <aura:attribute name="rollingEndDate" type="Date" />
+    <aura:attribute name="actualStartDate" type="Date" />
+    <aura:attribute name="actualEndDate" type="Date" />
+    <aura:attribute name="status" type="String" />
+    <aura:attribute name="tentativeLaunchPlan" type="String" />
+    <aura:attribute name="collectionReference" type="String" />
+    <aura:attribute name="approvalStatus" type="String" default="None" />
+    <aura:attribute name="plannedLeadTime" type="Integer" />
+    <aura:attribute name="actualLeadTime" type="Integer" />
+    <aura:attribute name="ownership" type="String" />
+    <aura:attribute name="commentsRemarks" type="String" />
+    <aura:attribute name="selectedCollectionTemplateId" type="String" />
+    <aura:attribute name="stageName" type="String" />
+    <aura:attribute name="marketingValue" type="String" />
+    <aura:attribute name="Spinner" type="boolean" default="false" />
+    <aura:attribute name="previousStageName" type="String" default="" />
+    <aura:attribute name="currentStageName" type="String" default="" />
+    <aura:attribute name="skinnStageId" type="String" />
+    <aura:attribute name="selectedFormIndex" type="Integer" />
+    <aura:attribute name="attachment" type="Object[]" />
+    <aura:attribute name="attachmentObject" type="Object" />
+    <aura:attribute name="AttachmentList" type="List" default="[]" />
+    <aura:attribute name="stageType" type="String" default="" />
+    <aura:attribute name="addNote" type="Object" default="{}" />
+    <aura:attribute name="toggleNote" type="boolean" default="false" />
+    <aura:attribute name="noteTitle" type="String" default="" />
+    <aura:attribute name="noteBody" type="String" default="" />
+    <aura:attribute name="cancelNote" type="boolean" />
+    <aura:attribute name="IsSaveButtonClick" type="boolean" default="false" />
+    <aura:attribute name="ownerOfRecord" type="String" default="" />
+    <aura:attribute name="isStageActive" type="Boolean" />
+    <aura:attribute name="revisionStatusValue" type="String" />
+    <aura:attribute name="activateR1" type="Boolean" default="false" />
+    <aura:attribute name="activateR2" type="Boolean" default="false" />
+    <aura:attribute name="activateR3" type="Boolean" default="false" />
+    <aura:attribute name="activateR4" type="Boolean" default="false" />
+    <aura:attribute name="activateR5" type="Boolean" default="false" />
+    <aura:attribute name="r1StartDate" type="Date" />
+    <aura:attribute name="r1EndDate" type="Date" />
+    <aura:attribute name="r2StartDate" type="Date" />
+    <aura:attribute name="r2EndDate" type="Date" />
+    <aura:attribute name="r3StartDate" type="Date" />
+    <aura:attribute name="r3EndDate" type="Date" />
+    <aura:attribute name="r4StartDate" type="Date" />
+    <aura:attribute name="r4EndDate" type="Date" />
+    <aura:attribute name="r5StartDate" type="Date" />
+    <aura:attribute name="r5EndDate" type="Date" />
+    <aura:attribute name="disableDynamic" type="boolean" />
+    <aura:attribute name="toggleTask" type="boolean" default="false" />
+    <aura:attribute name="taskListValues" type="List" default="[]" />
+    <aura:attribute name="subjectTask" type="String" />
+    <aura:attribute name="statusTask" type="String" />
+    <aura:attribute name="priorityToTask" type="String" />
+    <aura:attribute name="assignNameTask" type="String" />
+    <aura:attribute name="activityDateTask" type="String" />
+    <aura:attribute name="commentTask" type="String" />
+    <aura:attribute name="subjectTaskPickList" type="List" />
+    <aura:attribute name="statusTaskPickList" type="List" />
+    <aura:attribute name="priorityToTaskPickList" type="List" />
+    <aura:attribute name="toggleTaskSubject" type="boolean" default="false" />
+    <aura:attribute name="listNotes" type="List" default="[]" />
+    <aura:attribute name="successorRelatedTo" type="String" default="" />
+    <aura:attribute name="successorName" type="String" default="" />
+    <aura:attribute name="successorEmail" type="String" default="" />
+    <aura:attribute name="toggleTaskSuccessorInfo" type="boolean" default="false" />
+    <aura:attribute name="listTaskUser" type="List" />
+    <aura:attribute name="isHasActivity" type="boolean" />
+    <aura:attribute name="actualStartDateDisable" type="boolean" />
+    <aura:attribute name="disabeActualEnd" type="boolean" />
+    <aura:attribute name="skinnCollectionRecordType" type="String" />
+    <aura:attribute name="R1Status" type="String" default="Not Started" />
+    <aura:attribute name="R2Status" type="String" default="Not Started" />
+    <aura:attribute name="R3Status" type="String" default="Not Started" />
+    <aura:attribute name="R4Status" type="String" default="Not Started" />
+    <aura:attribute name="R5Status" type="String" default="Not Started" />
+    <aura:attribute name="submitforApproval" type="boolean" default="false" />
+    <aura:attribute name="isRecordLock" type="boolean" default="false" />
+    <aura:attribute name="approvalHistory" type="List" default="{}" />
+    <aura:attribute name="showApprovalHistoryCmp" type="boolean" default="false" />
+    <aura:attribute name="cuurentStageINformation" type="Skinn_Collection_Template__c" />
+    <aura:attribute name="url" type="String" />
+    <aura:attribute name="IsRevisionInPro" type="boolean" />
+    <aura:attribute name="approvalCount" type="Decimal" />
+    <aura:attribute name="r1Approval" type="String" />
+    <aura:attribute name="r2Approval" type="String" />
+    <aura:attribute name="r3Approval" type="String" />
+    <aura:attribute name="r4Approval" type="String" />
+    <aura:attribute name="r5Approval" type="String" />
+    <aura:attribute name="skinnItemParentId" type="String" />
+    <aura:attribute name="productLaunchDate" type="Date" />
+
+    <!--Handler-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <!-- <lightning:layoutItem flexibility="auto" padding="around-small">-->
+    <!--loading spinner start... style=Brand Medium (blue dots)-->
+    <aura:if isTrue="{!v.Spinner}">
+        <div aura:id="spinnerId" class="slds-spinner_container" style="position: fixed;">
+            <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+    <!-- Loading spinner end-->
+    <lightning:card title="" class="slds-p-around_large">
+        <div class="slds-section slds-is-open">
+            <h3 class="slds-section__title slds-theme_success">
+                <span class="slds-truncate slds-p-horizontal_small" title="Section Title"
+                    style="font-weight: bold;">Skinn NPD</span>
+            </h3>
+            <div aria-hidden="false" class="slds-section__content">
+                <form class="slds-form slds-form_compound">
+                    <div class="slds-form-element__control">
+                        <fieldset class="slds-form-element">
+                            <div class="slds-form-element__group">
+                                <div class="slds-form-element__row">
+                                    <div class="slds-form-element slds-size_1-of-3 ">
+                                        <lightning:select name="collectionPickListName" aura:id="collectionPickListId"
+                                            label="Select Collection" required="true"
+                                            value="{!v.selectedSkinnCollectionValue}">
+                                            <aura:iteration items="{!v.PickListValues}" var="collectionVar">
+                                                <option text="{!collectionVar.label}" value="{!collectionVar.value}"
+                                                    selected="{!collectionVar.selected}"></option>
+                                            </aura:iteration>
+                                        </lightning:select>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3 slds-p-left_x-small">
+                                        <lightning:select name="OwnerPickListName" aura:id="OwnerPickListId"
+                                            label="Select Ownership" required="true" value="{!v.selectedOwnerVal}"
+                                            onchange="{!c.QwnerPikChange}">
+                                            <aura:iteration items="{!v.OwnerPickListVal}" var="OwnerVar">
+                                                <option text="{!OwnerVar.label}" value="{!OwnerVar.value}"
+                                                    selected="{!OwnerVar.selected}"></option>
+                                            </aura:iteration>
+                                        </lightning:select>
+                                    </div>
+                                    <div class="slds-col slds-size_1-of-3 slds-p-left_x-small "
+                                        style="padding-top:21px;" onclick="{!c.displayTabs}">
+                                        <lightning:icon iconName="standard:search" alternativeText="standard search" />
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <!--<aura:if isTrue = "{!v.toggleSearch}">
+                        	<lightning:button variant="brand" aura:id="marketingStageId" label ="MarketingStage" onclick="{!c.marketingStageMethod}"/>
+                        </aura:if> -->
+                        <aura:if isTrue="{!v.toggleMod}">
+                            <aura:iteration items="{!v.modelList}" var="modVal" indexVar="index">
+                                <input type="button" class="slds-button slds-button_brand" id="{!index +',Mod'}"
+                                    label="{!modVal.Name}" value="{!modVal.Name}" onclick="{!c.stageActivity}" />
+                            </aura:iteration>
+
+                            <div><br /></div>
+                            <aura:if isTrue="{!v.stageActList.length!=0}">
+                                <div class="slds-grid slds-gutters">
+                                    <div class="slds-col slds-size_1-of-3">
+                                        <div class="slds-scrollable"
+                                            style="height: auto;width: auto;box-shadow: 0px 2px 5px darkgrey;">
+                                            <div class="slds-col slds-size_2-of-2">
+                                                <table class="slds-table">
+                                                    <tbody>
+                                                        <aura:iteration items="{!v.stageActList}" var="collectiondata"
+                                                            indexVar="indexval">
+                                                            <tr>
+                                                                <td scope="row" data-label="Select">
+                                                                    <!-- <ui:outputText value="{" />-->
+                                                                    <aura:if
+                                                                        isTrue="{!collectiondata.stageStatus=='In Progress'}">
+                                                                        <lightning:icon iconName="utility:forward"
+                                                                            alternativeText="In Progress"
+                                                                            size="x-small" />
+                                                                    </aura:if>
+                                                                    <aura:if
+                                                                        isTrue="{!collectiondata.stageStatus=='Not Started'}">
+                                                                        <lightning:icon iconName="utility:warning"
+                                                                            alternativeText="Not Started"
+                                                                            variant="warning" size="x-small" />
+                                                                    </aura:if>
+                                                                    <aura:if
+                                                                        isTrue="{!collectiondata.stageStatus=='Completed'}">
+                                                                        <lightning:icon iconName="action:approval"
+                                                                            alternativeText="Completed"
+                                                                            size="x-small" />
+                                                                    </aura:if>
+                                                                    <aura:if isTrue="{!collectiondata.type=='Stage'}">
+                                                                        <a style="color:chocolate;"
+                                                                            Id="{!indexval+','+'SAct'}" title="Stage"
+                                                                            onclick="{!c.inputForm}">{!collectiondata.stageActivityName}</a>
+                                                                        <lightning:helptext content="Stage" />
+                                                                    </aura:if>
+                                                                    <aura:if
+                                                                        isTrue="{!collectiondata.type=='Sub-Stage'}">
+                                                                        <a style="color:deeppink;"
+                                                                            Id="{!indexval+','+'SAct'}"
+                                                                            title="Sub-Stage"
+                                                                            onclick="{!c.inputForm}">{!collectiondata.stageActivityName}</a>
+                                                                        <lightning:helptext content="Sub-Stage" />
+                                                                    </aura:if>
+                                                                    <aura:if
+                                                                        isTrue="{!and(collectiondata.type=='Activity',collectiondata.isStepActive==true)}">
+                                                                        <a style="color:blueviolet;"
+                                                                            Id="{!indexval+','+'SAct'}" title="Activity"
+                                                                            class="{!collectiondata.IsRevisionInPro? 'changeColor': 'sameColor'}"
+                                                                            onclick="{!c.inputForm}">{!collectiondata.stageActivityName}</a>
+                                                                        <lightning:helptext content="Activity" />
+                                                                    </aura:if>
+                                                                    <aura:if
+                                                                        isTrue="{!and(collectiondata.type=='Activity',collectiondata.isStepActive==false)}">
+                                                                        <a style="background-color:red;font-weight: bold;"
+                                                                            Id="{!indexval+','+'SAct'}" title="Activity"
+                                                                            onclick="{!c.inputForm}">{!collectiondata.stageActivityName}</a>
+                                                                        <lightning:helptext content="Activity" />
+                                                                    </aura:if>
+                                                                </td>
+                                                            </tr>
+                                                        </aura:iteration>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!--    <aura:if isTrue="{!or(v.stageType=='Stage',v.stageType=='Sub-Stage')}">-->
+                                    <div class="slds-col slds-size_2-of-3">
+                                        <aura:if isTrue="{!v.formToggle}">
+                                            <table cellpadding="10"
+                                                style="background-color: azure;border-spacing: 13px 16px;border-collapse: separate;box-shadow: 0px 2px 5px darkgrey;">
+                                                <tbody>
+                                                    <tr>
+                                                        <td colspan="1" style="text-align: center;">
+                                                            <aura:if isTrue="{!!v.isStageActive==false}">
+                                                                <lightning:button variant="brand" aura:id="saveDataId"
+                                                                    label="Save" onclick="{!c.saveDataForm}" />
+                                                            </aura:if>
+
+                                                        </td>
+                                                        <aura:if isTrue="{!v.stageType=='Activity'}">
+                                                            <td colspan="1" style="text-align: center;">
+                                                                <aura:if isTrue="{!v.isStageActive==true}">
+                                                                    <lightning:button variant="brand"
+                                                                        aura:id="DeactivateId"
+                                                                        label="Click to Deactivate"
+                                                                        onclick="{!c.deactivateMathod}" />
+                                                                </aura:if>
+                                                                <aura:if isTrue="{!v.isStageActive==false}">
+                                                                    <lightning:button variant="brand"
+                                                                        aura:id="activateId" label="Click to active"
+                                                                        onclick="{!c.activateMathod}" />
+                                                                </aura:if>
+                                                            </td>
+                                                        </aura:if>
+                                                        <aura:if isTrue="{!v.submitforApproval}">
+                                                            <aura:if isTrue="{!!v.isRecordLock}">
+                                                                <td colspan="2" style="text-align: center;">
+                                                                    <lightning:button variant="brand"
+                                                                        aura:id="submitforApprovalId"
+                                                                        label="Submit For Approval"
+                                                                        onclick="{!c.submitForAppMethod}" />
+                                                                </td>
+                                                            </aura:if>
+                                                            <aura:if isTrue="{!v.isRecordLock}">
+                                                                <td colspan="2" style="text-align: center;">
+                                                                    <lightning:button variant="brand"
+                                                                        label="Record Is Locked"
+                                                                        onclick="{!c.RecordIsLoadMethod}" />
+                                                                </td>
+                                                            </aura:if>
+                                                        </aura:if>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="5">
+                                                            <aura:iteration items="{!v.stageActivitylevelDisplay}"
+                                                                var="varEle" indexVar="indexval">
+                                                                <span style="color:rgb(63, 14, 14)">{!varEle}</span>
+                                                                <aura:if
+                                                                    isTrue="{!indexval!=v.stageActivitylevelDisplay.length-1}">
+                                                                    <span
+                                                                        style="color:rgba(19, 92, 226, 0.582)">-></span>
+                                                                </aura:if>
+                                                            </aura:iteration>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <lightning:input aura:id="planStartDateId"
+                                                                label="Planned Start Date" value="{!v.planStartDate}"
+                                                                disabled="true" />
+                                                        </td>
+                                                        <td>
+                                                            <lightning:input aura:id="rollingstartdate"
+                                                                label="Rolling Plan Start Date"
+                                                                value="{!v.rollingStartDate}" disabled="true" />
+                                                        </td>
+                                                        <td>
+                                                            <lightning:input type="Date" aura:id="actualStartDateId"
+                                                                label="Actual Start Date" value="{!v.actualStartDate}"
+                                                                onchange="{!c.onchangeActualDate}"
+                                                                disabled="{!v.actualStartDateDisable}" />
+                                                        </td>
+                                                        <td>
+                                                            <lightning:input aura:id="statusId" label="Status"
+                                                                value="{!v.status}" disabled="true" />
+                                                        </td>
+                                                        <td>
+                                                            <lightning:input style="background-color: lawngreen;" aura:id="tentativeLaunchPlanId" type="Date"
+                                                                label="Planned Launch Date"
+                                                                value="{!v.tentativeLaunchPlan}" disabled="true" />
+                                                        </td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <lightning:input aura:id="planEndDateId"
+                                                                label="Planned End Date" value="{!v.planEndDate}"
+                                                                disabled="true" />
+                                                        </td>
+                                                        <td>
+                                                            <lightning:input aura:id="rollingstartdate"
+                                                                label="Rolling Plan End Date"
+                                                                value="{!v.rollingEndDate}" disabled="true" />
+                                                        </td>
+                                                        <td>
+                                                            <lightning:input aura:id="actualEndDateId"
+                                                                label="Actual End Date" type="Date"
+                                                                value="{!v.actualEndDate}"
+                                                                disabled="{!v.disabeActualEnd}"
+                                                                onchange="{!c.actualEndDateOnchangeMethod}" />
+                                                        </td>
+                                                        <td>
+                                                            <lightning:input aura:id="approvalStatId"
+                                                                label="Approval Status" value="{!v.approvalStatus}"
+                                                                disabled="true" />
+                                                        </td>
+                                                        <td>
+                                                            <lightning:input aura:id="collectionReferenceId"
+                                                                label="Collection Reference"
+                                                                value="{!v.collectionReference}" disabled="true" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+                                                            <lightning:input aura:id="plannedLeadTimeId"
+                                                                label="Planned Lead Time" value="{!v.plannedLeadTime}"
+                                                                disabled="true" />
+                                                        </td>
+                                                        <td>
+                                                            <lightning:input aura:id="ownershipId" label="Ownership"
+                                                                value="{!v.ownerOfRecord}" disabled="true" />
+                                                        </td>
+                                                        <td>
+                                                            <lightning:input aura:id="actualLeadTimeId" type="Number"
+                                                                label="Actual Lead Time" value="{!v.actualLeadTime}"
+                                                                onchange="{!c.onchangeActualLeadTime}"
+                                                                disabled="true" />
+                                                        </td>
+                                                        <aura:if isTrue="{!v.productLaunchDate != 'NaN Date, undefined'}" >
+                                                        <td>
+                                                            <lightning:input style="background-color: lawngreen;" aura:id="productLaunchDateId" type="Date"
+                                                                label="Tentative Launch Date" value="{!v.productLaunchDate}"
+                                                                disabled="true" />
+                                                        </td>
+                                                    </aura:if>
+
+                                                    </tr>
+                                                    <aura:if
+                                                        isTrue="{!and(v.status=='Completed' , v.stageType=='Activity') }">
+                                                        <tr>
+                                                            <td>
+
+                                                                <fieldset class="slds-form-element">
+                                                                    <div class="slds-form-element__group">
+                                                                        <div class="slds-form-element__row">
+                                                                            <div class="slds-col slds-size_1-of-1">
+                                                                                <lightning:select name="revisionStatus"
+                                                                                    aura:id="revisionActivId"
+                                                                                    label="Revision Status"
+                                                                                    value="{!v.revisionStatusValue}"
+                                                                                    onchange="{!c.setRevisionValue}">
+                                                                                    <aura:iteration
+                                                                                        items="{!v.revisionActivation}"
+                                                                                        var="revision">
+                                                                                        <option text="{!revision.label}"
+                                                                                            value="{!revision.value}"
+                                                                                            selected="{!revision.selected}">
+                                                                                        </option>
+                                                                                    </aura:iteration>
+                                                                                </lightning:select>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </fieldset>
+                                                            </td>
+                                                        </tr>
+                                                        <aura:if isTrue="{!v.activateR1}">
+                                                            <tr>
+                                                                <td colspan="2">
+
+                                                                    <fieldset class="slds-form-element">
+                                                                        <div class="slds-form-element__group">
+                                                                            <div class="slds-form-element__row">
+                                                                                <div
+                                                                                    class="slds-form-element slds-size_1-of-2">
+                                                                                    <lightning:input
+                                                                                        aura:id="r1StartDateId"
+                                                                                        label="R1 Start Date"
+                                                                                        type="Date"
+                                                                                        value="{!v.r1StartDate}"
+                                                                                        disabled="{!v.R1Status=='Completed'}"
+                                                                                        onchange="{!c.validateRevistionDatesStartDateOnchangeMethod}" />
+                                                                                </div>
+                                                                                <div
+                                                                                    class="slds-form-element slds-size_1-of-2">
+                                                                                    <lightning:input type="Date"
+                                                                                        aura:id="r1EndDateId"
+                                                                                        label="R1 End Date"
+                                                                                        value="{!v.r1EndDate}"
+                                                                                        disabled="{!v.R1Status=='Completed'}"
+                                                                                        onchange="{!c.validateRevistionDatesEndDateOnchangeMethod}" />
+                                                                                </div>
+                                                                                <div
+                                                                                    class="slds-form-element slds-size_1-of-2">
+                                                                                    <lightning:input
+                                                                                        aura:id="r1EndStatusId"
+                                                                                        label="R1 Status"
+                                                                                        value="{!v.R1Status}"
+                                                                                        disabled="true" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </fieldset>
+                                                                </td>
+                                                            </tr>
+                                                        </aura:if>
+                                                        <aura:if isTrue="{!v.activateR2}">
+                                                            <tr>
+                                                                <td colspan="2">
+
+                                                                    <fieldset class="slds-form-element">
+                                                                        <div class="slds-form-element__group">
+                                                                            <div class="slds-form-element__row">
+                                                                                <div
+                                                                                    class="slds-form-element slds-size_1-of-2">
+                                                                                    <lightning:input
+                                                                                        aura:id="r2StartDateId"
+                                                                                        label="R2 Start Date"
+                                                                                        type="Date"
+                                                                                        value="{!v.r2StartDate}"
+                                                                                        disabled="{!v.R2Status=='Completed'}"
+                                                                                        onchange="{!c.validateRevistionDatesStartDateOnchangeMethod}" />
+                                                                                </div>
+                                                                                <div
+                                                                                    class="slds-form-element slds-size_1-of-2">
+                                                                                    <lightning:input type="Date"
+                                                                                        aura:id="r2EndDateId"
+                                                                                        label="R2 End Date"
+                                                                                        value="{!v.r2EndDate}"
+                                                                                        disabled="{!v.R2Status=='Completed'}"
+                                                                                        onchange="{!c.validateRevistionDatesEndDateOnchangeMethod}" />
+                                                                                </div>
+                                                                                <div
+                                                                                    class="slds-form-element slds-size_1-of-2">
+                                                                                    <lightning:input
+                                                                                        aura:id="r2EndStatusId"
+                                                                                        label="R2 Status"
+                                                                                        value="{!v.R2Status}"
+                                                                                        disabled="true" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </fieldset>
+                                                                </td>
+                                                            </tr>
+                                                        </aura:if>
+                                                        <aura:if isTrue="{!v.activateR3}">
+                                                            <tr>
+                                                                <td colspan="2">
+
+                                                                    <fieldset class="slds-form-element">
+                                                                        <div class="slds-form-element__group">
+                                                                            <div class="slds-form-element__row">
+                                                                                <div
+                                                                                    class="slds-form-element slds-size_1-of-2">
+                                                                                    <lightning:input
+                                                                                        aura:id="r3StartDateId"
+                                                                                        label="R3 Start Date"
+                                                                                        type="Date"
+                                                                                        value="{!v.r3StartDate}"
+                                                                                        disabled="{!v.R3Status=='Completed'}"
+                                                                                        onchange="{!c.validateRevistionDatesStartDateOnchangeMethod}" />
+                                                                                </div>
+                                                                                <div
+                                                                                    class="slds-form-element slds-size_1-of-2">
+                                                                                    <lightning:input type="Date"
+                                                                                        aura:id="r3EndDateId"
+                                                                                        label="R3 End Date"
+                                                                                        value="{!v.r3EndDate}"
+                                                                                        disabled="{!v.R3Status=='Completed'}"
+                                                                                        onchange="{!c.validateRevistionDatesEndDateOnchangeMethod}" />
+                                                                                </div>
+                                                                                <div
+                                                                                    class="slds-form-element slds-size_1-of-2">
+                                                                                    <lightning:input
+                                                                                        aura:id="r3EndStatusId"
+                                                                                        label="R3 Status"
+                                                                                        value="{!v.R3Status}"
+                                                                                        disabled="true" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </fieldset>
+                                                                </td>
+                                                            </tr>
+                                                        </aura:if>
+                                                        <aura:if isTrue="{!v.activateR4}">
+                                                            <tr>
+                                                                <td colspan="2">
+
+                                                                    <fieldset class="slds-form-element">
+                                                                        <div class="slds-form-element__group">
+                                                                            <div class="slds-form-element__row">
+                                                                                <div
+                                                                                    class="slds-form-element slds-size_1-of-2">
+                                                                                    <lightning:input
+                                                                                        aura:id="r4StartDateId"
+                                                                                        label="R4 Start Date"
+                                                                                        type="Date"
+                                                                                        value="{!v.r4StartDate}"
+                                                                                        disabled="{!v.R4Status=='Completed'}"
+                                                                                        onchange="{!c.validateRevistionDatesStartDateOnchangeMethod}" />
+                                                                                </div>
+                                                                                <div
+                                                                                    class="slds-form-element slds-size_1-of-2">
+                                                                                    <lightning:input type="Date"
+                                                                                        aura:id="r4EndDateId"
+                                                                                        label="R4 End Date"
+                                                                                        value="{!v.r4EndDate}"
+                                                                                        disabled="{!v.R4Status=='Completed'}"
+                                                                                        onchange="{!c.validateRevistionDatesEndDateOnchangeMethod}" />
+                                                                                </div>
+                                                                                <div
+                                                                                    class="slds-form-element slds-size_1-of-2">
+                                                                                    <lightning:input
+                                                                                        aura:id="r4EndStatusId"
+                                                                                        label="R4 Status"
+                                                                                        value="{!v.R4Status}"
+                                                                                        disabled="true" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </fieldset>
+
+                                                                </td>
+                                                            </tr>
+                                                        </aura:if>
+                                                        <aura:if isTrue="{!v.activateR5}">
+                                                            <tr>
+                                                                <td colspan="2">
+
+                                                                    <fieldset class="slds-form-element">
+                                                                        <div class="slds-form-element__group">
+                                                                            <div class="slds-form-element__row">
+                                                                                <div
+                                                                                    class="slds-form-element slds-size_1-of-2">
+                                                                                    <lightning:input
+                                                                                        aura:id="r5StartDateId"
+                                                                                        label="R5 Start Date"
+                                                                                        type="Date"
+                                                                                        value="{!v.r5StartDate}"
+                                                                                        disabled="{!v.R5Status=='Completed'}"
+                                                                                        onchange="{!c.validateRevistionDatesStartDateOnchangeMethod}" />
+                                                                                </div>
+                                                                                <div
+                                                                                    class="slds-form-element slds-size_1-of-2">
+                                                                                    <lightning:input type="Date"
+                                                                                        aura:id="r5EndDateId"
+                                                                                        label="R5 End Date"
+                                                                                        value="{!v.r5EndDate}"
+                                                                                        disabled="{!v.R5Status=='Completed'}"
+                                                                                        onchange="{!c.validateRevistionDatesEndDateOnchangeMethod}" />
+                                                                                </div>
+                                                                                <div
+                                                                                    class="slds-form-element slds-size_1-of-2">
+                                                                                    <lightning:input
+                                                                                        aura:id="r5EndStatusId"
+                                                                                        label="R5 Status"
+                                                                                        value="{!v.R5Status}"
+                                                                                        disabled="true" />
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </fieldset>
+
+                                                                </td>
+                                                            </tr>
+                                                        </aura:if>
+                                                    </aura:if>
+                                                    <tr>
+
+                                                        <td colspan="5">
+                                                            <span
+                                                                class="slds-form-element__label">Comments/Remarks</span>
+                                                            <div aura:id="commentsRemarkInputId"
+                                                                class="slds-box editor slds-text-longform">
+                                                                <lightning:textarea value="{!v.commentsRemarks}" />
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td colspan="2">
+                                                            <lightning:input name="file1" type="file"
+                                                                files="{!v.attachment}" label="Attachment"
+                                                                multiple="true" accept="image/png, .zip"
+                                                                onchange="{! c.handleFilesChange }" />
+
+                                                        </td>
+                                                        <td colspan="1">
+                                                            <aura:if isTrue="{!v.attachmentObject!=undefined}">
+                                                                <lightning:button variant="brand" aura:id="saveAttacId"
+                                                                    label="Save File" onclick="{!c.saveAttachment}" />
+                                                            </aura:if>
+                                                        </td>
+                                                        <td colspan="1">
+                                                            <aura:if isTrue="{!v.attachmentObject!=undefined}">
+                                                                <lightning:button variant="brand" aura:id="clearAttacId"
+                                                                    label="ClearFile"
+                                                                    onclick="{!c.clearAttachmentMethod}" />
+                                                            </aura:if>
+                                                        </td>
+                                                        <td colspan="1">
+                                                            <ui:outputText value="{!v.attachmentObject.filename}" />
+                                                        </td>
+                                                    </tr>
+
+                                                    <aura:iteration items="{!v.AttachmentList}" var="attach"
+                                                        indexVar="indexval">
+                                                        <aura:if isTrue="{!indexval==0}">
+                                                            <tr>
+                                                                <td colspan="5">
+                                                                    <ui:outputText value="Attachments" />
+                                                                </td>
+                                                            </tr>
+                                                        </aura:if>
+                                                        <tr>
+                                                            <td>
+                                                                <a id="{!attach.Id}" target="_blank"
+                                                                    onclick="{!c.createRecord}">{!(indexval+1)
+                                                                    +':-'+attach.Name}</a>
+                                                            </td>
+                                                            <!--  <td>
+                                                                <a  href="{!v.url+'/'+attach.Id}" >Go to detail Page</a>
+                                                            </td>-->
+                                                        </tr>
+                                                    </aura:iteration>
+                                                    <tr>
+                                                        <td>
+                                                            <lightning:button variant="brand" aura:id="allNoteId"
+                                                                label="Add Note" onclick="{!c.allNoteMethod}" />
+                                                        </td>
+                                                        <td>
+                                                            <lightning:button variant="brand" aura:id="allNoteId"
+                                                                label="Add Task" onclick="{!c.addTaskMethod}" />
+
+                                                        </td>
+                                                        <td>
+                                                            <lightning:button variant="brand" aura:id="successorId"
+                                                                label="Successor Info"
+                                                                onclick="{!c.SuccessorInfoMethod}" />
+                                                        </td>
+                                                        <td>
+                                                            <lightning:button variant="brand"
+                                                                aura:id="ApprovalHistoryId" label="Approval History"
+                                                                onclick="{!c.showApproHistMethod}" />
+                                                        </td>
+                                                    </tr>
+
+                                                    <aura:iteration items="{!v.listNotes}" var="note"
+                                                        indexVar="indexval">
+                                                        <aura:if isTrue="{!indexval==0}">
+                                                            <tr>
+                                                                <th colspan="5">Notes</th>
+                                                            </tr>
+                                                        </aura:if>
+                                                        <tr>
+                                                            <td colspan="5">
+                                                                <a id="{!note.Id}" target="_blank"
+                                                                    onclick="{!c.createRecord}"> {!(indexval+1)
+                                                                    +':-'+note.Title}</a>
+
+                                                            </td>
+                                                        </tr>
+                                                    </aura:iteration>
+                                                    <tr>
+                                                        <td colspan="5">
+                                                            <table>
+                                                                <div>
+                                                                    <aura:if isTrue="{!v.toggleTask}">
+
+                                                                        <!--###### MODAL BOX Start######-->
+                                                                        <section role="dialog" tabindex="-1"
+                                                                            aria-labelledby="modal-heading-01"
+                                                                            aria-modal="true"
+                                                                            aria-describedby="modal-content-id-1"
+                                                                            class="slds-modal slds-fade-in-open">
+                                                                            <div class="slds-modal__container">
+                                                                                <!-- ###### MODAL BOX HEADER Start ######-->
+                                                                                <header class="slds-modal__header">
+                                                                                    <lightning:buttonIcon
+                                                                                        iconName="utility:close"
+                                                                                        onclick="{!c.cancelTaskMethod }"
+                                                                                        alternativeText="close"
+                                                                                        variant="bare-inverse"
+                                                                                        class="slds-modal__close" />
+                                                                                    <h2 id="modal-heading-01"
+                                                                                        class="slds-text-heading_medium slds-hyphenate">
+                                                                                        New Task</h2>
+                                                                                </header>
+                                                                                <!--###### MODAL BOX BODY Part Start######-->
+                                                                                <div class="slds-modal__content slds-p-around_medium"
+                                                                                    id="modal-content-id-1">
+
+                                                                                    <lightning:input label="Subject"
+                                                                                        aura:id="validationTask"
+                                                                                        messageWhenValueMissing="Subject is Mandatory"
+                                                                                        required="true"
+                                                                                        value="{!v.subjectTask}" />
+                                                                                    <lightning:button variant="brand"
+                                                                                        label="Search" title="Search"
+                                                                                        onclick="{!c.toggleTasksubjectMethod }" />
+                                                                                    <div>
+                                                                                        <aura:if
+                                                                                            isTrue="{!v.toggleTaskSubject}">
+
+                                                                                            <!--###### MODAL BOX Start######-->
+                                                                                            <section role="dialog"
+                                                                                                tabindex="-1"
+                                                                                                aria-labelledby="modal-heading-01"
+                                                                                                aria-modal="true"
+                                                                                                aria-describedby="modal-content-id-1"
+                                                                                                class="slds-modal slds-fade-in-open">
+                                                                                                <div
+                                                                                                    class="slds-modal__container">
+                                                                                                    <!-- ###### MODAL BOX HEADER Start ######-->
+                                                                                                    <header
+                                                                                                        class="slds-modal__header">
+                                                                                                        <lightning:buttonIcon
+                                                                                                            iconName="utility:close"
+                                                                                                            onclick="{!c.cancelTaskSubjectMethod }"
+                                                                                                            alternativeText="close"
+                                                                                                            variant="bare-inverse"
+                                                                                                            class="slds-modal__close" />
+                                                                                                        <h2 id="modal-heading-01"
+                                                                                                            class="slds-text-heading_medium slds-hyphenate">
+                                                                                                            Subject Name
+                                                                                                        </h2>
+                                                                                                    </header>
+                                                                                                    <!--###### MODAL BOX BODY Part Start######-->
+                                                                                                    <div class="slds-modal__content slds-p-around_medium"
+                                                                                                        id="modal-content-id-1">
+                                                                                                        <aura:iteration
+                                                                                                            items="{!v.subjectTaskPickList}"
+                                                                                                            var="taskSubject"
+                                                                                                            indexVar="indexval">
+                                                                                                            <!-- <option text="{!taskSubject.label}" value="{!taskSubject.value}" >
+                                                                                                                                </option>-->
+                                                                                                            <div>
+                                                                                                                <input
+                                                                                                                    class="slds-button"
+                                                                                                                    type="button"
+                                                                                                                    Id="{!indexval+',Task'}"
+                                                                                                                    value="{!taskSubject.value}"
+                                                                                                                    onclick="{!c.selectedSubjectTaskMethod}" />
+                                                                                                            </div>
+                                                                                                        </aura:iteration>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </section>
+                                                                                            <div
+                                                                                                class="slds-backdrop slds-backdrop_open">
+                                                                                            </div>
+                                                                                            <!--###### MODAL BOX Part END Here ######-->
+
+                                                                                        </aura:if>
+                                                                                    </div>
+                                                                                    <lightning:select
+                                                                                        name="StatusPickListName"
+                                                                                        label="Status"
+                                                                                        aura:id="validationTask"
+                                                                                        messageWhenValueMissing="Status is Mandatory"
+                                                                                        required="true"
+                                                                                        value="{!v.statusTask}">
+                                                                                        <aura:iteration
+                                                                                            items="{!v.statusTaskPickList}"
+                                                                                            var="statusTask">
+                                                                                            <option
+                                                                                                text="{!statusTask.label}"
+                                                                                                value="{!statusTask.value}"
+                                                                                                selected="{!statusTask.selected}">
+                                                                                            </option>
+                                                                                        </aura:iteration>
+                                                                                    </lightning:select>
+                                                                                    <lightning:select
+                                                                                        name="PriorityToPickListName"
+                                                                                        label="PriorityTo"
+                                                                                        aura:id="validationTask"
+                                                                                        messageWhenValueMissing="Priority is Mandatory"
+                                                                                        required="true"
+                                                                                        value="{!v.priorityToTask}">
+                                                                                        <aura:iteration
+                                                                                            items="{!v.priorityToTaskPickList}"
+                                                                                            var="priorityToTask">
+                                                                                            <option
+                                                                                                text="{!priorityToTask.label}"
+                                                                                                value="{!priorityToTask.value}"
+                                                                                                selected="{!priorityToTask.selected}">
+                                                                                            </option>
+                                                                                        </aura:iteration>
+                                                                                    </lightning:select>
+                                                                                    <lightning:select
+                                                                                        name="OwnerPickListName"
+                                                                                        label="AssignName"
+                                                                                        aura:id="validationTask"
+                                                                                        required="true"
+                                                                                        messageWhenValueMissing="Assign Name is Mandatory"
+                                                                                        value="{!v.assignNameTask}">
+                                                                                        <aura:iteration
+                                                                                            items="{!v.listTaskUser}"
+                                                                                            var="OwnerVar">
+                                                                                            <option
+                                                                                                text="{!OwnerVar.label}"
+                                                                                                value="{!OwnerVar.value}"
+                                                                                                selected="{!OwnerVar.selected}">
+                                                                                            </option>
+                                                                                        </aura:iteration>
+                                                                                    </lightning:select>
+                                                                                    <lightning:input
+                                                                                        label="ActivityDate" type="Date"
+                                                                                        value="{!v.activityDateTask}" />
+                                                                                    <lightning:textarea label="Comment"
+                                                                                        value="{!v.commentTask}" />
+                                                                                </div>
+                                                                                <!--###### MODAL BOX FOOTER Part Start ######-->
+                                                                                <footer class="slds-modal__footer">
+                                                                                    <lightning:button variant="neutral"
+                                                                                        label="Cancel" title="Cancel"
+                                                                                        onclick="{! c.cancelTaskMethod }" />
+                                                                                    <lightning:button variant="brand"
+                                                                                        label="Save" title="Save Note"
+                                                                                        onclick="{!c.saveTaskMethod }" />
+                                                                                </footer>
+                                                                            </div>
+                                                                        </section>
+                                                                        <div class="slds-backdrop slds-backdrop_open">
+                                                                        </div>
+                                                                        <!--###### MODAL BOX Part END Here ######-->
+
+                                                                    </aura:if>
+                                                                </div>
+                                                                <div>
+                                                                    <aura:if isTrue="{!v.toggleNote}">
+
+                                                                        <!--###### MODAL BOX Start######-->
+                                                                        <section role="dialog" tabindex="-1"
+                                                                            aria-labelledby="modal-heading-01"
+                                                                            aria-modal="true"
+                                                                            aria-describedby="modal-content-id-1"
+                                                                            class="slds-modal slds-fade-in-open">
+                                                                            <div class="slds-modal__container">
+                                                                                <!-- ###### MODAL BOX HEADER Start ######-->
+                                                                                <header class="slds-modal__header">
+                                                                                    <lightning:buttonIcon
+                                                                                        iconName="utility:close"
+                                                                                        onclick="{!c.cancelNote }"
+                                                                                        alternativeText="close"
+                                                                                        variant="bare-inverse"
+                                                                                        class="slds-modal__close" />
+                                                                                    <h2 id="modal-heading-01"
+                                                                                        class="slds-text-heading_medium slds-hyphenate">
+                                                                                        New Note
+                                                                                    </h2>
+                                                                                </header>
+                                                                                <!--###### MODAL BOX BODY Part Start######-->
+                                                                                <div class="slds-modal__content slds-p-around_medium"
+                                                                                    id="modal-content-id-1">
+                                                                                    <div>
+                                                                                        <table>
+                                                                                            <tr>
+                                                                                                <td colspan="5">
+                                                                                                    <lightning:input
+                                                                                                        aura:id="finalValidation"
+                                                                                                        required="true"
+                                                                                                        label="Title"
+                                                                                                        messageWhenValueMissing="Title is Mandatory"
+                                                                                                        value="{!v.noteTitle}" />
+                                                                                                </td>
+                                                                                            </tr>
+
+                                                                                            <tr>
+                                                                                                <td colspan="5">
+                                                                                                    <div aura:id="commentsRemarkInputId"
+                                                                                                        class="slds-box editor slds-text-longform">
+                                                                                                        <lightning:textarea
+                                                                                                            label="Body"
+                                                                                                            value="{!v.noteBody}" />
+                                                                                                    </div>
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                            <tr>
+                                                                                                <td colspan="5"
+                                                                                                    style="text-align: center;">
+                                                                                                    <lightning:button
+                                                                                                        variant="brand"
+                                                                                                        aura:id="saveNoteId"
+                                                                                                        label="Save"
+                                                                                                        onclick="{!c.saveNoteMethod}" />
+                                                                                                </td>
+                                                                                            </tr>
+                                                                                        </table>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </section>
+                                                                        <div class="slds-backdrop slds-backdrop_open">
+                                                                        </div>
+                                                                        <!--###### MODAL BOX Part END Here ######-->
+
+                                                                    </aura:if>
+                                                                </div>
+                                                                <aura:iteration items="{!v.taskListValues}"
+                                                                    var="taskInst" indexVar="indexval">
+                                                                    <aura:if isTrue="{!indexval==0}">
+                                                                        <tr>
+                                                                            <th>Task</th>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <td>Subject</td>
+                                                                            <td>Status</td>
+                                                                            <td>PriorityToTask</td>
+                                                                            <td>AssignName</td>
+                                                                            <td>ActivityDateTask</td>
+                                                                            <td>CommentTask</td>
+                                                                        </tr>
+                                                                    </aura:if>
+                                                                    <tr>
+                                                                        <td>
+                                                                            <lightning:input disabled="true"
+                                                                                value="{!taskInst.Subject}" />
+                                                                        </td>
+                                                                        <td>
+                                                                            <lightning:input disabled="true"
+                                                                                value="{!taskInst.Status}" />
+                                                                        </td>
+                                                                        <td>
+                                                                            <lightning:input disabled="true"
+                                                                                value="{!taskInst.Priority}" />
+                                                                        </td>
+                                                                        <td>
+                                                                            <lightning:input disabled="true"
+                                                                                value="{!taskInst.UserName}" />
+                                                                        </td>
+                                                                        <td>
+                                                                            <lightning:input disabled="true"
+                                                                                value="{!taskInst.ActivityDate}" />
+                                                                        </td>
+                                                                        <td>
+                                                                            <lightning:input disabled="true"
+                                                                                value="{!taskInst.Description}" />
+                                                                        </td>
+                                                                    </tr>
+                                                                </aura:iteration>
+                                                            </table>
+                                                        </td>
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td>
+
+                                                            <aura:if isTrue="{!v.toggleTaskSuccessorInfo}">
+
+                                                                <!--###### MODAL BOX Start######-->
+                                                                <section role="dialog" tabindex="-1"
+                                                                    aria-labelledby="modal-heading-01" aria-modal="true"
+                                                                    aria-describedby="modal-content-id-1"
+                                                                    class="slds-modal slds-fade-in-open">
+                                                                    <div class="slds-modal__container">
+                                                                        <!-- ###### MODAL BOX HEADER Start ######-->
+                                                                        <header class="slds-modal__header">
+                                                                            <lightning:buttonIcon
+                                                                                iconName="utility:close"
+                                                                                onclick="{!c.successorInfoCloseMethod }"
+                                                                                alternativeText="close"
+                                                                                variant="bare-inverse"
+                                                                                class="slds-modal__close" />
+                                                                            <h2 id="modal-heading-01"
+                                                                                class="slds-text-heading_medium slds-hyphenate">
+                                                                                Successor Info
+                                                                            </h2>
+                                                                        </header>
+                                                                        <!--###### MODAL BOX BODY Part Start######-->
+                                                                        <div class="slds-modal__content slds-p-around_medium"
+                                                                            id="modal-content-id-1">
+                                                                            <div>
+                                                                                <table>
+                                                                                    <tr>
+                                                                                        <th>
+                                                                                            RelatedTo
+                                                                                        </th>
+                                                                                        <th>
+                                                                                            SuccessorName
+                                                                                        </th>
+                                                                                        <th>
+                                                                                            Email
+                                                                                        </th>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <td>
+                                                                                            {!v.successorRelatedTo}
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            {!v.successorName}
+                                                                                        </td>
+                                                                                        <td>
+                                                                                            {!v.successorEmail}
+                                                                                        </td>
+                                                                                    </tr>
+                                                                                </table>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </section>
+                                                                <div class="slds-backdrop slds-backdrop_open">
+                                                                </div>
+                                                                <!--###### MODAL BOX Part END Here ######-->
+
+                                                            </aura:if>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+
+
+
+                                        </aura:if>
+                                    </div>
+
+                                </div>
+                            </aura:if>
+                        </aura:if>
+                    </div>
+                    <!--Approval History-->
+                    <aura:if isTrue="{!v.showApprovalHistoryCmp}">
+
+                        <!--###### MODAL BOX Start######-->
+                        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+                            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                            <div class="slds-modal__container">
+                                <!-- ###### MODAL BOX HEADER Start ######-->
+                                <header class="slds-modal__header">
+                                    <lightning:buttonIcon iconName="utility:close" onclick="{!c.cancelHistyryMethod}"
+                                        alternativeText="close" variant="bare-inverse" class="slds-modal__close" />
+                                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                                        Approval History
+                                    </h2>
+                                </header>
+                                <!--###### MODAL BOX BODY Part Start######-->
+                                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                                    <div>
+                                        <table class="slds-table slds-table--bordered slds-max-medium-table--stacked">
+                                            <thead>
+                                                <tr class="slds-text-title--caps">
+                                                    <th scope="col">
+                                                        <div class="slds-truncate" title="Date">Date</div>
+                                                    </th>
+                                                    <th scope="col">
+                                                        <div class="slds-truncate" title="Status">Status</div>
+                                                    </th>
+                                                    <th scope="col">
+                                                        <div class="slds-truncate" title="Assigned To">Assigned To</div>
+                                                    </th>
+                                                    <th scope="col">
+                                                        <div class="slds-truncate" title="Approver">Approver</div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- aura equivalent of apex:repeat -->
+                                                <aura:iteration items="{!v.approvalHistory}" var="step">
+                                                    <tr>
+                                                        <td data-label="Date">
+                                                            <div class="slds-truncate" title="Date">
+                                                                {!step.CreatedDate}</div>
+                                                        </td>
+                                                        <td data-label="Status">
+                                                            <div class="slds-truncate" title="Status">{!step.StepStatus}
+                                                            </div>
+                                                        </td>
+                                                        <td data-label="Assigned To">
+                                                            <div class="slds-truncate" title="Assigned To">
+                                                                {!step.Actor.Name}</div>
+                                                        </td>
+                                                        <td data-label="Approver">
+                                                            <div class="slds-truncate" title="Approver">
+                                                                {!step.Actor.Name}</div>
+                                                        </td>
+                                                    </tr>
+                                                </aura:iteration>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open">
+                        </div>
+                        <!--###### MODAL BOX Part END Here ######-->
+
+                    </aura:if>
+                </form>
+            </div>
+        </div>
+    </lightning:card>
+
+</aura:component>

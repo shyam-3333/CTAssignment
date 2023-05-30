@@ -1,0 +1,129 @@
+<apex:page action="{!generatePDF}"  
+           applyHtmlTag="false"   
+           sidebar="false"     
+           showHeader="false"     
+           cache="true"
+           controller="ProposalToolGeneratePDFData"
+           renderAs="advanced_pdf"
+           docType="html-5.0">
+    <head>    
+        <style type="text/css">
+            <apex:stylesheet value="https://fonts.googleapis.com/css?family=Alef"/>
+            
+            @page {
+            size: A4 landscape;    
+            border: 1px solid black;    
+            padding-left: 5px;    
+            padding-right: 5px;    
+            padding-top: 20px;  
+            @bottom-left {
+            content: element(footer);
+            }
+            @bottom-right {
+            content: element(footer1);
+            }
+            
+            
+            
+            }
+            
+            div.footer {
+            display: block;
+            padding: 5px;
+            position: running(footer);
+            }
+            .pagenumber:before {
+            content: counter(page);
+            }
+            .pagecount:before {
+            content: counter(pages);
+            }
+            
+            div.footer1 {
+            display: block;
+            padding: 5px;
+            text-align:right;
+            
+            position: running(footer1);
+            }            
+            
+            .alef {
+            font-family: 'Montserrat';
+            }
+            
+            
+            
+        </style>   
+    </head>
+    <br/>
+    
+    <div class="footer">
+        <div><span class="pagenumber"/></div>
+    </div>
+    
+    <div class="footer1">
+        <div>Explore more @ 
+            <a href="https://titangifting.com/">Titan Gifting</a>
+        </div>
+    </div>
+    <!-- Import the Design System style sheet -->
+    <div style="padding-top: 10px;">
+        <apex:image url="{!$Resource.Proposal_tool_Page1}" width="100%" />
+    </div>
+    <div style="padding-top: 10px;">
+        <apex:image url="{!$Resource.Proposal_tool_Page2}" width="100%"/>
+    </div>
+    <div style="padding-top: 10px;">
+        <apex:image url="{!$Resource.Proposal_tool_Page3}" width="100%"/>
+    </div>
+    
+    <!--<div>
+<apex:image url="{!$Resource.Proposal_tool_Page5}" width="100%" />
+</div>
+<div>
+<apex:image url="{!$Resource.Proposal_tool_Page6}" width="100%" />
+</div>-->
+    <!--<div class="page-break" style="text-align:center;page-break-after:always;padding-top: 50px;">
+<apex:image url="{!$Resource.Proposal_tool_Page7}" width="100%" />
+</div>-->
+    
+    <apex:repeat value="{!mainData}" var="pro" id="theRepeat">
+        
+        <div style="padding-top: 10px;padding-left: 15px;display:inline-block;;width:  480px;height: 480px;"> 
+            <img src="{!pro.productImage}" alt="Notebook" style="width:375px;height: 470px;padding-left: 65px;"/>
+            <div style="padding-left: 25px;">
+                
+                <div style="font-family: serif;padding-top: 35px;">
+                    Brand : {!pro.productBrand}
+                </div>
+                
+                <div style="font-family: serif;">
+                    
+                    SKU : {!pro.sellebleSKU}
+                </div>
+                <apex:outputPanel rendered="{!pro.isBlankListPrice}">
+                    <div style="font-family: serif;">
+                        
+                        MRP : RS. {!pro.productListPrice}
+                    </div>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!pro.isBlankOfferPrice}">
+                    
+                    <div style="font-family: serif;">
+                        
+                        Offer Price : RS. {!pro.productOfferPrice}
+                    </div>
+                </apex:outputPanel>
+                <div style="font-family: serif;">
+                    Description : {!pro.productFullName}
+                    
+                </div>
+            </div>
+            
+        </div>   
+        
+    </apex:repeat>
+    <div>
+        <apex:image url="{!$Resource.Proposal_tool_Page4}" width="100%"/>
+    </div>
+</apex:page>

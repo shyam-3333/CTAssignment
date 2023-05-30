@@ -1,0 +1,234 @@
+<apex:page controller="NPD_SearchActivityController" readOnly="false" sidebar="false" >
+<apex:pageMessages id="pageMsg"></apex:pageMessages>
+<apex:stylesheet value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+<apex:stylesheet value="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+<link href='https://fonts.googleapis.com/css?family=Mako' rel='stylesheet' type='text/css'/>
+<script>
+ var newWin=null;
+ function openLookupPopup(name, id)
+ {
+  var url="/apex/NPD_CollectionDisplayPopUp?namefield=" + name + "&idfield=" + id+"&pageName=Collectionlookup";
+  newWin=window.open(url, 'Popup','height=500,width=600,left=100,top=100,resizable=no,scrollbars=yes,toolbar=no,status=no');
+  if (window.focus) 
+  {
+   newWin.focus();
+  }
+    
+     return false;
+    } 
+       
+ function closeLookupPopup()
+ {
+    if (null!=newWin)
+    {
+       newWin.close();
+    }  
+ }
+  
+ function openLookupPopupModel(name, id) 
+ {
+   
+  
+  var url="/apex/NPD_ModelPopUp?namefield=" + name + "&idfield=" + id+"&pageName=Model";
+  newWin=window.open(url, 'Popup','height=500,width=600,left=100,top=100,resizable=no,scrollbars=yes,toolbar=no,status=no');
+  if (window.focus) 
+  {
+   newWin.focus();
+  }
+    
+     return false;
+    } 
+       
+ function closeLookupPopupModel()
+ {
+    if (null!=newWin)
+    {
+       newWin.close();
+    }  
+ }
+ 
+</script>
+<style>
+.date-design {
+  background: #cae5e4 none repeat scroll 0 0;
+  border: 1px solid #00b6b0;
+  display: inline-block;
+  font-family: "Mako",sans-serif;
+  margin-bottom: 15px;
+  margin-left: 15px;
+  margin-top: 5px;
+  width: 97%;
+}
+    .heading-title {
+      background-color: #00b6b0;
+      color: #fff;
+      font-size: 16px;
+      padding: 5px 10px; margin-bottom: 10px;
+    }
+    .date-design label{
+     font-size: 13px; 
+     padding: 0;
+     font-family: 'Mako', sans-serif;
+     font-weight: normal;
+     }
+     .date-design .text {
+      background-color: #fff;
+      border-radius: 5px;
+      color: #444;
+     
+      min-height: 25px;
+      padding: 2px 5px;
+      
+      font-family: 'Mako', sans-serif;
+    }
+    .tertiaryPalette {
+      background: #00b6b0 none repeat scroll 0 0 !important;padding: 8px 10px !important;
+    }
+    .pbSubheader h3{font-family: 'Mako', sans-serif;font-size: 16px !important;}
+    .text input {
+      border: medium none;
+      width: 100%;
+    }
+.btn {
+  background-color: #095d80 !important;
+  background-image: none !important;
+  border: medium none !important;
+  color: #fff !important;
+  padding: 5px 10px !important;
+}
+   .marginbottom15{margin-bottom:15px;} 
+</style>
+<apex:form >
+
+<div class="row">
+<div class="date-design">
+
+<div class="heading-title">Planned Order Loading</div>
+
+<div class="col-md-6">
+<div class="form-group clearfix">
+<apex:inputHidden value="{!strCollectionsId}" id="targetId" />
+<label class="col-md-3">Collection </label>
+<div class="col-md-5 text"> <apex:inputText size="40" value="{!strCollectionsName}" id="targetName" onFocus="this.blur()" disabled="false"/></div>
+<div class="col-md-4"> <a href="#" onclick="openLookupPopup('{!$Component.targetName}', '{!$Component.targetId}'); return false"><i class="fa fa-search"></i>
+</a></div>
+
+
+
+</div>
+</div>
+
+<div class="col-md-6">
+<div class="form-group clearfix">
+ <apex:inputHidden value="{!strModelid}" id="targetIdModel" />
+<label class="col-md-3">Model</label>
+<div class="col-md-5 text"><apex:inputText size="40" value="{!strModelName}" id="targetNameModel" onFocus="this.blur()" disabled="false"/></div>
+<div class="col-md-4"><a href="#" onclick="openLookupPopupModel('{!$Component.targetNameModel}', '{!$Component.targetIdModel}'); return false"><i class="fa fa-search"></i></a></div>
+</div>
+</div>
+
+
+</div>
+</div>
+
+
+
+
+
+
+<div>
+<apex:outputPanel id="pblk">
+
+<div class="text-center"><apex:commandButton action="{!searchActivity}" value="Search" id="theButton" rerender="PbTable,pblk,test"/></div>
+<div class="marginbottom15 clearfix"></div>
+    
+    
+    
+   <!-- <apex:outputPanel id="PbTable" rendered="{!blnShowTable}">-->
+     <apex:pageBlock rendered="{!if(AND(blnShowTable=true,lstActivity.SIZE>0) ,true,false)}">
+        <apex:pageBlockSection title="Planned Order Activity List" columns="1" id="actid"  >
+             
+                
+                    <apex:pageBlockTable value="{!lstActivity}"  var="activity" rendered="{!if(((blnShowTable=true)),true,false)}" >
+                           <apex:column headervalue="Activity Ref No" width="15%">
+                                
+                                <apex:outputfield value="{!activity.SerialNo__c}" />
+                           </apex:column>     
+                           <apex:column headervalue="Collection Name" >
+                           <apex:outputfield value="{!activity.Collection_reference__c}"  />
+                           </apex:column>
+                           
+                           <apex:column headervalue="Model No" >
+                           <apex:outputfield value="{!activity.NPD_Project_Name__c}"  />
+                           </apex:column>
+                           
+                           <apex:column headervalue="Actual Start Date" >
+                           <apex:outputfield value="{!activity.Actual_Start_Date__c}"  />
+                           </apex:column>
+                           
+                            <apex:column headervalue="Watch Delivery Plan Date" >
+                           <apex:outputfield value="{!activity.First_Month_Watch_Delivery_Date__c}"  />
+                           </apex:column>
+                           
+                             <apex:column headervalue="Status" >
+                           <apex:outputfield value="{!activity.Status__c}"  />
+                           </apex:column>
+                          
+                    </apex:pageBlockTable>
+                    
+                    
+                    <div class="marginbottom15 clearfix"></div>  
+                </apex:pageBlockSection>
+               
+              <!--  <div class="text-center"> <apex:commandButton id="save" styleClass="text-center" value="Save" action="{!EditBulkActivity}"/></div> -->
+                <div class="text-center"> <apex:commandButton id="Edit" styleClass="text-center" value="Edit" action="{!EditBulkActivity}" rerender="PbTableEdit,pblk,test"/></div>
+   <!--  </apex:outputpanel> -->
+      </apex:pageBlock>
+     
+     <!--<apex:outputPanel id="PbTableEdit" rendered="NOT{!blnShowTable}">-->
+     <apex:pageBlock rendered="{!if(((blnShowTablesave=false)),false,true)}"> 
+        <apex:pageBlockSection title="Planned Order Activity List" columns="1" id="actid"  >
+             
+                
+                    <apex:pageBlockTable value="{!lstActivity}"  var="activity" rendered="{!if(((blnShowTablesave=false)),false,true)}" >
+                           <apex:column headervalue="Activity Ref No" width="15%">
+                                
+                                <apex:outputfield value="{!activity.SerialNo__c}" />
+                           </apex:column>     
+                           <apex:column headervalue="Collection Name" >
+                           <apex:outputfield value="{!activity.Collection_reference__c}"  />
+                           </apex:column>
+                           
+                           <apex:column headervalue="Model No" >
+                           <apex:outputfield value="{!activity.NPD_Project_Name__c}"  />
+                           </apex:column>
+                           
+                           <apex:column headervalue="Actual Start Date" >
+                           <apex:inputfield value="{!activity.Actual_Start_Date__c}"  />
+                           </apex:column>
+                           
+                            <apex:column headervalue="Watch Delivery Plan Date" >
+                           <apex:inputfield value="{!activity.First_Month_Watch_Delivery_Date__c}"  />
+                           </apex:column>
+                           
+                             <apex:column headervalue="Status" >
+                           <apex:outputfield value="{!activity.Status__c}"  />
+                           </apex:column>
+                          
+                    </apex:pageBlockTable>
+                    
+                    
+                    <div class="marginbottom15 clearfix"></div>  
+                </apex:pageBlockSection>
+              
+              <div class="text-center"> <apex:commandButton id="save" styleClass="text-center" value="Save" action="{!SaveBulkActivity}"/></div> 
+             <!-- <div class="text-center"> <apex:commandButton id="Edit" styleClass="text-center" value="Edit" action="{!EditBulkActivity}"/></div> -->
+    <!-- </apex:outputpanel>-->
+       </apex:pageBlock>
+    </apex:outputpanel>
+</div>
+
+
+
+</apex:form>
+</apex:page>

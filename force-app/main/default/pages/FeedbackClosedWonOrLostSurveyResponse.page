@@ -1,0 +1,76 @@
+<!--  
+* Class Name   : FeedbackClosedWonOrLostSurveyResponse
+* Created By   : Gauri v Namade
+* Created Date : 20-08-2022
+* Description  :this vf page is used to display received information.
+-->
+<apex:page standardController="Customer_Feedback__c" showHeader="false" sidebar="false" >
+    
+    <apex:panelGrid columns="2" width="80%">
+        <img src="{!$Resource.TitanCompanyLogo}" width="200px" height="60px" align="left"/>
+        
+        <apex:panelGrid columns="2" width="97%">
+            <h1 style="font-size:30px;text-align:center;font-family:Bold Roman;color:#737373"><center>Voice of Customer Response</center></h1>
+        </apex:panelGrid>
+    </apex:panelGrid>
+    <style>
+        input {
+        padding-top: 0;
+        width: 100%;
+        }
+        table.detailList {
+        width: 49% !important;
+        text-align: center;
+        margin: 0 auto;
+        border: 4px solid #00b0ab;
+        }
+        .bPageBlock {
+        background-color:white!important;
+        }
+      
+          .bPageBlock
+        {
+        border-top:none;
+       
+        }
+        .apexp .bPageBlock .detailList{
+        background:white!important;
+        }
+    </style>
+    
+    <apex:form >
+        <apex:pageBlock mode="view" >
+            <br/>
+            <apex:pageBlockSection collapsible="false"  columns="1" >
+                <h1 style="font-size:15px;text-align:center;font-family:nunito light">1) Rate for the below parameters from the dropdown list :</h1><br/><br/>              
+                
+                <p  style="font-size:15px;font-family:nunito light" >a) How do you rate the quality of the solution provided:</p>
+                <apex:outputText style="font-size:15px;font-family:nunito light;font-weight:bold;" value="{0, number, 00}">&nbsp; &nbsp;&nbsp;<apex:param value="{!Customer_Feedback__c.Rate_The_Quality_Of_Solution_Provided__c}"/></apex:outputText>
+                <p  style="font-size:15px;font-family:nunito light" >b) How do you rate adherence to schedule (Submission of the Quote):</p>
+                <apex:outputText style="font-size:15px;font-family:nunito light;font-weight:bold;" value=" {0, number, 00}">&nbsp; &nbsp;&nbsp;<apex:param value="{!Customer_Feedback__c.Adherence_To_schedule__c}" /></apex:outputText>  
+                <p  style="font-size:15px;font-family:nunito light" >c) How do you rate the quality of documents submitted (Technical Proposal):</p>
+                <apex:outputText style="font-size:15px;font-family:nunito light;font-weight:bold;" value=" {0, number, 00}">&nbsp; &nbsp;&nbsp;<apex:param value="{!Customer_Feedback__c.Rate_The_Quality_Of_Documents__c}" /></apex:outputText>
+                <p  style="font-size:15px;font-family:nunito light" >d) How do you rate our customer engagement during the entire project:</p>
+                <apex:outputText style="font-size:15px;font-family:nunito light;font-weight:bold;" value=" {0, number, 00}">&nbsp; &nbsp;&nbsp;<apex:param value="{!Customer_Feedback__c.Rate_Our_Customer_Engagement__c}" /></apex:outputText>
+                <p  style="font-size:15px;font-family:nunito light" >e) How do you rate the overall competency (Knowledge and Skills):</p>
+                <apex:outputText style="font-size:15px;font-family:nunito light;font-weight:bold;" value=" {0, number, 00}">&nbsp; &nbsp;&nbsp;<apex:param value="{!Customer_Feedback__c.Rate_the_Overall_Competency__c}" /></apex:outputText>
+                
+            </apex:pageBlockSection>
+            <br/>
+            <apex:pageBlockSection collapsible="false" columns="1" >
+                <h1 style="font-size:15px;text-align:center;font-family:nunito light">2) Reason/Reasons for Awarding the order (Kindly check whichever is applicable and add comments if any, (Multiple selections possible) :</h1><br/>
+                
+                <apex:outputField style="font-size:15px;text-align:left;font-family:nunito light"  value="{!Customer_Feedback__c.Competency__c}"/>
+                <apex:outputField style="font-size:15px;text-align:left;font-family:nunito light" value="{!Customer_Feedback__c.Price__c}"/>
+                <apex:outputField style="font-size:15px;text-align:left;font-family:nunito light" value="{!Customer_Feedback__c.Lead_Time__c}"/>
+                <apex:outputField style="font-size:15px;text-align:left;font-family:nunito light" value="{!Customer_Feedback__c.Customer_Engagement__c}"/>
+                <apex:outputField style="font-size:15px;text-align:left;font-family:nunito light" value="{!Customer_Feedback__c.Other_Factor_Suggestion__c}"/>
+            </apex:pageBlockSection>
+            <br/>
+            <apex:pageBlockSection collapsible="false" columns="1" >
+                <h1 style="font-size:15px;text-align:center;font-family:nunito light">3) Suggestions for improvement :</h1><br/>
+                <apex:outputText style="font-size:15px;font-family:nunito light" value="  - {!Customer_Feedback__c.Feedback_Suggestions__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

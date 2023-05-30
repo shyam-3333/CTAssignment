@@ -1,0 +1,562 @@
+<apex:page standardController="Quote" sidebar="false" extensions="Stockinventory" id="pageId">
+
+   <apex:pageMessages id="msg"/>
+
+<script type="text/javascript">
+     //check/uncheck the selected records in the selected list
+    function checkAll(cb,cbid){
+            var inputElem = document.getElementsByTagName("input");                    
+            for(var i=0; i<inputElem.length; i++){            
+                 if(inputElem[i].id.indexOf(cbid)!=-1){                                       
+                    inputElem[i].checked = cb.checked;
+                 }
+            }
+    }
+</script>
+<style>
+td
+ {
+   text-align:left;
+   padding-left:10px;
+ }
+  th
+ {
+   text-align:center;
+   padding-left:10px;k
+ }
+ .popup
+ {
+      position: fixed;
+     z-index: 10000;
+     top: 245px;
+     left: 48%;
+     margin-left: -550px;
+     margin-right: 50px;
+     width: 1100px;
+     height: 160px;
+     background: #7FD1FF;
+     box-shadow: 0 0 15px #ccc;
+     border: 1px solid #aaa;
+     border-radius: 10px;
+     display: none;
+     overflow-y: scroll;
+ }
+</style>
+<script type="text/javascript">
+    function showPopup(t,recId){
+      
+        document.getElementById("pageId:program:pgblk:pList").value = t.value;
+       
+        if(t.value =='Lost' ||t.value =='Regret' ||t.value =='Won' ||t.value =='PO Received' ){
+       
+           dummyCall(t.value,recId);
+      
+       }
+        //document.getElementById('modal').style.display = 'block';
+        
+    }
+    function showPopupNew(){
+     
+        document.getElementById('modal').style.display = 'block';
+
+    }
+    function hidePopup() {
+        document.getElementById('modal').style.display = 'none';
+    }
+</script>
+    <apex:form id="program">
+        <apex:actionfunction action="{!dummycall}" name="dummyCall"  rerender="panelId" oncomplete="showPopupNew();">
+            <apex:param name="recstatus" value=""/>
+            <apex:param name="recId" value=""/>
+        </apex:actionfunction>
+        <script>
+
+              function funcost() {
+
+                  costvalue();
+
+               }
+
+               function fun(valuesof){
+
+                   myfun(valuesof);
+
+               }
+         </script>
+   <script>
+    window.onload = function(){
+        jQuery('input[type=text]').blur();
+        jQuery('[id$=pList]').focus();
+    };
+</script>
+   
+
+ <script type="text/javascript">
+  function loading(val) {
+    if (val) {
+      document.getElementById('contentLoading').style.display = 'block';
+      document.getElementById('contentLoaded').style.display = 'none';
+    }
+    else {
+      document.getElementById('contentLoading').style.display = 'none';
+      document.getElementById('contentLoaded').style.display = 'block';
+    }
+  }
+  
+</script>
+
+<script>
+    function loadingAuto(val) {
+    if (val) {
+      document.getElementById('contentLoadingAuto').style.display = 'block';
+      document.getElementById('contentLoadedAuto').style.display = 'none';
+    }
+    else {
+      document.getElementById('contentLoadingAuto').style.display = 'none';
+      document.getElementById('contentLoadedAuto').style.display = 'block';
+    }
+  }
+</script>
+
+
+<apex:pageBlock id="pgblk">
+ 
+   <!-- Added by pawani for auto save functionality -->
+       
+         <apex:actionPoller interval="5000" action="{!autoSave}" rerender="out" status="savestatus"/>
+         
+         <apex:actionStatus id="savestatus" onstart="loadingAuto(true)" onstop="loadingAuto(false)">
+                      
+            </apex:actionStatus> 
+
+             <div id="contentLoadingAuto"  style="display:none;"> 
+                    <b> Auto Saving....</b>
+                    <div style="text-align: center;">
+                   <img src="/img/loading.gif" align="left"/>
+         </div> 
+    </div>
+
+            <table width="100%" border="0" cellspacing="0" cellpadding="3" id="thetable1"> 
+
+                <tbody>
+
+                    <tr bgcolor="#3399FF"> 
+
+                    <td width="5%"></td>
+
+                    <td width="95%" align="Left"> 
+
+                        <font size="3" color="#ffffff">Add Line Items</font>
+
+                    </td> 
+
+                    </tr>
+
+                </tbody>
+
+            </table>  
+
+            
+            <div id="testt">
+       
+            
+             <apex:actionFunction action="{!removeItemDetails}" name="apexsave1" immediate="true" rerender="pgblk">
+                 <apex:param name="xx" value="{!call}" assignTo="{!strrmv}"/>
+             </apex:actionFunction>
+
+            
+ <div id="contentLoadedAuto">
+ 
+ 
+      <apex:outputpanel id="panelId">
+                <div class = "popup" id = "modal" >
+                <center>
+                        <apex:commandButton value="Save" action="{!save2}" id="savecmdbtn"/>
+                        <apex:commandButton value="Cancel" oncomplete="hidePopup();" id="cnlbtn"/>
+                </center>
+                
+ <table  style="border-bottom:none" cellspacing="0" cellpadding="3">
+                <tr style="border-bottom:none">
+                    <td style="border-bottom:none">
+                  
+                     <apex:actionRegion >
+                   
+                      <apex:inputField value="{!qi.Part_Status__c}"  id="pList" style="display:none;">
+                           
+                     </apex:inputField>
+                   
+                       </apex:actionRegion>
+                    </td>
+                    <td style="border-bottom:none">
+                    
+                      <apex:outputPanel id="abcd" rendered="{!qi.Part_Status__c == 'Lost'}"  >
+                         <b>Lost Reason</b> <apex:inputField id="cityList" value="{!qi.Reasone_for_Lost__c}" />
+                                          <apex:actionSupport event="onchange"  reRender="TT" />
+                          <td style="border-bottom:none">
+                          <apex:outputPanel id="TT"><apex:inputField rendered="{!qi.Reasone_for_Lost__c == 'Others'}" value="{!qi.Others_lost__c}"/> </apex:outputPanel>
+                      </td>
+                       </apex:outputPanel>
+                    </td>
+                    
+                    <td style="border-bottom:none">
+                    
+                      <apex:outputPanel id="ab" rendered="{!qi.Part_Status__c == 'Won' || qi.Part_Status__c == 'PO Received'}"  >
+                        
+                        <table border="0" cellspacing="6">
+                        
+                             <tr>     
+                               <td > <b>FA Value: </b>  <apex:inputField value="{!qi.FA_Value__c}"/> </td>
+                               <td colspan="3"> <b>FA Quantity: </b>  <apex:inputField value="{!qi.FA_Quantity__c}"/> </td>
+                            </tr> 
+                        
+                             <tr> 
+                                <td> <b>NRE PO Number: </b>  <apex:inputField style="width:127px" value="{!qi.NRE_PO_Number__c}"/> </td>
+                                <td> <b>NRE PO Value: </b>  <apex:inputField style="width:155px" value="{!qi.NRE_PO_Value__c}"/> </td>
+                                <td colspan="2"> <b>NRE PO Date: </b>  <apex:inputField value="{!qi.NRE_PO_Date__c}"/> </td>
+                           </tr> 
+                           
+                            <tr>
+                              <td>  <b>PO Number: </b>  <apex:inputField style="width:155px" value="{!qi.PO_number__c}"/> </td>
+                              <td>  <b>PO Value: </b>  <apex:inputField style="width:183px" value="{!qi.PO_Value__c}"/> </td>
+                              <td>  <b>PO Quantity: </b>  <apex:inputField value="{!qi.PO_Quantity__c}"/> </td>
+                              <td>  <b>PO Date: </b>  <apex:inputField value="{!qi.PO_Date__c}"/> </td>
+                            </tr>
+                          
+                           
+                          </table>
+                           
+                           
+                       </apex:outputPanel>
+                    </td>
+                    
+      <td  style="border-bottom:none">
+            
+             <apex:outputPanel rendered="{!qi.Part_Status__c == 'Regret'}"  >
+           <table style="border-bottom:none" cellspacing="0" cellpadding="3" >
+            <tr style="border-bottom:none">
+             <td style="border-bottom:none">
+               
+               <b>Regret Reason 1</b><apex:inputField id="cityList1" value="{!qi.Reasone_for_Regret__c}" rendered="{!qi.Part_Status__c == 'Regret'}"><br/>
+                
+               <apex:actionSupport event="onchange"  reRender="nn" focus="cityList1"/></apex:inputField>
+               
+               <td style="border-bottom:none"><apex:outputPanel id="nn"><apex:inputField rendered="{!qi.Reasone_for_Regret__c == 'Others'}" value="{!qi.Others1__c}"/><br/> </apex:outputPanel></td>
+             
+               <td style="border-bottom:none"><b>Sub Regret Reason 1</b> <apex:inputField id="cityList2" value="{!qi.Sub_Reasone_for_Regret__c}" /><br/> </td>
+             </td>
+             <td style="border-bottom:none"> 
+             
+              <b>Regret Reason 2</b> <apex:inputField id="cityList3" value="{!qi.Reasone_for_Regret_2__c}" >
+                 <apex:actionSupport event="onchange" reRender="MM" /></apex:inputField>
+             
+              <td style="border-bottom:none"><apex:outputPanel id="MM"> <apex:inputField rendered="{!qi.Reasone_for_Regret_2__c == 'Others'}" value="{!qi.Others2__c}"/></apex:outputPanel></td>
+            <td style="border-bottom:none">  <b>Sub Regret Reason 2</b>  <apex:inputField id="cityList4" value="{!qi.Sub_Reasone_for_Regret_2__c}"/><br/> </td>
+         
+              
+             </td>
+             
+             </tr>
+             </table>
+          </apex:outputPanel>
+           </td>
+            
+       
+         </tr>
+            </table>
+ 
+</div>        
+        
+       
+    </apex:outputpanel>   
+    <apex:variable value="{!0}" var="rowNum"/>
+    
+  <apex:pageBlockTable id="tableitem" value="{!SRLI}" var="item" style="background-color:#B5ECFF" >
+          
+           <apex:column >
+                   <apex:facet name="header">
+                          <apex:inputCheckbox id="selectAllChecks" value="{!Item.Delete__c}" onclick="checkAll(this,'eachrow')"/>
+                   </apex:facet>
+                   <apex:inputcheckbox value="{!Item.Delete__c}" id="eachrow"/>
+                   
+               </apex:column>   
+     
+           <apex:column headerValue="Sl. No.">
+              
+               
+              <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+              <center>{!rowNum}</center>
+              
+             </apex:column> 
+         
+            <apex:column headerValue="Optional">
+
+                <apex:inputfield style="width:40px" value="{!Item.Optional__c}" onchange="funcost()"  /> <div align="left"><span id="SDealrKeyName_0"></span></div>
+            
+            </apex:column>
+
+           <apex:column headerValue="Part No" >
+            
+
+                <apex:inputfield style="width:100px;" value="{!Item.Part_No__c}" onchange="funcost()" required="true" /> <div align="left"><span id="SDealrKeyName_0"></span></div>
+            <script>document.getElementById('{!$Component.SDealrKeyName_0}').focus();</script>
+             <apex:param value="{!rowNum}"  assignTo="{!rewnumber}" name="rewnumber"/> 
+            </apex:column>
+          
+               <apex:column headerValue="Part Status" id="status" >
+                 
+                    <table border="0">
+                    
+                            <tr >
+                                <td colspan="4" style="Border:none">
+                                 
+                                      <apex:inputField value="{!item.Part_Status__c}"  id="pList1"  onchange="showPopup(this,'{!item.id}');"/>
+                                </td>    
+             
+               
+               
+               <apex:PanelGroup rendered="{!item.Part_Status__c == 'Regret'}" >
+               
+                               
+                                    <td style="Border:none;">
+                                    <table width="360">   
+                                     
+                                        <tr>
+                                            <td width="180" style="Border:none; vertical-align:top;" ><b>Reason1: </b>{!item.Reasone_for_Regret__c}</td>
+                                            <td width="180" style="Border:none; vertical-align:top;" ><b>Reason2: </b>{!item.Reasone_for_Regret_2__c}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="Border:none; vertical-align:top;" >
+                                            
+                                                <apex:PanelGroup rendered="{!item.Reasone_for_Regret__c == 'Others'}">
+                                                            <b>Other Reason: </b>{!item.Others1__c}
+                                                </apex:PanelGroup>
+                                            
+                                                    
+                                                <apex:PanelGroup rendered="{!item.Reasone_for_Regret__c != 'Others'}">
+                                                            <b>Sub Reason: </b>{!item.Sub_Reasone_for_Regret__c}
+                                                 </apex:PanelGroup>
+                                                
+                                            
+                                            </td>
+                                            <td style="Border:none; vertical-align:top;" >
+                                            
+                                                <apex:PanelGroup rendered="{!item.Reasone_for_Regret_2__c != 'Others'}">
+                                                            <b>Sub Reason: </b>{!item.Sub_Reasone_for_Regret_2__c}
+                                                </apex:PanelGroup>
+                                                
+                                                <apex:PanelGroup rendered="{!item.Reasone_for_Regret_2__c == 'Others'}">
+                                                            <b>Other Reason: </b>{!item.Others2__c}
+                                                </apex:PanelGroup>
+                                            
+                                            
+                                            
+                                            
+                                            </td>
+                                        </tr>
+                              
+                                    </table>    
+                                    </td>
+                                    
+                                 
+                    
+            
+             </apex:PanelGroup>
+          
+             <apex:PanelGroup rendered="{!item.Part_Status__c == 'Lost'}" >
+               
+                    <td colspan="4" style="Border:none">
+                         <table width="360">    
+                        
+                                        <tr>
+                                            <td width="180" style="Border:none"><b>Reason: </b>{!item.Reasone_for_Lost__c}</td>
+                                           
+                                       
+                                            <td width="180" style="Border:none">
+                                            
+                                                 <apex:PanelGroup rendered="{!item.Reasone_for_Lost__c == 'Others'}">
+                                                               <b>Other Reason: </b>{!item.Others_lost__c} 
+                                                </apex:PanelGroup>
+                                            
+                                            
+                                            </td>
+                                            
+                                        </tr>
+                                
+                            </table>   
+                    </td>
+                
+             </apex:PanelGroup>
+              </tr>  
+             
+           </table>
+               
+            </apex:column>       
+                         
+ 
+          <apex:column headerValue="Part Revision">
+
+                <apex:inputfield style="width:100px" value="{!Item.Part_Revision__c}" onchange="funcost()"  /> <div align="left"><span id="SDealrKeyName_0"></span></div>
+
+            </apex:column>
+
+            
+
+            <apex:column headerValue="Drawing Revision">
+
+                <apex:inputfield style="width:100px" value="{!Item.Drawing_Revision__c}" onchange="funcost()"  /> <div align="left"><span id="SDealrKeyName_0"></span></div>
+
+            </apex:column>
+
+            
+             <apex:column headerValue="EAU">
+
+                <apex:inputfield style="width:100px" value="{!Item.EAU_in_no_s__c}" onchange="funcost()"  /> <div align="left"><span id="SDealrKeyName_0"></span></div>
+
+            </apex:column>
+
+            
+
+            <apex:column headerValue="Batch Quantity">
+
+                <apex:inputfield style="width:100px" value="{!Item.Batch_Quantity__c}" onchange="funcost()"  /> <div align="left"><span id="SDealrKeyName_0"></span></div>
+
+            </apex:column>
+
+            <apex:column headerValue="Material Cost / pc">
+
+                <apex:inputfield style="width:100px" value="{!Item.Material_Cost_pc__c}" onchange="funcost()"  /> <div align="left"><span id="SDealrKeyName_0"></span></div>
+
+            </apex:column>
+
+            
+
+            <apex:column headerValue="BOI Cost / pc">
+
+                <apex:inputfield style="width:100px" value="{!Item.BOI_Cost_pc__c}" onchange="funcost()"  /> <div align="left"><span id="SDealrKeyName_0"></span></div>
+
+            </apex:column>
+
+            
+
+            <apex:column headerValue="Spl Process Cost / pc">
+
+                <apex:inputfield style="width:100px" value="{!Item.Spl_Process_Cost_pc__c}" onchange="funcost()"  /> <div align="left"><span id="SDealrKeyName_0"></span></div>
+
+            </apex:column>
+
+            
+
+            <apex:column headerValue="Processing Cost / pc" >
+
+                <apex:inputfield id="pc" style="width:100px"  value="{!Item.Processing_Cost_pc__c}" onchange="funcost()"  /> <div align="left"><span id="SDealrKeyName_0"></span></div>
+
+            </apex:column>
+
+            
+
+            <apex:column headerValue="FAI Cost / pc">
+
+                <apex:inputfield style="width:100px" value="{!Item.FAI_Cost_pc__c}" onchange="funcost()"  /> <div align="left"><span id="SDealrKeyName_0"></span></div>
+
+            </apex:column>
+
+            
+
+            <apex:column headerValue="One Time Dev Cost(NRE)">
+
+                <apex:inputfield style="width:100px" value="{!Item.One_Time_Dev_Cost_NRE__c}" onchange="funcost()"  /> <div align="left"><span id="SDealrKeyName_0"></span></div>
+
+            </apex:column>
+
+              <apex:column headerValue="Part Description">
+
+                <apex:inputfield style="width:100px" value="{!Item.Part_Description__c}" onchange="funcost()"  /> <div align="left"><span id="SDealrKeyName_0"></span></div>
+
+            </apex:column>
+            
+            
+            <apex:column headerValue="Raw Material Grade">
+
+                <apex:inputfield style="width:100px" value="{!Item.Raw_Material_Grade__c}" onchange="funcost()"  /> <div align="left"><span id="SDealrKeyName_0"></span></div>
+
+            </apex:column>
+
+          
+            <apex:column headerValue="Raw Material Specification">
+
+                <apex:inputfield style="width:100px" value="{!Item.Raw_Material_Specification__c}" onchange="funcost()"  /> <div align="left"><span id="SDealrKeyName_0"></span></div>
+
+            </apex:column>
+
+             <apex:column headerValue="Quote Remarks">
+
+                <apex:inputfield style="width:100px" value="{!Item.Remarks__c}" onchange="funcost()"  /> <div align="left"><span id="SDealrKeyName_0"></span></div>
+
+            </apex:column>
+          
+    <apex:variable var="call" value="{!call}"/>
+
+         <script>fun()</script>
+
+  
+    </apex:pageBlockTable>
+    </div>
+    </div>
+        <table width="995" border="0" cellpadding="3" cellspacing="1" class="contentext"> 
+            <tbody>
+                <tr align="left" valign="top">
+                    <td colspan="5" height="6"><font color="#FF1818" size="3">Add More Items &nbsp;  </font>
+                    <apex:commandButton value="+" style="width:50px;" action="{!AddItemDetails}" immediate="true" rerender="pgblk"/>
+                    </td>
+                   
+                </tr>
+            </tbody>
+        </table>  
+
+ </apex:pageBlock>       
+
+          <!-- ******************Button Code***************** -->
+      <div id="contentLoaded">           
+       <table width="995" border="0" cellpadding="3" cellspacing="3" class="contentext"> 
+
+           <tbody>
+
+              <tr align="left" valign="top"> 
+
+                  <td colspan="5" height="6">
+
+                      <center>
+
+                           <apex:commandButton value="Save" action="{!Save1}" reRender="msg" status="status"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                           <apex:commandButton value="Cancel" action="{!Cancel}"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                           
+                            <apex:commandButton value="Delete" onclick="return confirm('Selected records will be deleted permanently.');" action="{!DeleteSelectedRecs}"  />
+
+                      </center>
+ 
+                 </td>
+
+             </tr>                
+
+           </tbody>
+
+      </table>
+     </div> 
+      <div style="position: relative;">
+    <apex:outputpanel >
+   <apex:actionstatus id="status" onstart="loading(true)" onstop="loading(false)">
+           
+        </apex:actionstatus> 
+    </apex:outputpanel>
+     </div> 
+<div id="contentLoading" style="display:none;"> 
+<b>Saving....Please Wait</b>
+    <div style="text-align: center;">
+   <img src="/img/loading.gif" align="left"/>
+      
+    </div>
+  </div>
+     </apex:form>
+
+</apex:page>

@@ -1,0 +1,207 @@
+<apex:page StandardController="Opportunity" extensions="ReportOnFicalYear" id="page" showHeader="false" Sidebar="false" cache="true" expires="1200" contentType="application/vnd.ms-excel#SearchDetails.xls">
+<apex:form id="frm">  
+<apex:pageBlock >
+    <center>
+         
+          <table><tr style = "background-color: #599FFF"><td colSpan="6" style="border:0px solid black;min-width: 123px;"><b>Likely Order - Proposal Submitted</b></td></tr></table>
+     </center>
+        <br></br>
+            <center>              
+                <table border="1" cellspacing="0" width="60%">   
+               
+                    <tr>
+                        <td rowSpan="2"><b><center>Serial No.</center></b></td>
+                        <td rowSpan="2"><b><center>Organisation</center></b></td>
+                        <td rowSpan="2"><b><center>Project Name</center></b></td>
+                        <td rowSpan="2"><b><center>Month of Finalisation</center></b></td>
+                        <td colSpan="3" ><b><center>Confidence Level (Values in Lakhs)</center></b></td>
+                    </tr>
+                    <tr>                 
+                        <td><b><center>High</center></b></td>
+                        <td><b><center>Medium</center></b></td>
+                        <td><b><center>Moderate</center></b></td>
+                    </tr>
+                    <tr style = "background-color: #599FFF"> <td colSpan="7" style="border:1px solid black;min-width: 123px;"><center><b>Automotive-New</b></center></td> </tr>
+                      <apex:variable var="SerialNo" value="{!1}"/>
+                     <apex:repeat value="{!sortedMapByMonth}" var="wrapOpp1" id="theRepes">
+                       <apex:repeat value="{!sortedMapByMonth[wrapOpp1]}" var="dates">
+                        <tr>    
+                            <td><apex:outputText value="{!SerialNo}" /> </td>
+                            <td><apex:outputText value="{!dates.opportunityList.Account.Name}" id="theVe1"/></td>
+                            <td><apex:outputText value="{!dates.opportunityList.Name}" id="thal"/></td>
+                            <td align="right"><apex:outputText value="{0,date,MMM-dd-YYYY}" id="thgfdgl" ><apex:param value="{!dates.opportunityList.Expected_Date_of_finalizing_of_Order__c}" /></apex:outputText></td>          
+                            <td align="right"><apex:outputText value="{!Floor(dates.opportunityList.Manager_s_Expected_Revenue_In_Lakhs__c)}" id="thdfggl" rendered="{!dates.highValue}"/></td>
+                            <td align="right"><apex:outputText value="{!Floor(dates.opportunityList.Manager_s_Expected_Revenue_In_Lakhs__c)}" id="thdfgg2" rendered="{!dates.mediumValue}"/></td> 
+                            <td align="right"><apex:outputText value="{!Floor(dates.opportunityList.Manager_s_Expected_Revenue_In_Lakhs__c)}" id="thdfgg3" rendered="{!dates.moderateValue}"/></td>   
+                        </tr>
+                      <apex:variable var="SerialNo" value="{!SerialNo+1}"/> 
+                       </apex:repeat>
+                       <tr>
+                            <td><apex:outputText /> </td>
+                            <td colspan="3" align="right"><b><apex:outputText value="SubTotal"/></b></td>
+                         
+                            <apex:repeat value="{!wrapNewAutoSum}" var="oppVars2">
+                              <apex:outputPanel rendered="{!oppVars2.months==wrapOpp1}">
+                                <td align="right">
+                                  <apex:outputText value="{!oppVars2.highValueRecord}" rendered="{!oppVars2.months==wrapOpp1}"> </apex:outputText>
+                                </td>
+                                 <td align="right">
+                                   <apex:outputText value="{0, number, ###,###,###,###,###,##0}"><apex:param value="{!oppVars2.mediumValueRecord}"/> </apex:outputText>    
+                                </td>
+                               
+                                <td align="right">
+                                    <apex:outputText value="{0, number, ###,###,###,###,###,##0}"><apex:param value="{!oppVars2.moderateValueRecord}"/> </apex:outputText>    
+                                </td>
+                               </apex:outputPanel>
+                            </apex:repeat>
+                       </tr>
+                    </apex:repeat> 
+                    <tr style = "background-color: #599FFF"> <td colSpan="7" style="border:1px solid black;min-width: 123px;"><b><center>Non Automotive-New</center></b></td> </tr>
+                    <apex:variable var="SerialNo" value="{!SerialNo}"/>
+                    <apex:repeat value="{!sortedMapNonAutoNew}" var="wrapOpp1" id="theRep">
+                       <apex:repeat value="{!sortedMapNonAutoNew[wrapOpp1]}" var="dates">
+                        <tr>    
+                            <td><apex:outputText value="{!SerialNo}" /> </td>
+                            <td><apex:outputText value="{!dates.opportunityList.Account.Name}" id="theVe1"/></td>
+                            <td><apex:outputText value="{!dates.opportunityList.Name}" id="thal"/></td>
+                            <td align="right"><apex:outputText value="{0,date,MMM-dd-YYYY}" id="thgfdgl" ><apex:param value="{!dates.opportunityList.Expected_Date_of_finalizing_of_Order__c}" /></apex:outputText></td>          
+                            <td align="right"><apex:outputText value="{!Floor(dates.opportunityList.Manager_s_Expected_Revenue_In_Lakhs__c)}" id="thdfggl" rendered="{!dates.highValue}"/></td>
+                            <td align="right"><apex:outputText value="{!Floor(dates.opportunityList.Manager_s_Expected_Revenue_In_Lakhs__c)}" id="thdfgg2" rendered="{!dates.mediumValue}"/></td> 
+                            <td align="right"><apex:outputText value="{!Floor(dates.opportunityList.Manager_s_Expected_Revenue_In_Lakhs__c)}" id="thdfgg3" rendered="{!dates.moderateValue}"/></td>   
+                        </tr>
+                      <apex:variable var="SerialNo" value="{!SerialNo+1}"/> 
+                       </apex:repeat>
+                       <tr>
+                            <td><apex:outputText /> </td>
+                            <td colspan="3" align="right"><b><apex:outputText value="SubTotal"/></b></td>
+                         
+                            <apex:repeat value="{!wrapNewNonAutoSum}" var="oppVars2">
+                              <apex:outputPanel rendered="{!oppVars2.months==wrapOpp1}">
+                                <td align="right">
+                                  <apex:outputText value="{!oppVars2.highValueRecord}" rendered="{!oppVars2.months==wrapOpp1}"> </apex:outputText>
+                                </td>
+                                 <td align="right">
+                                   <apex:outputText value="{0, number, ###,###,###,###,###,##0}"><apex:param value="{!oppVars2.mediumValueRecord}"/> </apex:outputText>    
+                                </td>
+                               
+                                <td align="right">
+                                    <apex:outputText value="{0, number, ###,###,###,###,###,##0}"><apex:param value="{!oppVars2.moderateValueRecord}"/> </apex:outputText>    
+                                </td>
+                               </apex:outputPanel>
+                            </apex:repeat>
+                       </tr>
+                    </apex:repeat>
+                    <tr> 
+                            <td><apex:outputText /> </td>
+                            <td colspan="3" align="right"><b><apex:outputText value="SubTotal"/></b></td>
+                            <td align="right"><b><apex:outputText value="{!Floor(highRevnueForNew)}"/></b></td>
+                            <td align="right"><b><apex:outputText value="{!Floor(mediumRevnueForNew)}"/></b></td>
+                            <td align="right"><b><apex:outputText value="{!Floor(moderateRevnueForNew)}"/></b></td>
+                    </tr>                  
+                </table>
+            </center><br/>                                   
+            <br></br>
+            <center>
+                <table border="1" cellspacing="0" width="60%">              
+                    <tr>
+                        <td rowSpan="2"><b><center>Serial No.</center></b></td>
+                        <td rowSpan="2"><b><center>Organisation</center></b></td>
+                        <td rowSpan="2"><b><center>Project Name</center></b></td>
+                        <td rowSpan="2"><b><center>Month of Finalisation</center></b></td>
+                        <td colSpan="3" ><b><center>Confidence Level (Values in Lakhs)</center></b></td>
+                    </tr>
+                    <tr>                 
+                        <td><b><center>High</center></b></td>
+                        <td><b><center>Medium</center></b></td>
+                        <td><b><center>Moderate</center></b></td>
+                    </tr>
+                    <tr style = "background-color: #599FFF"> <td colSpan="7" style="border:1px solid black;min-width: 123px;"><center><b>Automotive-Existing</b></center></td> </tr>
+                    <apex:variable var="SerialNo" value="{!SerialNo}"/>
+                     <apex:repeat value="{!sortedMapAutoExist}" var="wrapOpp1" id="theRep123">
+                       <apex:repeat value="{!sortedMapAutoExist[wrapOpp1]}" var="dates">
+                        <tr>    
+                            <td><apex:outputText value="{!SerialNo}" /> </td>
+                            <td><apex:outputText value="{!dates.opportunityList.Account.Name}" id="theVe1"/></td>
+                            <td><apex:outputText value="{!dates.opportunityList.Name}" id="thal"/></td>
+                            <td align="right"><apex:outputText value="{0,date,MMM-dd-YYYY}" id="thgfdgl" ><apex:param value="{!dates.opportunityList.Expected_Date_of_finalizing_of_Order__c}" /></apex:outputText></td>          
+                            <td align="right"><apex:outputText value="{!Floor(dates.opportunityList.Manager_s_Expected_Revenue_In_Lakhs__c)}" id="thdfggl" rendered="{!dates.highValue}"/></td>
+                            <td align="right"><apex:outputText value="{!Floor(dates.opportunityList.Manager_s_Expected_Revenue_In_Lakhs__c)}" id="thdfgg2" rendered="{!dates.mediumValue}"/></td> 
+                            <td align="right"><apex:outputText value="{!Floor(dates.opportunityList.Manager_s_Expected_Revenue_In_Lakhs__c)}" id="thdfgg3" rendered="{!dates.moderateValue}"/></td>   
+                        </tr>
+                      <apex:variable var="SerialNo" value="{!SerialNo+1}"/> 
+                       </apex:repeat>
+                       <tr>
+                           <td><apex:outputText /> </td>
+                            <td colspan="3" align="right"><b><apex:outputText value="SubTotal"/></b></td>
+                         
+                            <apex:repeat value="{!wrapExistAutoSum}" var="oppVars2">
+                              <apex:outputPanel rendered="{!oppVars2.months==wrapOpp1}">
+                                <td align="right">
+                                  <apex:outputText value="{!oppVars2.highValueRecord}" rendered="{!oppVars2.months==wrapOpp1}"> </apex:outputText>
+                                </td>
+                                 <td align="right">
+                                   <apex:outputText value="{0, number, ###,###,###,###,###,##0}"><apex:param value="{!oppVars2.mediumValueRecord}"/> </apex:outputText>    
+                                </td>
+                               
+                                <td align="right">
+                                    <apex:outputText value="{0, number, ###,###,###,###,###,##0}"><apex:param value="{!oppVars2.moderateValueRecord}"/> </apex:outputText>    
+                                </td>
+                               </apex:outputPanel>
+                            </apex:repeat>
+                       </tr>
+                    </apex:repeat> 
+                    <tr style = "background-color: #599FFF"> <td colSpan="7" style="border:1px solid black;min-width: 123px;"><b><center>Non-Automotive Existing</center></b></td> </tr>
+                    <apex:variable var="SerialNo" value="{!SerialNo}"/>
+                    <apex:repeat value="{!sortedMapNonAutoExist}" var="wrapOpp1" id="theRep1234">
+                       <apex:repeat value="{!sortedMapNonAutoExist[wrapOpp1]}" var="dates">
+                        <tr>    
+                            <td><apex:outputText value="{!SerialNo}" /> </td>
+                            <td><apex:outputText value="{!dates.opportunityList.Account.Name}" id="theVe1"/></td>
+                            <td><apex:outputText value="{!dates.opportunityList.Name}" id="thal"/></td>
+                            <td align="right"><apex:outputText value="{0,date,MMM-dd-YYYY}" id="thgfdgl" ><apex:param value="{!dates.opportunityList.Expected_Date_of_finalizing_of_Order__c}" /></apex:outputText></td>          
+                            <td align="right"><apex:outputText value="{!Floor(dates.opportunityList.Manager_s_Expected_Revenue_In_Lakhs__c)}" id="thdfggl" rendered="{!dates.highValue}"/></td>
+                            <td align="right"><apex:outputText value="{!Floor(dates.opportunityList.Manager_s_Expected_Revenue_In_Lakhs__c)}" id="thdfgg2" rendered="{!dates.mediumValue}"/></td> 
+                            <td align="right"><apex:outputText value="{!Floor(dates.opportunityList.Manager_s_Expected_Revenue_In_Lakhs__c)}" id="thdfgg3" rendered="{!dates.moderateValue}"/></td>   
+                        </tr>
+                      <apex:variable var="SerialNo" value="{!SerialNo+1}"/> 
+                       </apex:repeat>
+                       <tr>
+                           <td><apex:outputText /> </td>
+                            <td colspan="3" align="right"><b><apex:outputText value="SubTotal"/></b></td>
+                         
+                            <apex:repeat value="{!wrapExistNonAutoSum}" var="oppVars2">
+                              <apex:outputPanel rendered="{!oppVars2.months==wrapOpp1}">
+                                <td align="right">
+                                  <apex:outputText value="{!oppVars2.highValueRecord}" rendered="{!oppVars2.months==wrapOpp1}"> </apex:outputText>
+                                </td>
+                                 <td align="right">
+                                   <apex:outputText value="{0, number, ###,###,###,###,###,##0}"><apex:param value="{!oppVars2.mediumValueRecord}"/> </apex:outputText>    
+                                </td>
+                               
+                                <td align="right">
+                                    <apex:outputText value="{0, number, ###,###,###,###,###,##0}"><apex:param value="{!oppVars2.moderateValueRecord}"/> </apex:outputText>    
+                                </td>
+                               </apex:outputPanel>
+                            </apex:repeat>
+                       </tr>
+                    </apex:repeat> 
+                    <tr> 
+                        <td><apex:outputText /> </td>
+                        <td colspan="3" align="right"><b><apex:outputText value="SubTotal"/></b></td>                
+                        <td align="right"><b><apex:outputText value="{!Floor(highRevnue)}"/></b></td>
+                        <td align="right"><b><apex:outputText value="{!Floor(mediumRevnue)}"/></b></td>
+                        <td align="right"><b><apex:outputText value="{!Floor(moderateRevnue)}"/></b></td>
+                    </tr> 
+                    <tr> 
+                        <td><apex:outputText /> </td>
+                        <td colspan="3" align="right"><b><apex:outputText value="GrandTotal"/></b></td>               
+                        <td align="right"><b><apex:outputText value="{!Floor(GrndHighValue)}"/></b></td>
+                        <td align="right"><b><apex:outputText value="{!Floor(GrandMediumValue)}"/></b></td>
+                        <td align="right"><b><apex:outputText value="{!Floor(GrandModerateValue)}"/></b></td>
+                    </tr>                                
+                </table>
+            </center><br/>
+          <br></br>
+</apex:pageBlock>
+</apex:form>
+</apex:page>

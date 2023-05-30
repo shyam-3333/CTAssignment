@@ -1,0 +1,9 @@
+<apex:page controller="documentDisplay" action="{!sessionManagement}"  sidebar="false" showHeader="false"  standardStylesheets="false">
+    
+    <script>
+    
+        window.location.href = "/NewLogin/servlet/servlet.FileDownload?file={!attchmentId}";
+        
+    </script>
+    
+</apex:page>

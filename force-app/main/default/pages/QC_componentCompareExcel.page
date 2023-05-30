@@ -1,0 +1,3574 @@
+<apex:page controller="QC_componentCompareCtlr" id="pge" standardStylesheets="false" showHeader="false" contentType="application/vnd.ms-excel#ExportToExcel.xls" cache="true" action="{!compare}" >
+<html>
+<style type="text/css"> 
+tr
+{
+border:1px black;
+border-collapse:collapse;
+}
+</style>
+<apex:sectionHeader title="Compare Component" />
+
+  <apex:form id="myForm">
+ <!-- 
+  <apex:outputPanel id="op1" style="display:block;"> 
+    <apex:PageBlock id="PageBlock">        
+      <apex:pageBlockSection columns="1" title="Custom Lookup" id="pb1">
+        <apex:inputfield id="Account1" value="{!Master1.Master_Variant__c}"  />
+        <apex:inputfield id="Account2" value="{!Master2.Master_Variant__c}"  />
+        <apex:inputfield id="Account3" value="{!Master3.Master_Variant__c}"  />
+        <apex:inputfield id="Account4" value="{!Master4.Master_Variant__c}"  />
+        <apex:inputfield id="Account5" value="{!Master5.Master_Variant__c}"  />
+      </apex:pageBlockSection>
+      <apex:commandButton value="compare" action="{!compare}" oncomplete="HidePanel(); return false;" reRender="op1,op2"/> 
+    </apex:PageBlock>
+  </apex:outputPanel> -->
+    <apex:outputPanel id="op2" style="display:none;">
+      <apex:commandButton value="Click to Download" action="{!ClickToDownload}" id="op3" reRender="myForm">
+                <apex:param value="{!Master1.Master_Variant__c}" assignTo="{!ids1}"/>   
+                <apex:param value="{!Master2.Master_Variant__c}" assignTo="{!ids2}"/>
+                <apex:param value="{!Master3.Master_Variant__c}" assignTo="{!ids3}"/>
+                <apex:param value="{!Master4.Master_Variant__c}" assignTo="{!ids4}"/>
+                <apex:param value="{!Master5.Master_Variant__c}" assignTo="{!ids5}"/>
+              </apex:commandButton>
+
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">       
+<!-- 1st row for displaying all component Report reference number-->
+        <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+         <td align="center" style="font-weight:bold"> Report Reference Number</td>
+                <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+        </tr>
+        <tr>
+        <td>
+    <!--    <apex:outputPanel rendered="{! IF(component1.Report_Ref_Number__c != null, true, false)}">    -->      
+          <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                        <tr ><td style="border: 0;"> <apex:outputText value="Product Image" /> </td> </tr> 
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr><td> <apex:outputText value="Model" />   </td> </tr>
+                        <tr><td> <apex:outputText value="Watch Variant" /></td>    </tr>
+                        <tr> <td><apex:outputText value="Created Date" />  </td>  </tr>
+                        <tr><td> <apex:outputText value="Vendor" />   </td> </tr>
+                        <tr><td> <apex:outputText value="Sample Category" /> </td>   </tr>
+                        <tr><td> <apex:outputText value="Brand" />   </td> </tr>
+                        <tr><td> <apex:outputText value="Test Back Ground" /> </td>   </tr>
+                        <tr><td> <apex:outputText value="Exception Verdict" /> </td>   </tr>
+                        <tr><td> <apex:outputText value="Comment" /> </td>   </tr>
+                        <tr><td> <apex:outputText value="Price" />  </td>  </tr>
+                        
+            </table>
+             <!--   </apex:outputPanel>  -->
+       </td>
+       <td>
+            <apex:outputPanel rendered="{! IF(component1.Report_Ref_Number__c != null, true, false)}">          
+          <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                       <tr > <td style="border: 0;"> <apex:image url="{!component1.imageurl__c}" width="10%" height="10%"/>    </td></tr> 
+                       <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr><td> <apex:outputText value="{!component1.Model__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component1.Watch_variant__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                <apex:param value="{!component1.CreatedDate}" /> 
+                                </apex:outputText> </td> </tr>
+                        <tr><td> <apex:outputText value="{!component1.Vendor__r.Name}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component1.Sample_Category__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component1.Brand__r.Name}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component1.Test_Back_Ground__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component1.Exception_Verdict__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component1.Comment__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component1.Price__c}"/> </td></tr>
+            </table>
+                </apex:outputPanel>
+       </td>
+        <td>
+                <apex:outputPanel rendered="{! IF(component2.Report_Ref_Number__c != null, true, false)}">          
+          <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                       <tr> <td style="border: 0;"> <apex:image value="{!component2.imageurl__c}" url="{!component2.imageurl__c}" width="10%" height="10%"/>    </td></tr>
+                       <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr><td> <apex:outputText value="{!component2.Model__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component2.Watch_variant__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                 <apex:param value="{!component2.CreatedDate}" /> 
+                                 </apex:outputText> </td> </tr>
+                       <tr> <td> <apex:outputText value="{!component2.Vendor__r.Name}"/> </td></tr>
+                       <tr> <td> <apex:outputText value="{!component2.Sample_Category__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component2.Brand__r.Name}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component2.Test_Back_Ground__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component2.Exception_Verdict__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component2.Comment__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component2.Price__c}"/> </td></tr>
+            </table>
+                </apex:outputPanel>
+       </td>
+        <td>
+                <apex:outputPanel rendered="{! IF(component3.Report_Ref_Number__c != null, true, false)}">          
+          <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                       <tr> <td style="border: 0;"> <apex:image value="{!component3.imageurl__c}" url="{!component3.imageurl__c}" width="10%" height="10%"/>    </td></tr> 
+                       <tr></tr>
+                       <tr></tr>
+                       <tr></tr>
+                        <tr><td> <apex:outputText value="{!component3.Model__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component3.Watch_variant__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                <apex:param value="{!component3.CreatedDate}" /> 
+                                </apex:outputText> </td> </tr>
+                        <tr><td> <apex:outputText value="{!component3.Vendor__r.Name}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component3.Sample_Category__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component3.Brand__r.Name}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component3.Test_Back_Ground__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component3.Exception_Verdict__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component3.Comment__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component3.Price__c}"/> </td></tr>
+            </table>
+                </apex:outputPanel>
+       </td>
+        <td>
+                <apex:outputPanel rendered="{! IF(component4.Report_Ref_Number__c != null, true, false)}">          
+          <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                        <tr><td style="border: 0;"> <apex:image value="{!component4.imageurl__c}" url="{!component4.imageurl__c}" width="10%" height="10%"/>  </td></tr>
+                        <tr></tr>
+                        <tr></tr>  
+                        <tr></tr>                       
+                        <tr><td> <apex:outputText value="{!component4.Model__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component4.Watch_variant__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                <apex:param value="{!component4.CreatedDate}" /> 
+                                </apex:outputText></td> </tr>
+                        <tr><td> <apex:outputText value="{!component4.Vendor__r.Name}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component4.Sample_Category__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component4.Brand__r.Name}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component4.Test_Back_Ground__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component4.Exception_Verdict__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component4.Comment__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component4.Price__c}"/> </td></tr>
+            </table>
+                    </apex:outputPanel>
+       </td>
+        <td>
+                <apex:outputPanel rendered="{! IF(component5.Report_Ref_Number__c != null, true, false)}">          
+          <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                        <tr><td style="border: 0;"> <apex:image value="{!component5.imageurl__c}" url="{!component5.imageurl__c}" width="10%" height="10%"/>    </td></tr> 
+                        <tr></tr>
+                        <tr></tr>
+                        <tr></tr>
+                        <tr><td> <apex:outputText value="{!component5.Model__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component5.Watch_variant__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                 <apex:param value="{!component5.CreatedDate}" /> 
+                                 </apex:outputText> </td> </tr>
+                        <tr><td> <apex:outputText value="{!component5.Vendor__r.Name}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component5.Sample_Category__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component5.Brand__r.Name}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component5.Test_Back_Ground__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component5.Exception_Verdict__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component5.Comment__c}"/> </td></tr>
+                        <tr><td> <apex:outputText value="{!component5.Price__c}"/> </td></tr>
+            </table>
+            </apex:outputPanel>
+       </td>
+    </tr>
+</table>
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">       
+        <tr> <td colspan="{!rowLenghtSize}" style="font-family:Arial,Helvetica,sans-serif;background:#eeffcc;font-weight:bold;font-size:16px; color:#2e5cb8;"><div align="center"><b>Product Information </b></div></td></tr>
+</table>
+<apex:outputPanel rendered="{! IF(size > 0, true, false)}">                     
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">       
+<!-- 1st row for displaying all component Report reference number-->
+        <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+         <td align="center" style="font-weight:bold">
+                    <apex:outputPanel rendered="{! IF(component.size > 0, true, false)}">
+                        <apex:outputText value="{!component[0].Name__c}" />
+                    </apex:outputPanel>
+                           </td>
+         <td>
+                      <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">
+                        <apex:outputText value="{!fullWatchTestParamList1[0].reportref}" />
+                    </apex:outputPanel>
+                  
+       </td>
+        
+                <td>
+                   <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">
+                        <apex:outputText value="{!fullWatchTestParamList2[0].reportref}" />
+                    </apex:outputPanel>
+                </td>
+         
+       
+                <td>
+                   <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">
+                        <apex:outputText value="{!fullWatchTestParamList3[0].reportref}" />
+                                </apex:outputPanel>
+
+       </td>
+       
+                <td>
+                   <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">
+                        <apex:outputText value="{!fullWatchTestParamList4[0].reportref}" />
+                            </apex:outputPanel>
+
+       </td>
+       
+      
+                <td>
+                    <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">
+                        <apex:outputText value="{!fullWatchTestParamList5[0].reportref}" />
+                    </apex:outputPanel>
+             
+       </td>
+     </tr>
+        <tr>
+   <!--   <td width="7%" align="center" style="font-weight:bold"> Input Parameter</td>  --> 
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+              <apex:repeat value="{!allFWQuestion}" var="FWIP">           
+                 <tr>
+                   <td>
+                      <apex:outputText value="{!FWIP}" />
+                   </td>
+                 </tr>                    
+             </apex:repeat>
+           </table>
+        </td>     
+      <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+              <apex:repeat value="{!FWQuestion1}" var="FWIP">           
+                 <tr>
+                   <td>
+                      <apex:outputText value="{!FWIP}" />
+                   </td>
+                 </tr>                    
+             </apex:repeat>
+           </table>
+       </td>
+       <td>
+        <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+           <apex:repeat value="{!FWQuestion2}" var="FWIP">     
+              <tr>
+                <td>
+                   <apex:outputText value="{!FWIP}" />
+                </td>
+              </tr>              
+          </apex:repeat>
+        </table>
+      </td>
+      <td>
+        <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+           <apex:repeat value="{!FWQuestion3}" var="FWIP">     
+              <tr>
+                <td>
+                   <apex:outputText value="{!FWIP}" />
+                </td>
+              </tr>              
+          </apex:repeat>
+        </table>
+      </td>
+      <td>
+        <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+           <apex:repeat value="{!FWQuestion4}" var="FWIP">     
+              <tr>
+                <td>
+                   <apex:outputText value="{!FWIP}" />
+                </td>
+              </tr>              
+          </apex:repeat>
+        </table>
+      </td>
+      <td>
+        <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+           <apex:repeat value="{!FWQuestion5}" var="FWIP">     
+              <tr>
+                <td>
+                   <apex:outputText value="{!FWIP}" />
+                </td>
+              </tr>              
+          </apex:repeat>
+        </table>
+      </td>
+    </tr>
+</table>
+</apex:outputPanel> 
+<apex:outputPanel rendered="{! IF(caseCom.size > 0, true, false)}">
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">         
+    <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+        <td align="center" style="font-weight:bold">
+         <apex:outputPanel rendered="{! IF(caseCom.size > 0, true, false)}">
+            <apex:outputText value="{!caseCom[0].Name__c}" />
+         </apex:outputPanel>
+        </td>
+        
+        <td>
+            <apex:outputPanel rendered="{! IF(caseInputList1.size > 0, true, false)}">
+                <apex:outputText value="{!caseInputList1[0].referenceNo}" />
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList1[0].reportref}" />
+            </apex:outputPanel>
+        </td>
+        <td>
+           <apex:outputPanel rendered="{! IF(caseInputList2.size > 0, true, false)}">
+                <apex:outputText value="{!caseInputList2[0].referenceNo}" />
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList2[0].reportref}" />
+            </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList3[0].reportref}" />
+            </apex:outputPanel>
+             <apex:outputPanel rendered="{! IF(caseInputList3.size > 0, true, false)}">
+                <apex:outputText value="{!caseInputList3[0].referenceNo}" />
+            </apex:outputPanel>
+        </td>     
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList4[0].reportref}" />
+            </apex:outputPanel>
+             <apex:outputPanel rendered="{! IF(caseInputList4.size > 0, true, false)}">
+                <apex:outputText value="{!caseInputList4[0].referenceNo}" />
+            </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList5[0].reportref}" />
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{! IF(caseInputList5.size > 0, true, false)}">
+                <apex:outputText value="{!caseInputList5[0].referenceNo}" />
+            </apex:outputPanel>
+        </td>
+    </tr> 
+    <tr>
+<!--   <td width="7%" align="center" style="font-weight:bold"> Input Parameter</td>  --> 
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+                <apex:repeat value="{!allCaseQuestion}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </td>     
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+                <apex:repeat value="{!CaseQuestion1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!CaseQuestion2}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!CaseQuestion3}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!CaseQuestion4}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!CaseQuestion5}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td> 
+     </tr>
+</table>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{! IF(dialCom.size > 0, true, false)}"> 
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">       
+     <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+        <td align="center" style="font-weight:bold">
+         <apex:outputPanel rendered="{! IF(dialCom.size > 0, true, false)}">
+            <apex:outputText value="{!dialCom[0].Name__c}" />
+         </apex:outputPanel>
+        </td>
+    <!--    <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList1[0].reportref}" />
+            </apex:outputPanel>
+        </td>       
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList2[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList3[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList4[0].reportref}" />
+            </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList5[0].reportref}" />
+            </apex:outputPanel>          
+        </td>   -->
+        
+                 <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+     </tr> 
+     <tr>
+    <!-- <td width="7%" align="center" style="font-weight:bold"> Input Parameter</td>  --> 
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+                <apex:repeat value="{!allDialQuestion}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </td>     
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+                <apex:repeat value="{!DialQuestion1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!DialQuestion2}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!DialQuestion3}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!DialQuestion4}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!DialQuestion5}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td> 
+     </tr>
+</table>     
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{! IF(metalCom.size > 0, true, false)}">
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">       
+     <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+        <td align="center" style="font-weight:bold"> 
+        <apex:outputPanel rendered="{! IF(metalCom.size > 0, true, false)}">
+             <apex:outputText value="{!metalCom[0].Name__c}" />
+         </apex:outputPanel>
+        </td>
+      <!--  <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList1[0].reportref}" />
+            </apex:outputPanel>
+        </td>       
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList2[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList3[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList4[0].reportref}" />
+            </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList5[0].reportref}" />
+            </apex:outputPanel>          
+        </td>  -->
+                        <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+     </tr> 
+    <tr>
+<!-- <td width="7%" align="center" style="font-weight:bold"> Input Parameter</td>  --> 
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+                <apex:repeat value="{!allMetalQuestion}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </td>     
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+                <apex:repeat value="{!MetalQuestion1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!MetalQuestion2}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!MetalQuestion3}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!MetalQuestion4}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!MetalQuestion5}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td> 
+    </tr> 
+</table>
+</apex:outputPanel>
+    <apex:outputPanel rendered="{! IF(leatherCom.size > 0, true, false)}">  
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">       
+    <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+        <td align="center" style="font-weight:bold">
+         <apex:outputPanel rendered="{! IF(leatherCom.size > 0, true, false)}">
+                <apex:outputText value="{!leatherCom[0].Name__c}" />
+         </apex:outputPanel>        
+        </td>
+   <!--     <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList1[0].reportref}" />
+            </apex:outputPanel>
+        </td>       
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList2[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList3[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList4[0].reportref}" />
+            </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList5[0].reportref}" />
+            </apex:outputPanel>          
+        </td>   -->
+                        <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+     </tr>
+    <tr>
+<!-- <td width="7%" align="center" style="font-weight:bold"> Input Parameter</td>  --> 
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+                <apex:repeat value="{!allLeatherQuestion}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </td>     
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+                <apex:repeat value="{!LeatherQuestion1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!LeatherQuestion2}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!LeatherQuestion3}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!LeatherQuestion4}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!LeatherQuestion5}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td> 
+    </tr>
+</table>    
+</apex:outputPanel>
+ <apex:outputPanel rendered="{! IF(spacialCom.size > 0, true, false)}">    
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">      
+        <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+        <td align="center" style="font-weight:bold"> 
+        <apex:outputPanel rendered="{! IF(spacialCom.size > 0, true, false)}">
+                <apex:outputText value="{!spacialCom[0].Name__c}" />
+         </apex:outputPanel>    
+        </td>
+     <!--   <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList1[0].reportref}" />
+            </apex:outputPanel>
+        </td>       
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList2[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList3[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList4[0].reportref}" />
+            </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList5[0].reportref}" />
+            </apex:outputPanel>          
+        </td>  -->
+                        <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+     </tr>
+        <tr>
+<!-- <td width="7%" align="center" style="font-weight:bold"> Input Parameter</td>  --> 
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+                <apex:repeat value="{!allSpecialQuestion}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </td>     
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+                <apex:repeat value="{!SpecialQuestion1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!SpecialQuestion2}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!SpecialQuestion3}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!SpecialQuestion4}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!SpecialQuestion5}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td> 
+    </tr>
+    </table>
+</apex:outputPanel> 
+<!-- packaging input parameter-->
+<apex:outputPanel rendered="{! IF(packageCom.size > 0, true, false)}">    
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">      
+        <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+        <td align="center" style="font-weight:bold"> 
+        <apex:outputPanel rendered="{! IF(packageCom.size > 0, true, false)}">
+                <apex:outputText value="{!packageCom[0].Name__c}" />
+         </apex:outputPanel>    
+        </td>
+   
+                <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+     </tr>
+        <tr>
+<!-- <td width="7%" align="center" style="font-weight:bold"> Input Parameter</td>  --> 
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+                <apex:repeat value="{!allPackageQuestion}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </td>     
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+                <apex:repeat value="{!packageQuestion1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!packageQuestion2}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!packageQuestion3}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!packageQuestion4}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!packageQuestion5}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td> 
+    </tr>
+    </table>
+</apex:outputPanel> 
+<!-- module input parameter-->
+<apex:outputPanel rendered="{! IF(moduleCom.size > 0, true, false)}">    
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">      
+        <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+        <td align="center" style="font-weight:bold"> 
+        <apex:outputPanel rendered="{! IF(moduleCom.size > 0, true, false)}">
+                <apex:outputText value="{!moduleCom[0].Name__c}" />
+         </apex:outputPanel>    
+        </td>
+   
+                <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+     </tr>
+        <tr>
+<!-- <td width="7%" align="center" style="font-weight:bold"> Input Parameter</td>  --> 
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+                <apex:repeat value="{!allModuleQuestion}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </td>     
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+                <apex:repeat value="{!moduleQuestion1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!moduleQuestion2}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!moduleQuestion3}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!moduleQuestion4}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!moduleQuestion5}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td> 
+    </tr>
+    </table>
+</apex:outputPanel> 
+<!-- Battery input parameter-->
+<apex:outputPanel rendered="{! IF(batteryCom.size > 0, true, false)}">    
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">      
+        <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+        <td align="center" style="font-weight:bold"> 
+        <apex:outputPanel rendered="{! IF(batteryCom.size > 0, true, false)}">
+                <apex:outputText value="{!batteryCom[0].Name__c}" />
+         </apex:outputPanel>    
+        </td>
+   
+                <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+     </tr>
+        <tr>
+<!-- <td width="7%" align="center" style="font-weight:bold"> Input Parameter</td>  --> 
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+                <apex:repeat value="{!allBatteryQuestion}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </td>     
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">                
+                <apex:repeat value="{!battreyQuestion1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!battreyQuestion2}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!battreyQuestion3}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!battreyQuestion4}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <apex:repeat value="{!battreyQuestion5}" var="FWIP">     
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP}" />
+                        </td>
+                    </tr>              
+                </apex:repeat>
+            </table>
+        </td> 
+    </tr>
+    </table>
+</apex:outputPanel> 
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">       
+        <tr> <td colspan="{!rowLenghtSize}" style="font-family:Arial,Helvetica,sans-serif;background:#eeffcc;font-weight:bold;font-size:16px; color:#2e5cb8;"><div align="center"><b>Test Information </b></div></td></tr>
+</table> 
+  <apex:outputPanel rendered="{! IF(allFWTestDataC.size > 0, true, false)}">           
+    <table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">      
+        <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+            <td colspan="1" align="center" style="font-weight:bold">
+                <apex:outputText value="{!component1.Name__c}" />
+            </td>           
+      <!--      <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList1[0].reportref}" />
+            </apex:outputPanel>
+        </td>       
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList2[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList3[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList4[0].reportref}" />
+            </apex:outputPanel>
+        </td>
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList5[0].reportref}" />
+            </apex:outputPanel>          
+        </td>     -->
+                        <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+        </tr>
+        <tr>
+        <td>
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">    
+                           <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                            <td>
+                                <apex:outputText value="Test Name" />
+                            </td>
+                            <td>
+                                <apex:outputText value="Specification" />
+                            </td>
+                              <td>
+                                <apex:outputText value="UOM" />
+                            </td>
+                        </tr>                 
+                <apex:repeat value="{!allFWTestDataC}" var="FWIP"> 
+                        <tr>
+                            <td>
+                                <apex:outputText value="{!FWIP.testName}" />
+                            </td>
+                            <td>
+                                <apex:outputText value="{!FWIP.specification}" />
+                            </td>
+                              <td>
+                                <apex:outputText value="{!FWIP.uom}" />
+                            </td>
+                        </tr>                    
+                </apex:repeat>
+            </table>
+        </td>
+        <td>
+         <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">           
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">   
+                      <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>    
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>                   
+                <apex:repeat value="{!FWTestParameter1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+            </apex:outputPanel>
+        </td>
+        <td>
+        <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">           
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">   
+                   <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>                   
+                <apex:repeat value="{!FWTestParameter2}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">           
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                   <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>                   
+                <apex:repeat value="{!FWTestParameter3}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+            </apex:outputPanel>
+        </td>
+        <td>
+           <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">           
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                   <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>                   
+                <apex:repeat value="{!FWTestParameter4}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+            </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">           
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                   <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>                   
+                <apex:repeat value="{!FWTestParameter5}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+           </apex:outputPanel>
+        </td>
+    </tr>
+    </table>
+    </apex:outputPanel>
+<!-- Case test finding start-->
+<apex:outputPanel rendered="{! IF(allCaseTestDataC.size > 0, true, false)}">           
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">             
+       <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+            <td colspan="1" align="center" style="font-weight:bold">
+        <apex:outputPanel rendered="{! IF(caseCom.size > 0, true, false)}">
+                <apex:outputText value="{!caseCom[0].Name__c}" />
+         </apex:outputPanel>    
+            </td>
+         <!--   <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList1[0].reportref}" />
+            </apex:outputPanel>
+        </td>       
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList2[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList3[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList4[0].reportref}" />
+            </apex:outputPanel>
+        </td>
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList5[0].reportref}" />
+            </apex:outputPanel>          
+        </td>    -->
+                        <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+        </tr>
+        <tr>
+        <td>
+                <apex:outputPanel rendered="{! IF(caseTestParamList1.size > 0, true, false)}">           
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">   
+                   <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                            <td>
+                                <apex:outputText value="Test Name" />
+                            </td>
+                            <td>
+                                <apex:outputText value="Specification" />
+                            </td>
+                              <td>
+                                <apex:outputText value="UOM" />
+                            </td>
+                        </tr>                 
+                <apex:repeat value="{!allCaseTestDataC}" var="FWIP"> 
+                        <tr>
+                            <td>
+                                <apex:outputText value="{!FWIP.testName}" />
+                            </td>
+                            <td>
+                                <apex:outputText value="{!FWIP.specification}" />
+                            </td>
+                             <td>
+                                <apex:outputText value="{!FWIP.uom}" />
+                            </td>
+                        </tr>                    
+                </apex:repeat>
+            </table>
+            </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(caseTestParamList1.size > 0, true, false)}">           
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>                   
+                <apex:repeat value="{!CaseTestParameter1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+           </apex:outputPanel>
+        </td>
+        <td>
+               <apex:outputPanel rendered="{! IF(caseTestParamList2.size > 0, true, false)}">           
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>                   
+                <apex:repeat value="{!CaseTestParameter2}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+            </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(caseTestParamList3.size > 0, true, false)}">           
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                     <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>                   
+                <apex:repeat value="{!CaseTestParameter3}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+            </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(caseTestParamList4.size > 0, true, false)}">           
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                  <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>                   
+                <apex:repeat value="{!CaseTestParameter4}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+            </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(caseTestParamList5.size > 0, true, false)}">    
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>                   
+                <apex:repeat value="{!CaseTestParameter5}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+    </tr>
+  </table> 
+</apex:outputPanel>  
+<!-- dial test parameter-->
+<apex:outputPanel rendered="{! IF(allDialTestDataC.size > 0, true, false)}">           
+ <table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">      
+        <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+            <td colspan="1" align="center" style="font-weight:bold"> 
+        <apex:outputPanel rendered="{! IF(dialCom.size > 0, true, false)}">
+                <apex:outputText value="{!dialCom[0].Name__c}" />
+         </apex:outputPanel>    
+            </td>
+    <!--        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList1[0].reportref}" />
+            </apex:outputPanel>
+        </td>       
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList2[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList3[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList4[0].reportref}" />
+            </apex:outputPanel>
+        </td>
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList5[0].reportref}" />
+            </apex:outputPanel>          
+        </td>   -->
+                        <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+        </tr>
+        <tr>
+         <td>
+         <apex:outputPanel rendered="{! IF(allDialTestDataC.size > 0, true, false)}">           
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                  <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                            <td>
+                                <apex:outputText value="Test Name" />
+                            </td>
+                            <td>
+                                <apex:outputText value="Specification" />
+                            </td>
+                              <td>
+                                <apex:outputText value="UOM" />
+                            </td>
+                        </tr>      
+                <apex:repeat value="{!allDialTestDataC}" var="FWIP"> 
+                        <tr>
+                            <td>
+                                <apex:outputText value="{!FWIP.testName}" />
+                            </td>
+                            <td>
+                                <apex:outputText value="{!FWIP.specification}" />
+                            </td>
+                            <td>
+                                <apex:outputText value="{!FWIP.uom}" />
+                            </td>
+                        </tr>                    
+                </apex:repeat>
+            </table>
+            </apex:outputPanel>
+        </td>  
+        <td>
+             <apex:outputPanel rendered="{! IF(dialTestParamList1.size > 0, true, false)}">           
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!DialTestParameter1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+            </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(dialTestParamList2.size > 0, true, false)}">          
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!DialTestParameter2}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+            </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(dialTestParamList3.size > 0, true, false)}">          
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!DialTestParameter3}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+        <apex:outputPanel rendered="{! IF(dialTestParamList4.size > 0, true, false)}">   
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!DialTestParameter4}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+            </apex:outputPanel>
+        </td>
+        <td>
+        <apex:outputPanel rendered="{! IF(dialTestParamList5.size > 0, true, false)}">   
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!DialTestParameter5}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+           </apex:outputPanel>
+        </td>
+    </tr>
+    </table> 
+</apex:outputPanel> 
+<!-- metal strap test parameter excluding material and plating-->
+<apex:outputPanel rendered="{! IF(allMatalTestDataC.size > 0, true, false)}">          
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">      
+        <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+            <td colspan="1" align="center" style="font-weight:bold"> 
+        <apex:outputPanel rendered="{! IF(metalCom.size > 0, true, false)}">
+                <apex:outputText value="{!metalCom[0].Name__c}" />
+         </apex:outputPanel>    
+            </td>
+         <!--   <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList1[0].reportref}" />
+            </apex:outputPanel>
+        </td>       
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList2[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList3[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList4[0].reportref}" />
+            </apex:outputPanel>
+        </td>
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList5[0].reportref}" />
+            </apex:outputPanel>          
+        </td>    -->
+                        <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+        </tr>
+        <tr>
+        <td>
+                <apex:outputPanel rendered="{! IF(allMatalTestDataC.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                  <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                            <td>
+                                <apex:outputText value="Test Name" />
+                            </td>
+                            <td>
+                                <apex:outputText value="Specification" />
+                            </td>
+                              <td>
+                                <apex:outputText value="UOM" />
+                            </td>
+                        </tr>      
+                <apex:repeat value="{!allMatalTestDataC}" var="FWIP"> 
+                        <tr>
+                            <td>
+                                <apex:outputText value="{!FWIP.testName}" />
+                            </td>
+                            <td>
+                                <apex:outputText value="{!FWIP.specification}" />
+                            </td>
+                             <td>
+                                <apex:outputText value="{!FWIP.uom}" />
+                            </td>
+                        </tr>                    
+                </apex:repeat>
+            </table>
+             </apex:outputPanel>        
+        </td>  
+        <td>
+          <apex:outputPanel rendered="{! IF(MatalTestParameter1.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">   
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!MatalTestParameter1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+            </apex:outputPanel>
+        </td>
+        <td>
+         <apex:outputPanel rendered="{! IF(MatalTestParameter2.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!MatalTestParameter2}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+        <apex:outputPanel rendered="{! IF(MatalTestParameter3.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!MatalTestParameter3}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+        <apex:outputPanel rendered="{! IF(MatalTestParameter4.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!MatalTestParameter4}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+            </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(MatalTestParameter5.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">   
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!MatalTestParameter5}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+            </apex:outputPanel>
+        </td>
+    </tr>
+    </table>
+</apex:outputPanel>    
+<!-- leather strap test parameter-->
+<apex:outputPanel rendered="{! IF(allLeatherTestDataC.size > 0, true, false)}">        
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">      
+        <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+            <td colspan="1" align="center" style="font-weight:bold"> 
+        <apex:outputPanel rendered="{! IF(leatherCom.size > 0, true, false)}">
+                <apex:outputText value="{!leatherCom[0].Name__c}" />
+         </apex:outputPanel>
+            </td>
+      <!--      <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList1[0].reportref}" />
+            </apex:outputPanel>
+        </td>       
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList2[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList3[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList4[0].reportref}" />
+            </apex:outputPanel>
+        </td>
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList5[0].reportref}" />
+            </apex:outputPanel>          
+        </td>   -->
+                        <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+        </tr>
+        <tr>
+<!-- <td width="7%" align="center" style="font-weight:bold"> Input Parameter</td>  --> 
+        <td>
+        <apex:outputPanel rendered="{! IF(allLeatherTestDataC.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                  <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                            <td>
+                                <apex:outputText value="Test Name" />
+                            </td>
+                            <td>
+                                <apex:outputText value="Specification" />
+                            </td>
+                              <td>
+                                <apex:outputText value="UOM" />
+                            </td>
+                        </tr>      
+                <apex:repeat value="{!allLeatherTestDataC}" var="FWIP"> 
+                        <tr>
+                            <td>
+                                <apex:outputText value="{!FWIP.testName}" />
+                            </td>
+                            <td>
+                                <apex:outputText value="{!FWIP.specification}" />
+                            </td>
+                             <td>
+                                <apex:outputText value="{!FWIP.uom}" />
+                            </td>
+                        </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>     
+        <td>
+            <apex:outputPanel rendered="{! IF(leatherTestParameter1.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!leatherTestParameter1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+                <apex:outputPanel rendered="{! IF(leatherTestParameter2.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!leatherTestParameter2}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+                <apex:outputPanel rendered="{! IF(leatherTestParameter3.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!leatherTestParameter3}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+                <apex:outputPanel rendered="{! IF(leatherTestParameter4.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!leatherTestParameter4}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(leatherTestParameter5.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!leatherTestParameter5}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+    </tr>
+    </table>  
+</apex:outputPanel> 
+<!-- Special strap test parameter-->
+<apex:outputPanel rendered="{! IF(allSpecialTestDataC.size > 0, true, false)}">        
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">      
+        <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+            <td colspan="1" align="center" style="font-weight:bold"> 
+        <apex:outputPanel rendered="{! IF(spacialCom.size > 0, true, false)}">
+                <apex:outputText value="{!spacialCom[0].Name__c}" />
+         </apex:outputPanel>
+            </td>
+        <!--    <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList1[0].reportref}" />
+            </apex:outputPanel>
+        </td>       
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList2[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList3[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList4[0].reportref}" />
+            </apex:outputPanel>
+        </td>
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList5[0].reportref}" />
+            </apex:outputPanel>          
+        </td>   -->
+                        <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+        </tr>
+        <tr>
+<!-- <td width="7%" align="center" style="font-weight:bold"> Input Parameter</td>  --> 
+        <td>
+        <apex:outputPanel rendered="{! IF(allSpecialTestDataC.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                  <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                            <td>
+                                <apex:outputText value="Test Name" />
+                            </td>
+                            <td>
+                                <apex:outputText value="Specification" />
+                            </td>
+                              <td>
+                                <apex:outputText value="UOM" />
+                            </td>
+                        </tr>      
+                <apex:repeat value="{!allSpecialTestDataC}" var="FWIP"> 
+                        <tr>
+                            <td>
+                                <apex:outputText value="{!FWIP.testName}" />
+                            </td>
+                            <td>
+                                <apex:outputText value="{!FWIP.specification}" />
+                            </td>
+                            <td>
+                                <apex:outputText value="{!FWIP.uom}" />
+                            </td>
+                            
+                        </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>     
+        <td>
+            <apex:outputPanel rendered="{! IF(specialTestParameter1.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!specialTestParameter1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+        <apex:outputPanel rendered="{! IF(specialTestParameter2.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!specialTestParameter2}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(specialTestParameter3.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!specialTestParameter3}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(specialTestParameter4.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">   
+                <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!specialTestParameter4}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+        <apex:outputPanel rendered="{! IF(specialTestParameter5.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!specialTestParameter5}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+    </tr>
+    </table> 
+</apex:outputPanel>
+<!-- package test parameter-->
+<apex:outputPanel rendered="{! IF(allPackageTestDataC.size > 0, true, false)}">        
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">      
+        <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+            <td colspan="1" align="center" style="font-weight:bold"> 
+        <apex:outputPanel rendered="{! IF(packageCom.size > 0, true, false)}">
+                <apex:outputText value="{!packageCom[0].Name__c}" />
+         </apex:outputPanel>
+            </td>
+                <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+        </tr>
+        <tr>
+<!-- <td width="7%" align="center" style="font-weight:bold"> Input Parameter</td>  --> 
+        <td>
+        <apex:outputPanel rendered="{! IF(allPackageTestDataC.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                  <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                            <td>
+                                <apex:outputText value="Test Name" />
+                            </td>
+                            <td>
+                                <apex:outputText value="Specification" />
+                            </td>
+                              <td>
+                                <apex:outputText value="UOM" />
+                            </td>
+                        </tr>      
+                <apex:repeat value="{!allPackageTestDataC}" var="FWIP"> 
+                        <tr>
+                            <td>
+                                <apex:outputText value="{!FWIP.testName}" />
+                            </td>
+                            <td>
+                                <apex:outputText value="{!FWIP.specification}" />
+                            </td>
+                            <td>
+                                <apex:outputText value="{!FWIP.uom}" />
+                            </td>
+                            
+                        </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>     
+        <td>
+            <apex:outputPanel rendered="{! IF(packageParameter1.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!packageParameter1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+        <apex:outputPanel rendered="{! IF(packageParameter2.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!packageParameter2}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(packageParameter3.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!packageParameter3}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(packageParameter4.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">   
+                <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!packageParameter4}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+        <apex:outputPanel rendered="{! IF(packageParameter5.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!packageParameter5}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+    </tr>
+    </table> 
+</apex:outputPanel>
+
+<!-- confirmation to Specification table-->
+<apex:outputPanel rendered="{! IF(allCaseTestDataMC.size > 0, true, false)}">          
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">      
+        <tr style="font-family:Arial,Helvetica,sans-serif;background:#eeffcc;font-weight:bold;font-size:14px; color:#2e5cb8;">
+            <td colspan="18" align="center" style="font-weight:bold"> Confirmation to Specification </td>
+        </tr>        
+       <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+            <td colspan="1" align="center" style="font-weight:bold">
+        <apex:outputPanel rendered="{! IF(caseCom.size > 0, true, false)}">
+                <apex:outputText value="Case Material Composition" />
+         </apex:outputPanel>
+            </td>
+         <!--   <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList1[0].reportref}" />
+            </apex:outputPanel>
+        </td>       
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList2[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList3[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList4[0].reportref}" />
+            </apex:outputPanel>
+        </td>
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList5[0].reportref}" />
+            </apex:outputPanel>          
+        </td>    -->
+                        <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+        </tr>
+        <tr>
+<!-- <td width="7%" align="center" style="font-weight:bold"> Input Parameter</td>  --> 
+        <td>
+            <apex:outputPanel rendered="{! IF(allCaseTestDataMC.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                  <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                            <td>
+                                <apex:outputText value="Test Name" />
+                            </td>
+                        <!--    <td>
+                                <apex:outputText value="Specification" />
+                            </td>
+                              <td>
+                                <apex:outputText value="UOM" />
+                            </td>  -->
+                        </tr>      
+                <apex:repeat value="{!allCaseTestDataMC}" var="FWIP"> 
+                        <tr>
+                            <td>
+                                <apex:outputText value="{!FWIP.testName}" />
+                            </td>
+                         <!--   <td>
+                                <apex:outputText value="{!FWIP.specification}" />
+                            </td>
+                             <td>
+                                <apex:outputText value="{!FWIP.uom}" />
+                            </td>   -->
+                        </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>     
+        <td>
+                <apex:outputPanel rendered="{! IF(CaseTestParameterM1.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!CaseTestParameterM1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(CaseTestParameterM2.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!CaseTestParameterM2}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+                <apex:outputPanel rendered="{! IF(CaseTestParameterM3.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!CaseTestParameterM3}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+                <apex:outputPanel rendered="{! IF(CaseTestParameterM4.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!CaseTestParameterM4}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+                <apex:outputPanel rendered="{! IF(CaseTestParameterM5.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!CaseTestParameterM5}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+    </tr>
+    </table>
+</apex:outputPanel> 
+<!-- for confirmation to specification Plating Layer--> 
+<apex:outputPanel rendered="{! IF(allCaseTestDataPC.size > 0, true, false)}">          
+ <table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">      
+        <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+            <td colspan="1" align="center" style="font-weight:bold"> 
+        <apex:outputPanel rendered="{! IF(caseCom.size > 0, true, false)}">
+                <apex:outputText value="Case Plating Layer" />
+         </apex:outputPanel>
+            </td>
+        <!--    <td colspan="1">
+           <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList1[0].reportref}" />
+            </apex:outputPanel>
+        </td>       
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList2[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList3[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList4[0].reportref}" />
+            </apex:outputPanel>
+        </td>
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList5[0].reportref}" />
+            </apex:outputPanel>          
+        </td>   -->
+                        <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+        </tr>
+        <tr>
+<!-- <td width="7%" align="center" style="font-weight:bold"> Input Parameter</td>  --> 
+        <td>
+          <apex:outputPanel rendered="{! IF(allCaseTestDataPC.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                  <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                            <td>
+                                <apex:outputText value="Test Name" />
+                            </td>
+                        <!--    <td>
+                                <apex:outputText value="Specification" />
+                            </td>
+                              <td>
+                                <apex:outputText value="UOM" />
+                            </td>    -->
+                        </tr>      
+                <apex:repeat value="{!allCaseTestDataPC}" var="FWIP"> 
+                        <tr>
+                            <td>
+                                <apex:outputText value="{!FWIP.testName}" />
+                            </td>
+                        <!--    <td>
+                                <apex:outputText value="{!FWIP.specification}" />
+                            </td>
+                             <td>
+                                <apex:outputText value="{!FWIP.uom}" />
+                            </td>   -->
+                        </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>     
+        <td>
+              <apex:outputPanel rendered="{! IF(CaseTestParameterP1.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!CaseTestParameterP1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+                  <apex:outputPanel rendered="{! IF(CaseTestParameterP2.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!CaseTestParameterP2}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+        <apex:outputPanel rendered="{! IF(CaseTestParameterP3.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!CaseTestParameterP3}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+        <apex:outputPanel rendered="{! IF(CaseTestParameterP4.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!CaseTestParameterP4}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+                  <apex:outputPanel rendered="{! IF(CaseTestParameterP5.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">   
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>          
+                <apex:repeat value="{!CaseTestParameterP5}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+    </tr>
+    </table>
+</apex:outputPanel> 
+<!-- metal strap material layer test parameter-->
+<apex:outputPanel rendered="{! IF(allMatalTestDataMC.size > 0, true, false)}">         
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">      
+        <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+            <td colspan="1" align="center" style="font-weight:bold">
+        <apex:outputPanel rendered="{! IF(metalCom.size > 0, true, false)}">
+                 <apex:outputText value="Metal Strap Material Composition" />
+         </apex:outputPanel> 
+            </td>
+        <!--    <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList1[0].reportref}" />
+            </apex:outputPanel>
+        </td>       
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList2[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList3[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList4[0].reportref}" />
+            </apex:outputPanel>
+        </td>
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList5[0].reportref}" />
+            </apex:outputPanel>          
+        </td>    -->
+                        <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+        </tr>
+        <tr>
+<!-- <td width="7%" align="center" style="font-weight:bold"> Input Parameter</td>  --> 
+        <td>
+        <apex:outputPanel rendered="{! IF(allMatalTestDataMC.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                  <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                            <td>
+                                <apex:outputText value="Test Name" />
+                            </td>
+                         <!--   <td>
+                                <apex:outputText value="Specification" />
+                            </td>
+                              <td>
+                                <apex:outputText value="UOM" />
+                            </td>   -->
+                        </tr>      
+                <apex:repeat value="{!allMatalTestDataMC}" var="FWIP"> 
+                        <tr>
+                            <td>
+                                <apex:outputText value="{!FWIP.testName}" />
+                            </td>
+                         <!--   <td>
+                                <apex:outputText value="{!FWIP.specification}" />
+                            </td>
+                             <td>
+                                <apex:outputText value="{!FWIP.uom}" />
+                            </td>   -->
+                        </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>     
+        <td>
+            <apex:outputPanel rendered="{! IF(MatalTestParameterM1.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>       
+                <apex:repeat value="{!MatalTestParameterM1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+                <apex:outputPanel rendered="{! IF(MatalTestParameterM2.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>       
+                <apex:repeat value="{!MatalTestParameterM2}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+                <apex:outputPanel rendered="{! IF(MatalTestParameterM3.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">   
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>       
+                <apex:repeat value="{!MatalTestParameterM3}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+                <apex:outputPanel rendered="{! IF(MatalTestParameterM4.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">  
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>       
+                <apex:repeat value="{!MatalTestParameterM4}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+                <apex:outputPanel rendered="{! IF(MatalTestParameterM5.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                    <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>       
+                <apex:repeat value="{!MatalTestParameterM5}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+    </tr>
+    </table>
+</apex:outputPanel>
+<!-- metal strap Plating layer test parameter-->
+<apex:outputPanel rendered="{! IF(allMatalTestDataPC.size > 0, true, false)}">         
+<table width="100%" cellspacing ="0" border ="1" align="left" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">      
+        <tr style="font-family:Arial,Helvetica,sans-serif;background:#D3D3D3;font-weight:bold;font-size:14px; color:#2e5cb8;">
+            <td colspan="1" align="center" style="font-weight:bold"> 
+        <apex:outputPanel rendered="{! IF(metalCom.size > 0, true, false)}">
+                 <apex:outputText value="Metal Strap Plating Layer" />
+         </apex:outputPanel> 
+            </td>
+        <!--    <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList1.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList1[0].reportref}" />
+            </apex:outputPanel>
+        </td>       
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList2.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList2[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList3.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList3[0].reportref}" />
+            </apex:outputPanel>
+        </td>   
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList4.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList4[0].reportref}" />
+            </apex:outputPanel>
+        </td>
+        <td colspan="1">
+            <apex:outputPanel rendered="{! IF(fullWatchTestParamList5.size > 0, true, false)}">
+                <apex:outputText value="{!fullWatchTestParamList5[0].reportref}" />
+            </apex:outputPanel>          
+        </td>   -->
+                        <td> <apex:outputText value="{!component1.Report_Ref_Number__c}" /> </td>
+                <td><apex:outputText value="{!component2.Report_Ref_Number__c}" /></td>   
+                <td><apex:outputText value="{!component3.Report_Ref_Number__c}" /></td>
+                <td><apex:outputText value="{!component4.Report_Ref_Number__c}" /></td>      
+                <td> <apex:outputText value="{!component5.Report_Ref_Number__c}" /></td>
+        </tr>
+        <tr>
+<!-- <td width="7%" align="center" style="font-weight:bold"> Input Parameter</td>  --> 
+        <td>
+                    <apex:outputPanel rendered="{! IF(allMatalTestDataPC.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">    
+                  <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                            <td>
+                                <apex:outputText value="Test Name" />
+                            </td>
+                       <!--     <td>
+                                <apex:outputText value="Specification" />
+                            </td>
+                              <td>
+                                <apex:outputText value="UOM" />
+                            </td>   -->
+                        </tr>      
+                <apex:repeat value="{!allMatalTestDataPC}" var="FWIP"> 
+                        <tr>
+                            <td>
+                                <apex:outputText value="{!FWIP.testName}" />
+                            </td>
+                         <!--   <td>
+                                <apex:outputText value="{!FWIP.specification}" />
+                            </td>
+                            <td>
+                                <apex:outputText value="{!FWIP.uom}" />
+                            </td>    -->   
+                        </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>     
+        <td>
+        <apex:outputPanel rendered="{! IF(MatalTestParameterP1.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">   
+                <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>       
+                <apex:repeat value="{!MatalTestParameterP1}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+        <apex:outputPanel rendered="{! IF(MatalTestParameterP2.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1"> 
+                <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>       
+                <apex:repeat value="{!MatalTestParameterP2}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+            <apex:outputPanel rendered="{! IF(MatalTestParameterP3.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">     
+                <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>       
+                <apex:repeat value="{!MatalTestParameterP3}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+        <apex:outputPanel rendered="{! IF(MatalTestParameterP4.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">
+                <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>       
+                <apex:repeat value="{!MatalTestParameterP4}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+        </td>
+        <td>
+        <apex:outputPanel rendered="{! IF(MatalTestParameterP4.size > 0, true, false)}">        
+            <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1">   
+                <tr style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14px; color:#2e5cb8;">
+                        <td>
+                            <apex:outputText value="Observation" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Remarks" />
+                        </td>
+                         <td>
+                            <apex:outputText value="Conclusion" />
+                        </td>
+                    </tr>       
+                <apex:repeat value="{!MatalTestParameterP5}" var="FWIP">           
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!FWIP.observation}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.commentAndRemarks}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!FWIP.verdict}" />
+                        </td>
+                    </tr>                    
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>        
+        </td>
+    </tr>
+    </table>
+   </apex:outputPanel> 
+  </apex:outputPanel>  
+ </apex:form>
+ </html> 
+</apex:page>

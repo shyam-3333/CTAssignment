@@ -1,0 +1,7 @@
+<apex:component controller="NPDemailattachment" access="global">
+<apex:attribute name="emailatt" description="Attachment URL" access="global" type="String" assignTo="{!actid}"/>
+<apex:repeat value="{!attach}" var="att">
+<a href="{!att}">{!attach[att]} </a> <br/>
+</apex:repeat>
+
+</apex:component>

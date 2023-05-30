@@ -1,0 +1,249 @@
+<apex:component controller="FileUploadController" > 
+    <apex:attribute name="parentId" description="" type="String" />
+    
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"/>
+    
+    <style>
+        .headerDiv{
+                width: 100%;
+    background-color: lavender;
+    text-align: center;
+    font-size: 35px;
+    font-family: ui-serif;
+    margin-bottom: 6px;   
+        }
+        .buttonTD{
+            padding-left: 6px;
+        }
+    .clear{
+        clear:both;
+    }
+    .fileName{
+        float: left;
+        max-width: 235px;
+        overflow: hidden;
+        position: absolute;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .percentComplete{
+        float: right;
+    }
+    .statusBar{
+        background: none repeat scroll 0 0 #FFFFFF;
+        border: 1px solid #EAEAEA;
+        height: 11px;
+        padding: 0 2px 0 0;
+    }
+    .statusBarPercent{
+        background-color: #1797C0;
+        float: left;
+        height: 9px;
+        margin: 1px;
+        max-width: 100%;
+    }
+    .statusBarPercentError{
+        background-color: #CE0000;
+    }
+    .upload{
+        background-color: white;
+        border: 1px solid #CACACA;
+        border-radius: 3px 3px 3px 3px;
+        margin-top: 6px;
+        padding: 4px;
+    }
+    .uploadBox{
+        background-color: #F8F8F8;
+        border: 1px solid #EAEAEA;
+        border-radius: 4px 4px 4px 4px;
+        color: #333333;
+        font-size: 12px;
+        padding: 6px;
+        width: 100%;
+    }
+    .uploadError{
+        border-color: #CE0000;
+    }
+    .uploadTable{
+        margin-left: auto;
+        margin-right: auto;
+    }
+    </style>
+    <script type="text/javascript">
+        var parentId = '{!parentId}'; 
+    var j$ = jQuery.noConflict();
+    j$(document).ready(function() {
+        j$("#uploadButton").click(function(){
+            prepareFileUploads();
+        });
+        
+        //Event listener to clear upload details/status bars once upload is complete
+        j$("#clear").on('click',function(){
+            j$(".upload").remove();
+        });
+    });
+    
+    var byteChunkArray; 
+    var files;
+    var currentFile;
+    var $upload;
+    var CHUNK_SIZE = 180000; 
+    var VIEW_URL = '/servlet/servlet.FileDownload?file=';
+    
+    function prepareFileUploads(){
+        files = document.getElementById('filesInput').files;
+        
+        if(files.length == 0){
+            alert('Please select a file!');
+            return;
+        }
+        
+        j$(".uploadBox input").attr("disabled", "disabled");
+        j$(".uploadBox button").attr({
+            disabled: "disabled",
+            class: "btnDisabled"
+        });
+        
+        var uploadMarkup = '';
+        for(i = 0; i < files.length; i++){
+            if(files[i].size < 1000000){
+                var displaySize = Math.floor(files[i].size/1000) + 'K';
+            }else{
+                var displaySize  = Math.round((files[i].size / 1000000)*10)/10 + 'MB';
+            }
+            
+            uploadMarkup += '<div class="upload" data-status="pending" data-index="'+i+'">'; //index used to correspond these upload boxes to records in the files array
+            uploadMarkup += '<div class="fileName"><span class="name">'+ files[i].name + '</span> - '+ displaySize+ '</div>';
+            uploadMarkup += '<div class="percentComplete">0%</div>'
+            uploadMarkup += '<div class="clear"/>';
+            uploadMarkup += '<div class="statusBar">';
+            uploadMarkup += '<div class="statusBarPercent"/>';
+            uploadMarkup += '</div>';
+            uploadMarkup += '</div>';
+        }
+        
+        j$('.uploadBox').append(uploadMarkup);
+        
+        checkForUploads();
+    }
+    
+    function checkForUploads(){
+        $upload = j$(".upload:first[data-status='pending']");
+        
+        if($upload.length != 0){
+            currentFile = files[$upload.attr('data-index')];
+            
+            
+            byteChunkArray = new Array();  
+            
+            if(currentFile.size <= CHUNK_SIZE){
+                byteChunkArray[0] = '0-' + (currentFile.size - 1);
+            }else{
+                var numOfFullChunks = Math.floor(currentFile.size / CHUNK_SIZE);
+                var remainderBytes = currentFile.size % CHUNK_SIZE; 
+                var startByte = 0;
+                var endByte = CHUNK_SIZE - 1;
+                
+                for(i = 0; i < numOfFullChunks; i++){
+                    byteChunkArray[i] = startByte+'-'+endByte;
+                    
+                    startByte = endByte + 1;
+                    endByte += CHUNK_SIZE;
+                }
+                
+                startByte = currentFile.size - remainderBytes;
+                endByte = currentFile.size;
+                byteChunkArray.push(startByte+'-'+endByte);
+            }
+            
+            processByteChunkArray('');
+            
+        }else{
+            j$(".uploadBox input").removeAttr("disabled");
+            j$(".uploadBox button").removeAttr("disabled").attr("class","btn");
+            
+            
+            j$("#filesInput").replaceWith('<input type="file" name="file" multiple="true" id="filesInput">');
+        }
+    }
+    
+    function processByteChunkArray(attachmentId){
+        if(byteChunkArray.length > 0){
+            var indexes = byteChunkArray[0].split('-'); 
+            var startByte = parseInt(indexes[0]);
+            var stopByte = parseInt(indexes[1]); 
+            
+            //Slice the part of the file we want to upload, currentFile variable is set in checkForUploads() method that is called before this method
+            if(currentFile.slice){
+                var blobChunk = currentFile.slice(startByte , stopByte + 1);
+            }else if (currentFile.mozSlice) {
+                var blobChunk = currentFile.mozSlice(startByte , stopByte + 1);
+            }
+            
+            var reader = new FileReader();
+            
+            reader.readAsBinaryString(blobChunk);
+            
+            reader.onloadend = function(evt){ 
+                if(evt.target.readyState == FileReader.DONE){ 
+                    var base64value = window.btoa(evt.target.result);
+                    
+                    FileUploadController.attachBlob(attachmentId,currentFile.name,currentFile.type,base64value,function(result,event){
+                        console.log(event.message);
+                        if(event.status == true){
+                          var percentComplete = Math.round((stopByte / currentFile.size) * 100);
+                            $upload.find(".percentComplete").text(percentComplete + '%');
+                            $upload.find(".statusBarPercent").css('width',percentComplete + '%');
+                            
+                            byteChunkArray.shift(); 
+                            
+                            attachmentId = result;
+                            
+                            processByteChunkArray(attachmentId);
+                            
+                        }else{
+                            
+                            $upload.attr('data-status','complete');
+                            $upload.addClass('uploadError');
+                            $upload.find(".statusPercent").addClass('statusPercentError');
+                            $upload.attr('title',event.message);
+                            $upload.html('<div style="font-size: 20px;">Product not found!</div>');
+                            
+                            checkForUploads();
+                        }
+                    }); 
+                }else{
+                    alert('Could not read file');
+                }
+            };
+            
+        }else{
+            $upload.attr('data-status','complete');
+            
+            $upload.find(".name").html('<a href="' + VIEW_URL + attachmentId + '" target="_blank">'+currentFile.name+'</a>');
+            
+            checkForUploads();
+        }
+    }
+    
+    
+    </script>
+    <div class="headerDiv">
+        
+    <h1 style="font-family: ui-serif;">
+        Upload Images
+    </h1>
+    </div>
+    <div class="uploadBox">
+        <table cellpadding="0" cellspacing="0" class="uploadTable">
+            <tr>
+                <td><input type="file" style="margin-left: -30px;" multiple="true" id="filesInput" name="file" /></td>
+                <td class="buttonTD">
+                    <input id="uploadButton" type="button" title="Upload" class="btn" style="margin-left: 60px;" value=" Upload "/>
+                    <input id="clear" type="button" title="Clear" class="btn" style="margin-left: 36px;" value=" Clear "/>
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+</apex:component>

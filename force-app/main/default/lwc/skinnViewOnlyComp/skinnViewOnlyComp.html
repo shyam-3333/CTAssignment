@@ -1,0 +1,157 @@
+<template>
+
+        <template if:true={skinnCollectionRecords}>
+            <div class="laumchDateClass" >
+                <template if:true={tentativeLaunchDate}>
+                Planned Launch Date: {tentativeLaunchDate}<br>
+                </template>
+                <template if:true={productLaunchDate}>
+                Tentative Launch Date: {productLaunchDate}
+                </template>
+            </div>
+            <table border="1" align="center" class="slds-table" style="box-shadow: 0px 2px 5px;table-layout: fixed;width: 100%;">
+                <thead>
+                    <tr>
+                        <td class="centertextTabel" >
+                            Type
+                        </td>
+                        <td colspan="2" class="centertextTabel" >
+                            Activitys
+                        </td>
+                        <td colspan="2" class="centertextTabel" >
+                            <table >
+                                <tr>
+                                    <td colspan="2" class="centertextTabel" >Planned</td>
+                                </tr>
+                                <tr>
+                                    <td class="centertextTabel" >Start Date</td>
+                                    <td class="centertextTabel" >End Date</td>
+                                </tr>
+                                
+                            </table>
+                        </td>
+                        <td colspan="2" style="font-weight: bold;text-align: center;" >
+                                
+                                <table >
+                                        <tr>
+                                            <td colspan="2" class="centertextTabel" >Rolling</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="centertextTabel" >Start Date</td>
+                                            <td class="centertextTabel" >End Date</td>
+                                        </tr>
+                                        
+                                    </table>
+                            </td>
+                        <td colspan="2" style="font-weight: bold;text-align: center;" >
+                            
+                            <table >
+                                    <tr>
+                                        <td colspan="2" class="centertextTabel" >Actual</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="centertextTabel" >Start Date</td>
+                                        <td class="centertextTabel" >End Date</td>
+                                    </tr>
+                                    
+                                </table>
+                        </td>
+                        <td style="font-weight: bold;text-align: center;" >
+                            Owner Name
+                        </td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={skinnCollectionRecords} for:item="Item">
+                        <template if:true={Item.IsStage}>
+                            <tr key={Item.Id} style="background-color: greenyellow">
+                                <td> {Item.Type} </td>
+                                <td colspan="2" style="white-space: normal" >
+                                    <template if:true={Item.IsInProgess}>
+                                        <lightning-icon icon-name="utility:forward" alternative-text="In Progress"
+                                            size="x-small"></lightning-icon>
+                                    </template>
+                                    <template if:true={Item.IsNotStarted}>
+                                        <lightning-icon icon-name="utility:warning" alternative-text="Not Started"
+                                        variant="warning" size="x-small" ></lightning-icon>
+                                    </template>
+                                    <template if:true={Item.IsCompleted}>
+                                        <lightning-icon icon-name="action:approval" alternative-text="Completed"
+                                            size="x-small"></lightning-icon>
+                                    </template>
+                                    {Item.Item_Name}
+                                </td>
+                                <td>{Item.PlannedStartDate} </td>
+                                <td>{Item.PlannedEndDate} </td>
+                                <td>{Item.RollingPlannedStartDate} </td>
+                                <td> {Item.RollingPlannedEndDate} </td>
+                                <td>{Item.ActualStartDate} </td>
+                                <td> {Item.ActualEndDate} </td>
+                                <td>
+                                        {Item.OwnerName} 
+                                </td>
+                            </tr>
+                        </template>
+                        <template if:true={Item.IsSubStage}>
+                            <tr key={Item.Id} style="background-color: yellow">
+                                <td>{Item.Type} </td>
+                                <td colspan="2" style="white-space: normal" >
+                                        <template if:true={Item.IsInProgess}>
+                                                <lightning-icon icon-name="utility:forward" alternative-text="In Progress"
+                                                    size="x-small"></lightning-icon>
+                                            </template>
+                                            <template if:true={Item.IsNotStarted}>
+                                                <lightning-icon icon-name="utility:warning" alternative-text="Not Started"
+                                                variant="warning" size="x-small" ></lightning-icon>
+                                            </template>
+                                            <template if:true={Item.IsCompleted}>
+                                                <lightning-icon icon-name="action:approval" alternative-text="Completed"
+                                                    size="x-small"></lightning-icon>
+                                            </template>
+                                   {Item.Item_Name} 
+                                </td>
+                                <td>{Item.PlannedStartDate} </td>
+                                <td>{Item.PlannedEndDate} </td>
+                                <td>{Item.RollingPlannedStartDate} </td>
+                                <td> {Item.RollingPlannedEndDate} </td>
+                                <td>{Item.ActualStartDate} </td>
+                                <td> {Item.ActualEndDate} </td>
+                                <td>
+                                        {Item.OwnerName} 
+                                </td>
+                            </tr>
+                        </template>
+                        <template if:true={Item.IsActivity}>
+                            <tr key={Item.Id} style="background-color: beige">
+                                <td>{Item.Type} </td>
+                                <td colspan="2" style="white-space: normal">
+                                        <template if:true={Item.IsInProgess}>
+                                                <lightning-icon icon-name="utility:forward" alternative-text="In Progress"
+                                                    size="x-small"></lightning-icon>
+                                            </template>
+                                            <template if:true={Item.IsNotStarted}>
+                                                <lightning-icon icon-name="utility:warning" alternative-text="Not Started"
+                                                variant="warning" size="x-small" ></lightning-icon>
+                                            </template>
+                                            <template if:true={Item.IsCompleted}>
+                                                <lightning-icon icon-name="action:approval" alternative-text="Completed"
+                                                    size="x-small"></lightning-icon>
+                                            </template>
+                                    {Item.Item_Name} 
+                                </td>
+                                <td>{Item.PlannedStartDate} </td>
+                                <td>{Item.PlannedEndDate} </td>
+                                <td>{Item.RollingPlannedStartDate} </td>
+                                <td> {Item.RollingPlannedEndDate} </td>
+                                <td>{Item.ActualStartDate} </td>
+                                <td> {Item.ActualEndDate} </td>
+                                <td>
+                                        {Item.OwnerName} 
+                                </td>
+                            </tr>
+                        </template>
+                    </template>
+                </tbody>
+            </table>
+        </template>
+    </template>

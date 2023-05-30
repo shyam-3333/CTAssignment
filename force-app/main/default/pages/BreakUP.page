@@ -1,0 +1,67 @@
+<apex:page standardController="Opportunity" renderAs="pdf" extensions="Clone_QuoteItems"> 
+   <br/><br/>
+ <!--  <b>PROJECT  : </b><apex:outputField value="{!Opportunity.Name}"/><br/>
+   <b>CUSTOMER : </b><apex:outputField value="{!Opportunity.Account.Name}"/><br/>
+   <b>CUSTOMER LOCATION : </b><apex:outputField value="{!Opportunity.Place__r.Name}"/><br/>
+   <b>SAP REFERENCE NO  : </b><apex:outputText value="{!Opportunity.Opportunity_ID__c} / R{!Opportunity.Revision_Number__c} -- {!Opportunity.Todays_Date__c}"/> <br/><br/><br/>
+   <table border = "0.1" width="100%" columns="4">
+       <tr>
+           <th colspan = "4" bgcolor="#AAAAAA" width = "100%"><center>Material Cost</center></th>
+       </tr>
+       <tr>
+           <th width="40%">Description</th>
+           <th width="20%">Mech</th>
+           <th width="20%">Elec</th>
+           <th width="20%">Total Mat</th>
+       </tr>
+   </table>
+   <apex:repeat value="{!oli}" var="oli1">
+       <table border = "0.1" width="100%" columns="4"> 
+        <tr>
+            <td width="40%">{!oli1.Product_Name__c}</td>
+            <td width="20%">{!oli1.Total_Mechanical_Value__c}</td>
+            <td width="20%">{!oli1.Total_Electrical_Value__c}</td>
+            <td width="20%">{!oli1.Total_Material_Cost__c}</td>
+        </tr>
+       </table>
+   </apex:repeat>
+   <table border = "0.1" width="100%" columns="4">
+       <tr>
+           <td width="40%">Total Material</td>
+           <td width="20%"><apex:outputField value="{!Opportunity.Mechincal_Items_Value__c}"/> </td>
+           <td width="20%"><apex:outputField value="{!Opportunity.Electrical_Items_Value__c}"/> </td>
+           <td width="20%"><apex:outputField value="{!Opportunity.Total_Material_Cost__c}"/> </td>
+       </tr>
+   </table><br/><br/>
+   
+   <table border = "0.1" width="100%" columns="2">
+        <tr>
+            <th colspan = "2" bgcolor="#AAAAAA" width = "100%"><center>Consolidated Cost Break-Up</center></th>
+        </tr>
+        <tr>
+            <td width="50%">Total Material</td>
+            <td width="50%">{!Opportunity.Total_Material_Cost__c}</td>
+        </tr>
+        <tr>
+            <td width="50%">Over Head</td>
+            <td width="50%">{!Opportunity.Overhead_Expenses__c}</td>
+        </tr>
+        <tr>
+            <td width="50%">Total Cost</td>
+            <td width="50%">{!Opportunity.Total_Cost_Mat_OverHead__c}</td>
+        </tr>
+        <tr>
+            <td width="50%"> Quote with 25% Profit on Total</td>
+            <td width="50%">{!Opportunity.Quote_with_25_Profit_on_Total__c}</td>
+        </tr>
+        <tr>
+            <td width="50%"> Commissioning Charges(Additional)</td>
+            <td width="50%">{!Opportunity.Commissioning_Charges__c}</td>
+        </tr>
+        <tr>
+            <td width="50%"> Packing and Forwarding(Additional)</td>
+            <td width="50%">{!Opportunity.Packing_Forwarding__c}</td>
+        </tr>
+   </table>-->
+
+</apex:page>

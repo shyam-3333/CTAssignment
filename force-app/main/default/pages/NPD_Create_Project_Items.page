@@ -1,0 +1,456 @@
+<!--
+        Page Name : NPD Create Project Items 
+ -->
+
+<apex:page sidebar="false" controller="NPDCreateProjectItemsController" id="pg" standardStyleSheets="false">
+<head>
+    <apex:stylesheet value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+    <apex:stylesheet value="{!URLFOR($Resource.JqueryTree, 'Boots/css/jquery.treegrid.css')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.JqueryTree, 'Boots/js/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.JqueryTree, 'Boots/js/jquery.treegrid.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.JqueryTree, 'Boots/js/jquery.treegrid.bootstrap3.js')}"/>
+    <apex:includescript value="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js" />
+</head>
+ <style>
+    .custPopup{
+        background-color: white;
+        border-width: 2px;
+        border-style: solid;
+        z-index: 9999;
+        left: 15%;
+        padding: 10px;
+        position: absolute; 
+        width: 1000px;
+        height: 450px;
+        /* margin-left: -150px; */
+        top: 10%;
+       // overflow-y: scroll;
+        /* margin: 0 auto; */
+    }
+    .popupBackground{
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 70);
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 9998;
+    }
+    .table_design{border:1px solid #00B6B0;}
+    .table_design th{background-color:#00B6B0;color:#fff;}
+    .table_design td{background-color:#CAE5E4;border-bottom:1px solid #00B6B0;}
+    .homeTab .tertiaryPalette, .individualPalette .homeBlock .tertiaryPalette, .layoutEdit .individualPalette .homeBlock .tertiaryPalette {
+    background-color: #00B6B0;
+    border-color: #00B6B0;
+}
+</style> 
+<apex:pageMessages id="Err"></apex:pageMessages>
+<apex:form id="frm">
+ <!--<apex:actionFunction name="callUpAndDown"  action="{!upAndDown}" rerender="panelId" oncomplete="callgrid();">
+    <apex:param value="" name="recId" assignto="{!strActionId}"/>
+    <apex:param value="" name="event" assignto="{!strEvent}"/>
+    <apex:param value="" name="position" assignto="{!strPosition}"/>  
+    <apex:param value="" name="itemtype" assignto="{!strItemType}"/> 
+    <apex:param value="" name="parentId" assignto="{!strParentTypeId}"/>  
+</apex:actionFunction> -->
+
+<apex:actionFunction name="ref"  rerender="panelId,Err,firstDiv" action="{!projectItemsCreation}" oncomplete="callTablegrid();">    
+</apex:actionFunction>
+ 
+<apex:actionFunction name="mapEditvalueAf" action="{!EditRec}" rerender="panelId,tstpopup,InsidePanel,InsidePanel1" oncomplete="callTablegrid();">
+        <apex:param value="" name="stgid" assignto="{!strActionId}"/>
+        <apex:param value="" name="name" assignto="{!strName}"/>
+        <apex:param value="" name="getrowId" assignto="{!strRowId}"/>
+        <apex:param value="" name="event" assignto="{!strEvent}"/>
+        <apex:param value="" name="stageparentid" assignto="{!strParentTypeId}"/>
+        <apex:param value="" name="position" assignto="{!strPosition}"/>            
+</apex:actionFunction>
+
+<apex:actionFunction name="deleteItem" action="{!DeleteRow}" rerender="panelId,tstpopup,InsidePanel,InsidePanel1" oncomplete="callgrid();">
+    <apex:param value="" name="ItemId" assignto="{!strActionId}"/>
+</apex:actionFunction>
+<apex:actionFunction name="complexity"  rerender="lead" action="{!updateStageLeadTime}"  immediate="true"  oncomplete="callTablegrid();" >
+        <apex:param name="comp" assignto="{!strComplexity}" value=""/>
+        
+</apex:actionFunction>
+
+<apex:outputPanel id="panelId">
+<div  id="firstDiv"><!-- Start of First Div --> 
+    <apex:variable var="i" value="{!1}"/>
+    <table class="table tree table_design">
+    <tr>
+            <th>Titan SNo</th>
+            <th>Title</th>
+            <th>Complexity</th>
+            <th>Predecessor</th>
+            <th>Titan SNo Predecessor</th>
+            <th>Lead time</th>
+            <th>Total Lead time</th>
+            <th>Department</th>
+            <th>Position</th>
+            <th>Edit</th>
+            <th>Add</th>
+            <th>Delete</th>
+           
+    </tr>
+    <apex:variable var="stageposition" value="{!1}"/> 
+    <apex:repeat value="{!stageList}" var="Stage1"  id="firstRepeat">    
+    <apex:repeat value="{!mapStage_StageId[Stage1]}" var="Stage2"  id="firstRepeat">    
+    <apex:repeat value="{!Stage2}" var="Stage">    
+        <tr class="treegrid-{!i}" id="node1-{!i}">
+      
+            <td><apex:outputText value="{!Stage.Titan_Sr_No__c} " id="SNo" /></td>         
+            <td><apex:outputText value="{!Stage.Title__c} " id="Title" /></td>                
+            <td><apex:outputText value="{!Stage.Complexity__c} " id="days" /></td>  
+            <!--<td><apex:outputText value="{!Stage.Predecessor__r.Name} " id="predecessor" /></td> -->
+            <td><apex:outputLink value="/{!Stage.Predecessor__r.Id}" id="predecessor"  target="_blank">{!Stage.Predecessor__r.Name}</apex:outputLink></td>
+            <td><apex:outputText value="{!Stage.Titan_SNo_Predecessor__c}" id="TSNoPredecessor" /></td>
+            <td><apex:outputText value="{!Stage.Lead_Time__c} " id="leadTime" /></td>
+            <td><apex:outputText value="{!Stage.Total_Lead_Time__c} "  /></td> 
+            <td><apex:outputText value="{!Stage.Department__r.Name} " id="department" /></td> 
+            <td><apex:outputText value="{!Stage.Position__c} " id="position" /></td>         
+            <td><apex:image id="EditId" value="{!$Resource.EditImage}" width="30" height="20" title=" Edit Stage" onclick="NextRecordPopup('{!Stage.id}','Stage','node1-{!i}','edit',null,'{!Stage.Position__c}')"/>
+            </td>
+            <td><apex:image id="AddId" value="{!$Resource.AddImage}" width="30" height="20" title=" Create Sub Stage" onclick="NextRecordPopup('{!Stage.id}','Sub-stage','node1-{!i}','create','{!Stage.id}','{!Stage.Position__c}')"/>
+            </td>
+            <td><apex:image id="deleteid" value="{!$Resource.DeleteImage}" width="30" height="20" style="padding-left:5px" title=" Delete Stage"  onclick="deleteprojectdata('{!Stage.id}')"/>
+            </td>
+            
+            <!--  <td><apex:image id="up" value="{!$Resource.Arrow}" width="30" height="20" style="padding-left:5px" title=" Up Stage" onclick="upAndDown('{!Stage.id}','up','{!Stage.Position__c}','{!Stage.Item_type__c}','{!Stage.Parent_id__c}')" />
+            </td>
+           
+            <td width="30px"><apex:image id="down" value="{!$Resource.Arrow2}" width="30" height="20" style="padding-left:5px" title=" Down Stage" onclick="upAndDown('{!Stage.id}','down','{!Stage.Position__c}','{!Stage.Item_type__c}','{!Stage.Parent_id__c}')" />
+            </td> -->
+            
+        </tr>       
+              <apex:variable var="k" value="{!i}"/ >            
+              <apex:repeat value="{!substageset}" var="substage1" >
+              <apex:repeat value="{!mapSubStage_StageId[substage1]}" var="substage2" rendered="{!Stage1 == substage1 }">
+              <apex:repeat value="{!substage2}" var="substage"  >   
+                    
+                        <apex:variable var="i" value="{!i+1}"/>
+                        <tr class="treegrid-{!i} treegrid-parent-{!k}">
+                            <td><apex:outputText value="{!substage.Titan_Sr_No__c} " id="SNo"/></td>         
+                            <td><apex:outputText value="{!substage.Title__c} " id="Title" /></td>                
+                            <td><apex:outputText value="{!substage.Complexity__c} " id="days" /></td> 
+                           <!-- <td><apex:outputText value="{!substage.Predecessor__r.Name} " id="predecessor" /></td>-->
+                            <td><apex:outputLink value="/{!substage.Predecessor__r.Id}" id="predecessor"  target="_blank">{!substage.Predecessor__r.Name}</apex:outputLink></td>              
+                            <td><apex:outputText value="{!substage.Titan_SNo_Predecessor__c} " id="TSNoPredecessor" /></td>
+                            <td><apex:outputText value="{!substage.Lead_Time__c} " id="leadTime" /></td>
+                            <td><apex:outputText value="{!subStage.Total_Lead_Time__c} " /></td> 
+                            <td><apex:outputText value="{!substage.Department__r.Name} " id="department" /></td>                     
+                            <td><apex:outputText value="{!substage.Position__c} " id="position" /></td>                                      
+                           
+                            <td><apex:image id="EditId" value="{!$Resource.EditImage}" width="30" height="20" title=" Edit Sub Stage" onclick="NextRecordPopup('{!substage.id}','Sub-stage','node1-{!i}','edit','{!substage.Parent_Id__c}','{!substage.Position__c}')"/>
+                            </td>
+                            <td><apex:image id="AddId" value="{!$Resource.AddImage}" width="30" height="20" title=" Create Activity" onclick="NextRecordPopup('{!substage.id}','Activity','node1-{!i}','create','{!substage.Parent_Id__c}','{!substage.Position__c}')"/>
+                            </td>
+                            <td><apex:image id="deleteid" value="{!$Resource.DeleteImage}" width="30" height="20" style="padding-left:5px" title=" Delete Sub Stage"  onclick="deleteprojectdata('{!substage.id}')"/>
+                            </td>
+                           
+                            <!--  <td><apex:image id="up" value="{!$Resource.Arrow}" width="30" height="20" style="padding-left:5px" title=" Up Sub Stage" onclick="upAndDown('{!substage.id}','up','{!substage.Position__c}','{!substage.Item_type__c}','{!substage.Parent_id__c}')" />
+                            </td>
+                            <td><apex:image id="down" value="{!$Resource.Arrow2}" width="30" height="20" style="padding-left:5px" title=" Down Sub Stage" onclick="upAndDown('{!substage.id}','down','{!substage.Position__c}','{!substage.Item_type__c}','{!substage.Parent_id__c}')" />
+                            </td> -->      
+                          
+                        </tr>                  
+                            <apex:variable var="z" value="{!i}"/>                           
+                            <apex:repeat value="{!activityset}" var="activity1"  >                          
+                            <apex:repeat value="{!mapActivty_SubStageId [activity1]}" var="activity2"  >
+                            <apex:repeat value="{!activity2}" var="activity" rendered="{!substage.Id==activity1}">                           
+                            <apex:variable var="i" value="{!i+1}"/>
+                            <tr class="treegrid-{!i} treegrid-parent-{!z}">    
+                                <td><apex:outputText value="{!activity.Titan_Sr_No__c} " id="SNo" /></td>         
+                                <td><apex:outputText value="{!activity.Title__c} " id="Title" /></td>                
+                                <td><apex:outputText value="{!activity.Complexity__c} " id="days" /></td> 
+                                <!--<td><apex:outputText value="{!activity.Predecessor__r.Name} " id="predecessor" /></td>-->  
+                                <td><apex:outputLink value="/{!activity.Predecessor__r.Id}" id="predecessor"  target="_blank">{!activity.Predecessor__r.Name}</apex:outputLink></td>                           
+                                <td><apex:outputText value="{!activity.Titan_SNo_Predecessor__c} " id="TSNoPredecessor" /></td>
+                                <td><apex:outputText value="{!activity.Lead_Time__c} " id="leadTime" /></td>
+                                <td><apex:outputText value="{!activity.Total_Lead_Time__c} "  /></td> 
+                                <td><apex:outputText value="{!activity.Department__r.Name} " id="department" /></td>
+                                <td><apex:outputText value="{!activity.Position__c} " id="position" /></td>          
+                                
+                                <td><apex:image id="EditId" value="{!$Resource.EditImage}" width="30" height="20" title=" Edit Activity" onclick="NextRecordPopup('{!activity.id}','Activity','node1-{!i}','edit','{!activity.Parent_Id__c}','{!activity.Position__c}')"/>
+                                </td>
+                                <td><apex:image id="AddId" value="{!$Resource.AddImage}" width="30" height="20" title=" Create Sub Activity" onclick="NextRecordPopup('{!activity.id}','Sub-Activity','node1-{!i}','create','{!activity.Parent_Id__c}','{!activity.Position__c}')"/>
+                                </td> 
+                                <td><apex:image id="deleteid" value="{!$Resource.DeleteImage}" width="30" height="20" style="padding-left:5px" title=" Delete Activity"  onclick="deleteprojectdata('{!activity.id}')"/>
+                                </td> 
+                               
+                               <!--   <td><apex:image id="up" value="{!$Resource.Arrow}" width="30" height="20" style="padding-left:5px" title=" Up Activity" onclick="upAndDown('{!activity.id}','up','{!activity.Position__c}','{!activity.Item_type__c}','{!activity.Parent_id__c}')" />
+                                </td>
+                                
+                                <td><apex:image id="down" value="{!$Resource.Arrow2}" width="30" height="20" style="padding-left:5px" title=" Down Activity" onclick="upAndDown('{!activity.id}','down','{!activity.Position__c}','{!activity.Item_type__c}','{!activity.Parent_id__c}')" />
+                                </td>  -->                                
+                            </tr>     
+                                     <apex:variable var="l" value="{!i}"/>
+                                     <apex:repeat value="{!subActivityset}" var="subactivity1" >
+                                     <apex:repeat value="{!mapSubActivity_ActivityId[subactivity1]}" var="subactivity2"  >
+                                     <apex:repeat value="{!subactivity2}" var="subactivity" rendered="{!activity.id == subactivity1}">   
+                                            <apex:variable var="i" value="{!i+1}"/>
+                                            <tr class="treegrid-{!i} treegrid-parent-{!l}">
+                                                <td><apex:outputText value="{!subactivity.Titan_Sr_No__c} " id="SNo" /></td>         
+                                                <td><apex:outputText value="{!subactivity.Title__c} " id="Title" /></td>                
+                                                <td><apex:outputText value="{!subactivity.Complexity__c} " id="days" /></td>
+                                                <!--<td><apex:outputText value="{!subactivity.Predecessor__r.Name} " id="predecessor" /></td> -->
+                                                <td><apex:outputLink value="/{!subactivity.Predecessor__r.Id}" id="predecessor"  target="_blank">{!subactivity.Predecessor__r.Name}</apex:outputLink></td>                           
+                                                 <td><apex:outputText value="{!subactivity.Titan_SNo_Predecessor__c} " id="TSNoPredecessor" /></td>
+                                                <td><apex:outputText value="{!subactivity.Lead_Time__c} " id="leadTime" /></td> 
+                                                <td><apex:outputText value="{!subactivity.Total_Lead_Time__c} "  /></td>
+                                                <td><apex:outputText value="{!subactivity.Department__r.Name} " id="department" /></td>
+                                                <td><apex:outputText value="{!subactivity.Position__c} " id="position" /></td>                
+                                                
+                                                <td><apex:image id="EditId" value="{!$Resource.EditImage}" width="30" height="20" title=" Edit Sub Activity" onclick="NextRecordPopup('{!subactivity.id}','Sub-Activity','node1-{!i}','edit','{!subactivity.Parent_Id__c}','{!subactivity.Position__C}')"/>
+                                                </td>
+                                                <td></td>
+                                                <td><apex:image id="deleteid" value="{!$Resource.DeleteImage}" width="30" height="20" style="padding-left:5px" title=" Delete Sub Activity"  onclick="deleteprojectdata('{!subactivity.id}')"/>
+                                                </td>
+                                               
+                                                <!--  <td><apex:image id="up" value="{!$Resource.Arrow}" width="30" height="20" style="padding-left:5px" title=" Up Sub Activity" onclick="upAndDown('{!subactivity.id}','up','{!subactivity.Position__c}','{!subactivity.Item_type__c}','{!subactivity.parent_id__c}')" />
+                                                </td>
+                                                                                             
+                                                <td><apex:image id="down" value="{!$Resource.Arrow2}" width="30" height="20" style="padding-left:5px" title=" Down Sub Activity" onclick="upAndDown('{!subactivity.id}','down','{!subactivity.Position__c}','{!subactivity.Item_type__c}','{!subactivity.parent_id__c}')" />
+                                                </td> -->
+                                            </tr>
+                                    
+                                     </apex:repeat>
+                                     </apex:repeat> 
+                                     </apex:repeat>  
+                                     
+                            </apex:repeat>  
+                            </apex:repeat>
+                            </apex:repeat>  
+                        
+                  </apex:repeat>
+                 </apex:repeat>
+                 </apex:repeat>
+                 <apex:variable var="i" value="{!i+1}"/>
+    </apex:repeat><!-- End of First Repeat--> 
+    </apex:repeat>
+    </apex:repeat>
+    </table>
+ </div><!-- End of First Div -->
+
+
+<Center>
+<apex:image id="AddId" value="{!$Resource.AddImage}" width="30" height="20" title=" Create Stage" onclick="NextRecordPopup('','Stage','','create','','')" /> 
+<!--<apex:commandButton value="Add Stage"  onclick="NextRecordPopup('','Stage','','create','','')"  rerender="tstpopup,InsidePanel,InsidePanel1"/> -->
+
+<apex:commandButton value="Return to Template" action="{!cancel}"  rerender="panelId" /></Center>
+</apex:outputPanel>
+</apex:form>
+<apex:form >
+<apex:pageMessages id="popupErr"></apex:pageMessages>
+    <apex:outputPanel id="tstpopup">
+    <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp}"/>
+    <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">
+    <apex:outputPanel id="InsidePanel" styleClass="red" layout="block" rendered="{! (strEvent=='create' ||strEvent=='edit' || strEvent=='child')}">
+    <table class="satge" >
+    <apex:pageBlock id="pgblk" >
+    <apex:outputPanel id="popupMsg">
+    <apex:outputText value="{!strPageMsg}" style="color : red"></apex:outputText> 
+    </apex:outputPanel>
+    <apex:pageBlockSection title="Project Items Detail" columns="2" id="pag"> 
+    
+        <apex:inputField value="{!PitemNewRec.Title__c}" id="title">
+        <script>document.getElementById('{!$Component.title}').disabled = false;</script> </apex:inputField> 
+        
+        <apex:inputField value="{!PitemNewRec.Department__c}"/>
+               
+       <!-- <apex:pageblockSectionItem >
+            <apex:outputLabel value="Lead Time" />
+            <apex:outputPanel id="lead">
+                <apex:inputField value="{!PitemNewRec.Lead_Time__c}" />
+            </apex:outputPanel>
+        </apex:pageblockSectionItem>-->
+        
+       <!-- <apex:inputField value="{!PitemNewRec.Complexity__c}" id="complexity" onchange="complexityvalue('{!$Component.complexity}');"  rendered="{!strName == 'Sub-stage' || strName == 'Activity'}" >
+        <apex:actionSupport event="onchange" rerender="pag"/></apex:inputField> -->
+         <apex:pageblockSectionItem >
+         
+        <apex:outputLabel value="Titan Sr No"  rendered="{!strName == 'Stage'}"/>
+        
+        <apex:outputPanel >   
+             
+        <apex:inputField value="{!PitemNewRec.Titan_Sr_No__c}" /> 
+        
+         <!--<apex:outputLabel value="Complexity Type" rendered="{!strName == 'Sub-stage' || strName == 'Activity'}"/>         
+            
+            
+            
+              <apex:outputLabel value="Complexity Category" rendered="{!strName == 'Sub-stage' || strName == 'Activity'}"/>
+               <apex:inputField value="{!PitemNewRec.Complexity_Category__c}" rendered="{!strName == 'Sub-stage' || strName == 'Activity'}"/> -->
+                            
+         
+        
+
+         
+      </apex:outputPanel> 
+        </apex:pageblockSectionItem>
+        
+    </apex:pageBlockSection>
+    
+    <apex:pageBlockSection title="Additional Information" columns="2" id="pb">
+        
+        <apex:inputField value="{!PitemNewRec.Columns_to_Copy__c}" id="checkcol" > 
+        <script>document.getElementById('{!$Component.checkcol}').disabled = false;</script> </apex:inputField>
+    
+        <apex:inputField value="{!PitemNewRec.Checklist_Columns__c}" id="checkKey" > 
+        <script>document.getElementById('{!$Component.checkKey}').disabled = true;</script> 
+        <apex:image url="{!$Resource.LookupIcon}" width="20" height="20" onclick="openCheckListLookupPopup('{!$Component.checkKey}','{!$Component.checkcol}')" /></apex:inputField>
+        
+        
+        <apex:inputField value="{!PitemNewRec.Complexity_Type__c}" id="comType" rendered="{!strName == 'Sub-stage' || strName == 'Activity'}"> 
+        <script>document.getElementById('{!$Component.comType}').disabled = true;</script> 
+         <apex:image url="{!$Resource.LookupIcon}" width="20" height="20" onclick="openComplexityTypePopup('{!$Component.comType}','{!$Component.comCat}','{!$Component.lead}','{!PitemNewRec.Title__c}','{!PitemNewRec.Item_Type__c}')" /></apex:inputField>
+        
+        
+        
+        <apex:inputField value="{!PitemNewRec.Lead_Time__c}" id="lead" > 
+        <script>document.getElementById('{!$Component.lead}').disabled = false;</script> </apex:inputField>
+        
+        <apex:inputField value="{!PitemNewRec.Title__c}" id="title" rendered="false">
+        <script>document.getElementById('{!$Component.title}').disabled = false;</script> </apex:inputField> 
+        
+        
+        <apex:inputField value="{!PitemNewRec.Complexity_Category__c}" id="comCat" rendered="{!strName == 'Sub-stage' || strName == 'Activity'}"> 
+        <script>document.getElementById('{!$Component.comCat}').disabled = true;</script> 
+        <apex:image url="{!$Resource.LookupIcon}" width="20" height="20" onclick="openComplexityPopup('{!$Component.comType}','{!$Component.comCat}','{!$Component.lead}','{!PitemNewRec.Title__c}','{!PitemNewRec.Item_Type__c}')" /></apex:inputField>
+       
+          
+        <apex:outputPanel rendered="{!strEvent=='edit'}">
+        <apex:pageblockSectionItem >   
+        <apex:outputLabel value="Successor Item Alerts"  style="vertical-align: top"/>   
+        <apex:inputField value="{!PitemNewRec.Successor_Item_Alerts__c}" id="selectkey">
+        <script>document.getElementById('{!$Component.selectkey}').disabled = true;</script> 
+        <apex:image url="{!$Resource.LookupIcon}" width="20" height="20" onclick="openPIItemLookupPopup('{!$Component.selectkey}','{!strName}','{!strActionId}','{!strParentTypeId}','{!strPosition}','{!templateId}')"/></apex:inputField>
+        </apex:pageblockSectionItem>
+        </apex:outputPanel> 
+             
+        </apex:pageBlockSection>
+        <apex:pageBlockSection title="Checklist Information" columns="2"> 
+        <apex:inputField value="{!PitemNewRec.Attachment_Req__c}"/>
+        <apex:inputField value="{!PitemNewRec.Approval_Req__c}"/>  
+        <apex:inputField value="{!PitemNewRec.Email_on_Completion__c}"/> 
+        <apex:inputCheckbox value="{!PitemNewRec.Active__c}" selected="true"/>               
+    </apex:pageBlockSection> 
+
+    <!--<apex:pageBlockSection columns="2" > -->
+    <center><apex:commandButton value="Save" action="{!stageSave}" oncomplete="callgrid();" rerender="tstpopup,popupBackground,custPopup,popupErr,panelId,popupMsg" />
+    &nbsp;&nbsp;&nbsp;
+    <apex:commandButton value="Cancel" action="{!closePopup}" rerender="tstpopup"  oncomplete="callTablegrid();" immediate="true" /></center>
+   <!-- </apex:pageBlockSection>-->
+    </apex:pageBlock> 
+</table>
+ </apex:outputPanel>
+</apex:outputPanel>
+</apex:outputPanel>
+</apex:form>
+
+
+<script>
+    $(document).ready(function(){     
+    $('.tree').treegrid();
+    $('.tree').treegrid('collapseAll');
+    
+    });
+    function callTablegrid(){
+    
+    $('.tree').treegrid();
+    $('.tree').treegrid('collapseAll');
+    }
+   /* function callTablegrid1(actionId){
+    $('.tree').treegrid();
+   // $('.tree').treegrid('collapseAll')
+    $('.tree').expandRow(actionId);
+    }*/
+    
+    
+    //Fuction use for edit stage or substage or activity or subactivity  data
+    function NextRecordPopup(stgid,name,getrowId,event,selflookupid,position){
+        rowid=getrowId;
+        mapEditvalueAf(stgid,name,getrowId,event,selflookupid,position);       
+    }
+    function deleteprojectdata(ItemId){        
+        deleteItem(ItemId);
+    }
+    function openCheckListLookupPopup(CLRec,Col)
+    {     
+        newCheckList=CLRec;    
+        var url="/apex/NPD_Checklist_Lookup?"+"&checkListRec="+CLRec+"&checkCol="+Col ;
+        newWin=window.open(url, 'Popup3','height=400,width=300,left=100,top=50,resizable=no,scrollbars=yes,toolbar=no,status=no');
+        if (window.focus) 
+        {
+            newWin.focus();
+        }    
+        
+        return false;
+    }
+    
+    function openComplexityPopup(comTyp,comCat,leadtime,title,type)
+    {     
+        var compString = document.getElementById(comTyp).value;
+          
+        var url="/apex/NPD_Complexity_Popup?"+"&comType="+compString+"&comCat="+comCat+"&leadtime="+leadtime+"&title="+title+"&type="+type ;
+        newWin=window.open(url, 'Popup3','height=400,width=300,left=100,top=50,resizable=no,scrollbars=yes,toolbar=no,status=no');
+        
+        if (window.focus) 
+        {
+            newWin.focus();
+        }    
+        
+        return false;
+    }
+    
+    
+    function openComplexityTypePopup(comTyp,comCat,leadtime,title,type)
+    {     
+        //var compString = document.getElementById(comTyp).value;
+          
+        var url="/apex/NPD_Complexity_Type_Popup?"+"&comType="+comTyp+"&comCat="+comCat+"&leadtime="+leadtime+"&title="+title+"&type="+type ;
+        newWin=window.open(url, 'Popup3','height=400,width=300,left=100,top=50,resizable=no,scrollbars=yes,toolbar=no,status=no');
+        
+        if (window.focus) 
+        {
+            newWin.focus();
+        }    
+        
+        return false;
+    }
+    
+    
+    
+    
+     function closePopup() { 
+     if (null!=newWin) {
+      newWin.close(); 
+      }
+     } 
+       
+    function openPIItemLookupPopup(PIField,itemName,ItemId,parentId,position,templateId)
+    {          
+        newCheckList=PIField;    
+        var url="/apex/NPD_Project_Items_Lookup?"+"&PItemRec="+PIField+"&ItemId="+ItemId+"&itemName"+itemName+"&parentId="+parentId+"&position="+position+"&itemName="+itemName+"&templateId="+templateId ;            
+        newWin1= window.open(url, 'Popup2','height=400,width=300,left=100,top=50,resizable=no,scrollbars=yes,toolbar=no,status=no'); 
+        if (window.focus) 
+        {
+            newWin.focus();
+        }        
+        return false;
+    }
+    function complexityvalue(comp,type){    
+        var compString = document.getElementById(comp).value;
+        complexity(compString,type);
+    
+    } 
+    function upAndDown(recId,event,position,itemtype,parentId){
+        callUpAndDown(recId,event,position,itemtype,parentId);
+    }
+    function callgrid(){    
+        ref();
+    }
+</script>
+</apex:page>

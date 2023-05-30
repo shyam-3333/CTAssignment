@@ -1,0 +1,171 @@
+<template>
+	<c-custom-toast-message-component auto-close-time="10000"></c-custom-toast-message-component>
+	<template if:true={loader}>
+		<lightning-spinner alternative-text="Loading..." size="small"></lightning-spinner>
+	</template>
+
+	<lightning-card title="L1 L5 Master Data" icon-name="standard:account">
+      <lightning-button label="Delete" variant="brand" onclick={showPopup} class="slds-m-around_small"></lightning-button>
+    
+       <!------ <lightning-layout multiple-rows="true" vertical-align="end" class="slds-m-top_xx-large slds-m-around_none ">
+          <lightning-layout-item size="2" padding="around-small">
+            <lightning-input  type="text" label="Enter data" value={searchKey} onchange={handelSearchKey}  placeholder="Type here... ">
+            </lightning-input>
+          </lightning-layout-item>
+              <lightning-layout-item padding="around-small">
+                <lightning-button class="slds-p-right_small" title="search" label="Search" variant="brand" onclick={searchMasterdata} >
+                </lightning-button>
+              </lightning-layout-item>
+              <lightning-layout-item padding="around-small">
+              <lightning-button class="slds-p-right_small" title="uploadFile" label="Upload File" onclick={handleSave} variant="brand-outline" disabled={isTrue}></lightning-button> 
+              <lightning-button class="slds-p-right_small" title="Select all" label="Select all" variant="brand" >
+              </lightning-button>
+              </lightning-layout-item>
+        </lightning-layout>------>
+
+        <!--<lightning-button slot="actions" label="Delete>" variant="brand" onclick={showPopup} style="margin-right: 163px;"></lightning-button>-->
+        <div class="slds-scrollable slds-m-top_x-small" style="max-height:35rem;width:100%">
+        <table class="slds-table slds-table_bordered slds-table_col-bordered  slds-border_left slds-border_right">
+            <thead>
+              <tr class="slds-line-height_reset">
+                <th scope="col">
+                  <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap" title="Select">Select</div>
+                </th>
+                <th class="" scope="col">
+                  <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap" title="Name">Name</div>
+                </th>
+                <th class="" scope="col">
+                  <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap" title="Rule No">Rule No</div>
+                </th>
+                <th class="" scope="col">
+                    <div  class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap"  title="Product Category 1">Product Category 1</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div  class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap"  title="Product Category Values 1" >Product Category Values 1</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap" title="Product Category 2">Product Category 2</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap"  title="Product Category Values 2">Product Category Values 2</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap"   title="Product Category 3">Product Category 3</div>
+                  </th>
+                  <th class="" scope="col">
+                    <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap"  title="Product Category Values 3">Product Category Values 3</div>
+                  </th>
+                  <th class="" scope="col">
+                      <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap"  title="Product Category 4">Product Category 4</div>
+                    </th>
+                    <th class="" scope="col">
+                      <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap"  title="Product Category Values 4">Product Category Values 4</div>
+                    </th>
+                    <th class="" scope="col">
+                      <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center"  title="L1">L1</div>
+                    </th>
+                    <th class="" scope="col">
+                      <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center"  title="L2">L2</div>
+                    </th>
+                    <th class="" scope="col">
+                      <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center"  title="L3">L3</div>
+                    </th>
+                    <th class="" scope="col">
+                      <div class="sslds-m-left_medium slds-m-around_x-small slds-text-align_center"  title="L4">L4</div>
+                    </th>
+                    <th class="" scope="col">
+                      <div class="sslds-m-left_medium slds-m-around_x-small slds-text-align_center"  title="L4">L5</div>
+                    </th>   
+                    <th class="" scope="col">
+                        <div class="sslds-m-left_medium slds-m-around_x-small slds-text-align_center"  title="Active">Active</div>
+                      </th> 
+              </tr>
+            </thead>
+            <tbody>
+              <template if:true={data} >
+                <template for:each={data} for:item="row" for:index="ind">
+                    <tr key={row.data}>
+                      <td>
+                        <lightning-input type="checkbox" data-index={ind} name="input1" onchange={handleSelect} checked={row.isDelete}></lightning-input>
+                      </td>
+                        <th data-label="Name" scope="row">
+                            <div class="slds-truncate" title={row.name}>
+                            <a href={row.nameUrl} tabindex="-1">{row.name}</a>
+                            </div>
+                            </th>
+                       <td>{row.ruleNo}</td>    
+                       <td>{row.productCategory1}</td>
+                       <td>{row.productCategoryValue1}</td>
+                       <td>{row.productCategory2}</td>
+                       <td>{row.productCategoryValue2}</td>
+                       <td>{row.productCategory3}</td>
+                       <td>{row.productCategoryValue3}</td>
+                       <td>{row.productCategory4}</td>
+                       <td>{row.productCategoryValue4}</td>
+                       <td>{row.l1}</td>
+                       <td>{row.l2}</td>
+                       <td>{row.l3}</td>
+                       <td>{row.l4}</td>
+                       <td>{row.l5}</td>
+                       <td >
+                        <lightning-input type="checkbox" disabled="true" checked={row.active}></lightning-input>
+                       </td>
+                    </tr>
+                </template>
+              </template>
+            </tbody>
+          </table>
+        </div>
+		<!--<lightning-datatable data-id="table" key-field="recordId" data={data} columns={columns} sorted-by={sortedBy}
+			sorted-direction={sortedDirection} onrowselection={onRowSelection} selected-rows={allSelectedRows}
+			onsort={sortColumns} draft-values={draftValues}
+			onsave={handleSave}>
+		</lightning-datatable>-->
+		<div class="slds-m-around_medium slds-text-align_center">
+			
+				<lightning-button label="Previous" variant="brand" icon-name="utility:chevronleft" onclick={previousHandler}>
+				</lightning-button>
+				&nbsp; Page {page} of {totalPage} &nbsp;
+				<lightning-button label="Next" variant="brand" icon-name="utility:chevronright" icon-position="right"
+					onclick={nextHandler}>
+				</lightning-button>
+		
+		</div>
+	</lightning-card>
+
+<template if:true={isModalOpen}>
+        <!-- Modal/Popup Box LWC starts here -->
+
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal/Popup Box LWC header here -->
+                <header class="slds-modal__header">
+				
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                        <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small" ></lightning-icon>
+                        <span class="slds-assistive-text">Close</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Selected L1-L5 Master for deletion </h2>
+                </header>
+                <!-- Modal/Popup Box LWC body starts here -->
+				<div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+					
+						<h1> You have selected  {numberOfRecordsSelected} record to delete.Please click on confirm button to proceed.</h1>
+					
+				</div>
+                <!-- Modal/Popup Box LWC footer starts here -->
+                <footer class="slds-modal__footer">
+				<!--	<lightning-button variant="destructive" 
+        label="Delete"
+        icon-name="utility:delete"
+        icon-position="right"
+        onclick={DeleteModal}>
+    </lightning-button> -->
+	               <button class="slds-button slds-button_destructive" onclick={handleDelete} title="Confirm">Confirm</button>
+                    <button class="slds-button slds-button_destructive" onclick={closeModal} title="Close">Close</button>                    
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+ </template>

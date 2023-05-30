@@ -1,0 +1,26 @@
+    .main_heading {
+                background: #8accda;
+                    width: 100%;
+                    color: white;
+                    padding: 6px;
+                    text-align: center;
+                    font-weight: bold;
+                    font-size: 16px;
+            }
+            .sub_heading {
+                background: #d7eef2;
+    padding: 6px;
+    font-size: 14px;
+    color: grey;
+            }
+            .vert_align td {
+            vertical-align:top;
+            }
+            .table_des  {
+            border-collapse:collapse;
+			font-size:14px;
+            }
+            .table_des th, .table_des td {
+            border:1px solid black;
+			padding:3px;
+            }

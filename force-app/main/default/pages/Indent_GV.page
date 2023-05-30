@@ -1,0 +1,206 @@
+<apex:page standardController="Quote" sidebar="false" showHeader="false" renderAs="PDF" readOnly="True">
+<head>
+<style>
+ @page {
+        
+        @top-center { 
+      
+            content : element(header);
+         }
+    
+        @bottom-right {
+            content : element(footer);
+            
+        }
+    
+    }
+    
+    div.header {
+        position : running(header) ;
+    }
+    
+    div.footer {
+        position : running(footer) ;
+    }
+    
+           
+</style>
+</head>
+<apex:pageBlock >
+ <div class="footer"> 
+      
+     <div > 
+     <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+           <td align="left">
+            <apex:outputText value="(*This is a system generated document & therefore does not require any signature.)" /> 
+          </td>
+           <tr><td style="font-family:Calibri"><b>{!$User.Street},{!$User.City},{!$User.State},{!$User.PostalCode}</b></td></tr>
+          </tr>         
+     </table>
+     </div>      
+  </div> 
+<apex:image value="{!$Resource.Tanishq}" width="10%" height="10%"/>
+<apex:Panelgroup rendered="{!Quote.Approval_Status_Quote__c!='Approved'}">
+
+
+
+<h1>This quote is not approved </h1>
+</apex:panelgroup>
+
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName!='Received PO/Order Won'}">
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName!='Payment/Delivery'}">
+
+<h3>Indent can be generated only when Opportunity Stage is Received PO/Order Won or Payment/Delivery</h3>
+</apex:panelgroup>
+</apex:panelgroup>
+
+<apex:Panelgroup rendered="{!OR(Quote.Opportunity.StageName=='Received PO/Order Won',Quote.Opportunity.StageName=='Payment/Delivery')}">
+
+
+
+<table border='0' width='700'><tr align='center'><td><h2>INDENT FOR TANISHQ GIFT  VOUCHERS</h2></td></tr></table>
+<table Border='1' cellspacing='0' width='700'>
+<tr><td>
+    <table border='0' width='700' cellspacing='0'>
+       <tr><td><b>Indenting Location:</b> Corporate Office - Commecial Department</td></tr>
+    </table>
+    <table border='0' width='700' cellspacing='0'>
+        <tr><td><b>Indentor:</b> Antarjyami</td>
+        <td><b>TO:</b>  FINANCE DEPT.</td>
+        <td><b>Indent No:</b>{!Quote.Insti_ref__c}</td></tr>
+        <tr>
+        <td></td>
+        <td></td>
+        <td><b>Date:</b><apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                 <apex:param value="{!Today()}" />
+                 </apex:outputText></td>
+    </tr>
+    </table>
+   
+</td></tr>
+<tr><td>
+      <table border='0' width='700'>
+        <tr>
+            <td><b>Gift Voucher is Sold/Issued</b></td>
+        </tr>
+        
+         <tr>
+            <td>1. Institution :"{!Quote.Contact.Account.Name}"</td>
+         </tr>
+         <tr>
+            <td>2. Opportunity :"{!Quote.Opportunity.Name}"</td>
+         </tr>
+        
+         <tr>   
+            <td>3. P.O Number :{!Quote.Opportunity.PO_No__c} </td>
+         </tr>
+         <tr>   
+            <td>4. P.O Date:<apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                                             <apex:param value="{!Quote.Opportunity.PO_Date__c}" />
+                                                           </apex:outputText> </td>
+         </tr>
+         <tr>   
+            <td>5. Cheque No:<apex:outputText value="">
+ <apex:param value="{!Quote.Cheque_No__c}" /></apex:outputText>  <br/>
+            
+             6. Date :<apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                                             <apex:param value="{!Today()}" />
+                                                           </apex:outputText> <br/>
+             7. Amount :<apex:outputText value="{0,number,###,###,###,###}">
+                             <apex:param value="{!Quote.Advance_Received__c}" /></apex:outputText>    </td>
+        </tr>
+        <tr>   
+            <td>8. Bank Name :{!Quote.Bank_Name__c}</td>
+        </tr>
+        <b>Indented by:</b>{!Quote.Opportunity.Owner.Name}  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    <b>Region:</b> {!Quote.Opportunity.Region_Picklist__c}  <br/>
+        <b>Indented on:</b><apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                           <apex:param value="{!Today()}" />
+                           </apex:outputText> <br/>
+
+
+      </table>
+</td></tr>    
+<tr><td>
+       <table border='1' width='700' cellspacing='0'>
+            <tr>
+            <td><b>Serial Numbers</b></td>
+            <td><b>Product Name</b></td>
+            <td><b>Denominations</b></td>
+            <td><b>Quantity</b></td>
+            <td><b>Total Value</b></td>
+            </tr>
+            
+             <apex:repeat value="{!Quote.QuoteLineItems}" var="Qlt"> 
+                <tr>
+                    <td>{!Qlt.Serial_Number__c}</td>
+                     <td>{!Qlt.PriceBookEntry.Product2.Name}</td>
+                    <td style="Text-align:right"><apex:outputText value="{0,number,###,###,###,###.##}"> <apex:param value="{!Qlt.Sales_Price_c__c}"/></apex:outputText></td>
+                   <td style="Text-align:right"><apex:outputText value="{0,number,###,###,###,###}"> <apex:param value="{!Qlt.Quantity}"/> </apex:outputText></td>
+                    <td style="Text-align:right"> <apex:outputText value="{0,number,###,###,###,###.##}"  style="font-align:right"> <apex:param value="{!Qlt.Subtotal}"/></apex:outputText></td>
+                    
+                </tr>
+         </apex:repeat>
+   
+          <tr align='center' >
+            <td>Total</td>
+            <td></td>
+             <td></td>
+            <td></td>
+            <td style="Text-align:right"><apex:outputText value="{0,number,###,###,###,###.##}"  style="font-align:right"> <apex:param value="{!quote.Subtotal}"/></apex:outputText></td>
+          
+        </tr>
+   
+        </table>
+</td></tr>
+<tr><td>
+        <table border='1' width='700' cellspacing='0'>
+            <tr>
+            <td>
+                <b>Expected Delivery date :</b><apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                 <apex:param value="{!Quote.Expected_Delivery_Date__c}" />
+                 </apex:outputText>
+                <br/><br/>
+                <b>Actual Delivery Date :</b><apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                 <apex:param value="{!Quote.Actual_Delivery_Date__c}" />
+                 </apex:outputText>
+            </td>
+            <td><b>DISCOUNT GIVEN :</b>{!Quote.Discount}%</td>
+            </tr>
+        </table>    
+</td></tr>
+<tr><td>
+        <table border='1' width='700' cellspacing='0'>
+            <tr>
+            <td>
+                <b>Special Conditions :</b><br/>
+                1) Validity: {!Quote.Validity_of_GV__c}<br/>
+                2) Customization: {!Quote.Customization_GV__c}<br/>
+                a) Inside face of the voucher- {!Quote.Inside_face_of_Voucher__c}<br/>
+                b) Outside of the voucher - {!Quote.Outside_face_of_Voucher__c}<br/>
+                3) Redeemable : {!Quote.Redeemable__c}<br/>
+                4) ISSUE DATE /ISSUING LOCATION AND SINGNATURE need to be printed at your end.<br/>
+            </td>
+            </tr>
+            <tr><td>
+            <b>Remarks:</b> {!Quote.Product_for_Approval__c} {!Quote.Remarks__c}<br/><br/><br/>
+            </td></tr>
+            <tr>
+                <td>
+                    <table cellspacing='0' border='0' width='700' >
+                        <tr>
+                        <td><br/><br/><br/><b>INDENTOR SIGNATURE</b></td>
+                        <td><br/><br/><br/><b>AUTHORISED BY</b></td>
+                        <td><br/><br/><br/><b>RECEIVED BY</b></td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+         </table>
+</td></tr>
+
+</table>
+</apex:panelgroup>
+</apex:pageBlock>
+</apex:page>

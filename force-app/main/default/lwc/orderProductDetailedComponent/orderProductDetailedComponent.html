@@ -1,0 +1,42 @@
+<!--Created By : KVP- Chakresh Verma
+* Name : orderProductDetailedComponent
+* Created on : 25 Nov 2021
+* Description : This Component is used to Show the Product Details and Multiple Images Of the Selected Product
+-->
+
+<template>
+  <div class="slds-large-size_3-of-6 slds-align_absolute-center">
+    <lightning-carousel disable-auto-scroll style="max-width: 90%;">
+      <template for:each={slidesData} for:item="slides">
+        <lightning-carousel-image onclick={goToImagesFullView} key={slides.images} src={slides.images}
+          header={slides.heading} description={slides.description}>
+        </lightning-carousel-image>
+      </template>
+    </lightning-carousel>
+  </div>
+
+  <lightning-card>
+    <template if:true={detailsOfProduct}>
+      <lightning-layout multiple-rows>
+        <template for:each={detailsOfProduct} for:item="product">
+          <lightning-layout-item size="12" small-device-size="6" key={product.value} medium-device-size="4"
+            large-device-size="6" class="slds-p-around_xxx-small">
+
+            <div key={product.label} class="slds-p-around_xxx-small">
+              <b>{product.label}</b>
+            </div>
+
+            <div key={product.label} class="slds-p-around_xxx-small">
+              {product.value}
+            </div>
+          </lightning-layout-item>
+
+        </template>
+      </lightning-layout>
+
+    </template>
+    <template if:false={detailsOfProduct}>
+      NO Data
+    </template>
+  </lightning-card>
+</template>

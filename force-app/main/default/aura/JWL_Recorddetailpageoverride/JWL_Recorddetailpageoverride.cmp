@@ -1,0 +1,266 @@
+<aura:component  controller="JWL_Reliabilty_controller"  implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,lightning:actionOverride"
+                access="global" >
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="responselist" type="list"/>
+    <aura:attribute name="jwlcomponent" type="list"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <div class="slds-m-around_xx-large slds-card slds-show "  >
+        <lightning:button variant="brand" label="View PDF" class="slds-align_absolute-center"  onclick="{!c.pdfpreview}"  /><br/>
+        <h2 class="slds-align_absolute-center slds-theme_success slds-section__title" style="font-size:20px;text-align:center;"> JWL Component details</h2><br/>
+        <form class="slds-form slds-form_compound" style = "margin-left:20%;">
+            <lightning:recordViewForm recordId="{!v.recordId}" objectApiName="JWL_Component__c" >
+                
+                <div class="slds-form-element__control">
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2 ">
+                                    
+                                    <span class="slds-form-element__static"><lightning:outputField fieldName="Report_Reference_Number__c" /></span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                    
+                                    <span class="slds-form-element__static">  <lightning:outputField fieldName="Test_Type__c" /></span>  
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2 ">
+                                    
+                                    <lightning:outputField  class="slds-form-element__static slds-output" fieldName="Sample_Type__c" />
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                    
+                                    <lightning:outputField class="slds-form-element__static"  fieldName="Product_Category__c" />  
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2 ">
+                                    
+                                    <lightning:outputField  class="slds-form-element__static slds-output" fieldName="Final_Verdict__c" />
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                    
+                                    <lightning:outputField class="slds-form-element__static"  fieldName="General_Observation__c" />  
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2 ">
+                                    
+                                    <lightning:outputField  class="slds-form-element__static slds-output" fieldName="QA_User_Email_Id__c" />
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                    
+                                    <lightning:outputField class="slds-form-element__static"  fieldName="Document_Status__c" />  
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2 ">
+                                    
+                                    <lightning:outputField  class="slds-form-element__static slds-output" fieldName="Record_Status__c" />
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                    
+                                    <lightning:outputField class="slds-form-element__static"  fieldName="Product_Code__c" />  
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                </div>
+                <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2 ">
+                                    
+                                    <lightning:outputField  class="slds-form-element__static slds-output" fieldName="Submitted_By__c" />
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                    
+                                    <lightning:outputField style="height:100%; width:200px;" class="slds-textarea slds-form-element__static"  fieldName="Additional_Emails__c" />  
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2 ">
+                                    
+                                    <lightning:outputField  class="slds-form-element__static slds-output" style="overflow-wrap: break-word;word-break: break-all;" fieldName="Additional_Info__c" />
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                    
+                                    <lightning:outputField class="slds-form-element__static"  fieldName="Collection__c" />  
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2 ">
+                                    
+                                    <lightning:outputField  class="slds-form-element__static slds-output" fieldName="Location__c" />
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                    
+                                    <lightning:outputField class="slds-form-element__static"  fieldName="Lot_no__c" />  
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2 ">
+                                    
+                                    <lightning:outputField  class="slds-form-element__static slds-output" fieldName="Karatage__c" />
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                    
+                                    <lightning:outputField class="slds-form-element__static"  fieldName="Route_of_Manufacturing__c" />  
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2 ">
+                                    
+                                    <lightning:outputField  class="slds-form-element__static slds-output" fieldName="Process__c" />
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                    
+                                    <lightning:outputField class="slds-form-element__static"  fieldName="Sample_Details__c" />  
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2 ">
+                                    
+                                    <lightning:outputField  class="slds-form-element__static slds-output" fieldName="Sample_Submission_Date__c" />
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                    
+                                    <lightning:outputField class="slds-form-element__static"  fieldName="Sample_Submission_time__c" />  
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2 ">
+                                    
+                                    <lightning:outputField  class="slds-form-element__static slds-output" fieldName="No_of_samples__c" />
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                    
+                                    <lightning:outputField class="slds-form-element__static"  fieldName="Vendor__c" />  
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                 
+                
+                
+                
+            </lightning:recordViewForm> 
+            
+        </form>
+        <aura:iteration items="{!v.jwlcomponent}" var="jwl" indexVar="index">
+                     <div class="slds-grid slds-wrap"  style = "margin-left:10%;">
+                                <div class="slds-has-flexi-truncate slds-p-vertical_medium full forcePageBlockItem forcePageBlockItemEdit" role="listitem" style="">
+                                    <div class="slds-form-element slds-form-element_edit slds-hint-parent slds-p-horizontal_xx-small">
+                                        <div class="slds-form-element__control">
+                                            
+                                            <div class="slds-form-element__control">
+                                                <label class="slds-form-element__label">Image 1</label>
+                                                <div class="slds-form-element__control">
+                                                     <img src="{!jwl.Image_1__c}"  alt="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                               </div>
+                            <div class="slds-has-flexi-truncate slds-p-vertical_medium full forcePageBlockItem forcePageBlockItemEdit" role="listitem" style="">
+                                    <div class="slds-form-element slds-form-element_edit slds-hint-parent slds-p-horizontal_xx-small">
+                                        <div class="slds-form-element__control">
+                                            
+                                            <div class="slds-form-element__control">
+                                                <label class="slds-form-element__label">Image 2</label>
+                                                <div class="slds-form-element__control">
+                                                     <img src="{!jwl.Image_2__c}"   alt="" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                                <div class="slds-has-flexi-truncate slds-p-vertical_medium full forcePageBlockItem forcePageBlockItemEdit" role="listitem" style="">
+                                    <div class="slds-form-element slds-form-element_edit slds-hint-parent slds-p-horizontal_xx-small">
+                                        <div class="slds-form-element__control">
+                                            
+                                            <div class="slds-form-element__control">
+                                                <label class="slds-form-element__label">Image 3</label>
+                                                <div class="slds-form-element__control">
+                                                     <img src="{!jwl.Image_3__c}"  alt=""  />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                                </div>
+                </aura:iteration>
+        <br/><br/>
+        <h2 class="slds-align_absolute-center slds-theme_success slds-section__title" style="font-size:20px;text-align:center;"> Test Parameters</h2><br/>
+        
+        <table  width="80%">  
+                            <tr style="background-color: #F5F5F5; font-size: 15px;">
+                                <th class="slds-size_1-of-20 slds-box slds-box_small" >SL No </th>
+                                <th class="slds-size_1-of-7 slds-box slds-box_small">Test Name </th>
+                                <th class="slds-size_1-of-5 slds-box slds-box_small"> Dimensional Parameters </th>
+                                <th class="slds-size_1-of-5 slds-box slds-box_small">Specification </th>
+                                <th class="slds-size_1-of-5 slds-box slds-box_small">Observation </th>
+                                <th class="slds-size_1-of-5 slds-box slds-box_small"> Conclusion </th>
+                            </tr>
+                            
+                            <aura:iteration items="{!v.responselist}" var="chResp" indexVar="ind">
+                                    <tr>
+                                        <td class="slds-size_1-of-20 slds-box slds-box_small"><h1>{!ind + 1}</h1></td>
+                                        <td class="slds-size_1-of-7 slds-box slds-box_small">{!chResp.Test_Name__c}</td>
+                                        <td class="slds-size_1-of-5 slds-box slds-box_small">{!chResp.Dimension_Mannual_test__c}</td>
+                                        <td class="slds-size_1-of-5 slds-box slds-box_small">{!chResp.Specification_mannual_test__c}</td>
+                                        <td class="slds-size_1-of-5 slds-box slds-box_small">{!chResp.Observation__c}</td>
+                                        <td class="slds-size_1-of-5 slds-box slds-box_small">{!chResp.Conclusion__c}</td>
+                                    </tr>
+                            </aura:iteration>
+        </table><br/><br/>
+
+    </div>
+</aura:component>

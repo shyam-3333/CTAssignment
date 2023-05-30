@@ -1,0 +1,751 @@
+<!--*****************************************************************************************
+**Created By   : Vijayavardan reddy.
+**Modified By  : Vijayavardan reddy, Avinash.
+**Created Date : 8-may-2014.
+**Description  : Displays the details of models and provides the facility to filter the values.
+***********************************************************************************************-->
+
+<apex:page controller="refinedsearch" sidebar="false" docType="html-5.0" showHeader="false" standardStylesheets="true" action="{!onLoadFunction}" id="mainpage">
+    <head>
+    
+        <title>Filter</title>
+        <meta charset="utf-8"/>
+        
+        <apex:stylesheet value="{!URLFOR($Resource.SidebarPlugin, 'jquery.mb.extruder-2.5.5/css/mbExtruder.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.common.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.rtl.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.blueopal.min.css')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/js/jquery.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/js/kendo.web.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.SidebarPlugin, 'jquery.mb.extruder-2.5.5/inc/jquery.hoverIntent.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.SidebarPlugin, 'jquery.mb.extruder-2.5.5/inc/jquery.mb.flipText.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.SidebarPlugin, 'jquery.mb.extruder-2.5.5/inc/mbExtruder.js')}"/>
+           
+    </head>
+    
+    <div id="Preloader" style="display:none;position:fixed;width:100%;height:100%;top:49%;left:49%"><img src="{!$Resource.Preloader}"/></div>
+    <style>
+        .acnchorTagColor{
+        
+            color:#35C7E1;
+        }
+    
+        .extruder-content{
+            overflow:scroll !important;
+        }
+        .extruder.right .flap{
+          top:12% !important;
+          height:31px !important;
+          width:27.5px !important;
+          background: url('{!$Resource.filter}');
+          background-size:100% 100%;
+          
+        }
+        .flapLabel{
+            display:none;
+        }
+        .k-header{
+            font-weight:bold !important;
+            font-family:Arial !important;
+        }
+        
+    </style>
+    
+     <script type="text/javascript">
+
+        $(function(){
+        
+            $("#extruderRight").buildMbExtruder({
+                position:"right",
+                width:300,
+                extruderOpacity:.8,
+                textOrientation:"tb", 
+                onExtOpen:function(){},
+                onExtContentLoad:function(){},
+                onExtClose:function(){}
+                                
+            });
+
+            $.fn.changeLabel=function(text){
+                $(this).find(".flapLabel").html(text);
+                $(this).find(".flapLabel").mbFlipText();
+            };
+
+        });
+
+    </script>
+    
+    <style type="text/css"> 
+    
+         #bgFade_plan {
+              display: none;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              position: fixed;
+              opacity: 0.5;
+              filter:alpha(opacity=50);
+              background: #000;
+              text-align: center;
+              vertical-align: middle;
+              z-index: 1000;
+          }
+        #Preloader {
+            display: none;
+            position: fixed;
+            z-index: 221;
+            width: 32px;
+            height: 32px;
+            top: 120px;
+            left: 50%;
+            margin-left: -16px; 
+        }  
+        #Preloader img {
+            width: 32px;
+            height: 32px;
+        }  
+        
+        .myFormStyle, body {
+        
+            //background-color: white;
+            background: url('{!$Resource.Login}') no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        
+        #RefineProductAttributes{
+            background: url('{!$Resource.Login}') no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            margin-left:0.5%;
+            margin-right:0.5%;
+            font-family:Arial;
+        }
+    </style>
+    
+    <script>
+    
+        function brandFunction(brand){
+        
+        var filterKey  =   'brandKVP'+brand;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var jsonDa = {!brandAttributes};       
+        
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsonDa)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        alert(StringifiedData);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+                pageSize: 15,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+        
+            $("#BrandsGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='brandFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    
+    
+    <script>
+    
+        function genderfunction(gender){
+        
+        var filterKey  =   'genderKVP'+gender;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var jsonGender = {!genderAttributes};       
+        
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsonGender)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        alert(StringifiedData);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+                pageSize: 15,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+        
+            $("#GenderGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' id='gender' class='filterClass' onClick = 'genderfunction(\"${name}\");click1();'/>${name}"},
+                ],
+                editable: "inline", 
+            });
+        });  
+    
+    </script>
+    
+    
+    <script>
+    
+        function designFunction(design){
+        
+            var filterKey  =   'designKVP'+design;
+            
+            filtering(filterKey);
+    
+        }
+    
+        var jsonDesign = {!designAttributes};       
+        
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsonDesign)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        alert(StringifiedData);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+                pageSize: 15,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+        
+            $("#DesignsGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" }, template:"<input type='checkbox' id='gender' class='filterClass' onClick = 'designFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    
+    
+    <script>
+    
+        function materialFunction(material){
+        
+            var filterKey  =   'materialKVP'+material;
+            
+            filtering(filterKey);
+    
+        }
+    
+        var jsonMaterials = {!materialAttributes};       
+        
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsonMaterials)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        alert(StringifiedData);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+                pageSize: 15,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+    
+            $("#MaterialsGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" }, template:"<input type='checkbox'  class='filterClass' onClick = 'materialFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+    </script>
+    
+    
+    <script>
+        function shapeFunction(shape){
+        
+            var filterKey  =   'shapeKVP'+shape;
+            
+            filtering(filterKey);
+    
+        }
+        
+        var jsonShapes = {!shapeAttributes};       
+        
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsonShapes)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        alert(StringifiedData);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+                pageSize: 15,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+        
+            $("#ShapesGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' id='gender' class='filterClass' onClick = 'shapeFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+    
+    </script>
+    
+    
+    <script>
+        function vendorFunction(vendor){
+        
+            var filterKey  =   'vendorKVP'+vendor;
+            
+            filtering(filterKey);
+    
+        }
+        
+     var jsonVendor = {!vendorAttributes};       
+     var numberOfrecords =Object.keys(jsonVendor).length;  
+              
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsonVendor)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        alert(StringifiedData);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+                pageSize: numberOfrecords ,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+        
+            $("#VendorsGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                pageable:false,
+                 
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" }, template:"<input type='checkbox' id='gender' class='filterClass' onClick = 'vendorFunction(\"${name}\");click1();'/>${name}" ,},
+                ],
+                editable: "inline", 
+            });
+        }); 
+    
+    </script>
+   <script>
+        
+        function click1(){
+            $('#bgFade_plan').css('display','block');
+            $('#Preloader').css('display','block');
+            $('.filterClass').prop('disabled', true);
+        }
+        function click2(){
+           
+            $('#bgFade_plan').css('display','none');
+            $('#Preloader').css('display','none');
+            $('.filterClass').prop('disabled', false);
+        } 
+        
+        function enterKeypressed(focusedElement){
+           
+            var key;
+            if(navigator.appCodeName!='Mozilla'){   
+                         
+                key = window.event.keyCode;     //IE    
+                 
+            } 
+            else{            
+                        
+                key = window.event.which;  
+                
+            }       
+            if(key == 13) {
+            
+                var ele='';     
+                if(focusedElement == 'search') {    
+                    ele=document.getElementById('mainpage:form1:searchButton'); 
+                }else if(focusedElement == 'refresh'){
+                    ele=document.getElementById('mainpage:form1:refreshid'); 
+                }
+                window.event.preventDefault();                                                     
+                ele.click(); 
+                
+            } 
+        }
+        
+       function redirecting(attId){
+       
+          document.getElementById("mainpage:form1:attachmentId").value  =  attId;
+       
+          redirect();
+           
+       }
+       
+       function moreDocuments(modelId){
+           
+           window.open('/NewLogin/MoreDocument?id='+modelId);
+       }
+       
+   </script> 
+   
+   <apex:panelGroup id="tablePanel">
+   
+       <script>   
+            var jsonData = {!ProductAttributes};      
+            
+            $(document).ready(function () {
+                            
+                var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+                dataSource = new kendo.data.DataSource({
+                    transport: {
+                        read: function(e) {
+                           dataSource.sync();
+                           e.success(jsonData)  
+                        },
+                        update: function(e){
+                            var StringifiedData = JSON.stringify(e.data);
+                            alert(StringifiedData);
+                            
+                        },
+                        create: {
+                            url: crudServiceBaseUrl + "/Products/Create",
+                            dataType: "jsonp"
+                        },
+                        parameterMap: function(options, operation) {
+                            if (operation !== "read" && options.models) {
+                                return {models: kendo.stringify(options.models)};
+                            }
+                        }
+                    },
+                    batch: true,
+                    pageSize: 15,
+                    schema: {
+                        data: function(response){
+                            return response
+                        }
+                    }
+                });
+                        
+                $("#RefineProductAttributes").kendoGrid({
+                    dataSource: dataSource,
+                    autoBind: true,
+                    scrollable: true,
+                    sortable: true,
+                    filterable: true,
+                    columnMenu: true,
+                    
+                    pageable: {
+                        input: true,
+                        numeric: true,
+                        previousNext: false,
+                        pageSizes: true,
+                        buttonCount: 20,
+                       
+                    },
+                    
+                    columns: [
+                        
+                        { field: "Model", title: "Model",template:"<a  class='acnchorTagColor' onClick = 'redirecting(\"${id}\");'  title='Click to see the list of Variants' style='cursor:pointer;'><b><u>${Model}</u></b></a>", width: "6%", },
+                        { field: "Brand", title: "Brand", width: "6%"},
+                        { field: "Range", title: "Range", width: "8%"},
+                        { field: "Gender", title: "Gender", width: "6%"},
+                        { field: "Material", title: "Material", width: "10%"},
+                        { field: "Construction", title: "Construction", width: "10%"},
+                        { field: "Shape", title: "Shape", width: "8%"},
+                        { field: "Design", title: "Design", width: "8%"},
+                        { field: "Vendor", title: "Vendor", width: "8%"},
+                        { field: "Launchmonth", title: "Launch Month", width: "7%"},
+                        { field: "LaunchYear", title: "Launch Year", width: "7%"},
+                        
+                        { title: "Product Master/Spec", template:"<a class='acnchorTagColor' onClick = 'moreDocuments(\"${id}\");' title='Click to see more master documetns' style='cursor:pointer'><b><u>Specs</u></b></a>",   width: "8%"},
+                        
+                    ],
+                    editable: "inline", 
+                });
+            });
+                         
+        </script>
+    </apex:panelGroup>
+     <div id = "bgFade_plan"></div> 
+ 
+    <body>  
+        <apex:form id="form1" styleClass="myFormStyle">
+            <apex:actionFunction name="redirect" action="{!moveToFinalResult}"  id="reidirect" />
+            
+            <apex:actionFunction name="filtering" action="{!searching}" reRender="tablePanel" oncomplete="click2();" >
+                <apex:param assignTo="{!filterKey}" value="" name="filterKey"/>
+            </apex:actionfunction>
+            
+            <apex:panelGroup id="pb"> 
+                <apex:inputtext value="{!attchmentid}" id="attachmentId" style="display:none"/>
+                <table width="100%">
+                    <tr>
+                        <td width="5%" align="right">
+                            <apex:image value="{!$Resource.New_titan_logo}"  height="80px" width="80px"/>
+                        </td>
+                        <td width="50%" valign="middle" align="center">
+                                     
+                            <table>
+                                <tr>
+                                    <td valign="middle">
+                                    <br></br>
+                                        <apex:image value="{!$Resource.AskMeIcon}" height="30px" width="100px" style="margin-top:1%;" />
+                                    </td>
+                                    <td valign="middle">
+                                         <br></br>
+                                        <apex:inputtext styleclass="k-textbox" id="searchBox" value="{!searchkey}" onkeypress="enterKeypressed('search');" html-placeholder="Search with model" />
+                                        
+                                    </td>
+                                    <td><br></br>
+                                         <apex:commandLink type="image"  id="searchButton"  onkeypress="enterKeypressed('search');" action="{!searchModel}" onclick="click1();" onComplete="click2();"  reRender="tablePanel">
+                                            <apex:image value="{!$Resource.SearchIcon}" height="30px" width="30px"/> 
+                                        </apex:commandLink>&nbsp;
+                                        <apex:commandLink type="image"  id="refreshid" onkeypress="enterKeypressed('refresh');" onclick="click1();"  onComplete="click2();" style="" action="{!refresh}" reRender="tablePanel,pb" title="Click to refresh the page" >
+                                            <apex:image value="{!$Resource.RefreshIcon}"  height="30px" width="30px" /> 
+                                        </apex:commandLink>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                        </td>
+                        
+                        <td  align="right" valign="top"> 
+                            
+                            <apex:commandLink type="image" action="{!moveToBack}" title="Click to Go to previous page">
+                                <apex:image value="{!$Resource.BackIcon}"  height="32px" width="32px" style="margin-top:1%;" /> 
+                            </apex:commandLink>&nbsp;
+                            <apex:commandLink type="image" action="{!moveToBack}" title="Click toGo to home page" >
+                                <apex:image value="{!$Resource.HomeIcon}" height="32px" width="32" style="margin-top:1%;"/> 
+                            </apex:commandLink> &nbsp;
+                            <apex:commandLink type="image" action="{!logout}" title="Click to logout" >
+                                <apex:image value="{!$Resource.LogOut}"  height="32px" width="32px" style="margin-top:1%;margin-right:1%;" /> 
+                            </apex:commandLink>&nbsp;&nbsp;
+                            
+                        </td>
+                    </tr>
+                </table>
+            </apex:panelGroup>
+        </apex:form> 
+        <div id="RefineProductAttributes"/>
+    </body>
+         
+        <div id="extruderRight"  class="{title:'Filters'}">
+            <table align="center" height="100%">  
+                <tr>
+                    <td> 
+                        <div id="notaccordion" style="font-family:Arial !important;">
+                        
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Brands</button></a></h3>
+                            <div id="BrandsGrid" style="width:89.5%;height:153%;"></div>
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Gender</button></a></h3>
+                            <div  id="GenderGrid" style="width:89.5%;height:153%;"></div>
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;border:0.2;border-color:White;border-radius: 0px;" >View Designs</button></a></h3>
+                            <div  id="DesignsGrid" style="width:89.5%;height:150%;"></div>
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Materials</button></a></h3>
+                            <div  id="MaterialsGrid" style="width:89.5%;height:153%;"></div>
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Shapes</button></a></h3>
+                            <div  id="ShapesGrid" style="width:89.5%;height:153%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Vendors</button></a></h3>
+                            <div  id="VendorsGrid" style="width:89.5%;height:153%;"></div >
+                          
+                        </div>
+                        
+                         <script>
+                                       
+                            $.fn.togglepanels = function(){
+                              return this.each(function(){
+                                $(this).addClass("ui-accordion ui-accordion-icons ui-widget ui-helper-reset")
+                              .find("h3")
+                                .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
+                                .hover(function() { $(this).toggleClass("ui-state-hover"); })
+                                .prepend('<span class="ui-icon ui-icon-triangle-1-e"></span>')
+                                .click(function() {
+                                  $(this)
+                                    .toggleClass("ui-accordion-header-active ui-state-active ui-state-default ui-corner-bottom")
+                                    .find("> .ui-icon").toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
+                                    .next().slideToggle();
+                                  return false;
+                                })
+                                .next()
+                                  .addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
+                                  .hide();
+                              });
+                            };
+                            
+                            $("#notaccordion").togglepanels();
+                        </script>                                   
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="position: relative">
+          <p style="position: relative; bottom: 0; width:100%; text-align: center; font-family:Arial;"> Copyright © 2014 Under Titan Company. All Rights Reserved. No imagery or logos contained within this site may be used without the express permission of Titan Company</p>
+        </div>
+</apex:page>

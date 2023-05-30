@@ -1,0 +1,75 @@
+<apex:page controller="Paymenttrackeremailcontroller" Readonly="true" sidebar="false" action="{!loadDataExcel}" contentType="application/vnd.ms-excel#Agentli.xls">
+    <table style="width:100%;border:1px solid;">
+        <tr style="text-align:center; border:1px solid;">
+            <th>Opportunity Name</th>
+            <th>Indent No.</th>
+            <th>Payment Tracker Number
+            </th>
+            <th>RTGS No
+            </th>
+            <th>Cheque No
+            </th>
+            <th>Cheque Date
+            </th>
+            <th>Courier Name
+            </th>
+            <th>Location of Bank
+            </th>
+            <th>Amount Recieved
+            </th>
+            <th>Bank Name
+            </th>
+            <th>Payment Type
+            </th>
+            <th>Payment Mode
+            </th>
+         </tr>
+        <apex:repeat value="{!dataList}" var="pro">
+            <tr style="text-align:center; border:1px solid;">
+                <td>
+                {!pro.Opportunity__r.name}
+                </td> 
+                <td>
+               {!pro.Opportunity__r.Quote_indent_No__c} 
+                </td>
+                <td>
+                    {!pro.Name}
+                    
+                </td>
+                
+                <td>
+                    {!pro.RTGS_No__c}
+                </td>
+                
+                <td>
+                    {!pro.Cheque_No__c}
+                </td>
+                
+                <td>
+                    {!st}
+                </td>
+                <td>
+                    {!pro.Courier_Name__c}
+                </td>
+                <td>
+                    {!pro.Location_of_The_Bank__c}
+                </td>
+                <td>
+                    {!pro.Amount_Recieved__c}
+                    
+                </td>
+                <td>
+                    {!pro.Bank_Name__c}
+                </td>
+                
+                <td>
+                    {!pro.Payment_Type__c}
+                </td>
+                
+                <td>
+                    {!pro.Payment_Mode__c}
+                </td>
+             </tr>
+        </apex:repeat>
+    </table>
+</apex:page>

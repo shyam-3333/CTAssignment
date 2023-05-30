@@ -1,0 +1,89 @@
+<aura:component controller="QC_Material_Testing_FormClass" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <!-- attribute-->
+    <aura:attribute name="toggleSec1" type="boolean" default="true"/> <!--This Attribute use for Rendering Entry Criteria Form -->
+    <aura:attribute name="toggleInputForm" type="boolean" default="false"/> <!--This Attribute use for Rendering Input Form for IDE User -->
+    <aura:attribute name="selectedLookUpRecordForMatRefNo" type="sObject" default="{}"/>  <!--this attribute display QC_MTL_Component__c object's reference number which will be searched by the MTL user-->
+    <aura:attribute name="isReadonly" type="Boolean" default="true"/>
+    <aura:attribute name="sampleSizeQty" type="Integer" default="0"/>
+    <aura:attribute name="callSaveFromParent" type="integer" default="0" />
+    <aura:attribute name="togglePlatinInputFrom" type="boolean"/>
+    <aura:attribute name="qCMtlComponentId" type="String" /> <!-- to fetch the Mtl Component Id from event to send to child component for save and update purpose -->
+    <aura:attribute name="countSaveMtlInput" type="Integer" default="0" /> <!-- counter var for saving and updating purpose for InputParam component -->
+    <aura:attribute name="testName" type="String" />
+    <aura:attribute name="changeSampleSizeData" type="Integer" default="0"/>  
+    <aura:attribute name="showApprovalHistoryCmp" type="boolean" default="false" /> <!-- (Added by mohit) for approval history -->
+    <aura:attribute name="finalverCounter" type ="Integer" default="0" />
+    <aura:attribute name="finalverCounterPlating" type ="Integer" default="0" />
+    <aura:attribute name ="ValidateInpParamDataCounter" type="Integer" default="0"/>
+    <aura:attribute name ="errorDispInMaterialInfoCounter" type="Integer" default="0"/>
+    <aura:attribute name="isRecordLock" type="boolean" default="false" />
+    <!-- <aura:attribute name = "uncheckDispTestCounter" type="Integer" default="0"/> <Added in order to test if we can uncheck the dispTest checkbox-->
+    <!-- handlers -->
+    
+    <aura:handler name="oSelectedRecordEvent" event="c:LookUpEvent" action="{!c.handleLookupComponentEvent}"/>
+    <aura:handler name="QcMtlComponentSavedEvent" event="c:QcMtlComponentSaved" action="{!c.callMtlInputSave}"/>
+    <aura:handler name="ChangedSampleSizeEvnt" event="c:ChangeSamplpeSizeEvent" action="{!c.sampleSizeChange}"/>
+    <aura:handler name ="FinalVerdStatEvnt" event ="c:QC_MTL_FinalVerdictEvent" action="{!c.validateApproval}"/>
+    <aura:if isTrue="{!v.toggleSec1}">
+        <lightning:card title="" class="slds-p-around_large" >
+            <div class="slds-section slds-is-open ">
+                <h3 class="slds-section__title slds-theme_info">
+                    <span class="slds-truncate slds-p-horizontal_small" title="Testing Tab">MTL Testing Tab</span>
+                </h3>
+                <div aria-hidden="false" class="slds-section__content">
+                    
+                    <form class="slds-form_stacked slds-align_absolute-center">
+                        <div class="slds-form-element__control" style="min-width:25em;" >
+                            <div class="slds-form-element slds-align_absolute-center">
+                                <c:CustomLookupComponentParent  aura:id="lookupId"  customId = "qcMTLReferenceId" objectAPIName="QC_MTL_Component__c" IconName="standard:account" whereCondition="{!'Report_Reference_Number__c != NULL AND Record_Status__c = \'Active\' AND (Document_Status__c != \'Published\' AND Document_Status__c != \'Submitted for Approval\')' }"  selectedRecord="{!v.selectedLookUpRecordForMatRefNo}" label="Material Reference Number"/>
+                            </div>
+                            <div class="slds-form-element">
+                                <lightning:button variant="brand" aura:id="saveId" label ="Next" onclick="{!c.nextPage}"/>  
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </lightning:card> 
+    </aura:if>
+    <aura:if isTrue="{!v.toggleInputForm}">
+        
+        <lightning:card title="" class="slds-p-around_large" >
+            <center>
+                <aura:if isTrue="{!v.isReadonly}">
+                    <lightning:button variant="brand" aura:id="editDataId" label ="Edit" onclick="{!c.enableSaveMode}"/>
+                    
+                </aura:if>
+                <aura:if isTrue="{!v.qCMtlComponentId != undefined }"> 
+                    <lightning:button variant="brand" aura:id="submitForAppId" label ="Submit For Approval" onclick="{!c.submitRecordForApproval}"/>
+                    <lightning:button variant="brand" aura:id="goToAppHistoryListId" label ="Approve/Reject" onclick="{!c.gotoRelatedList}"/>
+                </aura:if>
+                <aura:if isTrue="{!!v.isReadonly}">
+                    <lightning:button variant="brand" aura:id="saveDataId" label ="Save" onclick="{!c.saveDataFromParent}"/>  
+                    <lightning:button variant="brand" aura:id="cancelDataId" label ="Cancel" onclick="{!c.cancelData}"/>
+                </aura:if>
+            </center>
+            <aura:if isTrue="{!v.testName == 'Raw Material'}">
+                <c:QC_MTL_MaterialInfo callSaveFromParent="{!v.callSaveFromParent}" referencedReportId="{!v.selectedLookUpRecordForMatRefNo}" isReadonly="{!v.isReadonly}" finalverCounter="{!v.finalverCounter}"/>
+                <c:QC_MTL_InputParam changeSampleSizeVal="{!v.changeSampleSizeData}" countSaveMtlInput="{!v.countSaveMtlInput}" qCMtlComponentId = "{!v.qCMtlComponentId}" referencedReportId="{!v.selectedLookUpRecordForMatRefNo}" typeRawMaterial="{!v.selectedLookUpRecordForMatRefNo.Raw_Material_Type__c}" isReadonly="{!v.isReadonly}"/>
+            </aura:if>
+            <aura:if isTrue="{!v.testName == 'Plating' || v.testName == 'Plating and Material Composition'}">
+                <c:QC_MTL_Plating_Testing_Param callSaveFromParent="{!v.callSaveFromParent}" referencedReportrecordObject="{!v.selectedLookUpRecordForMatRefNo}" isReadonly="{!v.isReadonly}" finalverCounter="{!v.finalverCounterPlating}"/>
+                <c:QC_Mtl_Plating_InputParam parentTestingType="{!v.testName}" referencedReportrecordObject="{!v.selectedLookUpRecordForMatRefNo}" isReadonly="{!v.isReadonly}" countSaveMtlInput ="{!v.countSaveMtlInput}" qCMtlComponentId = "{!v.qCMtlComponentId}" />
+            </aura:if>
+            
+            <center>
+                <aura:if isTrue="{!v.qCMtlComponentId != undefined }"> 
+                    <lightning:button variant="brand" aura:id="submitForAppId" label ="Submit For Approval" onclick="{!c.submitRecordForApproval}"/>
+                    <lightning:button variant="brand" aura:id="goToAppHistoryListId" label ="Approve/Reject" onclick="{!c.gotoRelatedList}"/>
+                </aura:if> 
+                <aura:if isTrue="{!v.showApprovalHistoryCmp}">
+                    <c:ApprovalHistoryComponent recordId="{!v.qCMtlComponentId}"/>
+                </aura:if>
+            </center>
+            
+            
+        </lightning:card>
+    </aura:if>
+    
+</aura:component>

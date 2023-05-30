@@ -1,0 +1,2488 @@
+<!--
+*******************************************************************************************************************************************
+ModifiedBy            Date      Tag     Description
+*******************************************************************************************************************************************
+Saradha  11/19/2019   T01		T01- 	Hardcoded URL change fix
+-->
+<apex:page controller="TaneiraFillterResult" sidebar="false" docType="html-5.0" showHeader="false" action="{!onLoadFunction}" standardStylesheets="true"  id="mainpage">
+    <head>
+    
+        <title>Filter</title>
+        <meta charset="utf-8"/>
+        
+        <apex:stylesheet value="{!URLFOR($Resource.SidebarPlugin, 'jquery.mb.extruder-2.5.5/css/mbExtruder.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.common.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.rtl.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.blueopal.min.css')}"/>
+        
+        <apex:includeScript value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/js/jquery.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/js/kendo.web.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/js/kendo.all.min.js')}"/>
+        
+        
+        <apex:includeScript value="{!URLFOR($Resource.SidebarPlugin, 'jquery.mb.extruder-2.5.5/inc/jquery.hoverIntent.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.SidebarPlugin, 'jquery.mb.extruder-2.5.5/inc/jquery.mb.flipText.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.SidebarPlugin, 'jquery.mb.extruder-2.5.5/inc/mbExtruder.js')}"/>
+
+    </head>
+    <div id="Preloader" style="display:none;position:fixed;width:100%;height:100%;top:49%;left:49%"><img src="{!$Resource.Preloader}"/></div>
+    <style>
+    .extruder-content {
+    width: 330px !important;
+}
+    .extruder .text{width:322px!important;}
+    #OriginGrid td,#CategoryGrid td,#VendorGrid td,#wrapGrid td,#WeftGrid td,#CraftGrid td,#ColorGrid td,#MRPGrid td,#LoomGrid td,#ZariGrid td,#BodyPatternGrid td,#PalluPatternGrid td,#OccasionGrid td,#SareeDimensionGrid td,#DesignStoryGrid td,#BodyDesMatGrid td,#BodyDesElemGrid td,#BodyDesDensGrid td,#PalluDesMatGrid td,#PalluSizeGrid td,#BorderPatternGrid td,#BorderDesElemGrid td,#BorderDesElemGrid .k-grid td,#BorderDesMatGrid td,#BorderSizeGrid td,#PalluDesignGrid td,#procTypeGrid td{
+    font-size: 12px !important;
+}
+    #OriginGrid .k-grid td,#CategoryGrid .k-grid td,#VendorGrid .k-grid td,#wrapGrid .k-grid td,#WeftGrid .k-grid td,#CraftGrid .k-grid td,#ColorGrid .k-grid td,#MRPGrid .k-grid td,#LoomGrid .k-grid td,#ZariGrid .k-grid td,#BodyPatternGrid .k-grid td,#PalluPatternGrid .k-grid td,#OccasionGrid .k-grid td,#SareeDimensionGrid .k-grid td,#DesignStoryGrid .k-grid td,#BodyDesMatGrid .k-grid td,#BodyDesElemGrid .k-grid td,#BodyDesDensGrid .k-grid td,#PalluDesMatGrid .k-grid td,#PalluSizeGrid .k-grid td,#BorderPatternGrid .k-grid td,#BorderDesMatGrid .k-grid td,#BorderSizeGrid .k-grid td,#PalluDesignGrid .k-grid td,#procTypeGrid .k-grid td
+ {
+
+  padding: 0.1em 0.2em!important;
+
+}
+    #OriginGrid .k-header, #CategoryGrid .k-header{display:none;}
+        .acnchorTagColor{
+        
+            color:#35C7E1;
+        }
+    
+        .extruder-content{
+            overflow:scroll !important;
+        }
+        .extruder.right .flap{
+          top:12% !important;
+          height:31px !important;
+          width:27.5px !important;
+          background: url('{!$Resource.filter}');
+          background-size:100% 100%;
+          
+        }
+        .flapLabel{
+            display:none;
+        }
+        .k-header{
+            font-weight:bold !important;
+            font-family:Arial !important;
+        }
+        #loading-img {
+        background: url(http://preloaders.net/preloaders/360/Velocity.gif) center center no-repeat;
+        height: 100%;
+        z-index: 20;
+    }
+    
+    .overlay {
+        background: #e9e9e9;
+         display: none;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        opacity: 0.5;
+    }
+        .k-list-container li{padding:0!important;margin:0!important;}
+    </style>
+    <script type="text/javascript">
+
+        $(function(){
+        
+            $("#extruderRight").buildMbExtruder({
+                position:"right",
+                width:300,
+                extruderOpacity:.8,
+                textOrientation:"tb", 
+                onExtOpen:function(){},
+                onExtContentLoad:function(){},
+                onExtClose:function(){}
+                                
+            });
+
+            $.fn.changeLabel=function(text){
+                $(this).find(".flapLabel").html(text);
+                $(this).find(".flapLabel").mbFlipText();
+            };
+
+        });
+
+    </script>
+    
+    <style type="text/css"> 
+    
+         #bgFade_plan {
+              display: none;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              position: fixed;
+              opacity: 0.5;
+              filter:alpha(opacity=50);
+              background: #000;
+              text-align: center;
+              vertical-align: middle;
+              z-index: 1000;
+          }
+        #Preloader {
+            display: none;
+            position: fixed;
+            z-index: 221;
+            width: 32px;
+            height: 32px;
+            top: 120px;
+            left: 50%;
+            margin-left: -16px; 
+        }  
+        #Preloader img {
+            width: 32px;
+            height: 32px;
+        }  
+        
+        .myFormStyle, body {
+        
+            //background-color: white;
+            background: url('{!$Resource.TaneriaResultBg}') no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        
+        #RefineProductAttributes{
+            background: url('{!$Resource.TaneriaResultBg}') no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            margin-left:0.5%;
+            margin-right:0.5%;
+            font-family:Arial;
+        }
+        .k-grid .k-grid-content {
+            max-height: 450px;
+        }
+    </style>
+     <script>
+     
+    $(document).ready(function () {
+        autocompleteSearch();    
+        });
+       function chengeSearchCategory(){
+           //$(".overlay").show();
+           callAutoFill();
+       }
+    </script>
+    <script>
+        $(document).ready(function() {
+        var rangeSlider=     $("#slider").kendoSlider({
+                smallStep:500,
+                largeStep:1000,
+                min:0,
+                max:100000,
+                value: 500,
+                tooltip: {
+                  format: "{0:#,#.####}"
+                },
+                
+           });            
+        });
+    </script>
+     <script>
+    
+        function VendorFunction(vendor){
+        
+        var filterKey  =   'vendorKVP'+vendor;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var jsonDa = {!vendorAttributes};       
+        console.log('vendor------'+{!vendorAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                 serverPaging: true,
+                 serverSorting: true,
+                 pageSize: 10,
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsonDa)  ;
+                    },
+                    scrollable: {
+                            virtual: true
+                        },
+                        sortable: true,
+                    
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+jsonDa);
+            $("#VendorGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: {virtual:true},
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='VendorFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+     <script>
+    
+        function CategoryFunction(category){
+        
+            var filterKey  =   'categoryKVP'+category;
+            
+            filtering(filterKey);
+        
+        }
+        
+        var jsoncategory = {!categoryAttributes};       
+        
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsoncategory)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+                pageSize: 20,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+        
+            $("#CategoryGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: {virtual:true},
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='CategoryFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+   <script>
+    
+        function wrapFunction(warp){
+        
+            var filterKey  =   'warpKVP'+warp;
+            
+            filtering(filterKey);
+        
+        }
+        
+        var jsonwrap = {!wrapAttributes};       
+        
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsonwrap)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+                pageSize: 20 ,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+        
+            $("#wrapGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: {virtual:true},
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='wrapFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    <script>
+    
+        function WeftFunction(weft){
+        
+            var filterKey  =   'weftKVP'+weft;
+            
+            filtering(filterKey);
+        
+        }
+        
+        var jsonweft = {!weftAttributes};       
+        
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsonweft)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+                pageSize: 20,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+        
+            $("#WeftGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: {virtual:true},
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='WeftFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    <script>
+    
+        function OriginFunction(origin){
+        
+            var filterKey  =   'originKVP'+origin;
+            
+            filtering(filterKey);
+        
+        }
+        
+        var jsonorigin = {!originAttributes};       
+        
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsonorigin)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10 ,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+        
+            $("#OriginGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: {virtual:true},
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+               // detailInit: detailInit,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='OriginFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+        function detailInit(e) {
+            var jsondesign = removeQuotes(e.data.designType); 
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsondesign)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+                pageSize: 20,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+         /*   $("<div/>").appendTo(e.detailCell).kendoGrid({
+                dataSource: dataSource,
+                scrollable: {virtual:true},
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                detailInit: detailInitArticalNumber,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='designTypeFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });  */   
+        }
+        function detailInitArticalNumber(e) {
+            console.log(e.data.articalNumber);
+             var jsonartical = removeQuotes(e.data.articalNumber);
+             var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsonartical)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+        
+           /*  $("<div/>").appendTo(e.detailCell).kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='articalNumberFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });*/
+        }
+    </script>
+    <script>
+    function removeQuotes(mystring) { 
+        newString = mystring.replace(/&(lt|gt|quot);/g, function (m, p) { 
+            return (p == "lt") ? "<" : ((p == "gt") ? ">" : "\"");
+        });
+        
+        var newJ= $.parseJSON(newString);
+        //var  newJ = eval ("(" + newString+ ")");
+        return newJ;
+    }
+        
+    </script>
+    <script>
+    
+        function CraftFunction(craft){
+        
+            var filterKey  =   'craftKVP'+craft;
+            
+            filtering(filterKey);
+        
+        }
+        
+        var jsoncraft = {!craftAttributes};       
+        
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsoncraft)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+                pageSize: 10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+        
+            $("#CraftGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='CraftFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    <script>
+    
+     /*   function designTypeFunction(designType){
+        
+            var filterKey  =   'designTypeKVP'+designType;
+            
+            filtering(filterKey);
+        
+        } */
+                 
+    
+    </script>
+    <script>
+    
+        function colorFunction(color){
+        
+            var filterKey  =   'colorKVP'+color;
+            
+            filtering(filterKey);
+        
+        }
+        
+        var jsoncolor = {!colorAttributes};       
+        
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsoncolor)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+        
+            $("#ColorGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='colorFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    <script>
+    
+    /*    function articalNumberFunction(articalNumber){
+        
+            var filterKey  =   'articalNumberKVP'+articalNumber;
+            
+            filtering(filterKey);
+        
+        } */
+        
+       
+    </script>
+    <script>
+    
+        function MRPFunction(suggestedMRP){
+        
+            var filterKey  =   'suggestedMRPKVP'+suggestedMRP;
+            
+            filtering(filterKey);
+        
+        }
+        
+        var jsonMrp = [ { "name" : "0-500"},{"name" : "501-1000"},{"name" : "1001-5000"},{"name" : "5001-10000"}];      
+        
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsonMrp)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+        
+            $("#MRPGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='radio' class='filterClass' name='mrp' onClick='MRPFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    <!--Loom-->
+    <script>
+    
+        function LoomFunction(loom){
+        
+        var filterKey  =   'loomKVP'+loom;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var loomva = {!LoomAttributes};       
+        console.log('loom------'+{!LoomAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(loomva)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+loomva);
+            $("#LoomGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='LoomFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    
+    <!--Loom Ends-->
+    <!--Zari Type-->
+    
+     <script>
+    
+        function ZariTypeFunc(zari){
+        
+        var filterKey  =   'zariKVP'+zari;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var zarivar = {!ZariAttributes};       
+        console.log('zari------'+{!ZariAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(zarivar)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+zarivar);
+            $("#ZariGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='ZariTypeFunc(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    
+    <!--Zari Ends-->
+    
+    <!--Body Pattern Start-->
+        
+        <script>
+    
+        function BodyPatternFunction(bodyPattern){
+        
+        var filterKey  =   'bodyPatternKVP'+bodyPattern;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var bodypatternvar = {!BodyPatternAttributes};       
+        console.log('bodyPattern------'+{!BodyPatternAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(bodypatternvar)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+bodypatternvar);
+            $("#BodyPatternGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='BodyPatternFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    <!--Body Pattern Ends-->
+    
+     <!--Pallu Pattern Starts-->
+    
+    <script>
+    
+        function PalluPatternFunction(palluPattern){
+        
+        var filterKey  =   'palluPatternKVP'+palluPattern;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var pallupatternvar = {!PalluPatternAttributes};       
+        console.log('bodyPattern------'+{!PalluPatternAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(pallupatternvar)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+pallupatternvar);
+            $("#PalluPatternGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='PalluPatternFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    
+    
+    
+    <!--Pallu Pattern Ends-->
+    
+    <!--Occasion format starts-->
+        <script>
+    
+        function OccasionFunction(occasion){
+        
+        var filterKey  =   'occasionKVP'+occasion;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var occasvar = {!OccasionAttributes};       
+        console.log('Occasion------'+{!OccasionAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(occasvar)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+occasvar);
+            $("#OccasionGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='OccasionFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    
+    <!--Occasion Format ends-->
+    
+     <!--Saree Dimension Starts-->
+    
+    <script>
+    
+        function SareeDimensionFunction(sareedimension){
+        
+        var filterKey  =   'sareedimensionKVP'+sareedimension;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var sareedimenvar = {!SareeDimensionAttributes};       
+        console.log('Occasion------'+{!SareeDimensionAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(sareedimenvar)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+sareedimenvar);
+            $("#SareeDimensionGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='SareeDimensionFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+
+    <!--Saree Dimension Ends-->
+        
+     <!--Design Story Starts-->
+    <script>
+    
+        function DesignStoryFunction(designstory){
+        
+        var filterKey  =   'designstoryKVP'+designstory;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var designstoryvar = {!DesignStoryAttributes};       
+        console.log('Design Story------'+{!DesignStoryAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(designstoryvar)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+designstoryvar);
+            $("#DesignStoryGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='DesignStoryFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    
+    
+    <!--Design Story ends-->
+    
+    <!--Body Des Material Starts-->
+        <script>
+    
+        function BodyDesMatFunction(bodydesmaterial){
+        
+        var filterKey  =   'bodydesmaterialKVP'+bodydesmaterial;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var bodydesmatvar = {!BodyDesMatAttributes};       
+        console.log('body des mat------'+{!BodyDesMatAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(bodydesmatvar)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+bodydesmatvar);
+            $("#BodyDesMatGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='BodyDesMatFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    
+    <!--Body Des Material Ends-->
+    
+     <!--Body Des Element starts-->
+        <script>
+    
+        function BodyDesElemFunction(bodydeselement){
+        
+        var filterKey  =   'bodydeselementKVP'+bodydeselement;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var bodydeselemvar = {!BodyDesElemAttributes};       
+        console.log('body des elem------'+{!BodyDesElemAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(bodydeselemvar)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+bodydeselemvar);
+            $("#BodyDesElemGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='BodyDesElemFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    
+    <!--Body Des Element Ends-->
+    
+     <!--Body Des Density starts-->
+        <script>
+    
+        function BodyDesDensFunction(bodydesdensity){
+        
+        var filterKey  =   'bodydesdensityKVP'+bodydesdensity;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var bodydesdensmvar = {!BodyDesDensAttributes};       
+        console.log('body des density------'+{!BodyDesDensAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(bodydesdensmvar)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+bodydesdensmvar);
+            $("#BodyDesDensGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='BodyDesDensFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    
+    <!--Body Des Density ends-->
+    
+    <!--Pallu Des Material starts-->
+        <script>
+    
+        function PalluDesMatFunction(palludesmaterial){
+        
+        var filterKey  =   'palludesmaterialKVP'+palludesmaterial;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var palludesmatvar = {!PalluDesMatAttributes};       
+        console.log('pallu des mat------'+{!PalluDesMatAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(palludesmatvar)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+palludesmatvar);
+            $("#PalluDesMatGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='PalluDesMatFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    <!--Pallu Des Material ends-->
+    
+     <!--Pallu Size Start-->
+        <script>
+    
+        function PalluSizeFunction(pallusize){
+        
+        var filterKey  =   'pallusizeKVP'+pallusize;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var pallusizevar = {!PalluSizeAttributes};       
+        console.log('pallu size------'+{!PalluSizeAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(pallusizevar)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+pallusizevar);
+            $("#PalluSizeGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='PalluSizeFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+        
+    <!--Pallu Size Ends-->
+    
+    <!--Border Pattern starts-->
+        <script>
+    
+        function BorderPatternFunction(borderpattern){
+        
+        var filterKey  =   'borderpatternKVP'+borderpattern;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var borderpattvar = {!BorderPatternAttributes};       
+        console.log('border pattern------'+{!BorderPatternAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(borderpattvar)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+borderpattvar);
+            $("#BorderPatternGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='BorderPatternFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    
+    <!--Border Pattern ends-->
+    
+    <!--Border Des Element starts-->
+        <script>
+    
+        function BorderDesElemFunction(borderdeselement){
+        
+        var filterKey  =   'borderdeselementKVP'+borderdeselement;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var borderdeselemvar = {!BorderDesElemAttributes};       
+        console.log('border des elem------'+{!BorderDesElemAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(borderdeselemvar)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+borderdeselemvar);
+            $("#BorderDesElemGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='BorderDesElemFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    <!--Border Des Element ends-->
+    
+    <!--Border Des Material starts-->
+    
+        <script>
+    
+        function BorderDesMatFunction(borderdesmaterial){
+        
+        var filterKey  =   'borderdesmaterialKVP'+borderdesmaterial;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var borderdesmatmvar = {!BorderDesMatAttributes};       
+        console.log('border des material------'+{!BorderDesMatAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(borderdesmatmvar)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+borderdesmatmvar);
+            $("#BorderDesMatGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='BorderDesMatFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    
+    <!--Border Des Material ends-->
+    
+     <!--Border Size starts-->
+        <script>
+    
+        function BorderSizeFunction(bordersize){
+        
+        var filterKey  =   'bordersizeKVP'+bordersize;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var bordersizevar = {!BorderSizeAttributes};       
+        console.log('border size------'+{!BorderSizeAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(bordersizevar)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+bordersizevar);
+            $("#BorderSizeGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='BorderSizeFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    <!--Border Size end-->
+    
+    <!--Pallu Design starts-->
+        <script>
+    
+        function PalluDesignFunction(palludesign){
+        
+        var filterKey  =   'palludesignKVP'+palludesign;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var palludesignvar = {!PalluDesignAttributes};       
+        console.log('Pallu Design------'+{!PalluDesignAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(palludesignvar)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+palludesignvar);
+            $("#PalluDesignGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='PalluDesignFunction(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    
+    <!--Pallu Design end-->
+    
+    <script>
+    
+        function procTypeFunc(ProcType){
+        
+        var filterKey  =   'ProcTypeKVP'+ProcType;
+        
+        filtering(filterKey);
+        
+        }
+        
+        var procType1 = {!procTypeAttributes};       
+        console.log('procType------'+{!procTypeAttributes});
+        $(document).ready(function () {
+             
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(procType1)  ;
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+               pageSize:10,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            console.log('dataSource------'+procType1);
+            $("#procTypeGrid").kendoGrid({
+                dataSource: dataSource,
+                scrollable: true,
+                sortable: true,
+                filterable: true,
+                columnMenu: true,
+                columns: [
+                            { field: "name", title: " ",  attributes: { style: "text-align: left; font-size: 14px;text-shadow:none !important;" },template:"<input type='checkbox' class='filterClass' onClick='procTypeFunc(\"${name}\");click1();'/>${name}" },
+                ],
+                editable: "inline", 
+            });
+        });
+                
+    
+    </script>
+    
+    
+        
+        
+    
+     <script>
+        
+        function click1(){
+            $('#bgFade_plan').css('display','block');
+            $('#Preloader').css('display','block');
+            $('.filterClass').prop('disabled', true);
+        }
+        function click2(){
+            //alert('c2');
+            //alert(document.getElementById("hiddenQueryString").value);
+            //alert(document.getElementById("hiddenIsSearching").value);
+            var SearchQ = document.getElementById("hiddenQueryString").value;
+            var searchInProgress = document.getElementById("hiddenIsSearching").value;
+            
+            if(searchInProgress == 'true'){
+                    //alert('sssshi');
+                    getProductList(SearchQ); 
+            }  
+            
+            $('#bgFade_plan').css('display','none');
+            $('#Preloader').css('display','none');
+            $('.filterClass').prop('disabled', false);
+        } 
+        
+        function enterKeypressed(focusedElement){
+           
+            var key;
+            if(navigator.appCodeName!='Mozilla'){   
+                         
+                key = window.event.keyCode;     //IE    
+                 
+            } 
+            else{            
+                        
+                key = window.event.which;  
+                
+            }       
+            if(key == 13) {
+            
+                var ele='';     
+                if(focusedElement == 'search') {    
+                    ele=document.getElementById('mainpage:form1:searchButton'); 
+                }else if(focusedElement == 'refresh'){
+                    ele=document.getElementById('mainpage:form1:refreshid'); 
+                }
+                window.event.preventDefault();                                                     
+                ele.click(); 
+                
+            } 
+        }
+              
+   </script> 
+    <apex:panelGroup id="tablePanelRemoteAction">
+   
+       <script>   
+            
+        function getProductList(queryString) {
+            //<T01>
+            var url = location.href;  // entire url including querystring - also: window.location.href;
+            var baseURL = url.substring(0, url.indexOf('/', 14));
+            console.log('Base URL = ',baseURL);
+            //alert(queryString);
+            Visualforce.remoting.Manager.invokeAction(
+                    '{!$RemoteAction.TaneiraFillterResult.convertToJSONForRemoteAction}',
+                    queryString, 
+                    function(result, event){
+                        if (event.status) {
+                            //alert(result);
+                            //jsonData = result;
+                            
+                            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+                            dataSource = new kendo.data.DataSource({
+                                transport: {
+                                    read: function(e) {
+                                       dataSource.sync();
+                                       e.success(result)  
+                                    },
+                                    update: function(e){
+                                        var StringifiedData = JSON.stringify(e.data);
+                                        
+                                    },
+                                    create: {
+                                        url: crudServiceBaseUrl + "/Products/Create",
+                                        dataType: "jsonp"
+                                    },
+                                    parameterMap: function(options, operation) {
+                                        if (operation !== "read" && options.models) {
+                                            return {models: kendo.stringify(options.models)};
+                                        }
+                                    }
+                                },
+                                batch: true,
+                                pageSize: 10,
+                                schema: {
+                                    data: function(response){
+                                        return response
+                                    }
+                                }
+                            });
+                                    
+                            $("#RefineProductAttributes").kendoGrid({
+                                dataSource: dataSource,
+                                autoBind: true,
+                                scrollable: {virtual:true},
+                                sortable: true,
+                                filterable: true,
+                                columnMenu: true,
+                                resizable: true,
+                                //height: 500,
+                                pageable: {
+                                    input: true,
+                                    numeric: true,
+                                    previousNext: false,
+                                    pageSizes: true,
+                                    pageSize:10,
+                                    buttonCount: 20,
+                                   
+                                },
+                               
+								                                
+                                columns: [ 
+                                    { field: "Photo_Backup__c", title: "Photo",width:"200px",template :"<a href='"+baseURL+"/servlet/servlet.FileDownload?file=#=Photo_Backup__c#' target='_blank'>View Image</a>"},//T01
+                                    { field: "Name", title: "Vendor Prod Code",width:"150px"},
+                                    { field: "SKU_Code__c", title: "SKU",width:"150px"},
+                                    { field: "Product_Category_Taneira__c", title: "Product Category",width:"150px"},
+                                    { field: "Vendor_Name__c", title: "Vendor Name",width:"100px"},
+                                    { field: "Proc_Type__c", title: "Proc Type",width:"100px"},
+                                    { field: "Proc_Source__c", title: "Proc Source",width:"150px"},
+                                    { field: "PO_Number__c", title: "PO Number",width:"100px"},
+                                    { field: "Cost__c", title: "Cost Price",width:"100px"},
+                                    { field: "Quantity__c", title: "Quantity",width:"100px"},
+                                    { field: "Suggested_MRP__c", title: "MRP",width:"150px"},
+                                    { field: "Cluster__c", title: "Origin",width:"100px"},
+                                    { field: "Story_1__c", title: "Design Story",width:"100px"},
+                                    { field: "Story_2_c", title: "Story 1",width:"100px"},
+                                    { field: "Design_Description__c", title: "Story 2",width:"100px"},
+                                    { field: "Design_Story__c", title: "Design Description",width:"100px"},
+                                    { field: "Material_Wrap__c", title: "Warp",width:"100px"},
+                                    { field: "Taneira_Material_Weft__c", title: "Weft",width:"100px"},
+                                    { field: "Zari_Type__c", title: "Zari Type",width:"100px"},
+                                    { field: "Base_Colour__c", title: "Base Color",width:"100px"},
+                                    { field: "Detailed_Colour__c", title: "Detailed Color",width:"100px"},
+                                    { field: "Workmanship__c", title: "Craft",width:"100px"},
+                                    { field: "Loom__c", title: "Loom",width:"100px"},
+                                    { field: "Occasion__c", title: "Occasion",width:"100px"},
+                                    { field: "Fold__c", title: "Fold",width:"150px"},
+                                    { field: "Fabric__c ", title: "Fabric",width:"150px"},
+                                    { field: "Collection__c", title: "Collection",width:"100px"},
+                                    { field: "Blouse_Dimensions__c", title: "Blouse Dimensions",width:"150px"},
+                                    { field: "Blouse_Type__c", title: "Blouse Type",width:"100px"},
+                                    { field: "Blouse_Size__c", title: "Blouse Size",width:"100px"},
+                                    { field: "Body_Des_Density__c", title: "Body Des Density",width:"150px"},
+                                    { field: "Body_Des_Element__c", title: "Body Des Element",width:"100px"},
+                                    { field: "Body_Des_Material__c", title: "Body Des Material",width:"100px"},
+                                    { field: "Body_Pattern__c", title: "Body Pattern",width:"100px"},
+                                    { field: "Border_Des_Element__c", title: "Border Des Element",width:"100px"},
+                                    { field: "Border_Des_Material__c", title: "Border des Material",width:"100px"},
+                                    { field: "Border_Pattern__c", title: "Border Pattern",width:"100px"},
+                                    { field: "Border_Size__c", title: "Border Size",width:"100px"},
+                                    { field: "Pallu_Des_Density__c", title: "Pallu Des Density",width:"100px"},
+                                    { field: "Pallu_Des_Material__c", title: "Pallu Des Material",width:"150px"},
+                                    { field: "Pallu_Pattern__c", title: "Pallu Pattern",width:"150px"},
+                                    { field: "Pallu_Size__c", title: "Pallu Size",width:"100px"},
+                                    
+                                    
+                                    
+                                    
+              
+                                ],
+                                editable: "inline", 
+                            });
+                            
+                            
+                            
+                            
+                            
+                        } else if (event.type === 'exception') {
+                            //document.getElementById("responseErrors").innerHTML = 
+                                //event.message + "<br/>\n<pre>" + event.where + "</pre>";
+                        } else {
+                            //document.getElementById("responseErrors").innerHTML = event.message;
+                        }
+                    }, 
+                    {escape: true}
+                );
+            }
+            
+            
+            $(document).ready(function () {
+                if({!isOnLoad}){
+                    //alert('hi');
+                    getProductList("{!queryStringForRemoteAction}"); 
+                }   
+                 
+                
+                
+                
+                
+            });
+             
+             
+        </script>
+        
+       
+    </apex:panelGroup>
+    
+    <apex:panelGroup id="tablePanel">
+        <input type="hidden" id="hiddenQueryString" value="{!queryStringForRemoteSerch}"/>
+        <input type="hidden" id="hiddenIsSearching" value="{!isSearching}"/>
+        
+       <script>   
+            
+            
+            var jsonData = {!finalResultJson};      
+            //alert(jsonData);
+            
+            $(document).ready(function () {
+                 
+                //<T01>
+                var url = location.href;  // entire url including querystring - also: window.location.href;
+           		var baseURL = url.substring(0, url.indexOf('/', 14));
+            	console.log('Base URL = ',baseURL);
+                var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+                dataSource = new kendo.data.DataSource({
+                    transport: {
+                        read: function(e) {
+                           dataSource.sync();
+                           e.success(jsonData)  
+                        },
+                        update: function(e){
+                            var StringifiedData = JSON.stringify(e.data);
+                            
+                        },
+                        create: {
+                            url: crudServiceBaseUrl + "/Products/Create",
+                            dataType: "jsonp"
+                        },
+                        parameterMap: function(options, operation) {
+                            if (operation !== "read" && options.models) {
+                                return {models: kendo.stringify(options.models)};
+                            }
+                        }
+                    },
+                    batch: true,
+                    pageSize: 3,
+                    schema: {
+                        data: function(response){
+                            return response
+                        }
+                    }
+                });
+                        
+                $("#RefineProductAttributes").kendoGrid({
+                    dataSource: dataSource,
+                    autoBind: true,
+                    scrollable: {virtual:true},
+                    sortable: true,
+                    filterable: true,
+                    columnMenu: true,
+                    resizable: true,
+                    //height: 500,
+                    pageable: {
+                        input: true,
+                        numeric: true,
+                        previousNext: false,
+                        pageSizes: true,
+                        pageSize:3,
+                        buttonCount: 20,
+                       
+                    },
+                    
+                    columns: [ 
+                        { field: "Photo_Backup__c", title: "Photo",width:"200px",template :"<a href='"+baseURL+"/servlet/servlet.FileDownload?file=#=Photo_Backup__c#' target='_blank'>View Image</a>"},//T01
+                        { field: "Name", title: "Vendor Prod Code",width:"150px"},
+                        { field: "SKU_Code__c", title: "SKU",width:"150px"},
+                        { field: "Product_Category_Taneira__c", title: "Product Category",width:"150px"},
+                        { field: "Vendor_Name__c", title: "Vendor Name",width:"100px"},
+                        { field: "Proc_Type__c", title: "Proc Type",width:"100px"},
+                        { field: "Proc_Source__c", title: "Proc Source",width:"150px"},
+                        { field: "PO_Number__c", title: "PO Number",width:"100px"},
+                        { field: "Cost__c", title: "Cost Price",width:"100px"},
+                        { field: "Quantity__c", title: "Quantity",width:"100px"},
+                        { field: "Suggested_MRP__c", title: "MRP",width:"150px"},
+                        { field: "Cluster__c", title: "Origin",width:"100px"},
+                        { field: "Story_1__c", title: "Design Story",width:"100px"},
+                        { field: "Story_2_c", title: "Story 1",width:"100px"},
+                        { field: "Design_Description__c", title: "Story 2",width:"100px"},
+                        { field: "Design_Story__c", title: "Design Description",width:"100px"},
+                        { field: "Material_Wrap__c", title: "Warp",width:"100px"},
+                        { field: "Taneira_Material_Weft__c", title: "Weft",width:"100px"},
+                        { field: "Zari_Type__c", title: "Zari Type",width:"100px"},
+                        { field: "Base_Colour__c", title: "Base Color",width:"100px"},
+                        { field: "Detailed_Colour__c", title: "Detailed Color",width:"100px"},
+                        { field: "Workmanship__c", title: "Craft",width:"100px"},
+                        { field: "Loom__c", title: "Loom",width:"100px"},
+                        { field: "Occasion__c", title: "Occasion",width:"100px"},
+                        { field: "Fold__c", title: "Fold",width:"150px"},
+                        { field: "Fabric__c ", title: "Fabric",width:"150px"},
+                        { field: "Collection__c", title: "Collection",width:"100px"},
+                        { field: "Blouse_Dimensions__c", title: "Blouse Dimensions",width:"150px"},
+                        { field: "Blouse_Type__c", title: "Blouse Type",width:"100px"},
+                        { field: "Blouse_Size__c", title: "Blouse Size",width:"100px"},
+                        { field: "Body_Des_Density__c", title: "Body Des Density",width:"150px"},
+                        { field: "Body_Des_Element__c", title: "Body Des Element",width:"100px"},
+                        { field: "Body_Des_Material__c", title: "Body Des Material",width:"100px"},
+                        { field: "Body_Pattern__c", title: "Body Pattern",width:"100px"},
+                        { field: "Border_Des_Element__c", title: "Border Des Element",width:"100px"},
+                        { field: "Border_Des_Material__c", title: "Border des Material",width:"100px"},
+                        { field: "Border_Pattern__c", title: "Border Pattern",width:"100px"},
+                        { field: "Border_Size__c", title: "Border Size",width:"100px"},
+                        { field: "Pallu_Des_Density__c", title: "Pallu Des Density",width:"100px"},
+                        { field: "Pallu_Des_Material__c", title: "Pallu Des Material",width:"150px"},
+                        { field: "Pallu_Pattern__c", title: "Pallu Pattern",width:"150px"},
+                        { field: "Pallu_Size__c", title: "Pallu Size",width:"100px"},
+                        
+                        
+                        
+                        
+  
+                    ],
+                    editable: "inline", 
+                });
+                
+                
+                
+            });
+             function getImgValue(ImageVal){
+                 if(ImageVal){                     
+                        var imageLink= ImageVal.substring(ImageVal.indexOf('src="')+5,ImageVal.indexOf('width')-2);
+                        console.log('imageLink=='+imageLink);
+                        var imageId = imageLink.substring(imageLink.indexOf('file=')+5,imageLink.indexOf('file=')+23);
+                        console.log('imageId =='+imageId );
+                        var finalLink = '/NewLogin/servlet/servlet.FileDownload?file='+imageId;
+                        return "<a onClick = 'imageclick(\""+imageId+"\");'  title='Click to see the image' style='cursor:pointer;' ><img src=\""+finalLink+"\" alt='' style='background-size: 100%;width: 100px;height: 110px' /></a>";
+                    }                   
+             } 
+             //Displays variant image in seperate window
+            function imageclick(imgId){
+                window.open('/NewLogin/documentDisplay?id='+imgId);
+            }
+             
+        </script>
+        
+       
+    </apex:panelGroup>
+    
+     <div id = "bgFade_plan"></div> 
+ 
+    <body>  
+        <apex:form id="form1" styleClass="myFormStyle">
+            <apex:actionFunction name="filtering" action="{!searching}" reRender="tablePanel"  oncomplete="click2();" >
+                <apex:param assignTo="{!filterKey}" value="" name="filterKey"/>
+            </apex:actionfunction>
+            <apex:actionFunction name="callAutoFill" status="actStatusId" action="{!getautoFillDataList}" reRender="form1" oncomplete="autocompleteSearch();click2();" />
+            <script>
+                function autocompleteSearch(){
+                    $( ".searchtextbox" ).kendoAutoComplete({
+                      autoWidth: true,
+                      dataSource: {
+                        data: {!autoFillData}
+                      },
+                       animation: {
+                           close: {
+                             effects: "fadeOut zoom:out",
+                             duration: 300
+                           },
+                           open: {
+                             effects: "fadeIn zoom:in",
+                             duration: 300
+                           }
+                        }
+        
+                    });
+                }
+            </script>
+            <apex:panelGroup id="pb"> 
+                <table width="100%">
+                    <tr>
+                        <td width="5%" align="right">
+                            <apex:image value="{!$Resource.New_titan_logo}"  height="80px" width="80px"/>
+                        </td>
+                        <td width="50%" valign="middle" align="center">
+                                     
+                            <table>
+                                <tr>
+                                    <td valign="middle">
+                                    <br></br>
+                                        <apex:image value="{!$Resource.TaneriaAskMe}" height="30px" width="100px" style="margin-top:1%;" />
+                                    </td>
+                                    <td valign="middle">
+                                        <br></br>
+                                        <apex:selectRadio value="{!searchType}" layout="pageDirection" id="theRadio" onchange="click1();chengeSearchCategory();">
+                                            <apex:selectOption itemValue="SKU" itemlabel="SKU"  />
+                                            <apex:selectOption itemValue="Model" itemlabel="Vendor Prod Code"/>                                     
+                                        </apex:selectRadio>
+                                    </td>
+                                    <td valign="middle">
+                                         <br></br>
+                                    <apex:inputtext styleclass="k-textbox searchtextbox" id="searchBox" value="{!searchkey}" onkeypress="enterKeypressed('search');" html-placeholder="Search with SKU/Vendor Prod Code" />
+                                        
+                                    </td>
+                                    <td><br></br>
+                                         <apex:commandLink type="image"  id="searchButton"  onkeypress="enterKeypressed('search');" action="{!searchSKU}" onclick="click1();" onComplete="click2();"  reRender="tablePanel">
+                                            <apex:image value="{!$Resource.SearchIcon}" height="30px" width="30px"/> 
+                                        </apex:commandLink>&nbsp;
+                                        <apex:commandLink type="image"  id="refreshid" onkeypress="enterKeypressed('refresh');" onclick="click1();"  onComplete="click2();" style="" action="{!refresh}" reRender="tablePanel,pb" title="Click to refresh the page" >
+                                            <apex:image value="{!$Resource.RefreshIcon}"  height="30px" width="30px" /> 
+                                        </apex:commandLink>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                        </td>
+                        
+                        <td  align="right" valign="top"> 
+                            
+                            <apex:commandLink type="image" action="{!moveToBack}" title="Click to Go to previous page">
+                                <apex:image value="{!$Resource.BackIcon}"  height="32px" width="32px" style="margin-top:1%;" /> 
+                            </apex:commandLink>&nbsp;
+                            <apex:commandLink type="image" action="{!moveToBack}" title="Click toGo to home page" >
+                                <apex:image value="{!$Resource.HomeIcon}" height="32px" width="32" style="margin-top:1%;"/> 
+                            </apex:commandLink> &nbsp;
+                            <apex:commandLink type="image" action="{!logout}" title="Click to logout" >
+                                <apex:image value="{!$Resource.LogOut}"  height="32px" width="32px" style="margin-top:1%;margin-right:1%;" /> 
+                            </apex:commandLink>&nbsp;&nbsp;
+                            
+                        </td>
+                    </tr>
+                </table>
+            </apex:panelGroup>
+        </apex:form> 
+        <div id="RefineProductAttributes"/>
+    </body>
+     <div id="extruderRight"  class="{title:'Filters'}">
+            <table align="center" height="100%">  
+                <tr>
+                    <td> 
+                        <div id="notaccordion" style="font-family:Arial !important;">
+                        
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Vendor</button></a></h3>
+                            <div id="VendorGrid" style="width:89.5%;height:153%;"></div>
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Category</button></a></h3>
+                            <div  id="CategoryGrid" style="width:89.5%;height:153%;"></div>
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;border:0.2;border-color:White;border-radius: 0px;" >View Warp</button></a></h3>
+                            <div  id="wrapGrid" style="width:89.5%;height:150%;"></div>
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Weft</button></a></h3>
+                            <div  id="WeftGrid" style="width:89.5%;height:153%;"></div>
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Origin</button></a></h3>
+                            <div  id="OriginGrid" style="width:89.5%;height:250%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Craft</button></a></h3>
+                            <div  id="CraftGrid" style="width:89.5%;height:153%;"></div >
+                            
+                           <!--- <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Design Type</button></a></h3>
+                            <div  id="DesignTypeGrid" style="width:89.5%;height:153%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Article Number</button></a></h3>
+                            <div  id="ArticalNumberGrid" style="width:89.5%;height:153%;"></div >--->
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Base Color</button></a></h3>
+                            <div  id="ColorGrid" style="width:89.5%;height:153%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Suggested MRP</button></a></h3>
+                            <div  id="MRPGrid" style="width:89.5%;height:153%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Loom</button></a></h3>
+                            <div  id="LoomGrid" style="width:89.5%;height:153%;"></div >
+                            
+                             <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Zari</button></a></h3>
+                            <div  id="ZariGrid" style="width:89.5%;height:153%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Body Pattern</button></a></h3>
+                            <div  id="BodyPatternGrid" style="width:89.5%;height:153%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Pallu Pattern</button></a></h3>
+                            <div  id="PalluPatternGrid" style="width:89.5%;height:153%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Occasion</button></a></h3>
+                            <div  id="OccasionGrid" style="width:89.5%;height:153%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Saree Dimension</button></a></h3>
+                            <div  id="SareeDimensionGrid" style="width:89.5%;height:153%;"></div >
+                            
+                             <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Design Story</button></a></h3>
+                            <div  id="DesignStoryGrid" style="width:89.5%;height:153%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Body Des Material</button></a></h3>
+                            <div  id="BodyDesMatGrid" style="width:89.5%;height:153%;"></div >
+                            
+                             <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Body Des Element</button></a></h3>
+                            <div  id="BodyDesElemGrid" style="width:89.5%;height:153%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Body Des Density</button></a></h3>
+                            <div  id="BodyDesDensGrid" style="width:89.5%;height:153%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Pallu Des Material</button></a></h3>
+                            <div  id="PalluDesMatGrid" style="width:89.5%;height:153%;"></div >
+                            
+                             <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Pallu Size</button></a></h3>
+                            <div  id="PalluSizeGrid" style="width:89.5%;height:153%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Border Pattern</button></a></h3>
+                            <div  id="BorderPatternGrid" style="width:89.5%;height:153%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Border Des Element</button></a></h3>
+                            <div  id="BorderDesElemGrid" style="width:89.5%;height:153%;"></div >
+                            
+                             <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Border Des Material</button></a></h3>
+                            <div  id="BorderDesMatGrid" style="width:89.5%;height:153%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Border Size</button></a></h3>
+                            <div  id="BorderSizeGrid" style="width:89.5%;height:153%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Pallu Design</button></a></h3>
+                            <div  id="PalluDesignGrid" style="width:89.5%;height:153%;"></div >
+                            
+                            <h3><a href="#"><button class="k-button"  style="background: #35C7E1;width:90%;color:#ffffff;;border:0.2;border-color:White;border-radius: 0px;" >View Proc Type</button></a></h3>
+                            <div  id="procTypeGrid" style="width:89.5%;height:153%;"></div >
+                          
+                        </div>
+                        
+                         <script>
+                                       
+                            $.fn.togglepanels = function(){
+                              return this.each(function(){
+                                $(this).addClass("ui-accordion ui-accordion-icons ui-widget ui-helper-reset")
+                              .find("h3")
+                                .addClass("ui-accordion-header ui-helper-reset ui-state-default ui-corner-top ui-corner-bottom")
+                                .hover(function() { $(this).toggleClass("ui-state-hover"); })
+                                .prepend('<span class="ui-icon ui-icon-triangle-1-e"></span>')
+                                .click(function() {
+                                  $(this)
+                                    .toggleClass("ui-accordion-header-active ui-state-active ui-state-default ui-corner-bottom")
+                                    .find("> .ui-icon").toggleClass("ui-icon-triangle-1-e ui-icon-triangle-1-s").end()
+                                    .next().slideToggle();
+                                  return false;
+                                })
+                                .next()
+                                  .addClass("ui-accordion-content ui-helper-reset ui-widget-content ui-corner-bottom")
+                                  .hide();
+                              });
+                            };
+                            
+                            $("#notaccordion").togglepanels();
+                        </script>                                   
+                    </td>
+                </tr>
+            </table>
+         
+        </div>
+        <div style="position: relative">
+      <p style="position: fixed; bottom: 0; width:100%; text-align: center;font-family:Arial;font-size:12px;"> Copyright © 2014 Under Titan Company. All Rights Reserved. No imagery or logos contained within this site may be used without the express permission of Titan Company</p>
+    </div>
+</apex:page>

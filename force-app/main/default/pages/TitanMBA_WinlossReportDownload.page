@@ -1,0 +1,58 @@
+<apex:page controller="TitanMBA_WinlossReport" id="page1" sidebar="false" showHeader="false" action="{!downloadOppDetails}"  contentType="application/vnd.ms-excel#OpportunityReport.xls" cache="true" standardStylesheets="false">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    </head>
+    <apex:outputpanel id="pageTableId" >
+        <table id="accTable" border="1" >
+            <tr style="font-weight: bold; color: black;font-size:12px;background:#A9A9A9;">
+                <th><b>Opportunity Name</b></th>
+                <th><b>Account Name</b></th>
+                <th><b>Opportunity Stage Name</b></th>
+                <th><b>Industry</b></th>
+                <th><b>Project Type</b></th>
+                <th><b>Mechanical Team Lead</b></th>
+                <th><b>Electrical Team Lead</b></th>
+                <th><b>Amount</b></th>
+                <th><b>Lost Reason</b></th>
+                <th><b>Created Date</b></th>
+            </tr>
+            <apex:repeat value="{!oppWrapperList}" var="qWrap">
+                <tr>
+                    <td>
+                        <apex:outputText value="{!qWrap.oppName}" />
+                    </td>
+                    <td>
+                        <apex:outputText value="{!qWrap.AccName}" />
+                    </td>
+                    <td>
+                        <apex:outputText value="{!qWrap.oppStageName}" />
+                    </td>
+                    <td>
+                        <apex:outputText value="{!qWrap.oppAccIndustry}" />
+                    </td>
+                    <td>
+                        <apex:outputText value="{!qWrap.oppPrjType}" />
+                    </td>
+                    <td>
+                        <apex:outputText value="{!qWrap.mechanicalLead}" />
+                    </td>
+                    <td>
+                        <apex:outputText value="{!qWrap.electricalLead}" />
+                    </td>
+                    <td>
+                        <apex:outputText value="{!qWrap.oppAmount}" />
+                    </td>
+                    <td>
+                        <apex:outputText value="{!qWrap.oppLostReason}" />
+                    </td>
+                    <td>
+                        <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                            <apex:param value="{!qWrap.createdDate}" />
+                        </apex:outputText>
+                    </td>
+                </tr>
+            </apex:repeat>
+        </table>
+    </apex:outputpanel>
+    
+</apex:page>

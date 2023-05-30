@@ -1,0 +1,127 @@
+<aura:component controller='ReadyReckenor' implements="force:appHostable,force:lightningQuickActionWithoutHeader,force:hasRecordId" >
+    
+    <aura:attribute name='contentDocument' type='contentDocument'/>
+    <aura:attribute name='contentDocumentList' type = 'contentDocument[]'/>
+    <aura:attribute name='contentDocumentList1' type = 'contentDocument[]'/>
+    <aura:attribute name='emailList' type = 'List' />
+    <aura:attribute name='recordId' type='contentDocuments.id'/>
+    <aura:attribute name="contacts" type="List" />
+    <aura:attribute name="contacts1" type="List" />
+    <aura:attribute name="selectedCount" type="integer" default="0"/>
+    <aura:attribute name="selectedCount1" type="integer" default="0"/>
+    <aura:attribute name="truthy1" type="Boolean" default='False'/>
+    <aura:attribute name="truthy" type="Boolean" default = 'True'/>
+    <aura:attribute name="key" type="String" /> 
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />  
+    <aura:handler name='init' value='{!this}' action='{!c.showAttachments}'/> 
+    <aura:attribute name='subjectOfEmail' type='String'/>
+    <aura:attribute name='messageBody' type='String'/>
+
+
+    <aura:attribute name="selectedLookUpRecords" type="sObject[]" default="[]"/>
+    
+    <aura:if isTrue="{!v.truthy}">    
+        
+        <div class="slds-page-header">
+            <p class="slds-page-header__title slds-truncate" title="">Attachments</p>
+            <!-- <span class="slds-badge">Selected Attachment:{!v.selectedCount1}</span>-->
+        </div>
+        
+        <br/>
+        <table class="slds-table slds-table_bordered slds-table_striped slds-table_cell-buffer slds-table_fixed-layout">
+            <thead>
+                <tr class="slds-text-heading_label"> 
+                    <th style="width:3.25rem;" class="slds-text-align--right">
+                        <div class="slds-form-element">
+                            <div class="slds-form-element__control">
+                                <label class="slds-checkbox">
+                                    <!--header checkbox for select all-->
+                                    <ui:inputCheckbox aura:id="box3"  change="{!c.selectAll1}"/>
+                                    <span class="slds-checkbox--faux"></span>
+                                    <span class="slds-form-element__label text"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </th>
+                    <th scope="col"><div class="slds-truncate" title="Name">Name</div></th>
+                    <th scope="col"><div class="slds-truncate" title="Document Type">Document Type</div></th>  
+                    <th scope="col"><div class="slds-truncate" title="File Extension">File Extension</div></th>  
+                    
+                </tr>
+            </thead>
+            <tbody>
+                
+                <aura:iteration items='{!v.contentDocumentList}' var='content' indexVar='index'>
+                    <tr aria-selected="false" class="slds-hint-parent">
+                        <td scope="row" class="slds-text-align--right" style="width:3.25rem;">
+                            <div class="slds-form-element">
+                                <div class="slds-form-element__control">
+                                    <label class="slds-checkbox">
+                                        <ui:inputCheckbox text="{!content.Id}" aura:id="boxPack1" value="{!content.email}" change="{!c.checkboxSelect1}"/>
+                                        
+                                        <!--      <input type="checkbox" checked="true" text="{!content.Id}" aura:id="boxPack1" value="{!content.Id}" change="{!c.checkboxSelect1}"/>  -->
+                                        <span class="slds-checkbox--faux"></span>
+                                        <span class="slds-form-element__label text"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </td>
+                        <td data-label="Name" scope="row">
+                            <div class="slds-truncate" title="Name">{!content.Title}</div>
+                        </td>
+                        <td data-label="Document Type" scope="row">
+                            <div class="slds-truncate" title="FileType">{!content.FileType}</div>
+                        </td>
+                        <td data-label="FileExtension" scope="row">
+                            <div class="slds-truncate" title="FileExtension">{!content.FileExtension}</div>
+                        </td>
+                        
+                    </tr>
+                </aura:iteration>
+            </tbody>
+        </table>
+        <br/>   
+        <lightning:button label="Next" title="Next" onclick="{!c.selectedAttachment}"/>
+    </aura:if>
+    <aura:if isTrue="{!v.truthy1}">
+        
+        <div class="slds-page-header">
+            <p class="slds-page-header__title slds-truncate" title="">Contact List</p>
+            <!--<span class="slds-badge">Selected Contact:{!v.selectedCount}</span>-->
+        </div>
+        <br/>
+        
+        <lightning:input type="email" name="email" aura:id="email" placeholder="abc@domain.com" label="Email" />
+        
+        
+        <br></br>
+        <c:MultiSelectLookup objectAPIName="contact"
+                             IconName="standard:contact"
+                             lstSelectedRecords="{!v.selectedLookUpRecords}"
+                             label="Contact Name"/>
+        
+        
+        
+        <br/>
+        
+        <div class="slds-form-element__control">
+            <lightning:input type="text" label="Subject" value="{!v.subjectOfEmail}" required="true"/>
+            
+            <!--<input type="text" id="txtSubject" class="slds-input" value="{!v.subjectOfEmail}"/>-->
+        </div>
+        <br/>
+        
+        <label class="slds-form-element__label" for="form-element-01">Message</label>
+        
+        <div class="slds-form-element__control">
+            <lightning:inputRichText value="{!v.messageBody}" placeholder="Type something interesting" required="true"/>
+        </div>
+        <br/>
+        
+        <lightning:button label="Back" title="back" onclick="{! c.back}"/>
+        <lightning:button label="Send Mail" title="Send Mail" onclick="{!c.contactSelected}" variant="success"/>
+        <lightning:notificationsLibrary aura:id="notifLib"/>
+        
+        
+    </aura:if>
+</aura:component>

@@ -1,0 +1,20 @@
+<apex:page showHeader="false" sidebar="false" controller="productpageComingSoon">
+     <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <apex:stylesheet value="{!$Resource.Slds215}" /> 
+        <body>
+        <apex:form >
+            <center>
+            <apex:image id="theImage" value="{!$Resource.ProductpageComingSoon}" width="400" height="400"/>
+            
+        </center>
+        <div class="slds-text-align--center">This page is still in development phase. Please click 
+            <apex:commandLink value="here" action="{!doRedirect}"/> 
+        to redirect to the previous page</div>
+         
+        </apex:form>
+    </body>
+    </html>
+</apex:page>

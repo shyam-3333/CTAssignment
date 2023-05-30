@@ -1,0 +1,29 @@
+.THIS .inputclass{
+    width : 70px !important;
+}
+
+.THIS .remarksClass{
+    width : 150px !important;
+}
+
+.THIS .conclusionClass{
+    width: 200px;
+}
+
+.THIS .testNameClass{
+    width: 400px;
+}
+
+.THIS .testUOMClass{
+    width: 200px;
+}
+
+.THIS .testSpecificClass{
+    width: 200px;
+}
+
+.THIS .imageClass{
+    width : 30% ;
+    height:auto;
+    padding : 0px 20px 0px 20px;
+}

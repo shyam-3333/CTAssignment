@@ -1,0 +1,6 @@
+<apex:page contentType="text/css" cache="false" sidebar="false" showHeader="false">
+
+    .test{ text-align:center;}
+     
+
+</apex:page>

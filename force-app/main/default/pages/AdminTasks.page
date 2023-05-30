@@ -1,0 +1,14 @@
+<apex:page >
+     <apex:pageBlock title="Admin Objects">
+         <apex:form >
+              <apex:panelGrid columns="2" width="100%">
+                  Commissioning DB:<apex:outputLink target="_blank" value="/a09">Click Here</apex:outputLink>
+                  <apex:outputText /><apex:outputText />
+                  Location Database:<apex:outputLink target="_blank" value="/a0C">Click Here</apex:outputLink>
+                  <apex:outputText /><apex:outputText />
+                  Over Heads DB:<apex:outputLink target="_blank" value="/a0HQ00000025do8">Click Here</apex:outputLink>
+                  <apex:outputText /><apex:outputText />
+              </apex:panelGrid>
+         </apex:form>
+     </apex:pageBlock>
+</apex:page>

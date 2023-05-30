@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuraDefinitionBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>45.0</apiVersion>
+    <description>This event has been created in order to test if we can uncheck the GenTest checkbox after record has been saved.this is done in order to update the test param,and not create one in case of updating the record at the same time after saving.</description>
+</AuraDefinitionBundle>

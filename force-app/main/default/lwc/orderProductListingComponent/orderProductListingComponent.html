@@ -1,0 +1,1243 @@
+<template>
+
+  <template if:true={loader}>
+    <div class="spinner">
+      <lightning-spinner alternative-text="Loading..." size="small"></lightning-spinner>
+
+    </div>
+  </template>
+
+
+
+
+  <div class="slds-hide" data-id="divblock">
+    <div class="fixedCard">
+      <div class="fixed">
+        <!--<lightning-button class="slds-p-around_x-small" title="Looks like a link" onclick={goBackToMainPage}>
+        </lightning-button>-->
+
+        <!--<lightning-icon icon-name="utility:back" class="slds-p-around_x-small" size="small" onclick={goBackToMainPage}
+          alternative-text="Approved" title="Approved">
+        </lightning-icon>-->
+        <svg focusable="false" data-key="back" aria-hidden="true" viewBox="0 0 52 52" style="fill:white"
+          onclick={goBackToMainPage} class="slds-p-around_xx-small slds-icon slds-icon-text-default">
+          <g>
+            <path
+              d="M48.6 23H15.4c-.9 0-1.3-1.1-.7-1.7l9.6-9.6c.6-.6.6-1.5 0-2.1l-2.2-2.2c-.6-.6-1.5-.6-2.1 0L2.5 25c-.6.6-.6 1.5 0 2.1L20 44.6c.6.6 1.5.6 2.1 0l2.1-2.1c.6-.6.6-1.5 0-2.1l-9.6-9.6c-.6-.7-.2-1.8.7-1.8h33.2c.8 0 1.5-.6 1.5-1.4v-3c0-.8-.6-1.6-1.4-1.6z">
+            </path>
+          </g>
+        </svg>
+
+
+        <div style="float: right; margin-right: 5px;margin-top: 5px;">
+
+          <!--<lightning-icon icon-name="utility:cart" class="icn" alternative-text=" Warning!" title="Warning"
+            onclick={ooenCartModal}>
+
+
+          </lightning-icon>-->
+          <svg focusable="false" style="fill:white;" data-key="cart" aria-hidden="true" onclick={ooenCartModal}
+            viewBox="0 0 52 52" class="slds-icon slds-icon-text-default">
+            <g>
+              <g>
+                <path
+                  d="M20.1 26H44c.7 0 1.4-.5 1.5-1.2l4.4-15.4c.3-1.1-.5-2-1.5-2H11.5l-.6-2.3C10.6 4 9.6 3.3 8.6 3.3h-4c-1.3 0-2.5 1-2.6 2.3C1.9 7 3.1 8.2 4.4 8.2h2.3l7.6 25.7c.3 1.1 1.2 1.8 2.3 1.8h28.2c1.3 0 2.5-1 2.6-2.3.1-1.4-1.1-2.6-2.4-2.6H20.2c-1.1 0-2-.7-2.3-1.7V29c-.5-1.5.7-3 2.2-3z">
+                </path>
+                <circle cx="20.6" cy="44.6" r="4"></circle>
+                <circle cx="40.1" cy="44.6" r="4"></circle>
+              </g>
+            </g>
+          </svg>
+
+          <span class="slds-badge slds-theme_error">
+            <em>{cartSize}</em>
+          </span>
+
+        </div>
+
+        <div class="slds-p-bottom_x-small slds-p-left_large slds-p-right_large" style="margin-top: -15px;">
+          <lightning-input type=" search" style="width:70%;" value={searchValue} class="slds-align_absolute-center"
+            placeholder="Search" onchange={handleChangeSearchValue}>
+          </lightning-input>
+        </div>
+        <div id="main" style="margin-top: -40PX;">
+
+
+          <span class="spanCorner" onclick={openNav}>
+            <!--<lightning-icon icon-name="utility:picklist_type" size="medium" onclick={openNav}
+              alternative-text="Approved" title="Approved">
+            </lightning-icon>-->
+            <svg focusable="false" data-key="picklist_type" aria-hidden="true" viewBox="0 0 52 52"
+              class="slds-icon slds-icon-text-default" style="fill: white;" onclick={openNav}>
+              <g>
+                <path
+                  d="M48.3 14.9H16.4c-.9 0-1.6-.7-1.6-1.6v-3.2c0-.9.7-1.6 1.6-1.6h31.9c.9 0 1.6.7 1.6 1.6v3.2c0 .9-.7 1.6-1.6 1.6zM48.3 29.2H16.4c-.9 0-1.6-.7-1.6-1.6v-3.2c0-.9.7-1.6 1.6-1.6h31.9c.9 0 1.6.7 1.6 1.6v3.2c0 .9-.7 1.6-1.6 1.6zM6.9 29.2H3.7c-.9 0-1.6-.7-1.6-1.6v-3.2c0-.9.7-1.6 1.6-1.6h3.2c.9 0 1.6.7 1.6 1.6v3.2c0 .9-.7 1.6-1.6 1.6zM6.9 14.9H3.7c-.9 0-1.6-.7-1.6-1.6v-3.2c0-.9.7-1.6 1.6-1.6h3.2c.9 0 1.6.7 1.6 1.6v3.2c0 .9-.7 1.6-1.6 1.6zM6.9 43.5H3.7c-.9 0-1.6-.7-1.6-1.6v-3.2c0-.9.7-1.6 1.6-1.6h3.2c.9 0 1.6.7 1.6 1.6v3.2c0 .9-.7 1.6-1.6 1.6zM48.3 43.5H16.4c-.9 0-1.6-.7-1.6-1.6v-3.2c0-.9.7-1.6 1.6-1.6h31.9c.9 0 1.6.7 1.6 1.6v3.2c0 .9-.7 1.6-1.6 1.6z">
+                </path>
+              </g>
+            </svg>
+          </span>
+
+
+
+        </div>
+
+
+
+      </div>
+
+
+
+
+      <div data-id="mySidenav" class="sidenav">
+        <lightning-card>
+          <lightning-button label="Clear All" slot="actions" icon-name="utility:delete" icon-position="right"
+            onclick={clearAllFilters}>
+          </lightning-button>
+          <lightning-button label="Close" class="slds-m-left_x-small" slot="actions" onclick={closeNav}>
+          </lightning-button>
+          <lightning-input type="checkbox" class="slds-var-p-around_medium" onchange={hidePricing} label="Hide Price"
+            name="input1">
+
+          </lightning-input>
+          <lightning-radio-group name="radioGroupSort" class="slds-var-p-around_medium" label="Sort By"
+            onchange={handleSortFeature} options={sortByFeatureToShow} value={selectedSortValue} type="radio">
+          </lightning-radio-group>
+
+          <!--<a href="javascript:void(0)" class="closebtn" onclick={closeNav}>&times;</a>-->
+          <!--<div>
+      <lightning-button variant="success" label="Success" title="Successful action" onclick={closeNav}
+        class="slds-m-left_x-small"></lightning-button>
+
+    </div>
+    <div>
+      <lightning-button variant="success" label="Success" title="Successful action" onclick={clearFilters}
+        class="slds-m-left_x-small"></lightning-button>
+
+    </div>-->
+          <!--<div class="slds-var-p-around_xxx-small">
+
+        <lightning-button-group>
+          <lightning-button label="Close" onclick={closeNav}></lightning-button>
+          <lightning-button style="width:150%;" icon-name="utility:chevrondown" label="By Price"></lightning-button>
+
+          <lightning-button icon-name="utility:close" onclick={closeNav}></lightning-button>
+        </lightning-button-group>
+      </div>-->
+
+          <div style="overflow-x: auto">
+            <lightning-accordion class="example-accordion" allow-multiple-sections-open>
+              <lightning-accordion-section name="A" label="Product Category">
+                <div class="genderDiv">
+                  <lightning-radio-group name="Checkbox Group" type="radio" options={productCategoryValues}
+                    value={productCategorySelectedvalue} onchange={handleChangeProductCategory}>
+                  </lightning-radio-group>
+                </div>
+              </lightning-accordion-section>
+              <template if:true={filtersHideShow.gender}>
+                <lightning-accordion-section name=" B" label="Gender">
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={genderValues} value={genderSelectedvalue}
+                      onchange={handleChangeGenderFilters}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+              </template>
+              <template if:true={filtersHideShow.color}>
+
+                <lightning-accordion-section name="C" label="Color">
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={colorValues} value={colorSelectedValue}
+                      onchange={handleChangeColorFilters}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+              </template>
+
+              <template if:true={filtersHideShow.brand}>
+
+                <lightning-accordion-section name="D" label="Brand">
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={productBrandValueToShow}
+                      value={brandSelectedValue} onchange={handleChangeBrandFilters}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+              </template>
+
+              <template if:true={filtersHideShow.price}>
+
+                <lightning-accordion-section name="E" label="Price">
+                  <div class="genderDiv">
+                    <lightning-radio-group name="radioGroup" class="slds-var-p-around_medium"
+                      onchange={handleChangePriceFilters} options={priceFiltersValues} value={selectedPriceFilterValue}
+                      type="radio">
+                    </lightning-radio-group>
+                  </div>
+
+                  <!--<lightning-slider label="From" size="small" value="0" step="100" max="25000"></lightning-slider>
+                <lightning-slider label="To" size="small" step="100" value="25000" max="25000"></lightning-slider>-->
+                </lightning-accordion-section>
+              </template>
+
+              <!--Bag Filters-->
+
+              <template if:true={dynamicFiltersHideShow.isBagType}>
+
+                <lightning-accordion-section name="BagAA" label="Gender">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={bagGender} value={selectedBagGender}
+                      onchange={handleBagGender}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="BagAAB" label="Brand">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={bagBrand} value={selectedBagBrand}
+                      onchange={handleBagBrand}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+
+                <lightning-accordion-section name="BagAB" label="Color">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={bagColor} value={selectedBagColor}
+                      onchange={handleBagColor}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="BagAC" label="Collection">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={bagCollection}
+                      value={selectedBagCollection} onchange={handleBagCollection}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+                <lightning-accordion-section name="BagAD" label="Occassion">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={bagOccassion} value={selectedBagOccassion}
+                      onchange={handleBagOccassion}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="BagA" label="Bag Type">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={bagType} value={selectedBagType}
+                      onchange={handleBagType}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="BagB" label="Material(Body)">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={bagMaterialBody}
+                      value={selectedBagMaterialBody} onchange={handleBagMaterialBody}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="BagC" label="Material(Lining)">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={bagMaterialLining}
+                      value={selectedBagMaterialLining} onchange={handleBagMaterialLining}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="BagD" label="Closure Type">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={bagClosureType}
+                      value={selectedBagClosureType} onchange={handleBagClosureType}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+              </template>
+
+
+              <!--Belt Filters-->
+
+              <template if:true={dynamicFiltersHideShow.isBeltType}>
+                <lightning-accordion-section name="BeltA" label="Belt Type">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={beltType} value={selectedBeltType}
+                      onchange={handleBeltType}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="BeltB" label="Gender">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={beltGender} value={selectedBeltGender}
+                      onchange={handleBeltGender}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="BeltC" label="Brand">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={beltBrand} value={selectedBeltBrand}
+                      onchange={handleBeltBrand}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="BeltD" label="Color">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={beltColor} value={selectedBeltColor}
+                      onchange={handleBeltColor}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="BeltE" label="Dress Code">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={beltDressCode}
+                      value={selectedBeltDressCode} onchange={handleBeltDressCode}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="BeltF" label="Belt Length">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={beltLength} value={selectedBeltLength}
+                      onchange={handleBeltLength}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+              </template>
+
+              <!--Wallet Filters-->
+
+              <template if:true={dynamicFiltersHideShow.isWalletType}>
+                <lightning-accordion-section name="WalletA" label="Wallet Type">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={walletType} value={selectedWalletType}
+                      onchange={handleWalletType}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="WalletB" label="Gender">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={walletGender} value={selectedWalletGender}
+                      onchange={handleWalletGender}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="WalletC" label="Brand">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={walletBrand} value={selectedWalletBrand}
+                      onchange={handleWalletBrand}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="WalletD" label="Color">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={walletColor} value={selectedWalletColor}
+                      onchange={handleWalletColor}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="WalletE" label="Dress Code">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={walletDressCode}
+                      value={selectedWalletDressCode} onchange={handleWalletDressCode}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+
+
+
+              </template>
+
+
+              <!--Fragnance Filters-->
+
+              <template if:true={dynamicFiltersHideShow.isFragranceType}>
+                <lightning-accordion-section name="FragnanceA" label="Fragnance Type">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={fragranceType}
+                      value={selectedFragranceType} onchange={handleFragnancetType}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="FragnanceB" label="Gender">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={fragranceGender}
+                      value={selectedFragranceGender} onchange={handleFragnanceGender}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="FragnanceC" label="Brand">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={fragranceBrand}
+                      value={selectedFragranceBrand} onchange={handleFragnanceBrand}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="FragnanceD" label="Family">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={fragranceFamily}
+                      value={selectedFragranceFamily} onchange={handleFragnanceFamily}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="FragnanceE" label="Collection">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={fragranceCollection}
+                      value={selectedFragranceCollection} onchange={handleFragnanceCollection}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="FragnanceF" label="Quantity">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={fragranceQuantity}
+                      value={selectedFragranceQuantity} onchange={handleFragnanceQuantlty}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+
+
+
+              </template>
+
+
+              <!--EarPhone Filters-->
+
+              <template if:true={dynamicFiltersHideShow.isEarphoneType}>
+
+
+                <lightning-accordion-section name="EarphoneA" label="Gender">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={earPhoneGender}
+                      value={selectedEarPhoneGender} onchange={handleEarPhoneGender}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="EarphoneB" label="Brand">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={earPhoneBrand}
+                      value={selectedEarPhoneBrand} onchange={handleEarPhoneBrand}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="EarphoneC" label="Color">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={earPhoneColor}
+                      value={selectedEarPhoneColor} onchange={handleEarPhoneColor}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="EarphoneD" label="Collection">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={earPhoneCollection}
+                      value={selectedEarPhoneCollection} onchange={handleEarPhoneCollection}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+
+
+
+              </template>
+
+              <!--Clock Filters-->
+
+              <template if:true={dynamicFiltersHideShow.isClockType}>
+
+                <lightning-accordion-section name="ClockB" label="Gender">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={clockGender} value={selectedClockGender}
+                      onchange={handleClockGender}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="ClockC" label="Brand">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={clockBrand} value={selectedClockBrand}
+                      onchange={handleClockBrand}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="ClockD" label="Color">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={clockColor} value={selectedClockColor}
+                      onchange={handleClockColor}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="ClockE" label="Collection">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={clockCollection}
+                      value={selectedClockCollection} onchange={handleClockCollection}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="ClockF" label="Clock Fucntion">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={clockFunction}
+                      value={selectedClockFunction} onchange={handleClockFunction}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+
+
+
+              </template>
+
+              <!--Sunglasses Filters-->
+
+              <template if:true={dynamicFiltersHideShow.isSunGlasseType}>
+
+                <lightning-accordion-section name="SunglassesA" label="Gender">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={sunglassGender}
+                      value={selectedSunglassGender} onchange={handleSunglassGender}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="SunglassesB" label="Brand">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={sunglassBrand}
+                      value={selectedSunglassBrand} onchange={handleSunglassBrand}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="SunglassesC" label="Color">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={sunglassColor}
+                      value={selectedSunglassColor} onchange={handleSunglassColor}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+
+
+                <lightning-accordion-section name="SunglassesD" label="Collection">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={sunglassCollection}
+                      value={selectedSunglassCollection} onchange={handleSunglassCollection}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+
+
+
+              </template>
+
+              <!--Watches Filters-->
+
+              <template if:true={dynamicFiltersHideShow.isWatchType}>
+
+                <lightning-accordion-section name="WatchA" label="Gender">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={watchGender} value={selectedWatchGender}
+                      onchange={handleWatchGender}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="WatchB" label="Brand">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={watchBrand} value={selectedWatchBrand}
+                      onchange={handleWatchBrand}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="WatchC" label="Strap Color">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={watchStrapColor}
+                      value={selectedWatchStrapColor} onchange={handleWatchStrapColor}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="WatchD" label="Strap Material">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={watchStrapMaterial}
+                      value={selectedWatchStrapMaterial} onchange={handleWatchStrapMaterial}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="WatchE" label="Dial Color">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={watchDialColor}
+                      value={selectedWatchDialColor} onchange={handleWatchDialColor}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="WatchF" label="Collection">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={watchCollection}
+                      value={selectedWatchCollection} onchange={handleWatchCollection}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="WatchG" label="Movement">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={watchMovements}
+                      value={selectedWatchMovements} onchange={handleWatchMovement}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+
+
+
+              </template>
+
+              <!--Eyewear Sunglasses Filters-->
+
+              <template if:true={dynamicFiltersHideShow.isEyewearSunglasses}>
+
+                <lightning-accordion-section name="EyeWearSunglassesA" label="Gender">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={sunglassEyewearGender}
+                      value={selectedSunglassEyewearGender} onchange={handleSunglassEyewearGender}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="EyeWearSunglassesB" label="Brand">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={sunglassEyewearBrand}
+                      value={selectedSunglassEyewearBrand} onchange={handleSunglassEyewearBrand}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="EyeWearSunglassesC" label="RIM">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={sunglassEyewearRIM}
+                      value={selectedSunglassEyewearRIM} onchange={handleSunglassEyewearRIM}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <!--<lightning-accordion-section name="EyeWearSunglassesCC" label="Category">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={sunglassEyewearCategory}
+                      value={selectedSunglassEyewearCategory} onchange={handleSunglassEyewearCategory}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>-->
+
+                <lightning-accordion-section name="EyeWearSunglassesD" label="Shape">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={sunglassEyewearShape}
+                      value={selectedSunglassEyewearShape} onchange={handleSunglassEyewearShape}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="EyeWearSunglassesE" label="Frame Material">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={sunglassEyewearFrameMaterial}
+                      value={selectedSunglassEyewearFrameMaterial} onchange={handleSunglassEyewearFrameMaterial}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="EyeWearSunglassesCD" label="Lens Color">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={sunglassEyewearLensColour}
+                      value={selectedSunglassEyewearLensColour} onchange={handleSunglassEyewearLensColour}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="EyeWearSunglassesF" label="Size">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={sunglassEyewearSize}
+                      value={selectedSunglassEyewearSize} onchange={handleSunglassEyewearSize}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="EyeWearSunglassesG" label="Color">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={sunglassEyewearColour}
+                      value={selectedSunglassEyewearColour} onchange={handleSunglassEyewearColour}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+                <lightning-accordion-section name="EyeWearSunglassesH" label="Collection">
+
+                  <div class="genderDiv">
+                    <lightning-checkbox-group name="Checkbox Group" options={sunglassEyewearCollection}
+                      value={selectedSunglassEyewearCollection} onchange={handleSunglassEyewearCollection}>
+                    </lightning-checkbox-group>
+                  </div>
+                </lightning-accordion-section>
+
+
+
+
+              </template>
+
+            </lightning-accordion>
+
+
+
+            <!--<p>Selected Values are: {selectedValues}</p></a>
+      <a href="#">Services</a>
+      <a href="#">Clients</a>
+      <a href="#">Contact</a>-->
+
+          </div>
+
+        </lightning-card>
+
+        <!--<lightning-button label="Search" onclick={fetchProducts} variant="brand"></lightning-button>-->
+      </div>
+      <!-- Base variant: Makes a button look like a link -->
+
+
+
+
+
+
+
+
+      <!--<div class="slds-align_absolute-center">
+
+
+      <lightning-input type="search" value={searchValue} placeholder="Search" onchange={handleChangeSearchValue}>
+      </lightning-input>
+
+      <lightning-icon icon-name="utility:cart" alternative-text="Warning!" title="Warning" onclick={addToCart}>
+      </lightning-icon>
+
+    </div>-->
+
+
+
+
+      <div class="slds-grid slds-wrap slds-theme_default content" onclick={closeNav}>
+
+
+
+
+
+        <template if:true={openHideMainPage}>
+
+          <template for:each={data} for:item="pro">
+            <div key={pro.productId}
+              class="slds-col slds-size_1-of-2 slds-medium-size_6-of-12 slds-large-size_1-of-5 slds-theme_default slds-var-p-around_xxx-small"
+              id={pro.productId} data-set="sdsds">
+
+
+
+              <!--<h2 style="text-align:center" key={pro.productId}>Product Card</h2>-->
+
+              <div class="card" key={pro.productId}>
+
+                <div id={pro.productId} class="imageClick" onclick={openModal}>
+
+                  <img src={pro.productDisplayImage} alt={pro.productDisplayImage}
+                    class={customProductHeightAndWidth}></img>
+
+
+                </div>
+
+                <div class="slds-var-p-around_xxx-small">
+                  <span class="slds-badge">{pro.productBrand}</span>
+
+
+
+                </div>
+
+
+
+
+                <div class="slds-var-p-around_xxx-small" style="font-size: small;">
+                  {pro.productShortDescription}
+
+                </div>
+
+                <div class="slds-var-p-around_xxx-small">
+                  <template if:false={hidePriceData}>
+
+                    <template if:true={pro.percentageValue}>
+
+
+                      <div style="text-decoration: line-through;display : inline;font-size: small;"
+                        class="slds-var-p-around_xxx-small">
+                        <span class="dollars">{pro.productListPrice}</span>
+                      </div>
+                    </template>
+                    <div class="slds-var-p-around_xxx-small" style="display:inline;font-size: small;">
+                      <span class="dollars"><b>{pro.productOfferPrice}</b></span>
+
+                    </div>
+                    <template if:true={pro.percentageValue}>
+
+                      <div style="display:inline;color:red;font-size: small;">
+                        {pro.percentageValue}%OFF
+                      </div>
+                    </template>
+                  </template>
+
+
+
+                </div>
+
+
+
+                <!--<p class=" price">$19.99</p>
+            <p>{pro.productLongDescription}
+            </p>-->
+
+                <!--<div class="quantity buttons_added">
+            <input type="button" value="-" onclick={minusQuantity} class="minus" name={pro.productId}>
+
+            <input data-id={pro.productId} type="number" step="1" min="1" max="" name="quantity" value={quantityValue}
+              title="Qty" onchange={valueQtyHandle} class="input-text qty text" size="4" pattern="" inputmode="">
+
+            <input type="button" value="+" class="plus" onclick={addtionQuantity} name={pro.productId}>
+          </div>
+          <p><button class="addCartButton" name={pro.productId} onclick={addToCart}>Add to Cart</button></p>-->
+              </div>
+            </div>
+
+
+
+          </template>
+        </template>
+
+
+        <template if:true={isModalOpen}>
+          <!-- Modal/Popup Box LWC starts here -->
+          <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open" style="display: flex;">
+            <div class="slds-modal__container" style="width: -webkit-fill-available;">
+              <!-- Modal/Popup Box LWC header here -->
+              <header class="slds-modal__header">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                  onclick={closeModal}>
+                  <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                  </lightning-icon>
+                  <span class="slds-assistive-text">Close</span>
+                </button>
+                <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Product Detail</h2>
+              </header>
+              <!-- Modal/Popup Box LWC body starts here -->
+              <div class="slds-modal__content slds-p-around_medium" style="overflow-x: auto;display: inline-block;"
+                id="modal-content-id-1">
+
+
+                <c-order-product-detailed-component slides-data={productSlides}
+                  selected-product-id={selectedProductIdForDetailPage} hide-price={hidePriceData}>
+                </c-order-product-detailed-component>
+
+              </div>
+              <!-- Modal/Popup Box LWC footer starts here -->
+              <footer class="slds-modal__footer">
+                <div class="quantity buttons_added slds-align_absolute-center">
+                  <input type="button" value="-" onclick={minusQuantity} class="minus" name="productId">
+
+                  <input data-id="productId" type="number" step="1" min="1" max="" name="quantity" value={quantityValue}
+                    title="Qty" onchange={valueQtyHandle} class="input-text qty text" size="4" pattern="" inputmode="">
+
+                  <input type="button" value="+" class="plus" onclick={addtionQuantity} name="productId">
+                </div>
+
+                <!--<lightning-button name="Test" variant="destructive" class="slds-var-p-around_xxx-small"
+                  label="Add To Cart" onclick={addToCart}>
+                </lightning-button>-->
+                <button class="addCartButton slds-var-p-around_xxx-small" name="productId"
+                  onclick={addToCart}>Shortlist</button>
+                <!--<button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
+            <button class="slds-button slds-button_brand" onclick={submitDetails} title="OK">OK</button>-->
+              </footer>
+            </div>
+          </section>
+          <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+
+        <template if:true={openCart}>
+          <!-- Modal/Popup Box LWC starts here -->
+          <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true"
+            aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open" style="display: flex;">
+            <div class="slds-modal__container" style="width: -webkit-fill-available;">
+              <!-- Modal/Popup Box LWC header here -->
+              <header class="slds-modal__header">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close"
+                  onclick={closeCart}>
+                  <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" size="small">
+                  </lightning-icon>
+                  <span class="slds-assistive-text">Close</span>
+                </button>
+                <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Cart</h2>
+              </header>
+              <!-- Modal/Popup Box LWC body starts here -->
+              <div class="slds-modal__content slds
+              -p-around_medium" style="overflow-x: auto;display: inline-block;" id="modal-content-id-2">
+                <template if:false={isCartIsEmpty}>
+
+
+                  <article class="slds-card" style="padding:20px">
+
+                    <c-Proposal-Tool-Opportunity-Lookup-Component icon-name="standard:opportunity"
+                      s-object-api-name="opportunity" label="Opportunity" onlookupupdate={lookupRecord}
+                      placeholder="Search Opportunity here.." default-record-id={selectedOpportunityId}>
+                    </c-Proposal-Tool-Opportunity-Lookup-Component>
+                  </article>
+
+                  <div align="center" if:true={isSpinner}>
+                    <div class="loader"></div>
+                    Please wait generating proposal...
+                  </div>
+
+                  <!--<lightning-input class="slds-p-left_large" type="checkbox" label="Hide Pricing" name="input1"
+                    onchange={hidePricingFromCart}>
+                  </lightning-input>-->
+
+
+                  <div class="slds-grid slds-wrap">
+                    <div
+                      class="slds-col slds-size_2-of-2 slds-medium-size_6-of-12 slds-large-size_3-of-6 slds-theme_default"
+                      data-set="sdsds">
+                      <template for:each={productAddedForCart} for:item="pro" for:index="index">
+
+
+
+                        <lightning-card variant="Narrow" key={pro.productId}>
+
+
+                          <div slot="actions">
+
+                          </div>
+
+
+
+
+
+                          <div key={pro.productId} class="slds-var-p-around_xx-small">
+                            <div class="slds-box">
+
+                              <div class="slds-var-p-around_xxx-small">
+                                <b>{pro.productBrand}</b>
+
+                              </div>
+
+
+
+
+                              <div class="slds-var-p-around_xxx-small">
+                                {pro.productName}
+                              </div>
+
+                              <div class="slds-var-p-around_xxx-small">
+
+                                <template if:false={hidePriceData}>
+
+                                  <div style="text-decoration: line-through;display : inline;"
+                                    class="slds-var-p-around_xxx-small"><span
+                                      class="dollars">{pro.productListPrice}</span>
+                                  </div>
+
+                                </template>
+
+                                <template if:true={hidePriceData}>
+
+                                  <div class="slds-var-p-around_xxx-small" style="display:inline;">
+
+                                    <lightning-input type="number" name="mrp" onchange={changeHandleMRPPrice}
+                                      value={pro.productListPrice} label="MRP" data-id={index}
+                                      access-key={pro.productId}>
+                                    </lightning-input>
+                                  </div>
+                                </template>
+
+                                <div class="slds-var-p-around_xxx-small" style="display:inline;">
+
+                                  <span class="dollars">
+                                    <lightning-input type="number" max={pro.productListPrice} name="input1"
+                                      value={pro.productOfferPrice} onchange={changeHandleOfferPrice}
+                                      label="Final Offer Price"
+                                      message-when-range-overflow="Offer Price Higher than List Price" data-id={index}
+                                      access-key={pro.productId}>
+                                    </lightning-input>
+                                    <!--<b>{pro.productOfferPrice}</b>-->
+                                  </span>
+                                </div>
+                                <div>
+                                  <div style="display: inline-block;">
+                                    <lightning-input type="number" max=100 name="input6" label="Final Offer Percentage"
+                                      value={pro.percentageValue} message-when-range-overflow="Please Enter Below 100%"
+                                      onchange={changeHandleOfferPercentage} data-id={index} access-key={pro.productId}>
+                                    </lightning-input>
+                                  </div>
+                                  <div style="display: inline-block;color:red">
+                                    %OFF
+                                  </div>
+                                </div>
+
+                              </div>
+                              <!--<template if:true={hidePriceData}>
+                                
+
+                              </template>-->
+
+
+                              <div id={pro.productId} class="imageClick" onclick={openModal} style="width:40%">
+
+                                <img src={pro.productImage} alt="Denim Jeans">
+
+
+
+
+
+                              </div>
+
+                              <div class="quantity buttons_added slds-var-p-around_xxx-small" style="display:inline;">
+                                <input type="button" value="-" onclick={minusQuantityCart} class="minus"
+                                  name={pro.productIdForCart}>
+
+                                <input data-id="productIdss" type="number" step="1" min="1" max=""
+                                  name={pro.productIdForCart} value={pro.quantity} title="Qty"
+                                  onchange={valueQtyHandleCart} class="input-text qty text" size="4" pattern=""
+                                  inputmode="">
+
+                                <input type="button" value="+" class="plus" onclick={addtionQuantityCart}
+                                  name={pro.productIdForCart}>
+                              </div>
+                              <lightning-button name={pro.productIdForCart} variant="destructive"
+                                class="slds-var-p-around_xxx-small" style="float:right;" label="Remove"
+                                onclick={removeProductFromCart}>
+                              </lightning-button>
+                              <div class="slds-var-p-around_xxx-small">
+                                <c-proposal-tool-image-upload-component record-id={proposalCustomImageId}
+                                  selected-product-id={pro.productId}>
+                                </c-proposal-tool-image-upload-component>
+
+                              </div>
+
+
+
+
+
+                            </div>
+
+
+
+
+
+
+                          </div>
+
+
+
+
+                        </lightning-card>
+
+
+
+
+
+
+                      </template>
+
+                    </div>
+                    <div class="slds-var-p-left_x-large">
+
+
+                      <lightning-card title="Order Summary">
+
+
+                        <div class="slds-var-p-left_small" style="display:inline-block">
+                          Total Items
+                          <br></br>
+                          Total Quantity
+                          <br></br>
+                          <!--<template if:false={hidePriceData}>-->
+                          Price
+
+
+                          <br></br>
+                          Discount
+
+                          <br></br>
+
+
+                          <b>Total</b>
+                          <br> </br>
+                          <!--</template>-->
+
+                        </div>
+
+
+                        <div style="float:right;margin-left: 20px;">
+                          {orderSummary.totalItems}
+                          <br></br>
+                          {orderSummary.totalQuantity}
+                          <br></br>
+                          <!--<template if:false={hidePriceData}>-->
+
+                          <span class="dollars"> {orderSummary.totalPrice}</span>
+
+
+                          <br></br>
+                          <span class="dollars"> {orderSummary.totalDiscount}</span>
+
+
+
+                          <br></br>
+
+
+                          <span class="dollars"> <b> {orderSummary.totalOrderValue}</b></span>
+                          </br>
+                          <!--</template>-->
+
+                        </div>
+
+                      </lightning-card>
+                    </div>
+
+
+
+                  </div>
+
+
+                  <!--<c-proposal-tool-cart-page-component product-data-for-cart={productAddedForCart}>
+                </c-proposal-tool-cart-page-component-->
+
+                </template>
+
+                <template if:true={isCartIsEmpty}>
+
+                  <div class="slds-align_absolute-center">
+                    <img src={emptyCartURL} width="90%">
+                  </div>
+                </template>
+              </div>
+              <!-- Modal/Popup Box LWC footer starts here -->
+              <footer class="slds-modal__footer">
+
+                <button class="slds-button slds-button_neutral" onclick={closeCart} title="Cancel">Cancel</button>
+                <button class="slds-button slds-button_brand" onclick={generateProposalAndCloseCart}
+                  title="Generate Proposal">Generate
+                  Proposal</button>
+              </footer>
+            </div>
+          </section>
+          <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        <template if:true={isDisplayNoRecords}>
+          <div class="slds-align_absolute-center">
+            <br />
+            No records found
+          </div>
+        </template>
+        <br />
+
+      </div>
+      <div class="slds-align_absolute-center slds-p-around_small" style="background: white;" slot="footer">
+        <div class="slds-p-right_xx-small">
+
+          <lightning-button label="Prev" disabled={isPrev} onclick={handlePrev} variant="brand" icon-name="utility:back"
+            name="prev"></lightning-button>
+        </div>
+        <span class="slds-badge slds-badge_lightest">
+          {recordStart}-{recordEnd} of {totalRecords} | Page {pageNumber} of {totalPages}
+        </span>
+        <div class="slds-p-left_xx-small">
+          <lightning-button label="Next" disabled={isNext} onclick={handleNext} variant="brand"
+            icon-name="utility:forward" icon-position="right" name="next"></lightning-button>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</template>

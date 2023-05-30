@@ -1,0 +1,138 @@
+@isTest
+public class Proposal_Tool_LandingPageController_Test {
+    static testMethod void LandingPage(){
+        
+        //Eyewear
+        Proposal_Tool_Filter__c propFilter = ProposalToolTestDataFactory.createProposalFilter('Eyewear','Product Category');
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Color',Id = propFilter.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Gender',Id = propFilter.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Brand',Id = propFilter.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'SunGlasses Eyewear Gender',Id = propFilter.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'SunGlasses Eyewear RIM',Id = propFilter.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'SunGlasses Eyewear Category',Id = propFilter.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'SunGlasses Eyewear Shape',Id = propFilter.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'SunGlasses Eyewear Collection',Id = propFilter.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'SunGlasses Eyewear Frame Material',Id = propFilter.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'SunGlasses Eyewear Size',Id = propFilter.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'SunGlasses Eyewear Colour',Id = propFilter.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'SunGlasses Eyewear Lens Colour',Id = propFilter.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'SunGlasses Eyewear Brand',Id = propFilter.Id);
+        String response = Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter.Product_Type__c);
+        System.assertEquals('{"SunGlassesEyewearBrand":["test123"]}', response);
+        
+        //Watches
+        Proposal_Tool_Filter__c propFilter2 = ProposalToolTestDataFactory.createProposalFilter('Watches','Product Category');
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Bag Type',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Bag Material (Body)',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Bag Material (Lining)',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Bag Closure Type',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Bags Gender',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Bags Brand',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Bags Color',Id = propFilter2.Id);//
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Bags Collection',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Bags Occasion',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Belt Type',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Belts Gender',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Belts Brand',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Belts Color',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Belts Dress Code',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Belts Length',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Wallets Gender',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Wallets Brand',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Wallets Color',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Wallets Dress Code',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Wallets Type',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Fragrances Gender',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Fragrances Brand',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Fragrances Collection',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Fragrances Fragrance Type',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Fragrances Family',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Fragrances Quantity',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Earphones Gender',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Earphones Brand',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Earphones Color',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Earphones Collection',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Clocks Gender',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Clocks Brand',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Clocks Color',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Clocks Collection',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Clocks Function',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'SunGlasses Gender',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'SunGlasses Brand',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'SunGlasses Color',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'SunGlasses Collection',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Watches Gender',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Watches Brand',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Watches Collection',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Watches Strap Color',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Watches Strap Material',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Watches Dial Color',Id = propFilter2.Id);
+        Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        update new Proposal_Tool_Filter__c(Type_Of_Filter__c = 'Watches Movements',Id = propFilter2.Id);
+        String response1= Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter2.Product_Type__c);
+        System.assertEquals('{"WatchesMovements":["test123"]}', response1);
+        
+        //Jewellery
+        Proposal_Tool_Filter__c propFilter3 = ProposalToolTestDataFactory.createProposalFilter('Jewellery','Product Category');
+        String response2=Proposal_Tool_LandingPageController.fetchFiltersValues(propFilter3.Product_Type__c);
+        System.assertEquals('{"ProductCategoryLabel":["test123"]}', response2);
+    }
+}

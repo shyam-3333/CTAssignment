@@ -1,0 +1,211 @@
+<!--  
+* Class Name   : BackupFeedBackVfPage
+* Created By   : Madhushree H J
+* Created Date : 09-08-2022
+* Description  :this vf page is used to display a customer information and used to capture submitter details.  
+-->
+<apex:page controller="BackupFeedBckController" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0" >   
+    <html>
+        <head>
+            <!-- Import the Design System style sheet -->
+            <apex:slds />
+        </head>
+        <div class="slds-modal__header" Style = "text-align: center;">
+            <img src="{!$Resource.TitanCompanyLogo}" width="200px" height="60px" align="left"/>
+            <h1 class="slds-text-heading_medium"  style="margin-right:148px;font-size:35px;">Voice of Customer</h1>
+        </div>
+        
+    </html>
+    <br/>
+    <html>
+        <style>
+            input[type=submit] {
+            width: 22%;
+            background-color: #00b0ab;
+            color: white;
+            padding: 20px 10px;
+            margin: 10px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer; 
+            
+            }
+            
+            div {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            margin: 10px 20px;
+            padding: 20px 20px;
+            text-align: justify;
+            }
+            
+            .radioinput input[type="radio"]{
+            float:right;
+            margin: 2px 20px -15px 35px;
+            }
+            
+            .radioinput label{
+            display:block;
+            }
+        </style>
+        <body>
+            
+                <apex:form id="formNew" styleClass="slds-scope" rendered="{!showForm=true}">
+                <div>
+       <div class="slds-align_absolute-center slds-text-heading_large "  >
+            <center >
+                <b style="color:black;font-family:nunito light;">THANK YOU!  </b>
+            </center>
+        </div>            
+         <div class="slds-align_absolute-center"  >
+            
+            <img src="{!$Resource.TitanThankYouLogo}" width="170px" height="60px" align="left"/>   
+        </div>
+        <div class="slds-align_absolute-center slds-text-heading_medium" >
+            <center style="color:black;font-family:nunito light;" >
+                Your response has already been captured.<br/><br/><br/>
+                       
+            </center>
+            </div>
+        </div>     
+     </apex:form>
+           
+            
+            <apex:form id="form" rendered="{!showForm=false}">
+                <div style="font-size:15px;font-family:nunito light;">
+                    Hello {!name},
+                    <br/><br/><br/> 
+                    We are delighted to receive your order and thank you for giving us the opportunity to work with you. It would be helpful if you would take a few minutes to let us know how you felt about our proposal.
+                    <br/><br/>
+                    I will appreciate your candour and will hold your comments in the strictest confidence.
+                    <br/><br/>
+                    Looking forward to a long and fruitful relationship between our two businesses.
+                    <br/><br/><br/>
+                    Thanks,
+                    <br/>
+                    Sales and Business Development Team
+                    <br/><br/>
+                </div>
+                <div >
+            <b style="font-size:18px;font-family:nunito light;color:#737373">Customer Information</b><br/><br/>  
+                    
+                    
+                  <apex:actionRegion >
+                        <b><apex:outputLabel value="  Name  :" style="font-size:15px;font-family:nunito light;"/></b>
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
+                      <apex:inputText value="{!name}" style="font-size:15px;font-family:nunito light" disabled="true"  size="50"/>
+                    </apex:actionRegion> 
+                    <br/><br/>
+                    
+                    
+                        <apex:actionRegion >
+                            <b><apex:outputLabel value=" Email :" style="font-size:15px;font-family:nunito light"/></b> 
+                         &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
+                            <apex:inputText value="{!email}" style="font-size:15px;font-family:nunito light" disabled="true"  size="50" />
+                        </apex:actionRegion>
+                    <br/><br/>
+                    
+                    
+                    
+                        <apex:actionRegion >
+                        <b><apex:outputLabel value=" Designation :" style="font-size:15px;font-family:nunito light"/></b> 
+                           &nbsp;&nbsp; &nbsp; &nbsp;  &nbsp;&nbsp;    
+                            <apex:inputText value="{!designation}" style="font-size:15px;font-family:nunito light" disabled="true" size="50"/>
+                    </apex:actionRegion>
+                    <br/><br/>
+                    
+                    
+                      
+                        <apex:actionRegion >
+                        <b><apex:outputLabel value=" Account : " style="font-size:15px;font-family:nunito light"/></b> 
+                     &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     
+                            <apex:inputText value="{!organization}" style="font-size:15px;font-family:nunito light" disabled="true"  size="50" />
+                    </apex:actionRegion>
+                    <br/><br/>
+                    
+                    
+                    
+                     <apex:actionRegion >
+                        <b><apex:outputLabel value=" Contact Number :" style="font-size:15px;font-family:nunito light"/></b>
+                        &nbsp; 
+                         <apex:inputText value="{!phone}" style="font-size:15px;font-family:nunito light" disabled="true" size="50" />
+                    </apex:actionRegion>
+                    <br/><br/>
+                    
+                    
+                    <apex:actionRegion >
+                        <b><apex:outputLabel value=" Project Name :" style="font-size:15px;font-family:nunito light"/></b>
+                       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
+                        <apex:inputText value="{!projectName}" style="font-size:15px;font-family:nunito light" disabled="true" size="50" />
+                    </apex:actionRegion>
+                    <br/><br/><br/>
+                    <apex:outputPanel rendered="{!showErr16}">
+                        <p  style="font-weight: bold;color: red;font-size:12px;font-family:nunito light;" >Please select Yes or No*</p>
+                    </apex:outputPanel>
+                   <apex:outputLabel value="Is the submitter's email address the same as the original email address?"  style="font-size:15px;font-family:nunito light"/>
+                <apex:selectRadio value="{!submitterEmailChecking}"  styleClass="radioinput" >
+                    <apex:actionSupport event="onchange" rerender="form" />
+                    <apex:selectOption itemLabel="Yes" itemValue="Yes" />
+                    <apex:selectOption itemLabel="No" itemValue="No" />
+                    </apex:selectRadio><br/>
+                       
+               <apex:outputPanel rendered="{!submitterEmailChecking =='No'}">
+                   <br/>
+                   
+                       
+                  
+                    <apex:actionRegion >
+                        <b><apex:outputLabel value=" Salutation :" style="font-size:15px;font-family:nunito light" rendered="{!submitterEmailChecking =='No'}"/></b>
+                        &nbsp; &nbsp;&nbsp;  
+                        <apex:inputField value="{! backupFeedback.Salutation__c}" style="width:150px" rendered="{!submitterEmailChecking =='No'}" />
+                    </apex:actionRegion>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
+                   
+                   
+                    <apex:actionRegion >
+                        <b><apex:outputLabel value=" Submitter  Name :" style="font-size:15px;font-family:nunito light" rendered="{!submitterEmailChecking =='No'}"/></b>
+                        &nbsp; <apex:inputText value="{! backupFeedback.Submitter_Name__c}" style="width:150px" rendered="{!submitterEmailChecking =='No'}" required="true"/>
+                    </apex:actionRegion>
+                   <br/><br/>
+                   
+                   
+                    <apex:actionRegion >
+                        <b><apex:outputLabel value=" Designation :" style="font-size:15px;font-family:nunito light" rendered="{!submitterEmailChecking =='No'}" /></b>
+                        &nbsp; <apex:inputText value="{! backupFeedback.Submitter_Designation__c}" style="width:150px" required="true" rendered="{!submitterEmailChecking =='No'}"  />
+                    </apex:actionRegion>
+                   &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;
+                   
+                   
+                   <apex:actionRegion >
+                        <b><apex:outputLabel value=" Submitter  Email :" style="font-size:15px;font-family:nunito light" rendered="{!submitterEmailChecking =='No'}" /></b>
+                        &nbsp; <apex:inputText value="{! backupFeedback.Submitter_Email__c}" style="width:150px" rendered="{!submitterEmailChecking =='No'}" required="true"/>
+                    </apex:actionRegion>
+                   <br/><br/>
+                   
+                   
+                    <apex:actionRegion >
+                        <b><apex:outputLabel value=" Department :" style="font-size:15px;font-family:nunito light" rendered="{!submitterEmailChecking =='No'}"/></b>
+                        &nbsp; <apex:inputField value="{! backupFeedback.Department__c}" style="width:150px" rendered="{!submitterEmailChecking =='No'}" />
+                    </apex:actionRegion>&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
+                    
+                   
+                   
+                    <apex:actionRegion >
+                        <b><apex:outputLabel value=" Contact Number :" style="font-size:15px;font-family:nunito light" rendered="{!submitterEmailChecking =='No'}" /></b>
+                        &nbsp;  <apex:inputText value="{! backupFeedback.Submitter_Contact_Number__c}" style="width:150px" rendered="{!submitterEmailChecking =='No'}" required="true" />
+                    </apex:actionRegion>
+                   <br/><br/>
+                   
+                
+                   
+                    </apex:outputPanel>
+                </div>
+                <center>
+                    <div class="slds-align_absolute-center slds-p-top_large" style="text-align:center">
+                        <apex:commandButton action="{!next}" value="Click for survey questions" />
+                    </div>
+                </center>
+            </apex:form>
+            
+        </body>
+    </html>
+</apex:page>

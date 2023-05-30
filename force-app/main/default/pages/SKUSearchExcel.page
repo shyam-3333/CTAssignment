@@ -1,0 +1,129 @@
+<apex:page Controller="SKUSearchController" cache="true" readOnly="true" contentType="application/vnd.ms-excel#MasterData.xls; charset=UTF-8">
+    <table class="slds-table slds-table--bordered slds-resizable pt20 ">
+        <tr>
+            <th>QR CODE</th>
+            <th>MODEL</th>
+            <th>SKU</th>
+            <th>DESIGN DESCRIPTION</th>
+            <th>VENDOR CODE</th>
+            <th>VENDOR NAME</th>
+            <th>PO NUMBER</th>
+            <th>PO DATE</th>
+            <th>PRODUCT CATEGORY</th>
+            <th>ORIGIN</th>
+            <th>WARP</th>
+            <th>WEFT</th>
+            <th>ZARI TYPE</th>
+            <th>BASE COLOUR</th>
+            <th>LOOM</th>
+            <th>CRAFT</th>
+            <th>BLOUSE TYPE</th>
+            <th>QUANTITY</th>
+            <th>HANDLOOM MARK</th>
+            <th>PROC TYPE</th>
+            <th>BUYER COSTt</th>
+            <th>Procurement Cost</th>
+            <th>MRP</th>
+            <th>USERNAME</th>
+            <th>COMMENTS</th>
+            <th>PROC SOURCE</th>
+            <th>SUGGESTED MRP</th>
+            <th>DUPATTA FABRIC</th>
+            <th>KURTA FABRIC</th>
+            <th>SALWAR FABRIC</th>
+            <th>DESIGN STORY</th>
+            <th>STORY 1</th>
+            <th>STORY 2</th>
+            <th>DETAILED COLOUR</th>
+            <th>FABRIC</th>
+            <th>FABRICR</th>
+            <th>OCASSION</th>
+            <th>WORKMANSHIP</th>
+            <th>CRAFTR</th>
+            <th>FOLD</th>
+            <th>COLLECTION</th>
+            <th>BODY PATTERN</th>
+            <th>BODY DES ELEMENT </th>
+            <th>BODY DES MATERIAL</th>
+            <th>BODY DES DENSITY</th>
+            <th>BORDER PATTERN</th>
+            <th>BORDER DES ELEMENT</th>
+            <th>BORDER DES MATERIAL</th>
+            <th>BORDER SIZE</th>
+            <th>PALLU PATTERN</th>
+            <th>PALLU DESIGN</th>
+            <th>PALLU DES MATERIAL</th>
+            <th>PALLU DES DENSITY</th>
+            <th>PALLU SIZE</th>
+            <th>WAREHOSE STOCK</th>
+            <th>SOLD STOCK</th>
+            <th>STORE STOCK</th>
+            <th>ORDER ID</th>
+            
+        </tr>
+        <apex:repeat value="{!excelProdList}" var="cost">
+            <tr>
+                
+                <td align="center"> {!cost.QR_CODE__c}</td>
+                <td align="center"> {!cost.Name}</td>
+                <td align="center"> {!cost.SKU_Code__c}</td>
+                <td align="center"> {!cost.Design_Description__c}</td>
+                <td align="center"> {!cost.vendor_custom__r.Vendor_Code__c} </td>
+                <td align="center"> {!cost.vendor_custom__r.name}</td>
+                <td align="center"> {!cost.PO_Number__c}</td>
+                <td align="center"> {!cost.Sent_PO_date_and_time__c}</td>
+                <td align="center"> {!cost.Product_Category_Taneira__c}</td>
+                <td align="center"> {!cost.Cluster__c}</td>
+                <td align="center"> {!cost.Material_Wrap__c}</td>
+                <td align="center"> {!cost.Taneira_Material_Weft__c}</td>
+                <td align="center"> {!cost.Zari_Type__c}</td>
+                <td align="center"> {!cost.Base_Colour__c}</td>
+                <td align="center"> {!cost.Loom__c}</td>
+                <td align="center"> {!cost.Workmanship__c}</td>
+                <td align="center"> {!cost.Blouse_Type__c}</td>
+                <td align="center"> {!cost.Quantity__c}</td>
+                <td align="center"> {!cost.Handloommark__c}</td>
+                <td align="center"> {!cost.Proc_Type__c}</td>
+                <td align="center"> {!cost.Buyers_Cost__c}</td>
+                <td align="center"> {!cost.Procurement_Cost__c}</td>
+                <td align="center"> {!cost.Suggested_MRP__c}</td>
+                <td align="center"> {!cost.Offline_Username__c}</td>
+                <td align="center"> {!cost.Comments__c}</td>
+                <td align="center"> {!cost.Proc_Source__c}</td>
+                <td align="center"> {!cost.Suggested_MRP__c}</td>
+                <td align="center"> {!cost.Dupatta_Fabric__c}</td>
+                <td align="center"> {!cost.Kurta_Fabric__c}</td>
+                <td align="center"> {!cost.Salwar_Fabric__c}</td>
+                <td align="center"> {!cost.Design_Story__c}</td>
+                <td align="center"> {!cost.Story_1__c}</td>
+                <td align="center"> {!cost.Story_2__c}</td>
+                <td align="center"> {!cost.Detailed_Colour__c}</td>
+                <td align="center"> {!cost.Fabric__c}</td>
+                <td align="center"> {!cost.FabricR__c}</td>
+                <td align="center"> {!cost.Occasion__c}</td>
+                <td align="center"> {!cost.Workmanship__c}</td>
+                <td align="center"> {!cost.CraftR__c}</td>
+                <td align="center"> {!cost.Fold__c}</td>
+                <td align="center"> {!cost.Collection__c}</td>
+                <td align="center"> {!cost.Body_Pattern__c}</td>
+                <td align="center"> {!cost.Body_Des_Element__c}</td>
+                <td align="center"> {!cost.Body_Des_Material__c}</td>
+                <td align="center"> {!cost.Body_Des_Density__c}</td>
+                <td align="center"> {!cost.Border_Pattern__c}</td>
+                <td align="center"> {!cost.Border_Des_Element__c}</td>
+                <td align="center"> {!cost.Border_Des_Material__c}</td>
+                <td align="center"> {!cost.Border_Size__c}</td>
+                <td align="center"> {!cost.Pallu_Pattern__c}</td>
+                <td align="center"> {!cost.Pallu_Design__c}</td>
+                <td align="center"> {!cost.Pallu_Des_Material__c}</td>
+                <td align="center"> {!cost.Pallu_Des_Density__c}</td>
+                <td align="center"> {!cost.Pallu_Size__c}</td>
+                <td align="center"> {!cost.Warehouse_Stock__c}</td>
+                <td align="center"> {!cost.Sold_Stock__c}</td>
+                <td align="center"> {!cost.Store_Stock__c}</td>
+                <td align="center"> {!cost.Order_Id__c}</td>
+                
+            </tr>
+        </apex:repeat>
+    </table>
+</apex:page>

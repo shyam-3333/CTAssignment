@@ -1,0 +1,211 @@
+<apex:page controller="RTWProductupdateSourcingController" showHeader="false" sidebar="false" docType="html-5.0">
+    <head>
+        
+        <apex:includescript value="//code.jquery.com/jquery-1.11.1.min.js"/>
+        <apex:includescript value="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"/>
+        <apex:stylesheet value="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css"/>
+        <script>
+        /*j$ = jQuery.noConflict();
+        j$(document).ready( function () {
+            var proTable = j$('[id$="proTable"]').DataTable({
+              
+            });
+        });*/
+        
+        $(document).ready(function() {
+            $('#proTable').DataTable( {
+                "order": [[ 5, "desc" ]]
+            } );
+        } );
+        </script>
+        <style>
+            .headerTitle{            
+            font-family: arial, sans-serif;            
+            font-size: 16px;            
+            font-weight: 600;            
+            color: #fff!important;            
+            text-align: left;            
+            text-transform: uppercase;            
+            background: #4e75a3;            
+            display: block;            
+            padding: 25px;
+            margin:0;            
+            }
+            .d_title {
+            background: #099ad6 none repeat scroll 0 0;
+            color: #fff;
+            display: inline-block;
+            font-size: 24px;
+            padding: 5px;
+            width: 100%;
+            position:fixed;
+            }
+            .closeButton {
+            float: right;
+            }
+            .customPopup {
+            background-color: pink;
+            border-style: solid;
+            border-width: 4px;
+            left: 20%;
+            padding: 10px;
+            position: absolute;
+            z-index: 9999;
+            /* These are the 3 css properties you will need to tweak so the popup displays in the center of the screen. First set the width.
+            Then set margin-left to negative half of what the width is. You can also add the height property for a fixed size pop up.*/
+            width: 500px;
+            top: 20%;
+            }
+            td{
+            white-space: normal!important;
+            }
+            .pt20 {
+            padding-top:20px;
+            }
+            .slds-truncate {
+            white-space: normal;
+            }
+            
+            #theDivId .dataTables_filter {
+            float:left;
+            margin-left:20px;
+            }
+            .messageText {
+            padding-top:20px;
+            }
+            .d_titRTWle {
+            background: #099ad6 none repeat scroll 0 0;
+            color: #fff;
+            display: inline-block;
+            font-size: 24px;
+            padding: 5px;
+            width: 100%;
+            }
+            
+            .Date_filter{
+            float:right;
+            font-size:14px;
+            margin-top:30px;
+            }
+            .outpbtn{
+            text-align: left;
+            margin-top:30px;
+            margin-bottom:30px;
+            }
+            
+        </style>
+        
+    </head>
+    <body>
+        <apex:form >
+            
+            <div class="slds-grid slds-wrap" id="theDivId" style='margin:10px 10px 10px 10px;'>
+                <div class="slds-col slds-p-horizontal--small">
+                    <table id="proTable" class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped" >
+                        <div class="headerTitle ">
+                            
+                            <apex:outputLabel value="RTW Sourcing Products" style=" position: fixed;margin-top:-10px; " />
+                        </div>
+                        <div Class="outpbtn">
+                            <apex:outputPanel style="top:50px;">
+                                
+                                StartDate: <apex:input type="date" value="{!StartDate}"  label="StartDate" style="margin-right:20px;"/>
+                                EndDate: <apex:input type="date" value="{!EndDate}"  label="EndDate" style="margin-right:20px;"/>
+                                <apex:commandButton action="{!ProductDateFilter}" value="Search" style="margin-right:20px;"/>
+                                
+                            </apex:outputPanel>
+                        </div>
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Vendor Name">Vendor Name</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Product Category">Product Category</div>
+                                </th>
+                                <!--<th class="" scope="col">
+<div class="slds-truncate" title="Origin">Origin</div>
+</th> -->
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="SKU Count">SKU Count</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Total Quantity">Total Quantity</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="Amount">Total</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="CreatedDate">Created Date</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="SubmittedDate">Submitted Date</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="pendingDays">Pending In Days</div>
+                                </th>
+                                <th class="" scope="col">
+                                    <div class="slds-truncate" title="PO Status">PO Status</div>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <apex:repeat value="{!prodWrapList}" var="pro">
+                                <tr class="slds-hint-parent">
+                                    <td data-label="Vendor Name" scope="row">
+                                        <div class="slds-truncate" title="VendorName">
+                                            <a href="{!'RTWSourcingvf?ProductKey='+pro.ProdKey+'&productTypeName='+pro.ProductCategory}">{!pro.vendorName}</a>
+                                        </div>
+                                    </td>
+                                    <td data-label="Product Category">
+                                        <div class="slds-truncate" title="Product">{!pro.ProductCategory}</div>
+                                    </td>
+                                    <!--
+<td data-label="Origin">
+<div class="slds-truncate" title="Origin">{!pro.Origin}</div>
+</td>
+-->
+                                    <td data-label="SKU_Count">
+                                        <div class="slds-truncate" title="SKU_Count">{!pro.SKUCount}</div>
+                                    </td>
+                                    <td data-label="Quantity">
+                                        <div class="slds-truncate" title="Quantity">{!pro.TotalQuantity}</div>
+                                    </td>
+                                    <td data-label="Total">
+                                        <div class="slds-truncate" title="Total">{!pro.TotalValue}</div>
+                                    </td>
+                                    <td data-label="CreatedDate">
+                                        <div class="slds-truncate" title="CreatedDate">{!pro.CreatedDate}</div>
+                                    </td>
+                                    <td data-label="SubmittedDate">
+                                        <div class="slds-truncate" title="SubmittedDate">{!pro.SubmittedDate}</div>
+                                    </td>
+                                    <td data-label="SubmittedDate">
+                                        <div class="slds-truncate" title="pendingDays">{!pro.pendingDays}</div>
+                                    </td>
+                                    <td data-label="PO Status">
+                                        <div class="slds-truncate" title="PO Status">{!pro.PO_Status}</div>
+                                    </td>
+                                </tr>
+                            </apex:repeat>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </apex:form>
+    </body>
+    <script>
+    function moveBack(){
+        
+        if ((typeof sforce != 'undefined') && sforce && (!!sforce.one)){ 
+            
+            sforce.one.navigateToURL("/home/home.jsp");
+        }
+        else{
+            console.log('**');
+            window.open('/home/home.jsp','_self');
+            
+        }
+    }
+    </script>    
+</apex:page>

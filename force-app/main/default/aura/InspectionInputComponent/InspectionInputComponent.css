@@ -1,0 +1,11 @@
+.THIS .leftPaddingClass {
+    padding-left: 2rem;
+}
+.THIS .uiInput--checkbox input[type=checkbox]:checked[disabled]  {
+    background-color: #467ab1!important;
+    border-color: #467ab1!important;
+}
+.THIS input.uiInput--checkbox[type=checkbox]:checked[disabled] {
+    background-color: #467ab1!important;
+    border-color: #467ab1!important;
+}

@@ -1,0 +1,72 @@
+<!--********************************************************************************
+Created by: Vinoth Kumar A
+Created on: 15/03/2019
+Description: Generating report of the pending approval process
+**************************************************************-->
+
+<apex:page controller="PendingApprovalReportController" sidebar="false">
+    <apex:form >
+        <apex:pageBlock >
+            
+                      
+            <apex:outputText value="QC Approval:   "  style="font-size:15px; background-color:lightblue; margin:8px"/>
+            <apex:selectList size="1" value="{!selectedName}">
+                <apex:selectOptions value="{!listNameSel}" />
+            </apex:selectList> 
+            <apex:commandButton value="Search" action="{!wrapLists}" rerender="block" style="margin:12px"/>
+        </apex:pageBlock>
+        <apex:pageBlock title="Pending Approvals" id="block">
+              <style>
+                .rg1 {background-color: lightblue; color:black; background-image:none; text-align=center;}
+                .rg2 {background-color: white; color:black; background-image:none; text-align=center;}
+                .SelectlistStyle {background-color: lightblue; color:black; font-size: 100%; background-image:none;text-align=center; }
+                .myClass{
+                color:white !important;
+                background: #66b3ff !important;
+                  text-align:center;
+                }
+                  th{
+                  text-align:center!important;
+                  background:#288fb0!important;
+                  } 
+                  td{
+                  text-align:center!important;
+                  }
+               
+            </style>
+            <apex:pageBlockTable value="{!wrapList}" var="wrap" border="1" cellpadding="2" cellspacing="1" rowClasses="rg1,rg2">
+               
+                <apex:column >
+                    <apex:facet name="header">Status</apex:facet> 
+                    <apex:outputText value="{!wrap.status}"></apex:outputText>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">Object Name</apex:facet> 
+                    <apex:outputText value="{!wrap.ObjectName}"></apex:outputText>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">ComponentNumber</apex:facet> 
+                    <apex:outputText value="{!wrap.ComponentNumber}"></apex:outputText>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">ReportReferalNumber</apex:facet> 
+                    <apex:outputlink value="/{!wrap.ReportReferalId}">{!wrap.ReportReferalNumber}</apex:outputlink>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">SKUReference</apex:facet> 
+                    <apex:outputText value="{!wrap.SKUReference}"></apex:outputText>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">AssignedUser</apex:facet> 
+                    <apex:outputText value="{!wrap.AssignedUser}"></apex:outputText>
+                </apex:column>
+                <apex:column >
+                    <apex:facet name="header">SubmitDate</apex:facet> 
+                    <apex:outputText value="{!wrap.SubmitDate}"></apex:outputText>
+                </apex:column>
+                
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+    
+</apex:page>

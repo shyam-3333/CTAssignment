@@ -1,0 +1,389 @@
+<apex:page renderas="pdf" controller="QC_TestFindingsReport" standardStylesheets="false" showHeader="false" doctype="html-5.0" id="pge">
+    <head>
+<style>
+@page {
+size:landscape;
+}
+</style> 
+</head>
+   <c:StylingPdfContent type="header" >  
+        <div style="page-break-after:always;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;text-align:right;">Page <span class="pagenumber" /> of <span class="pagecount"/></div>
+        
+    </c:StylingPdfContent>
+
+    <c:StylingPdfContent type="footer">
+          <div align="left" style="color:#808080;">
+              <!--Product Approval : {!component.Final_Verdict__c}<br></br>-->
+              Product Approval : &nbsp;<apex:outputtext value="{!component.Final_Verdict__c}"  style="color:{!IF(component.Final_Verdict__c == 'Accept', 'green', 'red')}"/> <br></br>
+              Inspected : {!component.Owner.name}  
+          </div>
+          
+    </c:StylingPdfContent>
+    
+    <c:StylingPdfContent type="footer1">
+          <div align="center" style="color:#808080;"><br></br>Checked : {!l1l2UserName.L1_Approver__r.Name}</div>
+    </c:StylingPdfContent>
+    
+     <c:StylingPdfContent type="footer2">
+         <div align="right" style="color:#808080;"><br></br>Approved : {!l1l2UserName.L2_Approver__r.Name}</div>
+    </c:StylingPdfContent>
+
+    <div style="font-family:Arial,Helvetica,sans-serif; font-size:14px; font-weight:bold;text-align:center;">Reliability Test Report - {!component.Name__c}</div><br/>
+    <apex:pageMessages />    
+ 
+    <!--Component data -->
+    <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1" style="font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;"> 
+      <div class="displayInLine marginLR10" style="display:{!if(component.Parent__c == null && component.Name__c !='Full-Watch' && component.Name__c !='Watch-Head','block','none')}"> 
+        <tr >
+            <td width="50%" style="color:#808080">SKU Reference</td>
+            <td width="50%" style="color:#808080">{!component.SKU_Reference__c}</td>
+       </tr>
+       </div>
+       <div class="displayInLine marginLR10" style="display:{!if(component.Report_Ref_Number__c != null,'block','none')}">
+           <tr >
+                <td width="50%" style="color:#808080">Report Reference Number</td><td width="50%" style="color:#808080">{!component.Report_Ref_Number__c}</td>
+           </tr>
+       </div>
+       <div class="displayInLine marginLR10" style="display:{!if(component.Report_Ref_Number__c == null,'block','none')}">
+           <tr>
+                <td width="50%" style="color:#808080">Report Reference Number</td><td width="50%" style="color:#808080">{!component.Parent__r.Report_Ref_Number__c}</td>
+           </tr>
+       </div>
+       <div class="displayInLine marginLR10" style="display:{!if(component.Name__c != 'Battery' && component.Name__c != 'Packaging' && component.Name__c != 'Module','block','none')}">  --> 
+           <tr>
+                <td width="50%" style="color:#808080">Watch Variant</td><td width="50%" style="color:#808080">{!component.Watch_variant__c}</td>     
+            </tr>
+       </div>
+       
+       <!-- <tr rowspan="2"> -->
+<!--            <th align="center" colspan="6">Reliability Test Certificate</th> -->
+<!--        </tr> -->
+
+    </table>
+    <br/>
+    
+    <!--Test Findings data-->
+    <apex:panelGroup rendered="{!component.Name__c != 'Battery' && component.Name__c != 'Packaging' && component.Name__c != 'Module'}">
+         <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1" style="font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;">    
+                <tr>
+                    <td style="color:#2CA8F5">Test Name</td>
+                    <td style="color:#2CA8F5">Specification</td>
+                    <td style="color:#2CA8F5">UOM</td>
+                    <td style="color:#2CA8F5">Observation</td>  
+                    <td style="color:#2CA8F5">Remarks</td> 
+                    <td style="color:#2CA8F5">Conclusion</td>
+                </tr>
+                
+                <apex:repeat value="{!testParamList}" var="tp">
+                    <tr>
+                        <td> 
+                            <apex:outputText value="{!tp.testName}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!tp.specification}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!tp.uom}" />
+                        </td>
+                       
+                        <td>
+                            <apex:outputText value="{!tp.observation}" /> 
+                        </td>
+                       <td>    
+                            <apex:outputText value="{!tp.commentAndRemarks}" />
+                        </td>
+                         <td>    
+                            <apex:outputText value="{!tp.verdict}" />
+                        </td> 
+                         
+                   </tr>
+                </apex:repeat>
+          </table>  
+    </apex:panelGroup>  
+  <div>  
+    <!-- Test Findings for Battery component -->    
+    <apex:panelGroup rendered="{!component.Name__c == 'Battery'}">
+       <table cellspacing="0" cellpadding="3" align="left" border="1"  width="100%" style="font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;">   
+                <apex:repeat value="{!batteryVisualInception}" var="visInspect" >
+                    <tr>
+                        <td>
+                            <b>1.<apex:outputText value="{!visInspect.testName}" /></b>
+                        </td>
+                        <td colspan="2">
+                          <apex:outputText value="{!visInspect.observation}" />
+                        </td>
+                        
+                        <td >
+                            <apex:outputText value="{!visInspect.commentAndRemarks}" />
+                        </td>
+                        <td><apex:outputText value="{!visInspect.verdict}" /></td>
+                    </tr> 
+                </apex:repeat>       
+                <tr>
+                    <td><b>2.Capacity</b></td>
+                    <td><b>Specification</b></td>
+                    <td><b>Differential %</b></td>
+                   <td><b>Remarks</b></td>
+                    <td><b>Conclusion</b></td>
+                    
+                </tr>                
+                <apex:repeat value="{!batteryTestParamList}" var="batteryFind">
+                    <tr>
+                        <td><apex:outputText value="{!batteryFind.testName}" /></td>
+                        <td><apex:outputText value="{!batteryFind.specification}" /></td>
+                        <td><apex:outputText value="{!batteryFind.DeterminedVal}" /></td>
+                        <td><apex:outputText value="{!batteryFind.commentAndRemarks}" /></td>
+                        <td><apex:outputText value="{!batteryFind.verdict}" /></td>
+                        
+                    </tr>
+                 
+                </apex:repeat>
+          </table>
+       
+          <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1" style="font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;">              
+        
+                <tr>
+                    <td colspan="7"><b>3.Leakage Test</b></td>
+                </tr>
+                <tr>
+                    <td width="20%"><b>Characteristics</b></td>
+                    <td width="10%"><b></b></td>
+                    <td width="30%" colspan="2"><b>Grade</b></td>
+                    <td width="20%"><b>Observation</b></td>
+                    <td width="20%"><b>Remarks</b></td>
+                    <td width="20%"><b>Conclusion</b></td>
+                </tr>
+              <apex:repeat value="{!batteryLeakage}" var="modTP">
+                <apex:panelGroup rendered="{!(modTP.acceptCriteria=='Leakage Test')}"> 
+                   <tr >
+                         <td width="20%" >
+                             <div style="display:{!if(modTP.UOM == 'S1' && modTP.testName =='Non-Defective Battery','block','none')}">     
+                                     <apex:outputtext value="{!modTP.testName}"  />  
+                             </div>
+                             <div style="display:{!if(modTP.UOM == 'C1' && modTP.testName =='Defective Battery','block','none')}">     
+                                     <apex:outputtext value="{!modTP.testName}"  />  
+                             </div>
+                             <div style="display:{!if(modTP.UOM == 'L1' && modTP.testName =='Leaks','block','none')}">     
+                                     <apex:outputtext value="{!modTP.testName}"  />  
+                             </div>
+                         </td>
+                         <td width="10%">
+                             <div style="display:{!if(modTP.UOM == 'S1' && modTP.testName =='Non-Defective Battery','block','none')}">     
+                                     Salting  
+                             </div>
+                             <div style="display:{!if(modTP.UOM == 'C1' && modTP.testName =='Defective Battery','block','none')}">     
+                                     Creep
+                             </div>
+                             <div style="display:{!if(modTP.UOM == 'L1' && modTP.testName =='Leaks','block','none')}">     
+                                     Leaks
+                             </div>
+                         </td>
+                         <td width="10%" >{!modTP.UOM}</td>
+                         <td width="20%" >{!modTP.Specification}</td>
+                         <td width="20%" ><apex:outputText value="{!modTP.observation}" /></td>
+                         <td width="20%"><apex:outputText value="{!modTP.commentAndRemarks}" /></td> 
+                         
+                         <td width="20%"><apex:outputText value="{!modTP.verdict}" /></td> 
+                    </tr>
+               </apex:panelGroup>
+              </apex:repeat>
+          </table>  
+    </apex:panelGroup>   
+     </div> 
+    
+    <!-- Test Findings for Packaging -->
+     <apex:panelGroup rendered="{!component.Name__c == 'Packaging'}">
+          <table width="100%" cellspacing="0" cellpadding="2" align="left" border="1" style="font-family:Arial,Helvetica,sans-serif;font-size:9pt;color:#808080;">       
+                <tr>
+                    <td><b>Test Parameter</b></td>
+                    <td><b>Test Condition</b></td>
+                    <td><b>Test Specification</b></td>
+                    <td><b>Acceptance Criteria</b></td>
+                    <td><b>Observation</b></td>
+                    <td><b>Remarks</b></td>
+                    <td><b>Conclusion</b></td>
+                    
+                </tr>                
+                <apex:repeat value="{!testParamList}" var="packagingFind">
+                    <tr>
+                        <td><apex:outputText value="{!packagingFind.testName}" /></td>
+                        <td><apex:outputText value="{!packagingFind.UOM}" /></td>
+                        <td><apex:outputText value="{!packagingFind.specification}" /></td>
+                        <td><apex:outputText value="{!packagingFind.acceptCriteria}" /></td>
+                        <td><apex:outputText value="{!packagingFind.observation}" /></td>
+                        <td><apex:outputText value="{!packagingFind.commentAndRemarks}" /></td>
+                        <td><apex:outputText value="{!packagingFind.verdict}" /></td>
+                        
+                    </tr>
+                </apex:repeat> 
+           </table>     
+     </apex:panelGroup> 
+     <div>
+      <!-- Test Findings for Module -->
+     <br/><br/><apex:panelGroup rendered="{!component.Name__c == 'Module'}">
+            
+              
+     <table width="100%" cellspacing="0" cellpadding="2" align="left" border="1" style="font-family:Arial,Helvetica,sans-serif;font-size:9pt;color:#808080;"  >
+               <apex:repeat value="{!moduleGeneralObservation}" var="visInspect" >
+                    <tr>
+                        <td colspan="3">
+                            <b><apex:outputText value="{!visInspect.testName}" /></b></td>
+                        <td colspan="5">
+                            <apex:outputText value="{!visInspect.observation}" /></td>
+                       
+                        <td >
+                            <apex:outputText value="{!visInspect.commentAndRemarks}" /></td>
+                        <td>
+                            <apex:outputText value="{!visInspect.verdict}" /></td>
+                    </tr> 
+                </apex:repeat>    
+
+              <tr>
+                  <th >Test Prameters</th>
+                  <th >Test Conditions</th>
+                  <th >Evaluation Criteria</th>
+                  <!-- <th colspan="5" >Initial</th>
+                  <th colspan="5" >After</th> -->
+                  <th colspan="5" >Observation</th>
+                  <th >Remarks</th>
+                   <th >Conclusion</th>
+                 
+              </tr>
+           <tr>
+                  <td ></td>
+                  <td ></td>  
+                  <td ></td> 
+                  <!--<td >1</td>
+                  <td >2</td>
+                  <td >3</td>
+                  <td >4</td>
+                  <td >5</td>
+                  <td >1</td>
+                  <td >2</td>
+                  <td >3</td>
+                  <td >4</td>
+                  <td >5</td>-->
+                  <td >1</td>
+                  <td >2</td>
+                  <td >3</td>
+                  <td >4</td>
+                  <td >5</td>
+                  <td ></td>
+                  <td ></td>
+              </tr>
+             <apex:repeat value="{!testWrapModulelist}" var="modTP" id="modOutputRepeat">
+                
+              <tr>
+                  <td > 
+                        <div style="display:{!if(modTP.isManual && modTP.isParent,'block','none')}">     
+                              <apex:outputtext value="{!modTP.Name}" />  
+                        </div> 
+                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='1 Hour to 7 Hours and 3 Cycles to 6 Cycles','block','none')}">     
+                              <apex:outputtext value="{!modTP.Name}" />  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 0º C Duration : 24 Hour','block','none')}">     
+                              <apex:outputtext value="{!modTP.Name}"/>  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 55º C Duration : 24 Hour','block','none')}">     
+                              <apex:outputtext value="{!modTP.Name}" />  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 50˚C RH : 95% Duration : 24 Hour in BC opened condition','block','none')}">     
+                              <apex:outputtext value="{!modTP.Name}" />  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose' && modTP.UOM=='Frequency : 15 Hz to 150 Hz G Force : 5G Direction :  X, Y & Z axis Duration : 20 Minute','block','none')}">     
+                              <apex:outputtext value="{!modTP.Name}" />  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage - During the test' ,'block','none')}">     
+                              <apex:outputtext value="{!modTP.Name}" />  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose' && modTP.UOM=='Height : 1 Meter Base : wooden board','block','none')}">     
+                              <apex:outputtext value="{!modTP.Name}"/>  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose Shift in Time Rate : 0.5S/D Movt. CC:0.5µA Time Variation  3H : ±5Sec / 2H : ±3Min' && modTP.UOM=='Shock : 100g Direction : 6 directions (+X,-X,+Y,-Y,+Z&-Z)  Duration : 2msec No. Of Stroke :','block','none')}">     
+                              <apex:outputtext value="{!modTP.Name}"  />  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose Shift in Time Rate : 0.5S/D Movt. CC:0.5µA Time Variation  3H : ±5Sec / 2H : ±3Min' && modTP.UOM=="1st Shock - Against the Case & Parallel to the plane of the Watch on 9'0 Clock Side 2nd Shock - Against the MG & perpendicular to the Plane of the Watch",'block','none')}">     
+                              <apex:outputtext value="{!modTP.Name}"  />  
+                        </div>
+                        <div style="display:{!if(modTP.UOM =='Hours','block','none')}">     
+                              <apex:outputtext value="{!modTP.Name}" />  
+                        </div>
+                        <div style="display:{!if(modTP.UOM=='No. of  Actuation','block','none')}">     
+                              <apex:outputtext value="{!modTP.Name}" />  
+                        </div>  
+                  </td> 
+                  <td>  
+                        <div style="display:{!if(modTP.isManual && modTP.isParent,'block','none')}">     
+                              <apex:outputtext value="{!modTP.UOM}" />  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='1 Hour to 7 Hours and 3 Cycles to 6 Cycles','block','none')}">     
+                              <apex:outputtext value="{!modTP.UOM}"  />  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 0º C Duration : 24 Hour','block','none')}">     
+                              <apex:outputtext value="{!modTP.UOM}"  />  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 55º C Duration : 24 Hour','block','none')}">     
+                              <apex:outputtext value="{!modTP.UOM}"  />  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage' && modTP.UOM=='Temp : 50˚C RH : 95% Duration : 24 Hour in BC opened condition','block','none')}">     
+                              <apex:outputtext value="{!modTP.UOM}"  />  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose' && modTP.UOM=='Frequency : 15 Hz to 150 Hz G Force : 5G Direction :  X, Y & Z axis Duration : 20 Minute','block','none')}">     
+                              <apex:outputtext value="{!modTP.UOM}"  />  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage - During the test' ,'block','none')}">     
+                              <apex:outputtext value="{!modTP.UOM}"  />  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose' && modTP.UOM=='Height : 1 Meter Base : wooden board','block','none')}">     
+                              <apex:outputtext value="{!modTP.UOM}"  />  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose Shift in Time Rate : 0.5S/D Movt. CC:0.5µA Time Variation  3H : ±5Sec / 2H : ±3Min' && modTP.UOM=='Shock : 100g Direction : 6 directions (+X,-X,+Y,-Y,+Z&-Z)  Duration : 2msec No. Of Stroke :','block','none')}">     
+                              <apex:outputtext value="{!modTP.UOM}" />  
+                        </div>
+                        <div style="display:{!if(modTP.Specification=='No Stoppage / No Component loose Shift in Time Rate : 0.5S/D Movt. CC:0.5µA Time Variation  3H : ±5Sec / 2H : ±3Min' && modTP.UOM=="1st Shock - Against the Case & Parallel to the plane of the Watch on 9'0 Clock Side 2nd Shock - Against the MG & perpendicular to the Plane of the Watch",'block','none')}">     
+                              <apex:outputtext value="{!modTP.UOM}"  />  
+                        </div>
+                        <div style="display:{!if(modTP.UOM =='Hours','block','none')}">     
+                              <apex:outputtext value="{!modTP.UOM}"  />  
+                        </div>
+                        <div style="display:{!if(modTP.UOM=='No. of  Actuation','block','none')}">     
+                              <apex:outputtext value="{!modTP.UOM}" />  
+                        </div>
+                  </td>
+                  <apex:panelGroup rendered="{!(modTP.Specification!='Test observation')&&(modTP.Specification !='24 Hours/Color Change')&&(modTP.Specification!='3000 Actuation') && (!modTP.isLast)}">
+                      <td><apex:outputtext value="{!modTP.Specification}"/></td>
+                      <!--<td><apex:outputtext value="{!modTP.initial1}"   /></td>
+                      <td><apex:outputtext value="{!modTP.initial2}"    /></td>
+                      <td><apex:outputtext value="{!modTP.initial3}"    /></td>
+                      <td><apex:outputtext value="{!modTP.initial4}"    /></td>
+                      <td><apex:outputtext value="{!modTP.initial5}"   /></td>
+                      <td><apex:outputtext value="{!modTP.afterTest1}"  /></td>
+                      <td><apex:outputtext value="{!modTP.afterTest2}" /></td>
+                      <td><apex:outputtext value="{!modTP.afterTest3}" /></td>
+                      <td><apex:outputtext value="{!modTP.afterTest4}" /></td>
+                      <td><apex:outputtext value="{!modTP.afterTest5}"  /></td>-->
+                      <td><apex:outputtext value="{!modTP.observation1}" /></td>
+                      <td><apex:outputtext value="{!modTP.observation2}" /></td>
+                      <td><apex:outputtext value="{!modTP.observation3}"/></td>
+                      <td><apex:outputtext value="{!modTP.observation4}"/></td>
+                      <td><apex:outputtext value="{!modTP.observation5}" /></td>  
+                      
+                      <td><apex:outputtext value="{!modTP.commentsandRemarks}" /></td>    
+                      <td><apex:outputtext value="{!modTP.conclusion}" /></td>                 
+                 </apex:panelGroup>
+                 <!-- below row rendered only with specification  Test observation,24 Hours/Color Change,3000 Actuation-->
+                 <apex:panelGroup rendered="{!(modTP.Specification=='Test observation') || (modTP.Specification =='24 Hours/Color Change')||(modTP.Specification=='3000 Actuation') || (modTP.isLast)}">
+                      <td ><apex:outputtext value="{!modTP.Specification}"/></td>
+                      <!--<td colspan="5"><apex:outputtext value="{!modTP.initTestObser}"/></td>
+                      <td colspan="5"><apex:outputtext value="{!modTP.afterTestObser}"/></td>-->
+                      <td colspan="5"><apex:outputtext value="{!modTP.observation}"/></td>
+                      
+                      <td><apex:outputtext value="{!modTP.commentsandRemarks}" /> </td> 
+                      <td><apex:outputtext value="{!modTP.conclusion}" /> </td>
+                     </apex:panelGroup>
+              </tr>
+              </apex:repeat>
+          </table>      
+
+               </apex:panelGroup></div>
+</apex:page>

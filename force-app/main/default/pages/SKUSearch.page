@@ -1,0 +1,91 @@
+<apex:page Controller="SKUSearchController">
+    <html>
+        <body>
+            <apex:form >
+                <apex:inputText value="{!searchKey}" size="30" label="Enter PO Number"/>
+                &nbsp;
+                <apex:commandButton value="Search records" action="{!searchmethod}"/>
+                &nbsp;
+                <apex:commandButton value="Clear records" action="{!clear}"/>
+                &nbsp;
+                <apex:commandButton value="Download To Excel" action="{!excelDownload}"/> 
+                &nbsp;
+                <apex:pageBlock id="details" title="{!seachResult} : {!totalRecs}" >
+                        <apex:pageBlockTable value="{!prodList}" var="a" rendered="{!prodList.size!=0}">
+                            <apex:column value="{!a.SKU_Code__c}" ondblclick="openRecordView('{!a.Id}')"/>
+                            <apex:column value="{!a.Product_Category_Taneira__c}"/>
+                            <apex:column value="{!a.vendor_custom__r.name}"/>
+                            <apex:column value="{!a.Name}"/> 
+                            <apex:column value="{!a.Proc_Type__c}"/>
+                            <apex:column value="{!a.Proc_Source__c}"/>
+                            <apex:column value="{!a.Cluster__c}"/>
+                            <apex:column value="{!a.PO_Number__c}"/>
+                            <apex:column value="{!a.Offline_Username__c}"/>
+                            <apex:column value="{!a.Suggested_MRP__c}"/>
+                            <apex:column value="{!a.Buyers_Cost__c}"/>
+                            <apex:column value="{!a.Procurement_Cost__c}"/>
+                            <apex:column value="{!a.Material_Wrap__c}" rendered="{!prodCategory != 'USKD' && prodCategory != 'SSKD'}"/>
+                            <apex:column value="{!a.Taneira_Material_Weft__c}" rendered="{!prodCategory != 'USKD' && prodCategory != 'SSKD'}"/>
+                            <apex:column value="{!a.Dupatta_Fabric__c}" rendered="{!IF(prodCategory == 'USKD' || prodCategory == 'SSKD', TRUE, FALSE)}"/>
+                            <apex:column value="{!a.Kurta_Fabric__c}" rendered="{!IF(prodCategory == 'USKD' || prodCategory == 'SSKD', TRUE, FALSE)}"/>
+                            <apex:column value="{!a.Salwar_Fabric__c}" rendered="{!IF(prodCategory == 'USKD' || prodCategory == 'SSKD', TRUE, FALSE)}"/>
+                            <apex:column value="{!a.Design_Story__c}"/>
+                            <apex:column value="{!a.Story_1__c}"/>
+                            <apex:column value="{!a.Story_2__c}"/>
+                            <apex:column value="{!a.Design_Description__c}"/>
+                            <apex:column value="{!a.Base_Colour__c}"/>
+                            <apex:column value="{!a.Detailed_Colour__c}"/>
+                            <apex:column value="{!a.Quantity__c}"/>
+                            <apex:column value="{!a.Fabric__c}"/>
+                            <apex:column value="{!a.FabricR__c}" rendered="{!prodCategory != 'USKD' && prodCategory != 'SSKD'}"/>
+                            <apex:column value="{!a.Zari_Type__c}"/>
+                            <apex:column value="{!a.Loom__c}"/>
+                            <apex:column value="{!a.Occasion__c}"/>
+                            <apex:column value="{!a.Blouse_Size__c}"/>
+                            <apex:column value="{!a.Blouse_Type__c}"/>
+                            <apex:column value="{!a.Workmanship__c}"/>
+                            <apex:column value="{!a.CraftR__c}"/>
+                            <apex:column value="{!a.Fold__c}"/>
+                            <apex:column value="{!a.Handloommark__c}"/>
+                            <apex:column value="{!a.Collection__c}"/>
+                            <apex:column value="{!a.Body_Pattern__c}"/>
+                            <apex:column value="{!a.Body_Des_Element__c}"/>
+                            <apex:column value="{!a.Body_Des_Material__c}"/>
+                            <apex:column value="{!a.Body_Des_Density__c}"/>
+                            <apex:column value="{!a.Border_Pattern__c}"/>
+                            <apex:column value="{!a.Border_Des_Element__c}"/>
+                            <apex:column value="{!a.Border_Des_Material__c}"/>
+                            <apex:column value="{!a.Border_Size__c}"/>
+                            <apex:column value="{!a.Pallu_Pattern__c}"/>
+                            <apex:column value="{!a.Pallu_Design__c}"/>
+                            <apex:column value="{!a.Pallu_Des_Material__c}"/>
+                            <apex:column value="{!a.Pallu_Des_Density__c}"/>
+                            <apex:column value="{!a.Pallu_Size__c}"/>
+                            <apex:column value="{!a.Comments__c}"/>
+                            <apex:column value="{!a.vendor_custom__r.Vendor_Code__c}"/>
+                            <apex:column value="{!a.Warehouse_Stock__c}"/>
+                            <apex:column value="{!a.Sold_Stock__c}"/>
+                            <apex:column value="{!a.Store_Stock__c}"/>
+                            <apex:column value="{!a.Order_Id__c}"/>
+                            <apex:column value="{!a.QR_CODE__c}"/>
+                        </apex:pageBlockTable>
+                        <apex:pageblockButtons >
+                            <!--<apex:commandButton value="First Page" rerender="details" action="{!FirstPage}" disabled="{!prev}" />-->
+<apex:commandButton value="Previous" rerender="details" action="{!previous}" disabled="{!prev}"/>
+<apex:commandButton value="Next" rerender="details" action="{!next}" disabled="{!nxt}"/>
+<!--<apex:commandButton value="Last Page" rerender="details" action="{!LastPage}" disabled="{!nxt}"/>-->
+</apex:pageblockButtons>
+                </apex:pageBlock>
+            </apex:form>
+        </body>
+    </html>
+    <script>
+    function openRecordView(proId) {
+        if ((typeof sforce != 'undefined') && sforce && (!!sforce.one)) {
+            sforce.one.navigateToSObject(proId);
+        } else {
+            window.open('/' + proId);
+        }
+    }
+    </script>
+</apex:page>

@@ -1,0 +1,16 @@
+<apex:page showChat="false" sidebar="false" standardController="RangePlan_Master__c"> 
+
+    <apex:includeLightning />    
+    <div id="LightningComponentid"/>    
+    <script>
+    $Lightning.use("c:RP_RangePlanUploadApp", function() {
+        $Lightning.createComponent("c:RP_RangePlanUploadComponent",
+          { 
+          },
+          "LightningComponentid",
+          function(cmp) {
+             console.log('LWC Componenet added in VF page');
+          });
+    });
+    </script>
+</apex:page>

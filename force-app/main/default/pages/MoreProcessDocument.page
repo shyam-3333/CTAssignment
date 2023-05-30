@@ -1,0 +1,127 @@
+<apex:page controller="moreProcessDocument" action="{!sessionManagement}" showHeader="fasle" sidebar="fasle" standardStylesheets="true" docType="html-5.0">
+  <head>
+        <title>Keyboard navigation</title>
+        <meta charset="utf-8"/>
+        <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.common.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.rtl.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.blueopal.min.css')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/js/jquery.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/js/kendo.web.min.js')}"/>
+        
+    </head>
+    
+    <style>
+        body{
+            background: url('{!$Resource.Login}') no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;    
+        
+        }
+        #documents{
+            background: url('{!$Resource.Login}') no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            margin-left:0.5%;
+            margin-right:0.5%;
+            font-family:Arial;
+        }
+        .k-header{
+            font-weight:bold !important;
+            font-family:Arial !important;
+        }
+        a{
+            color:#35C7E1;
+        }
+    </style>
+    
+    <script>
+        
+        function displayDocumetnts(atttId){
+            window.open( "/NewLogin/servlet/servlet.FileDownload?file="+atttId);
+        }
+        
+    </script>
+    
+    <script>
+        
+        var jsonData = {!documentLinks};  
+            
+                
+            $(document).ready(function () {
+                     
+                    var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+                        dataSource = new kendo.data.DataSource({
+                            transport: {
+                                read: function(e) {
+                                   dataSource.sync();
+                                   e.success(jsonData)  
+                                },
+                                update: function(e){
+                                    var StringifiedData = JSON.stringify(e.data);
+                                    alert(StringifiedData);
+                                    
+                                },
+                                create: {
+                                    url: crudServiceBaseUrl + "/Products/Create",
+                                    dataType: "jsonp"
+                                },
+                                parameterMap: function(options, operation) {
+                                    if (operation !== "read" && options.models) {
+                                        return {models: kendo.stringify(options.models)};
+                                    }
+                                }
+                            },
+                            batch: true,
+                            pageSize: 15,
+                            schema: {
+                                data: function(response){
+                                    return response
+                                }
+                            }
+                        });
+
+                    $("#documents").kendoGrid({
+                        dataSource: dataSource,
+                        scrollable: true,
+                        sortable: true,
+                        filterable: true,
+                        columnMenu: true,
+                        
+                        pageable: {
+                            input: true,
+                            numeric: true,
+                            previousNext:false
+                        },
+                        
+                        columns: [
+                           
+                            { field: "variantName", title: "Variant", width: "100px"},
+                            { field: "WIName", title: "Work Instructions",template:"# if( WIName!= '' && WIName!=null) {#<a   onClick = 'displayDocumetnts(\"${WIId}\");'  title='Click to see the document' style='cursor:pointer'><b><u>${WIName}</u></b></a> #} #", width: "100px"},
+                            { field: "DDName", title: "Do\'s & Don\'t\'s",template:"# if( DDName!= '' && DDName!=null) {#<a   onClick = 'displayDocumetnts(\"${DDId}\");'  title='Click to see the document' style='cursor:pointer'><b><u>${DDName}</u></b></a> #} #", width: "100px"},
+                            { field: "TSName", title: "Troubleshooting",template:"# if( TSName!= '' && TSName!=null) {#<a   onClick = 'displayDocumetnts(\"${TSId}\");'  title='Click to see the document' style='cursor:pointer'><b><u>${TSName}</u></b></a> #} #", width: "100px"},
+                            { field: "PIName", title: "Packing Info",template:"# if( PIName!= '' && PIName!=null) {#<a   onClick = 'displayDocumetnts(\"${PIId}\");'  title='Click to see the document' style='cursor:pointer'><b><u>${PIName}</u></b></a> #} #", width: "100px"},
+                            { field: "IBDName", title: "IBD",template:"# if( IBDName!= '' && IBDName!=null) {#<a   onClick = 'displayDocumetnts(\"${IBDId}\");'  title='Click to see the document' style='cursor:pointer'><b><u>${IBDName}</u></b></a> #} #", width: "100px"},
+                           
+                        ],
+                        editable: "inline", 
+                    });
+                });
+    
+    </script>
+    
+    <body>
+    
+        <apex:image value="{!$Resource.New_titan_logo}"   height="80px" width="80px"/>
+        <div id="documents"/>
+        
+        <div style="position: relative">
+            <p style="position: relative; bottom: 0; width:100%; text-align: center; font-family:Arial;"> Copyright © 2014 Under Titan Company. All Rights Reserved. No imagery or logos contained within this site may be used without the express permission of Titan Company</p>
+        </div>
+        
+    </body>
+
+</apex:page>

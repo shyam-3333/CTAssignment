@@ -1,0 +1,540 @@
+<apex:page controller="BD_Reports_NewLead1" extensions="BD_Reports_ExistingAccounts1" contentType="application/vnd.ms-excel#BDReport.xls" cache="true">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    </head>
+    <center><font size="5"><b>New Lead</b></font></center>
+    <apex:outputPanel rendered="{!NewLeadRecords.size!=0}">
+        <table>
+            <table style="border:1px solid black; width:100%;">
+                <tr>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Lead Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Industry</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Company</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">City</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">State</th> 
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Region</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Lead First Contact Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Lead Description</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Remarks</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Competitor Info</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Salesforce Link</th>
+                </tr>
+            </table>
+            <apex:repeat value="{!NewLeadRecords}" var="NewLd">
+                <table style="border:1px solid black;">
+                    <tr style="border:1px solid black; border-collapse:collapse;width:100%;" >
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!NewLd.name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!NewLd.Industry}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!NewLd.Company}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!NewLd.City}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!NewLd.State}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!NewLd.Region__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!NewLd.Lead_First_Contact_Date__c}" /> 
+                        </apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!NewLd.Description}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!NewLd.Remarks__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!NewLd.Competitor_Info__c }"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputLink value="/{!NewLd.Id}">Salesforce Link</apex:outputLink></td>
+                    </tr>
+                </table>
+            </apex:repeat>   
+        </table>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!NewLeadRecords.size=0}">
+        <center><font color="red"><b>No Records Found..!!</b></font></center>
+    </apex:outputPanel>
+    <center><font size="5"><b>New Account</b></font></center>
+    <apex:outputPanel rendered="{!IF(hasValue == true ,true,false)}">
+        <table>
+            <table style="border:1px solid black; width:100%;">
+                <tr>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Account Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Industry</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Contact</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">City</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">State</th> 
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Region</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Product Portfolio</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Lead Source</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Description</th> 
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Competitor Info</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Salesforce Link</th>
+                </tr>
+            </table>
+            <apex:repeat value="{!contactMap}" var="NewAcc">
+                <table style="border:1px solid black;">
+                    <tr style="border:1px solid black; border-collapse:collapse;width:100%;">
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!contactMap[NewAcc].Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!contactMap[NewAcc].Industry}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!NewAcc}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!contactMap[NewAcc].BillingCity}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!contactMap[NewAcc].BillingState}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!contactMap[NewAcc].Region_Picklist__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!contactMap[NewAcc].Product_Category__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!contactMap[NewAcc].Lead_Source__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!contactMap[NewAcc].Description}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!contactMap[NewAcc].Competitor_Info__c }"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputLink value="/{!contactMap[NewAcc].Id}">Salesforce Link</apex:outputLink></td>
+                                                                           
+                    </tr>                                                      
+                        
+                </table>
+            </apex:repeat>   
+        </table>
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!IF(hasValue == false ,true,false)}">
+        <center><font color="red"><b>No Records Found..!!</b></font></center>
+    </apex:outputPanel>
+    
+    
+    <center><font size="5"><b>Existing Accounts/Customers</b></font></center>
+    <apex:outputPanel rendered="{!ExistingAccount.size!=0}">
+        <table>
+            <table style="border:1px solid black; width:100%;">
+                <tr>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Account Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Industry</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Contact</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">City</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">State</th> 
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Region</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Product Portfolio</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Lead Source</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Activity Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Due Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Description</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Competitor Info</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Salesforce Link</th>
+                </tr>
+            </table>
+            <apex:repeat value="{!ExistingAccount}" var="ExAcc">
+                <table style="border:1px solid black;">
+                    <tr style="border:1px solid black; border-collapse:collapse;width:100%;" >
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Industry}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.BillingCity}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.BillingState}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Region_Picklist__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Product_Category__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Lead_Source__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Subject}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!ExAcc.ActivityDate}" /> 
+                        </apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Description}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Competitor_Info__c }"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputLink value="/{!ExAcc.Account.Id}">Salesforce Link</apex:outputLink></td>
+                    </tr>
+                </table>
+            </apex:repeat>   
+        </table>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!ExistingAccount.size=0}">
+        <center><font color="red"><b>No Records Found..!!</b></font></center>
+    </apex:outputPanel>
+    <center><font size="5"><b>Global Accounts/Customers</b></font></center>
+    <apex:outputPanel rendered="{!GlobalAccount.size!=0}">
+        <table>
+            <table style="border:1px solid black; width:100%;">
+                <tr>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Account Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Industry</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Contact</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">City</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">State</th> 
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Region</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Product Portfolio</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Lead Source</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Activity Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Due Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Description</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Competitor Info</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Salesforce Link</th>
+                </tr>
+            </table>
+            <apex:repeat value="{!GlobalAccount}" var="ExAcc">
+                <table style="border:1px solid black;">
+                    <tr style="border:1px solid black; border-collapse:collapse;width:100%;" >
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Industry}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ContactName}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.BillingCity}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.BillingState}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Region_Picklist__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Product_Category__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Lead_Source__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Subject}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!ExAcc.ActivityDate}" /> 
+                        </apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Description}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Competitor_Info__c }"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputLink value="/{!ExAcc.Account.Id}">Salesforce Link</apex:outputLink></td>
+                    </tr>
+                </table>
+            </apex:repeat>   
+        </table>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!GlobalAccount.size=0}">
+        <center><font color="red"><b>No Records Found..!!</b></font></center>
+    </apex:outputPanel>
+    
+    <center><font size="5"><b>Visits-Existing Customers</b></font></center>
+    <apex:outputPanel rendered="{!VisitExistingCust.size!=0}">
+        <table>
+            <table style="border:1px solid black; width:100%;">
+                <tr>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Account Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Industry</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Customer Participant 1</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">City</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">State</th> 
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Region</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Visit Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Visit Agenda</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Conclusion Notes</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Salesforce Link</th>
+                </tr>
+            </table>
+            <apex:repeat value="{!VisitExistingCust}" var="ExAcc">
+                <table style="border:1px solid black;">
+                    
+                    <tr style="border:1px solid black; border-collapse:collapse;width:100%;" >
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account__r.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account__r.Industry}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Customer_Participant1__r.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account__r.BillingCity}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account__r.BillingState}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account__r.Region_Picklist__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!ExAcc.Date_Time_of_Visit__c}" /> 
+                        </apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Visit_Agenda__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Conclusion_Notes__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputLink value="/{!ExAcc.Account__r.Id}">Salesforce Link</apex:outputLink></td>
+                    </tr>
+                </table>
+            </apex:repeat>   
+        </table>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!VisitExistingCust.size=0}">
+        <center><font color="red"><b>No Records Found..!!</b></font></center>
+    </apex:outputPanel>
+    
+    <center><font size="5"><b>Visits-Existing Account</b></font></center>
+    <apex:outputPanel rendered="{!VisitExistingAccount.size!=0}">
+        <table>
+            <table style="border:1px solid black; width:100%;">
+                <tr>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Account Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Industry</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Customer Participant 1</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">City</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">State</th> 
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Region</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Visit Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Visit Agenda</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Conclusion Notes</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Salesforce Link</th>
+                </tr>
+            </table>
+            <apex:repeat value="{!VisitExistingAccount}" var="ExAcc">
+                <table style="border:1px solid black;">
+                    
+                    <tr style="border:1px solid black; border-collapse:collapse;width:100%;" >
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account__r.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account__r.Industry}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Customer_Participant1__r.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account__r.BillingCity}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account__r.BillingState}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account__r.Region_Picklist__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!ExAcc.Date_Time_of_Visit__c}" /> 
+                        </apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Visit_Agenda__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Conclusion_Notes__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputLink value="/{!ExAcc.Account__r.Id}">Salesforce Link</apex:outputLink></td>
+                    </tr>
+                </table>
+            </apex:repeat>   
+        </table>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!VisitExistingAccount.size=0}">
+        <center><font color="red"><b>No Records Found..!!</b></font></center>
+    </apex:outputPanel>
+    
+    <center><font size="5"><b>Visits-Existing Lead</b></font></center>
+    <apex:outputPanel rendered="{!VisitExistingLead.size!=0}">
+        <table>
+            <table style="border:1px solid black; width:100%;">
+                <tr>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Lead Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Industry</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Customer Participant 1</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">City</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">State</th> 
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Region</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Visit Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Visit Agenda</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Conclusion Notes</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Salesforce Link</th>
+                </tr>
+            </table>
+            <apex:repeat value="{!VisitExistingLead}" var="ExAcc">
+                <table style="border:1px solid black;">
+                    
+                    <tr style="border:1px solid black; border-collapse:collapse;width:100%;" >
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Lead__r.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Lead__r.Industry}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Customer_Participant1__r.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Lead__r.City}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Lead__r.State}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Lead__r.Region__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!ExAcc.Date_Time_of_Visit__c}" /> 
+                        </apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Visit_Agenda__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Conclusion_Notes__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputLink value="/{!ExAcc.Lead__r.Id}">Salesforce Link</apex:outputLink></td>
+                    </tr>
+                </table>
+            </apex:repeat>   
+        </table>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!VisitExistingLead.size=0}">
+        <center><font color="red"><b>No Records Found..!!</b></font></center>
+    </apex:outputPanel> 
+    
+    <center><font size="5"><b>New Opportunity</b></font></center>
+    <apex:outputPanel rendered="{!NewOpportunity.size!=0}">
+        <table>
+            <table style="border:1px solid black; width:100%;">
+                <tr>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Account Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Industry</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Contact Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Billing City</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Billing State</th> 
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Region</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Opportunity Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Opportunity Type</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">RFQ Received Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Strategic Importance</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">RFQ Reference</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Comments</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Salesforce Link</th>
+                </tr>
+            </table>
+            <apex:repeat value="{!NewOpportunity}" var="ExAcc">
+                <table style="border:1px solid black;">
+                    
+                    <tr style="border:1px solid black; border-collapse:collapse;width:100%;" >
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Industry}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ConName}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.BillingCity}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.BillingState}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Region_Picklist__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Type}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!ExAcc.RFQ_Received_Date_Date__c}" /> 
+                        </apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Strategic_Importance__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.RFQ_Reference__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Comments__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputLink value="/{!ExAcc.Account.Id}">Salesforce Link</apex:outputLink></td>
+                    </tr>
+                </table>
+            </apex:repeat>   
+        </table>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!NewOpportunity.size=0}">
+        <center><font color="red"><b>No Records Found..!!</b></font></center>
+    </apex:outputPanel>   
+    
+    <center><font size="5"><b>Existing Opportunity</b></font></center>
+    <apex:outputPanel rendered="{!OppQuote.size!=0}">
+        <table>
+            <table style="border:1px solid black; width:100%;">
+                <tr>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Account Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Industry</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Opportunity Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Contact Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Region</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Quote Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Quote Created Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Activity Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Activity Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">RFQ Received Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">RFQ Qualified Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Comments</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Competitor Info </th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Member 1</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Member 2</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Salesforce Link</th>
+                </tr>
+            </table>
+            <apex:repeat value="{!OppQuote}" var="ExAcc">
+                <table style="border:1px solid black;">
+                    
+                    <tr style="border:1px solid black; border-collapse:collapse;width:100%;" >
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Industry}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Opportunity.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ContactName}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Opportunity.Account.Region_Picklist__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!ExAcc.CreatedDate}" /> 
+                        </apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ActivityName}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ActivityDate}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!ExAcc.Opportunity.RFQ_Received_Date_Date__c}" /> 
+                        </apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!ExAcc.Opportunity.RFQ_qualified__c}" /> 
+                        </apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ActivityComment}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Opportunity.Competitor_Info__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Opportunity.Member1__r.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Opportunity.Member2__r.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputLink value="/{!ExAcc.Opportunity.Id}">Salesforce Link</apex:outputLink></td>
+                    </tr>
+                </table>
+            </apex:repeat>   
+        </table>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!OppQuote.size=0}">
+        <center><font color="red"><b>No Records Found..!!</b></font></center>
+    </apex:outputPanel> 
+    
+    <center><font size="5"><b>Existing On Hold Opportunity</b></font></center>
+    <apex:outputPanel rendered="{!OppOnHoldQuote.size!=0}">
+        <table>
+            <table style="border:1px solid black; width:100%;">
+                <tr>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Account Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Industry</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Opportunity Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Contact Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Region</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Quote Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Quote Created Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Activity Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Activity Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Comments</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Salesforce Link</th>
+                </tr>
+            </table>
+            <apex:repeat value="{!OppOnHoldQuote}" var="ExAcc">
+                <table style="border:1px solid black;">
+                    
+                    <tr style="border:1px solid black; border-collapse:collapse;width:100%;" >
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Account.Industry}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Opportunity.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ConName}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Opportunity.Account.Region_Picklist__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!ExAcc.CreatedDate}" /> 
+                        </apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ActivityName1}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ActivityDate1}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ActivityComment1}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputLink value="/{!ExAcc.Opportunity.Id}">Salesforce Link</apex:outputLink></td>
+                    </tr>
+                </table>
+            </apex:repeat>   
+        </table>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!OppOnHoldQuote.size=0}">
+        <center><font color="red"><b>No Records Found..!!</b></font></center>
+    </apex:outputPanel>
+    
+    <center><font size="5"><b>Investment Followup</b></font></center>
+    <apex:outputPanel rendered="{!InvestmentFollow.size!=0}">
+        <table>
+            <table style="border:1px solid black; width:100%;">
+                <tr>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Investment Followup Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Organisation Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Opportunity Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Contact Name</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Region</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Activity Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Comments</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Amount</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Salesforce Link</th>
+                </tr>
+            </table>
+            <apex:repeat value="{!InvestmentFollow}" var="ExAcc">
+                <table style="border:1px solid black;">
+                    
+                    <tr style="border:1px solid black; border-collapse:collapse;width:100%;">
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Organisation_Name__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Opportunity__r.Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!Con1Name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Region__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!ExAcc.Activity_Date__c}" /> 
+                        </apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Comments__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;text-align:left;"><apex:outputText value="{!ExAcc.Amount__c}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputLink value="/{!ExAcc.Opportunity__r.Id}">Salesforce Link</apex:outputLink></td>
+                    </tr>
+                </table>
+            </apex:repeat>   
+        </table>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!InvestmentFollow.size=0}">
+        <center><font color="red"><b>No Records Found..!!</b></font></center>
+    </apex:outputPanel>
+    
+    <center><font size="5"><b>BD Activities</b></font></center>
+    <apex:outputPanel rendered="{!BDActivities.size!=0}">
+        <table>
+            <table style="border:1px solid black; width:100%;">
+                <tr>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Activity</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Planned Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Revised Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Completion Date</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Responsibility</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Comments</th>
+                    <th style="border:1px solid black;background-color: #E8E8E8 ;">Salesforce Link</th>
+                </tr>
+            </table>
+            <apex:repeat value="{!BDActivities}" var="ExAcc">
+                <table style="border:1px solid black;">
+                    
+                    <tr style="border:1px solid black; border-collapse:collapse;width:100%;" >
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Subject}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!ExAcc.ActivityDate}" /> 
+                        </apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;">
+                        <apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!ExAcc.Revised_Date__c}" /> </apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{0, date, MMMM d  yyyy}">
+                            <apex:param value="{!ExAcc.Completed_Date_del__c}" /> 
+                        </apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Owner.name}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputText value="{!ExAcc.Description}"></apex:outputText></td>
+                        <td style="border:1px solid black; border-collapse:collapse;width:100%;"><apex:outputLink value="/{!ExAcc.Id}">Salesforce Link</apex:outputLink></td>
+                    </tr>
+                </table>
+            </apex:repeat>   
+        </table>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!BDActivities.size=0}">
+        <center><font color="red"><b>No Records Found..!!</b></font></center>
+    </apex:outputPanel>    
+</apex:page>

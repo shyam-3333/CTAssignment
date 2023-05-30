@@ -1,0 +1,1062 @@
+<aura:component controller="QCMTLDetailInformationComponentClass"
+    implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,lightning:actionOverride"
+    access="global">
+    <!--attribute-->
+    <!-- create 2 aura handler with waiting and donewaiting events-->
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}" />
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}" />
+    <!--create a component attributs -->
+    <aura:attribute name="Spinner" type="boolean" default="false" />
+    <aura:attribute name="isReadonly" type="Boolean" default="true" />
+    <aura:attribute name="QCMTlComponentObject" type="sObject" />
+    <aura:attribute name="alltestParameter" type="List" />
+    <aura:attribute name="IsHasOptionTest" type="boolean" default="false" />
+    <aura:attribute name="IsHasRegularTest" type="boolean" default="false" />
+    <aura:attribute name="IsHasTestParam" type="boolean" default="false" />
+    <aura:attribute name="approvalList" type="object"/>  
+    <aura:attribute name="isRecordLock" type="boolean" default="false" />
+    <aura:attribute name="minMaxDisab" type="boolean" default="false" />
+    
+    <aura:attribute name="finalVerdict" type="List"
+        default="[
+                                                             {'label': 'Accept', 'value': 'Accept', 'selected': true},
+                                                             {'label': 'Reject', 'value': 'Reject', 'selected': false},
+                                                              {'label': 'Provisionally Accept', 'value' : 'Provisionally Accept','selected': false}]" />
+    <aura:attribute name="materialCompositionPickList" type="List" />
+    <aura:attribute name="materialCompositionPickList2" type="List" />
+    <aura:attribute name="materialCompositionPickList3" type="List" />
+    <aura:attribute name="materialCompositionPickList4" type="List" />
+    <aura:attribute name="materialCompositionPickList5" type="List" />
+    <aura:attribute name="selectedMaterialCompValue2" type="String" />
+    <aura:attribute name="selectedMaterialCompValue3" type="String" />
+    <aura:attribute name="selectedMaterialCompValue4" type="String" />
+    <aura:attribute name="selectedMaterialCompValue5" type="String" />
+    <aura:attribute name="selectedMaterialCompValue" type="String" />
+    <aura:attribute name="MaterialCompositionValue1" type="String" default="" />
+    <aura:attribute name="MaterialCompositionValue2" type="String" default="" />
+    <aura:attribute name="MaterialCompositionValue3" type="String" default="" />
+    <aura:attribute name="MaterialCompositionValue4" type="String" default="" />
+    <aura:attribute name="MaterialCompositionValue5" type="String" default="" />
+    <aura:attribute name="MaterialCompositionResult1" type="String" default="" />
+    <aura:attribute name="MaterialCompositionResult2" type="String" default="" />
+    <aura:attribute name="MaterialCompositionResult3" type="String" default="" />
+    <aura:attribute name="MaterialCompositionResult4" type="String" default="" />
+    <aura:attribute name="MaterialCompositionResult5" type="String" default="" />
+    <aura:attribute name="showApprovalHistoryCmp" type="boolean" default="false" />
+    <aura:attribute name="optionalTesthaveMCValue" type="boolean" default="true" />
+    <aura:attribute name="componentName" type="List" default="[{'label': 'None', 'value': 'None', 'selected': true},
+                                                             {'label': 'Case', 'value': 'Case', 'selected': false},
+                                                             {'label': 'Back Cover', 'value': 'Back Cover', 'selected': false},
+                                                             {'label':'Bezel Ring', 'value' :'Bezel Ring', 'selected' :false},
+                                                              {'label':'Crown', 'value' :'Crown', 'selected' :false},
+                                                              {'label':'Push button', 'value' :'Push button', 'selected' :false},
+                                                              {'label':'Decorative ring', 'value' :'Decorative ring', 'selected' :false},
+                                                              {'label':'Back Cover Screw', 'value' :'Back Cover Screw', 'selected' :false},
+                                                              {'label':'Decorative Screw', 'value' :'Decorative Screw', 'selected' :false},
+                                                              {'label':'Strap/Link', 'value' :'Strap/Link', 'selected' :false},
+                                                              {'label':'Case to Strap Pin', 'value' :'Case to Strap Pin', 'selected' :false},
+                                                              {'label':'Removable Link Pin', 'value' :'Removable Link Pin', 'selected' :false},
+                                                              {'label': 'Other Pin', 'value': 'Other Pin', 'selected': false},
+                                                              {'label': 'Clasp', 'value': 'Clasp', 'selected': false},
+                                                              {'label': 'Buckle', 'value': 'Buckle', 'selected': false},
+                                                              {'label': 'Tongue', 'value': 'Tongue', 'selected': false},
+                                                              {'label': 'Stress', 'value': 'Stress', 'selected': false},
+                                                              {'label': 'Accessories', 'value': 'Accessories', 'selected': false},
+                                                              {'label': 'Others', 'value': 'Others', 'selected': false}
+                                                              ]"/>
+                                                              <aura:attribute name="IscomponentNameOthers" type="boolean" default="false" />
+                                                              <aura:attribute name="IscomponentNameAccessories" type="boolean" default="false" />
+    <!--handler-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="oSelectedRecordEvent" event="c:LookUpEvent" action="{!c.handleLookupComponentEvent}" />
+     <aura:if isTrue="{!v.Spinner}">
+        <div aura:id="spinnerId" class="slds-spinner_container">
+            <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+    <!-- Loading spinner end-->
+    <lightning:card title="" class=" c-container slds-p-around_large">
+        <center>
+
+            <aura:if isTrue="{!v.isReadonly}">
+                <lightning:button variant="brand" aura:id="editDataId" label="Edit" onclick="{!c.enableSaveMode}" />
+                <lightning:button variant="brand" aura:id="detailedReportId" label="Detailed Report"
+                onclick="{!c.detailedReportMethod}" />
+            </aura:if>
+            <aura:if isTrue="{!!v.isReadonly}">
+                <lightning:button variant="brand" aura:id="saveDataId" label="Save" onclick="{!c.saveData}" />
+                <lightning:button variant="brand" aura:id="cancelDataId" label="Cancel" onclick="{!c.cancelData}" />
+            </aura:if>
+        </center>
+        <lightning:recordViewForm recordId="{!v.recordId}" objectApiName="QC_MTL_Component__c">
+            <aura:if isTrue="{!v.QCMTlComponentObject.Testing_Type__c=='Raw Material'}">
+                <!--   <c:QC_MTL_Detail_Information_Component recordId="{!v.recordId}" />-->
+                <div class="slds-section slds-is-open">
+                    <h3 class="slds-section__title slds-theme_success">
+                        <span class="slds-truncate slds-p-horizontal_small" title="Section Title"
+                            style="font-weight: bold;">Material Information</span>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content">
+                        <form class="slds-form slds-form_compound">
+                            <div class="slds-form-element__control">
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2 ">
+                                                <lightning:outputField fieldName="Report_Reference_Number__c" />
+
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                                <lightning:outputField fieldName="Record_Status__c" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Testing_Type__c" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Raw_Material_Type__c" />
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Document_Status__c" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Sample_Size_Qty__c" />
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Sample_Received_Date__c" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                
+
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="MTL_User_Email__c" />
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Brand__c" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:select name="Verdict" aura:id="verdictId"
+                                                    label="Final Verdict" disabled="{!v.isReadonly}"
+                                                    value="{!v.QCMTlComponentObject.Final_Verdict__c}">
+                                                    <aura:iteration items="{!v.finalVerdict}" var="finalVerd">
+                                                        <option text="{!finalVerd.label}" value="{!finalVerd.value}"
+                                                            selected="{!finalVerd.selected}"></option>
+                                                    </aura:iteration>
+                                                </lightning:select>
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Sample_Received_From__c" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="slds-section slds-is-open">
+
+                    <h3 class="slds-section__title slds-theme_success">
+                        <span class="slds-truncate slds-p-horizontal_small" title="Section Title"
+                            style="font-weight: bold;">Product Information</span>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content">
+                        <form class="slds-form slds-form_compound">
+                            <div class="slds-form-element__control">
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Raw_Material_Name__c" />
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <!-- <c:CustomLookupComponentParent isDisabled ="{!v.isReadonly}" aura:id="lookupId"  customId = "qcMTLTitanSpecId"  objectAPIName="QC_Access_Master__c" lookupValueIncrementerForTitanSpec="{!v.lookupValueIncrementerForTitanSpec}" whereCondition="RecordType.Name = 'Specification Details'" IconName="standard:account" selectedRecord="{!v.selectedLookUpRecordForTitanSpec}" label="Titan Specification Reference"/>  -->
+                                                <lightning:outputField fieldName="Titan_Specification_Reference__c" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Supplier_Name_New__c" />
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Invoice_Dc_No__c" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="RM_Size__c"
+                                                    value="{!v.QCMTlComponentObject.RM_Size__c}"
+                                                    label="Raw Material Size" />
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Heat_No_Grade__c"
+                                                    value="{!v.QCMTlComponentObject.Heat_No_Grade__c}" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Supply_Quantity__c" />
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <!-- <c:CustomLookupComponentParent aura:id="lookupId" isDisabled="{!v.isReadonly}" lookupValueIncrementerForSupplrGrd="{!v.lookupValueIncrementerForSupplrGrd}" customId = "qcMTLSupplierGradeId"  objectAPIName="Supplier_Grade__c" whereCondition="{!'QC_Access_Master__c =  \''+v.selectedLookUpRecordForTitanSpec.Id+ '\''}" IconName="standard:account" selectedRecord="{!v.selectedLookUpRecordForSupplierGrd}" label="Supplier Grade"/>   
+                                            -->
+                                                <lightning:outputField fieldName="Supplier_Grade__c" />
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2 ">
+                                                <lightning:outputField fieldName="Specification_revision__c" />
+                                            </div>
+                                                <div class="slds-form-element slds-size_1-of-2 ">
+                                                    <lightning:outputField fieldName="General_Observation__c" />
+                                                </div>
+                                        </div>
+
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2 ">
+                                                <lightning:outputField fieldName="TCL_Designation__c" />
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2 ">
+                                                <lightning:outputField fieldName="IRR_No__c" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2 ">
+                                                <lightning:outputField fieldName="Remarks__c" />
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </fieldset>
+                            </div>
+                            <br />
+                        </form>
+                    </div>
+
+                </div>
+
+            </aura:if>
+            <aura:if
+                isTrue="{!or(v.QCMTlComponentObject.Testing_Type__c=='Plating' , v.QCMTlComponentObject.Testing_Type__c=='Plating and Material Composition') }">
+                <!--   <c:QC_MTL_Detail_Information_Component recordId="{!v.recordId}" />-->
+                <div class="slds-section slds-is-open">
+                    <h3 class="slds-section__title slds-theme_success">
+                        <span class="slds-truncate slds-p-horizontal_small" title="Section Title"
+                            style="font-weight: bold;">Material Information</span>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content">
+                        <form class="slds-form slds-form_compound">
+                            <div class="slds-form-element__control">
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2 ">
+                                                <lightning:outputField fieldName="Report_Reference_Number__c" />
+
+                                            </div>
+                                            <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                                <lightning:outputField fieldName="Record_Status__c" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Testing_Type__c" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Document_Status__c" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Sample_Size_Plating__c" />
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Sample_Received_Date__c" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                
+                                
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="MTL_User_Email__c" />
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Brand__c" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:select name="Verdict" aura:id="verdictId"
+                                                    label="Final Verdict" disabled="{!v.isReadonly}"
+                                                    value="{!v.QCMTlComponentObject.Final_Verdict__c}">
+                                                    <aura:iteration items="{!v.finalVerdict}" var="finalVerd">
+                                                        <option text="{!finalVerd.label}" value="{!finalVerd.value}"
+                                                            selected="{!finalVerd.selected}"></option>
+                                                    </aura:iteration>
+                                                </lightning:select>
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Sample_Received_From__c" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+                <div class="slds-section slds-is-open">
+                    <h3 class="slds-section__title slds-theme_success">
+                        <span class="slds-truncate slds-p-horizontal_small" title="Section Title"
+                            style="font-weight: bold;">Product Information</span>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content">
+                        <form class="slds-form slds-form_compound">
+                            <div class="slds-form-element__control">
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <aura:if isTrue="{!v.QCMTlComponentObject.Testing_Type__c=='Plating'}">
+                                                    <lightning:outputField fieldName="Department__c" />
+                                                </aura:if>
+                                                <aura:if
+                                                    isTrue="{!v.QCMTlComponentObject.Testing_Type__c=='Plating and Material Composition'}">
+                                                    <lightning:outputField fieldName="Department_PMC__c" />
+                                                </aura:if>
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2 ">
+                                                <lightning:outputField fieldName="Part_Name__c" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Source__c" />
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Supplier_Name_New__c" />
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Model__c" />
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Docket_Number__c" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Batch_Quantity__c" />
+                                            </div>
+                                            <!-- <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Brand__c" />
+                                            </div> -->
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Material__c" />
+
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Plating_Type__c" />
+
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Titan_Specification_Reference__c" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Optional_Test__c" />
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <aura:if isTrue="{!v.QCMTlComponentObject.Testing_Type__c=='Plating'}">
+                                                    <lightning:outputField fieldName="Required_Test__c" />
+                                                </aura:if>
+                                                <aura:if
+                                                    isTrue="{!v.QCMTlComponentObject.Testing_Type__c=='Plating and Material Composition'}">
+                                                    <lightning:outputField fieldName="Required_test_PMC__c" />
+                                                </aura:if>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            <div class="slds-form-element slds-size_1-of-2 ">
+                                                <lightning:outputField fieldName="General_Observation__c" />
+                                            </div>
+                                            
+                                            <div class="slds-form-element slds-size_1-of-2 ">
+                                                <lightning:outputField fieldName="Actual_Department_Name__c" />
+                                            </div>
+                                        </div>
+                                       
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                    <div class="slds-form-element__group">
+                                        <div class="slds-form-element__row">
+                                            
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Specification_revision__c" />
+                                            </div>
+                                            <div class="slds-form-element slds-size_1-of-2">
+                                                <lightning:outputField fieldName="Remarks__c" />
+                                            </div>
+                                        </div>
+                                       
+                                    </div>
+                                </fieldset>
+                                <fieldset class="slds-form-element">
+                                        <div class="slds-form-element__group">
+                                                <div class="slds-form-element__row">
+                                                <div class="slds-form-element slds-size_1-of-2">
+                                                        <aura:if isTrue="{!v.QCMTlComponentObject.Testing_Type__c=='Plating and Material Composition'}">
+                                                                    <lightning:outputField fieldName="Component_Name__c" />
+                                                        </aura:if>
+                                                </div>
+                                        </div>
+                                        </div>
+                                    </fieldset>
+                                    <aura:if isTrue="{!v.IscomponentNameAccessories}" >
+                                <fieldset class="slds-form-element">
+                                        <div class="slds-form-element__group">
+                                                <div class="slds-form-element__row">
+                                                <div class="slds-form-element slds-size_1-of-2">
+                                                        <aura:if isTrue="{!v.QCMTlComponentObject.Testing_Type__c=='Plating and Material Composition'}">
+                                                                    <lightning:outputField fieldName="Component_Accessories__c" />
+                                                        </aura:if>
+                                                </div>
+                                        </div>
+                                        </div>
+                                    </fieldset>
+                                </aura:if>
+                                <aura:if isTrue="{!v.IscomponentNameOthers}" >
+                                    <fieldset class="slds-form-element">
+                                            <div class="slds-form-element__group">
+                                                    <div class="slds-form-element__row">
+                                                    
+                                                <div class="slds-form-element slds-size_1-of-2">
+                                                    <aura:if isTrue="{!v.QCMTlComponentObject.Testing_Type__c=='Plating and Material Composition'}">
+                                                                <lightning:outputField fieldName="Component_Others__c" />
+                                                    </aura:if>
+                                                </div>
+                                            </div>
+                                            </div>
+                                        </fieldset>
+                                    </aura:if>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </aura:if>
+        </lightning:recordViewForm>
+        <aura:if isTrue="{!v.alltestParameter.length>0}">
+            <aura:if
+                isTrue="{!or(v.QCMTlComponentObject.Testing_Type__c=='Plating' , v.QCMTlComponentObject.Testing_Type__c=='Plating and Material Composition') }">
+                <aura:if isTrue="{!v.IsHasOptionTest}">
+                    <div class="slds-section slds-is-open">
+
+                        <h3 class="slds-section__title slds-theme_success">
+                            <span class="slds-truncate slds-p-horizontal_small" title="Section Title"
+                                style="font-weight: bold;">Optional Test</span>
+                        </h3>
+                        <div aria-hidden="false" class="slds-section__content">
+                            <table
+                                class="rawTestPara t_design table table-striped slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered slds-table_resizable-cols slds-table_fixed-layout slds-max-medium-table_stacked-horizontal">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Tests</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Specification</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Observation</div> 
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Conclusion</div>
+                                        </th>
+                                        
+                                       
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <aura:iteration items="{!v.alltestParameter}" var="testvar" indexVar="index">
+                                        <aura:if isTrue="{!testvar.Plating_Testing_Type__c=='Optional'}">
+                                            <tr>
+                                                <td scope="row" data-label="Select">
+                                                    <ui:outputText value="{!testvar.Name}" />
+                                                </td>
+                                                
+                                                <td scope="row" data-label="Select">
+                                                    <ui:outputText value="{!testvar.Standard_Defined_Value__c}" />
+                                                </td>
+                                                <td scope="row" data-label="Select">
+                                                    <lightning:input disabled="{!v.isReadonly}" type="String"
+                                                        value="{!testvar.User_Defined_Value__c}" />
+                                                </td>
+                                                <td scope="row" data-label="Select">
+                                                    <lightning:select name="Verdict" disabled="{!v.isReadonly}"
+                                                        aura:id="verdictId" value="{!testvar.Result__c}">
+                                                        <aura:iteration items="{!v.finalVerdict}" var="finalVerd">
+                                                            <option text="{!finalVerd.label}" value="{!finalVerd.value}"
+                                                                selected="{!finalVerd.selected}"></option>
+                                                        </aura:iteration>
+                                                    </lightning:select>
+                                                </td>
+                                            </tr>
+                                        </aura:if>
+                                    </aura:iteration>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!v.IsHasRegularTest}">
+                    <div class="slds-section slds-is-open">
+
+                        <h3 class="slds-section__title slds-theme_success">
+                            <span class="slds-truncate slds-p-horizontal_small" title="Section Title"
+                                style="font-weight: bold;">Regular Test</span>
+                        </h3>
+                        <div aria-hidden="false" class="slds-section__content">
+                            <table
+                                class="t_design table table-striped slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered slds-table_resizable-cols slds-table_fixed-layout slds-max-medium-table_stacked-horizontal">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Tests</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Specification</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Observation</div>
+                                        </th>
+                                        
+                                        <th scope="col">
+                                            <div class="slds-truncate">Conclusion</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <aura:iteration items="{!v.alltestParameter}" var="testvar" indexVar="index">
+                                        <aura:if isTrue="{!testvar.Plating_Testing_Type__c=='Regular'}">
+                                            <tr>
+                                                <td scope="row" data-label="Select">
+                                                    <ui:outputText value="{!testvar.Name}" />
+                                                </td>
+                                                
+                                                <td scope="row" data-label="Select">
+                                                    <ui:outputText value="{!testvar.Standard_Defined_Value__c}" />
+                                                </td>
+                                                <td scope="row" data-label="Select">
+                                                    <lightning:input disabled="{!v.isReadonly}" type="String"
+                                                        value="{!testvar.User_Defined_Value__c}" />
+                                                </td>
+                                                <td scope="row" data-label="Select">
+                                                    <lightning:select name="Verdict" disabled="{!v.isReadonly}"
+                                                        aura:id="verdictId" value="{!testvar.Result__c}">
+                                                        <aura:iteration items="{!v.finalVerdict}" var="finalVerd">
+                                                            <option text="{!finalVerd.label}" value="{!finalVerd.value}"
+                                                                selected="{!finalVerd.selected}"></option>
+                                                        </aura:iteration>
+                                                    </lightning:select>
+                                                </td>
+                                            </tr>
+                                        </aura:if>
+                                    </aura:iteration>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </aura:if>
+                <aura:if isTrue="{!v.IsHasTestParam}">
+                    <div class="slds-section slds-is-open">
+
+                        <h3 class="slds-section__title slds-theme_success">
+                            <span class="slds-truncate slds-p-horizontal_small" title="Section Title"
+                                style="font-weight: bold;">Test Parameters</span>
+                        </h3>
+                        <div aria-hidden="false" class="slds-section__content">
+                            <table
+                                class="t_design table table-striped slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered slds-table_resizable-cols slds-table_fixed-layout slds-max-medium-table_stacked-horizontal">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Tests</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Specification</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Observation</div>
+                                        </th>
+                                        <th scope="col"><div class="slds-truncate">Min</div></th>
+                                        <th scope="col"><div class="slds-truncate">Max</div></th>
+                                        <th scope="col">
+                                            <div class="slds-truncate">Conclusion</div>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <aura:if
+                                        isTrue="{!v.optionalTesthaveMCValue}">
+                                        <tr>
+                                            <td scope="row" data-label="Select">
+                                                <div class="slds-form-element ">
+                                                    <lightning:select disabled="{!v.isReadonly}"
+                                                        name="chemicalCompPickListName" aura:id="chemicalPickListId"
+                                                        value="{!v.selectedMaterialCompValue}">
+                                                        <aura:iteration items="{!v.materialCompositionPickList}"
+                                                            var="matCompValue">
+                                                            <option text="{!matCompValue.label}"
+                                                                value="{!matCompValue.value}"
+                                                                selected="{!matCompValue.selected}"></option>
+                                                        </aura:iteration>
+                                                    </lightning:select>
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                            <td scope="row" data-label="Select">
+                                                <lightning:input disabled="{!v.isReadonly}" type="String"
+                                                    value="{!v.MaterialCompositionValue1}" />
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td scope="row" data-label="Select">
+                                                <lightning:select name="Verdict" disabled="{!v.isReadonly}"
+                                                    aura:id="verdictId" value="{!v.MaterialCompositionResult1}">
+                                                    <aura:iteration items="{!v.finalVerdict}" var="finalVerd">
+                                                        <option text="{!finalVerd.label}" value="{!finalVerd.value}"
+                                                            selected="{!finalVerd.selected}"></option>
+                                                    </aura:iteration>
+                                                </lightning:select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="row" data-label="Select">
+                                                <div class="slds-form-element">
+                                                    <lightning:select disabled="{!v.isReadonly}"
+                                                        name="chemicalCompPickListName" aura:id="chemicalPickListId1"
+                                                        value="{!v.selectedMaterialCompValue2}">
+                                                        <aura:iteration items="{!v.materialCompositionPickList2}"
+                                                            var="matCompValue">
+                                                            <option text="{!matCompValue.label}"
+                                                                value="{!matCompValue.value}"
+                                                                selected="{!matCompValue.selected}"></option>
+                                                        </aura:iteration>
+                                                    </lightning:select>
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                            <td scope="row" data-label="Select">
+                                                <lightning:input disabled="{!v.isReadonly}" type="String"
+                                                    value="{!v.MaterialCompositionValue2}" />
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td scope="row" data-label="Select">
+                                                <lightning:select name="Verdict" disabled="{!v.isReadonly}"
+                                                    aura:id="verdictId" value="{!v.MaterialCompositionResult2}">
+                                                    <aura:iteration items="{!v.finalVerdict}" var="finalVerd">
+                                                        <option text="{!finalVerd.label}" value="{!finalVerd.value}"
+                                                            selected="{!finalVerd.selected}"></option>
+                                                    </aura:iteration>
+                                                </lightning:select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="row" data-label="Select">
+                                                <div class="slds-form-element">
+                                                    <lightning:select disabled="{!v.isReadonly}"
+                                                        name="chemicalCompPickListName" aura:id="chemicalPickListId2"
+                                                        value="{!v.selectedMaterialCompValue3}">
+                                                        <aura:iteration items="{!v.materialCompositionPickList3}"
+                                                            var="matCompValue">
+                                                            <option text="{!matCompValue.label}"
+                                                                value="{!matCompValue.value}"
+                                                                selected="{!matCompValue.selected}"></option>
+                                                        </aura:iteration>
+                                                    </lightning:select>
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                            <td scope="row" data-label="Select">
+                                                <lightning:input disabled="{!v.isReadonly}" type="String"
+                                                    value="{!v.MaterialCompositionValue3}" />
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td scope="row" data-label="Select">
+                                                <lightning:select name="Verdict" disabled="{!v.isReadonly}"
+                                                    aura:id="verdictId" value="{!v.MaterialCompositionResult3}">
+                                                    <aura:iteration items="{!v.finalVerdict}" var="finalVerd">
+                                                        <option text="{!finalVerd.label}" value="{!finalVerd.value}"
+                                                            selected="{!finalVerd.selected}"></option>
+                                                    </aura:iteration>
+                                                </lightning:select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="row" data-label="Select">
+                                                <div class="slds-form-element">
+                                                    <lightning:select disabled="{!v.isReadonly}"
+                                                        name="chemicalCompPickListName" aura:id="chemicalPickListId3"
+                                                        value="{!v.selectedMaterialCompValue4}">
+                                                        <aura:iteration items="{!v.materialCompositionPickList4}"
+                                                            var="matCompValue">
+                                                            <option text="{!matCompValue.label}"
+                                                                value="{!matCompValue.value}"
+                                                                selected="{!matCompValue.selected}"></option>
+                                                        </aura:iteration>
+                                                    </lightning:select>
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                            <td scope="row" data-label="Select">
+                                                <lightning:input disabled="{!v.isReadonly}" type="String"
+                                                    value="{!v.MaterialCompositionValue4}" />
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td scope="row" data-label="Select">
+                                                <lightning:select name="Verdict" disabled="{!v.isReadonly}"
+                                                    aura:id="verdictId" value="{!v.MaterialCompositionResult4}">
+                                                    <aura:iteration items="{!v.finalVerdict}" var="finalVerd">
+                                                        <option text="{!finalVerd.label}" value="{!finalVerd.value}"
+                                                            selected="{!finalVerd.selected}"></option>
+                                                    </aura:iteration>
+                                                </lightning:select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td scope="row" data-label="Select">
+                                                <div class="slds-form-element ">
+                                                    <lightning:select disabled="{!v.isReadonly}"
+                                                        name="chemicalCompPickListName" aura:id="chemicalPickListId4"
+                                                        value="{!v.selectedMaterialCompValue5}">
+                                                        <aura:iteration items="{!v.materialCompositionPickList5}"
+                                                            var="matCompValue">
+                                                            <option text="{!matCompValue.label}"
+                                                                value="{!matCompValue.value}"
+                                                                selected="{!matCompValue.selected}"></option>
+                                                        </aura:iteration>
+                                                    </lightning:select>
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                            <td scope="row" data-label="Select">
+                                                <lightning:input disabled="{!v.isReadonly}" type="String"
+                                                    value="{!v.MaterialCompositionValue5}" />
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td scope="row" data-label="Select">
+                                                <lightning:select name="Verdict" disabled="{!v.isReadonly}"
+                                                    aura:id="verdictId" value="{!v.MaterialCompositionResult5}">
+                                                    <aura:iteration items="{!v.finalVerdict}" var="finalVerd">
+                                                        <option text="{!finalVerd.label}" value="{!finalVerd.value}"
+                                                            selected="{!finalVerd.selected}"></option>
+                                                    </aura:iteration>
+                                                </lightning:select>
+                                            </td>
+                                        </tr>
+                                    </aura:if>
+                                    <aura:iteration items="{!v.alltestParameter}" var="testvar" indexVar="index">
+                                        <aura:if isTrue="{!testvar.Plating_Testing_Type__c==NULL }">
+                                            <tr>
+                                                <td scope="row" data-label="Select">
+                                                    <ui:outputText value="{!testvar.Name}" />
+                                                </td>
+                                                
+                                                <td scope="row" data-label="Select">
+                                                    <ui:outputText value="{!testvar.Standard_Defined_Value__c}" />
+                                                </td>
+                                                <td scope="row" data-label="Select">
+                                                    <lightning:input disabled="{!v.isReadonly}" type="String"
+                                                        value="{!testvar.User_Defined_Value__c}" />
+                                                </td>
+                                                <td scope="row" data-label="Select"><lightning:input disabled="{!or(v.isReadonly,v.minMaxDisab)}" type="Number" value="{!testvar.Minimum__c}" /></td>
+                                                <td scope="row" data-label="Select"><lightning:input disabled="{!or(v.isReadonly,v.minMaxDisab)}" type="Number" value="{!testvar.Maximum__c}" /></td>
+                                                <td scope="row" data-label="Select">
+                                                    <lightning:select name="Verdict" disabled="{!v.isReadonly}"
+                                                        aura:id="verdictId" value="{!testvar.Result__c}">
+                                                        <aura:iteration items="{!v.finalVerdict}" var="finalVerd">
+                                                            <option text="{!finalVerd.label}" value="{!finalVerd.value}"
+                                                                selected="{!finalVerd.selected}"></option>
+                                                        </aura:iteration>
+                                                    </lightning:select>
+                                                </td>
+                                            </tr>
+                                        </aura:if>
+                                    </aura:iteration>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </aura:if>
+            </aura:if>
+            <aura:if isTrue="{!v.QCMTlComponentObject.Testing_Type__c=='Raw Material' }">
+                <div class="slds-section slds-is-open">
+
+                    <h3 class="slds-section__title slds-theme_success">
+                        <span class="slds-truncate slds-p-horizontal_small" title="Section Title"
+                            style="font-weight: bold;">Test Parameters</span>
+                    </h3>
+                    <div aria-hidden="false" class="slds-section__content">
+                        <table
+                            class="rawTestPara t_design table table-striped slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered slds-table_resizable-cols slds-table_fixed-layout slds-max-medium-table_stacked-horizontal">
+                            <thead>
+                                <tr>
+                                    <!--<th scope="col"><div class="slds-truncate">Serial No.</div></th>-->
+                                    <th scope="col">
+                                        <div class="slds-truncate">Tests</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate">Specification</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate">Observation</div>
+                                    </th>
+                                  <!--  <th scope="col">
+                                        <div class="slds-truncate">Min Defined Value</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate">Max Defined Value</div>
+                                    </th>-->
+                                    <!--New Change Min Defined Value as Reading 1 and Max Defined Value as Reading 2-->
+                                    <th scope="col">
+                                        <div class="slds-truncate">Reading 1</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate">Reading 2</div>
+                                    </th>
+                                   <!-- <th scope="col">
+                                        <div class="slds-truncate">Average Value</div>
+                                    </th>-->
+                                    <th scope="col">
+                                        <div class="slds-truncate">Conclusion</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <aura:iteration items="{!v.alltestParameter}" var="testData" indexVar="index">
+                                    <tr>
+                                        <td scope="row" data-label="Select">
+                                            <ui:outputText value="{!testData.Name}" />
+                                        </td>
+                                        <td scope="row" data-label="Select">
+                                            <ui:outputText
+                                                value="{!testData.QC_Test_Questions_Value__r.Standard_Defined_Value__c}" />
+                                        </td>
+                                        <td scope="row" data-label="Select">
+                                            <lightning:input
+                                                disabled="{!or(v.isReadonly,testData.Name=='Hardness(HV)')}"
+                                                value="{!testData.User_Defined_Value__c}"  />
+                                        </td>
+                                        <td scope="row" data-label="Select">
+                                            <lightning:input type="number"
+                                                disabled="{!or(v.isReadonly,testData.Name!='Hardness(HV)')}"
+                                                value="{!testData.Minimum__c}" onchange="{!c.onkeyupmethod}"
+                                                step="0.01" />
+                                        </td>
+                                        <td scope="row" data-label="Select">
+                                            <lightning:input type="number"
+                                                disabled="{!or(v.isReadonly,testData.Name!='Hardness(HV)')}"
+                                                value="{!testData.Maximum__c}" onchange="{!c.onkeyupmethod}"
+                                                step="0.01" />
+                                        </td>
+                                      <!--  <td scope="row" data-label="Select">
+                                            <ui:outputText value="{!testData.Average_Value__c}" />
+                                        </td>-->
+                                        <td scope="row" data-label="Select">
+                                            <lightning:select name="Verdict" aura:id="verdictId"
+                                                disabled="{!v.isReadonly}" value="{!testData.Result__c}">
+                                                <aura:iteration items="{!v.finalVerdict}" var="finalVerd">
+                                                    <option text="{!finalVerd.label}" value="{!finalVerd.value}"
+                                                        selected="{!finalVerd.selected}"></option>
+                                                </aura:iteration>
+                                            </lightning:select>
+                                        </td>
+                                    </tr>
+                                    <!-- </aura:if> -->
+                                </aura:iteration>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </aura:if>
+        </aura:if>
+        <center>
+            <lightning:button variant="brand" aura:id="submitForAppId" label="Submit For Approval"
+                onclick="{!c.submitRecordForApproval}" />
+            <lightning:button variant="brand" aura:id="goToAppHistoryListId" label="Approve/Reject"
+                onclick="{!c.gotoRelatedList}" />
+                <aura:if isTrue="{!v.showApprovalHistoryCmp}">
+                    <lightning:card title="Approval History" class="c-container slds-p-around_large"> 
+                            <div class="wk_static">  
+                              <!-- BODY -->  
+                              <div class="slds-scrollable" style="height: 300px;">  
+                                <table class="slds-table slds-table--bordered slds-max-medium-table--stacked">  
+                                  <thead>  
+                                    <tr class="slds-text-title--caps">  
+                                      <th scope="col" >  
+                                        <div class="slds-truncate" title="Date">Date</div>  
+                                      </th>  
+                                      <th scope="col" >  
+                                        <div class="slds-truncate" title="Status">Status</div>  
+                                      </th>  
+                                      <th scope="col" >  
+                                        <div class="slds-truncate" title="Assigned To">Assigned To</div>  
+                                      </th>  
+                                      <th scope="col" >  
+                                        <div class="slds-truncate" title="Approver">Approver</div>  
+                                      </th>  
+                                    </tr>  
+                                  </thead>  
+                                  <tbody>  
+                                    <!-- aura equivalent of apex:repeat -->  
+                                    <aura:iteration items="{!v.approvalList.approvals}" var="appRec">   
+                                      <aura:iteration items="{!appRec.listOfSteps}" var="step">  
+                                        <tr >  
+                                          <td data-label="Date">  
+                                            <div class="slds-truncate" title="Date">{!step.createdDate}</div>  
+                                          </td>  
+                                          <td data-label="Status">  
+                                            <div class="slds-truncate" title="Status">{!step.steps}</div>  
+                                          </td>  
+                                          <td data-label="Assigned To">  
+                                            <div class="slds-truncate" title="Assigned To">{!step.assignedTo}</div>  
+                                          </td>  
+                                          <td data-label="Approver">  
+                                            <div class="slds-truncate" title="Approver">{!step.actorName}</div>  
+                                          </td>  
+                                        </tr>  
+                                      </aura:iteration>  
+                                    </aura:iteration>   
+                                  </tbody>  
+                                </table>  
+                              </div>  
+                            </div>  
+                        </lightning:card>  
+                    </aura:if>
+        </center>
+
+    </lightning:card>
+</aura:component>

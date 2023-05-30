@@ -1,0 +1,80 @@
+<!--
+*******************************************************************************************************************************************
+ModifiedBy            Date      Tag     Description
+*******************************************************************************************************************************************
+Developer2(Lister)  11/13/2019   T01    Modified Hardcoded URL To Relative URL
+-->
+<apex:page controller="npd_approval_controller" sidebar="False">
+    <apex:form >
+        <apex:pageBlock title="Standard Approval">
+            <apex:pageBlockTable value="{!items_to_approve}" var="item_to_approve">
+           
+                 <apex:column headerValue="Action">
+                     <!--T01 -->
+                    <apex:outputLink target="_top" value="/p/process/ProcessInstanceWorkitemWizardStageManager?id={!item_to_approve.processId}">Approve/Reject</apex:outputLink>
+                     
+                     <!--T01 -->
+                </apex:column>
+                  <apex:column headerValue="Collection Name">
+                        <apex:outputText value="{!item_to_approve.collectionName}"/>
+                </apex:column>
+                <apex:column headerValue="Model Name">
+                        <apex:outputText value="{!item_to_approve.modelName}"/>
+                </apex:column>
+                <apex:column headerValue="Activity Name">
+                        <apex:outputText value="{!item_to_approve.activityName}"/>
+                </apex:column>
+                <apex:column headerValue="Type">
+                        <apex:outputText value="{!item_to_approve.Type }"/>
+                </apex:column>
+                
+                  <apex:column headerValue="Submitted By">
+                        <apex:outputText value="{!item_to_approve.submittedName}"/>
+                </apex:column>
+                  <apex:column headerValue="Status">
+                        <apex:outputText value="{!item_to_approve.processStatus}"/>
+                </apex:column>
+                <apex:column headerValue="Submitted Date">
+                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                      <apex:param value="{!item_to_approve.submittedDate}"/></apex:outputText>                
+                </apex:column>
+                  <apex:column headerValue="Record Link">
+                      <!--T01 -->
+                    <apex:outputLink target="_top" value="/{!item_to_approve.Ids}">{!item_to_approve.name}</apex:outputLink>
+                      
+                      <!--T01 -->
+                </apex:column>
+             <!--    <apex:column headerValue="Record Id">
+                        <apex:outputText value="{!item_to_approve.Ids}"/>
+                </apex:column>  -->
+                
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+          <apex:pageBlock title="Line Items Approval">
+            <apex:pageBlockTable value="{!items_to_approve_Custom}" var="item_to_approve">
+             <apex:column headerValue="Record Link">
+                      <apex:outputLink value="{!item_to_approve.link }" id="link"> Click Here</apex:outputLink> 
+                </apex:column>
+                  <apex:column headerValue="Collection Name">
+                        <apex:outputText value="{!item_to_approve.collectionName}"/>
+                </apex:column>
+                <apex:column headerValue="Model">
+                        <apex:outputText value="{!item_to_approve.model}"/>
+                </apex:column>
+                <apex:column headerValue="Activity Name">
+                        <apex:outputText value="{!item_to_approve.activityName}"/>
+                </apex:column>     
+                 <apex:column headerValue="Type">
+                        <apex:outputText value="{!item_to_approve.Type }"/>
+                </apex:column>
+               
+                <apex:column headerValue="Submitted By">
+                        <apex:outputText value="{!item_to_approve.submittedName}"/>
+                </apex:column>
+                 <apex:column headerValue="Status">
+                        <apex:outputText value="{!item_to_approve.status}"/>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

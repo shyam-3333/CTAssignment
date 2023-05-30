@@ -1,0 +1,142 @@
+<apex:page standardcontroller="Task" extensions="ReplyLead" id="pg">
+ <apex:includeScript value="{!URLFOR($Resource.jquery1, 'js/jquery-1.6.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquery1, 'js/jquery-ui-1.8.16.custom.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.jquery1, 'css/ui-lightness/jquery-ui-1.8.16.custom.css')}"/>
+   <!-- <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" /> 
+    <link rel="stylesheet" href="/resources/demos/style.css" />-->
+      <apex:form >
+      
+          <apex:actionFunction name="goController" action="{!doAttachment}" rerender="pgblkta" >
+            <apex:param name="fsize" value="" assignTo="{!fSize}"/>
+            <apex:param name="fname" value="" assignTo="{!filename}"/>
+            <apex:param name="fbody" value="" assignTo="{!fbody}"/>
+        </apex:actionfunction> 
+      </apex:form>
+    <apex:form id="fm" >
+    <apex:pageMessages />
+
+        <script type="text/javascript">
+        var blobfile;
+        function getAsText(readFile){
+            var reader = new FileReader();
+            reader.readAsDataURL(readFile);
+            
+                reader.onload = loaded;
+            }
+            function loaded(evt) {  
+                var fileString = evt.target.result;
+                blobfile = fileString;
+                var  input = document.getElementById("fileId");
+                var fileName= input.value;
+                var size = input.files[0].size; 
+               console.log(blobfile);
+                goController(size,fileName,blobfile);
+                 
+            }
+            function remoteLocationPost(){
+                var fbody= document.getElementById("fileId").files[0];
+              //  alert(fbody);
+                getAsText(fbody); 
+            }          
+        </script>         
+        <apex:actionFunction name="redirectPage" action="{!redirectQuotePage}" />
+        <apex:pageMessages id="errorMsg"/>
+        <apex:sectionHeader title="Activity" subtitle="Send a Reply" help="www.google.com" />
+        <apex:pageBlock id="pbmain" > 
+            <center>
+                <apex:commandButton id="send" value="Send" action="{!sendReply}"  oncomplete="callMethod();" reRender="errorMsg"/> 
+                <apex:commandButton id="Cancel" value="Cancel"  oncomplete="callMethod();" />
+            </center>                     
+            <apex:pageBlockSection id="pbscontid" columns="1"> 
+                <apex:pageBlockSectionItem >
+                
+                    <apex:outputText title="To" value="To:" />                            
+                    <apex:inputTextArea value="{!to}" style="width: 200px; height: 35px;" required="true" styleClass="selectValue" />
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                
+                <apex:outputText title="CC(New PopupWindow)" value="CC:" />                            
+                   <apex:inputTextArea value="{!cc}" id="tags"  style="width: 200px; height: 35px;" required="false" styleClass="selectValue" /> 
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                
+                <apex:outputText title="BCC(New PopupWindow)" value="BCC:"/>                            
+                  <apex:inputTextArea value="{!bcc}" id="p26"  style="width: 200px; height: 35px;" required="false" styleClass="selectValue"/>
+                </apex:pageBlockSectionItem> 
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Subject" id="sbid" for="subid"/>                            
+                    <apex:inputText value="{!subject}" label="Email" id="subid" style="width: 430px; height: 20px;" />                             
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="bodyid" value="Body"/>
+                    <apex:inputTextarea value="{!body}" id="bodyid"  richText="true"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock title="Attachment" id="AttachId">
+        <apex:pageBlockSection >           
+             <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Click the Browse button to find the file.(The file cannot be larger than 135KB and total attachment should not exceed  10MB.)"/>
+                    <input type="file" id="fileId" name="attFile" /><br/>
+                    <input type="button" value="Save" onclick="remoteLocationPost();" />
+                </apex:pageBlockSectionItem>              
+         </apex:pageBlockSection>    
+            <apex:pageBlockTable value="{!attList}" var="at" id="pgblkta">
+                <apex:column value="{!at.Name}" headerValue="Name"/>
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </apex:form>
+    <script>
+        function callMethod(){
+        
+            var isCheck="{!sendSuccess}";
+            if (isCheck ==1)
+            alert("Email was sent successfully!!");
+            redirectPage();
+       
+        }
+    </script>
+     <script>
+    $(function() {
+       function split( val ) {
+            return val.split( /,\s*/ );
+        }
+        function extractLast( term ) {
+            return split( term ).pop();
+        }
+        $(".selectValue")
+       .bind( "keydown", function( event ) {
+                if ( event.keyCode === $.ui.keyCode.TAB &&
+                        $( this ).data( "ui-autocomplete" ).menu.active ) {
+                    event.preventDefault();
+                }
+            })
+        .autocomplete({
+            minLength: 0,
+            source: function( request, response ) {
+                // delegate back to autocomplete, but extract the last term
+                response( $.ui.autocomplete.filter(
+                    {!jsonDescriptionData}, extractLast( request.term ) ) );
+            },
+            focus: function() {
+                // prevent value inserted on focus
+                return false;
+            },
+            select: function( event, ui ) {
+                var terms = split( this.value );
+                // remove the current input
+                terms.pop();
+                // add the selected item
+                terms.push( ui.item.value );
+                // add placeholder to get the comma-and-space at the end
+                //terms.push( "" );
+                //this.value = terms.join( "" );
+                this.value = terms;
+                return false;
+            }
+        });
+       
+    });
+    </script>
+
+</apex:page>

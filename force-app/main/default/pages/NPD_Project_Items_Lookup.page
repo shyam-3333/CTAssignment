@@ -1,0 +1,99 @@
+<apex:page controller="NPDCreateProjectItemsController" title="Search" 
+  showHeader="false" 
+  sideBar="false" 
+  tabStyle="Account" 
+  id="pg">
+    <script>      
+        
+        function RecfillIn(PIItemRecString)
+        {
+              var winMain=window.opener;
+              if (null==winMain)
+              {
+                 winMain=window.parent.opener;
+              }
+              var ele=winMain.document.getElementById('{!$CurrentPage.parameters.PItemRec}');              
+              ele.value=PIItemRecString.split(",").join(","+"\n");
+              CloseWindow();
+        }
+
+ 
+        function CloseWindow()        
+        {            
+            window.close();
+            /*var winMain=window.opener;
+            if (null==winMain)
+            {             
+             winMain=window.parent.opener;
+            }*/
+            
+        }
+    </script>
+    <apex:form >
+    <apex:outputPanel id="page" layout="block" style="margin:5px;padding:10px;padding-top:2px;">
+    <apex:tabPanel switchType="client" selectedTab="name1" id="tabbedPanel">
+        <apex:tab label="Search" name="tab1" id="tabOne">    
+        <apex:outputPanel id="pnlSearchResults" style="margin:10px;height:350px;overflow-Y:auto;" layout="block">
+        <apex:pageBlock id="searchResults"> 
+            <apex:pageBlockTable value="{!projectItemWrapperList}" var="pi" id="tblResults">
+                <apex:column >
+                <apex:facet name="header">
+                <apex:outputPanel >Check</apex:outputPanel>
+                </apex:facet>
+                <apex:inputcheckbox value="{!pi.selected}">
+                
+                </apex:inputcheckbox>
+                </apex:column>
+                <!-- <apex:column >
+                <apex:facet name="header">
+                <apex:outputPanel >Name</apex:outputPanel>
+                </apex:facet>
+                <apex:outputLink value="{!pi.rec}">{!pi.rec}</apex:outputLink>
+                </apex:column>-->
+                 <apex:column >
+                <apex:facet name="header">
+                <apex:outputPanel >Titan SNo</apex:outputPanel>
+                </apex:facet>
+                <apex:outputText value="{!pi.projectItem.Titan_Sr_No__c}"></apex:outputText>
+                </apex:column>
+                <apex:column >
+                <apex:facet name="header">
+                <apex:outputPanel >Title</apex:outputPanel>
+                </apex:facet>
+                <apex:outputText value="{!pi.projectItem.Title__c}"></apex:outputText>
+                </apex:column>
+                <apex:column >
+                <apex:facet name="header">
+                <apex:outputPanel >Complexity</apex:outputPanel>
+                </apex:facet>
+                <apex:outputText value="{!pi.projectItem.Complexity__c}"></apex:outputText>
+                </apex:column>
+                <apex:column >
+                <apex:facet name="header">
+                <apex:outputPanel >Lead Time</apex:outputPanel>
+                </apex:facet>
+                <apex:outputText value="{!pi.projectItem.Id}"></apex:outputText>
+                </apex:column>
+                <apex:column >
+                <apex:facet name="header">
+                <apex:outputPanel >Department</apex:outputPanel>
+                </apex:facet>
+                <apex:outputText value="{!pi.projectItem.Department__c}"></apex:outputText>
+                </apex:column>
+                <apex:column >
+                <apex:facet name="header">
+                <apex:outputPanel >Item Type</apex:outputPanel>
+                </apex:facet>
+                <apex:outputText value="{!pi.projectItem.Item_Type__c}"></apex:outputText>
+                </apex:column>
+                
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        </apex:outputPanel>            
+            <apex:commandButton value="OK" action="{!doProjectItemRecSelection}" oncomplete="RecfillIn('{!strPIRecName}')"/>
+            <apex:commandButton value="Cancel"  onclick="CloseWindow()"/> 
+        </apex:tab>      
+    </apex:tabPanel>
+    </apex:outputPanel>
+    </apex:form>
+</apex:page>

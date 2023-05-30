@@ -1,0 +1,35 @@
+<apex:page controller="ProductInsertEmailAttachment" showHeader="false" renderAs="PDF"  cache="true" >
+      <apex:stylesheet value="{!$Resource.pdfdownloadCSS}" /> 
+    <head>
+        <style>
+            
+            img {
+            width:60px!important;
+            }
+        </style>
+    </head>
+    <body>        
+        <apex:pageBlock >
+            <apex:pageBlockTable value="{!proList}" var="dwnld" border="1px solid black" style="font-size:14px">
+            <!--    <apex:column value="{!dwnld.SKU_Code__c}"/>
+                <apex:column headerValue="Vendor Prod Code" value="{!dwnld.name}" style="text-align:center"/>
+                <apex:column value="{!dwnld.Quantity__c}" style="text-align:center"/>
+                <apex:column value="{!dwnld.Cost__c}"/>
+                <apex:column value="{!dwnld.Base_Colour__c}"/>
+                <apex:column value="{!dwnld.Photo__c}"  styleClass="img_width" />  -->
+                
+                <apex:column value="{!dwnld.vendor_custom__r.Vendor_Code__c}" style="text-align:center"/>
+            <apex:column value="{!dwnld.Vendor_Name__c}"/>
+            <apex:column value="{!dwnld.SKU_Code__c}"/>
+            <apex:column value="{!dwnld.Photo__c}"  styleClass="img_width" />
+            <apex:column headerValue="Vendor Prod Code" value="{!dwnld.name}" style="text-align:center"/>
+            <apex:column value="{!dwnld.Product_Category_Taneira__c}"/>
+            <apex:column value="{!dwnld.Cluster__c}"/>
+            <apex:column value="{!dwnld.Quantity__c}" style="text-align:center"/>
+            <apex:column value="{!dwnld.Buyers_Cost__c}"/>
+            <apex:column value="{!dwnld.Base_Colour__c}"/>
+                
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+    </body>
+</apex:page>

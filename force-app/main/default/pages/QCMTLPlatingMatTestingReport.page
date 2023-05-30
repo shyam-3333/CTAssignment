@@ -1,0 +1,193 @@
+<apex:page controller="QCMTLPlatingReportController" renderAs="PDF" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" showHeader="false" doctype="html-5.0" id="pge">
+    <head>
+        <style>
+            @page{
+            margin-left:1.00in;margin-right:0.10in;
+            margin-top:0.50in;
+            }
+        </style>
+    </head>      
+    
+    <c:StylingPdfContent type="header" >  
+        <div style="page-break-after:always;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;text-align:right;">Page <span class="pagenumber" /> of <span class="pagecount"/></div>
+        
+    </c:StylingPdfContent>
+
+
+    <div align="center" style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:18px;"><b>MTL Testing Report</b></div><br/>
+            <apex:pageMessages />
+             
+            <table width="100%" cellspacing="0" border="1" align="left" style="border-bottom-style: none; font-family:Arial,Helvetica,sans-serif; font-size:10pt;color:#000;">
+                <tr style="line-height: 25px;">                    
+                    <td class="fieldLabel">Report Ref Number</td>
+                    <td>
+                        <apex:outputLabel value="{!qcMtlComp.Report_Reference_Number__c}"></apex:outputLabel>
+                    </td>
+                    <td class="fieldLabel">Record Status</td>
+                    <td width="25%">
+                        <apex:outputLabel value="{!qcMtlComp.Record_Status__c}"></apex:outputLabel> 
+                    </td>   
+                </tr>
+                <tr style="line-height: 25px;">  
+                        <td class="fieldLabel">Material Testing Type</td>
+                        <td><apex:outputLabel value="{!qcMtlComp.Testing_Type__c}"></apex:outputLabel></td>
+                        
+                    <td class="fieldLabel">Supplier Name</td>
+                    <td><apex:outputLabel value="{!qcMtlComp.Supplier_Name_New__r.Name}"></apex:outputLabel></td>
+                </tr>
+                
+                <tr style="line-height: 25px;">  
+                        <td class="fieldLabel">Base material name </td>
+                        <td><apex:outputLabel value="{!qcMtlComp.Material__c}"></apex:outputLabel></td>
+                       
+                   <td class="fieldLabel">Material Sample Type</td>
+                    <td><apex:outputLabel value="{!qcMtlComp.Material_Sample_Type__c}"></apex:outputLabel></td>
+                </tr>
+                
+                <tr style="line-height: 25px;">  
+                    <td class="fieldLabel">Plating Type</td>
+                    <td><apex:outputLabel value="{!qcMtlComp.Plating_Type__c}"></apex:outputLabel></td>
+                    <td class="fieldLabel">Document Status</td>
+                    <td><apex:outputLabel value="{!qcMtlComp.Document_Status__c}"></apex:outputLabel></td>
+                </tr>
+               
+                <tr style="line-height: 25px;">  
+                    <td class="fieldLabel">Sample Size</td>
+                    <td><apex:outputLabel value="{!qcMtlComp.Sample_Size_Plating__c}"></apex:outputLabel></td>
+                    <td class="fieldLabel">Sample Received Date</td>
+                    <td>
+                        <apex:outputText value="{0,date,dd'/'MM'/'yyyy}"><apex:param value="{!qcMtlComp.Sample_Received_Date__c}" /></apex:outputText>
+                    </td>
+                </tr> 
+                <tr style="line-height: 25px;">  
+                     <td class="fieldLabel">Brand Name</td>
+                    <td><apex:outputLabel value="{!qcMtlComp.Brand__r.name}"></apex:outputLabel></td>
+                
+                     <td class="fieldLabel">Sample Received From</td>
+                    <td><apex:outputLabel value="{!qcMtlComp.Sample_Received_From__c}"></apex:outputLabel></td>
+                </tr>
+                <!--added newly on 04/03/19 -->
+                <tr style="line-height: 25px;">  
+                    <td class="fieldLabel">Titan Specification Reference</td>
+                    <td><apex:outputLabel value="{!qcMtlComp.Titan_Specification_Reference__r.Name}"></apex:outputLabel></td>
+                    <td class="fieldLabel">Specification Revision</td>
+                    <td><apex:outputLabel value="{!qcMtlComp.Specification_revision__c}"></apex:outputLabel></td>
+                </tr>
+               
+                <tr style="line-height: 25px;">  
+                    <td class="fieldLabel">Part Name</td>
+                    <td><apex:outputLabel value="{!qcMtlComp.Part_Name__c}"></apex:outputLabel></td>
+                    <td class="fieldLabel">D.C. Number</td>
+                    <td><apex:outputLabel value="{!qcMtlComp.Docket_Number__c}"></apex:outputLabel></td>
+                </tr>
+                <tr style="line-height: 25px;">  
+                    <td class="fieldLabel">Department</td>
+                    <td><apex:outputLabel value="{!qcMtlComp.Department__c}"></apex:outputLabel></td>
+                
+                     <td class="fieldLabel">Required Test</td>
+                    <td><apex:outputLabel value="{!qcMtlComp.Required_Test__c}"></apex:outputLabel></td>
+                </tr>
+                 <tr style="line-height: 25px;">  
+                     
+                    <!--<td class="fieldLabel">PMC Department</td>
+                    <td><apex:outputLabel value="{!qcMtlComp.Department_PMC__c}"></apex:outputLabel></td>-->
+                </tr>
+                <tr style="line-height: 25px;">  
+                    <td class="fieldLabel">Batch Quantity</td>
+                    <td><apex:outputLabel value="{!qcMtlComp.Batch_Quantity__c}"></apex:outputLabel></td>
+                    <td class="fieldLabel">Model</td>
+                    <td><apex:outputLabel value="{!qcMtlComp.Model__c}"></apex:outputLabel></td>
+                </tr>
+                <tr style="line-height: 25px;">  
+                        <td class="fieldLabel" >General Observation</td>
+                        <td colspan="3" ><apex:outputText value="{!qcMtlComp.General_Observation__c}"></apex:outputText></td>
+                         
+                    
+                </tr>
+                <tr style="line-height: 25px;">  
+                        <td class="fieldLabel" >Remarks</td>
+                        <td colspan="3" ><apex:outputText value="{!qcMtlComp.Remarks__c}"></apex:outputText></td>
+                        
+                </tr>
+                <tr> 
+                        <td class="fieldLabel">Final Verdict</td>
+                        <td><apex:outputLabel value="{!qcMtlComp.Final_Verdict__c}"></apex:outputLabel></td>
+                        <td class="fieldLabel">Source</td>
+                    <td ><apex:outputLabel value="{!qcMtlComp.Source__c}"></apex:outputLabel></td>
+                    
+                </tr>
+                <tr>
+                        
+                        <td class="fieldLabel">Plater Name</td>
+                        <td colspan="3" ><apex:outputLabel value="{!qcMtlComp.Plater_Name__r.Name}"></apex:outputLabel></td>
+                  </tr>
+             
+                <!--till here-->
+             </table>
+             
+ 
+        
+            <table cellspacing="0" cellpadding="3" align="left" border="1"  width="100%" style="border-top-style: none;border-bottom-style: none;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">  
+              <tr> <td colspan="7" style="font-family:Arial,Helvetica,sans-serif;background:#f7ffe6;font-weight:bold;font-size:16px; color:#2e5cb8;"><div align="center"><b>MTL Testing Description</b></div></td> </tr>
+           
+              <tr>
+                  <td width="20%" style="background:#D3D3D3;"><b>Test</b></td>   
+                  <td width="20%" style="background:#D3D3D3;"><b>Specification</b></td> 
+                  <td  width="20%" style="background:#D3D3D3;"><b>Observation</b></td>
+                  <td  width="10%" style="background:#D3D3D3;"><b>Min</b></td>
+                  <td  width="10%" style="background:#D3D3D3;"><b>Max</b></td>
+                  <td width="20%" style="background:#D3D3D3;"><b>Conclusion</b></td>
+              </tr>
+                <apex:repeat value="{!qcmtlReslst}" var="responseLst" >
+                    <tr >
+                        <td>
+                            <b><apex:outputText value="{!responseLst.Name}" /></b>
+                        </td>
+                        <td>
+                            <apex:outputText value="{!responseLst.Standard_Defined_Value__c}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!responseLst.User_Defined_Value__c}" /> 
+                        </td>
+                        <td>
+                            <apex:outputText value="{!responseLst.Minimum__c}" /> 
+                        </td>
+                        <td>
+                            <apex:outputText value="{!responseLst.Maximum__c}" /> 
+                        </td>
+                        <td>
+                            <apex:outputText value="{!responseLst.Result__c }" />
+                        </td>
+                    </tr> 
+                </apex:repeat>       
+            </table>
+
+
+            <div style="clear:both;height:50px;"> </div> 
+            <table cellspacing="0" cellpadding="3" align="left" border="1"  width="100%" style="border-top-style: none; border-bottom-style: none;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">  
+            <tr> <td colspan="9" style="font-family:Arial,Helvetica,sans-serif;background:#f7ffe6;font-weight:bold;font-size:16px; color:#2e5cb8;"><div align="center"><b>Approval Details</b></div></td> </tr>
+                
+         
+            <tr>
+               <td width="30%"><div align="center" style="color:black;font-size:10pt;"><b>Product Approval</b></div> </td>
+               <td width="23%"><div align="center" style="color:black;font-size:10pt;"><b>Inspected </b></div></td>
+               <td width="23%"><div align="center" style="color:black;font-size:10pt;"><b>Checked </b> </div></td>
+               <td width="24%"><div align="center" style="color:black;font-size:10pt;"><b>Approved </b> </div></td>
+            </tr>
+            <tr>
+                <td>
+                     <div align="center">   <apex:outputtext value="{!qcMtlComp.Final_Verdict__c}"  style="font-size:16pt;color:{!IF(qcMtlComp.Final_Verdict__c == 'Accept', 'green', 'red')}"/></div>
+                </td>
+              <td>
+                  <div align="center"> <apex:outputtext value="{!submitterName}"  style="font-size:10pt;color:{!IF(qcMtlComp.Final_Verdict__c != '', 'black', '')}"/></div>
+              </td>
+              <td>
+                 <div align="center"> <apex:outputtext value="{!submitterName}"  style="font-size:10pt;color:black;"/> </div>
+              </td>      
+              <td>
+                  <div align="center"> <apex:outputtext value="{!secondApprover}"  style="font-size:10pt;color:black;"/> </div>
+              </td>
+            </tr>
+      
+        </table>  
+</apex:page>

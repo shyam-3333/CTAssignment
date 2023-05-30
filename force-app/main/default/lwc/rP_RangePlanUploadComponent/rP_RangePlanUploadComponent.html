@@ -1,0 +1,157 @@
+<template>
+    <c-custom-toast-message-component auto-close-time="8000"></c-custom-toast-message-component>
+        <template if:true={showLoadingSpinner}>
+            <div id="myDIV" style="z-index: 10000 !important;">
+                <lightning-spinner alternative-text="Uploading......" size="medium" style="z-index: 10000 !important;"></lightning-spinner>
+            </div>
+        </template>
+    
+    <lightning-card title="RangePlan Master Upload" icon-name="standard:sort_policy">
+        <div class="slds-text-body_small slds-text-color_error slds-p-left_small">{noRecordFound}
+        </div>
+        <lightning-layout multiple-rows="true" vertical-align="end">
+            <lightning-layout-item size="2" padding="around-small">
+                <lightning-input type="text" label="Enter Order ID" value={searchKey} 
+                onchange={handelSearchKey} placeholder="Type here... ">
+                </lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="2" padding="around-small">
+                <lightning-button class="slds-p-right_small" title="search" label="Search" variant="brand-outline" onclick={SearchAccountHandler}>
+                </lightning-button>
+                <template if:true={editdata}>
+                    <lightning-button class="slds-p-right_small" title="save" label="Save" variant="brand-outline" disabled={expval}  onclick={handleClick}>
+                    </lightning-button>
+                </template>
+                <template if:false={editdata}>
+                <lightning-button class="slds-p-right_small" title="Edit" label="Edit" variant="brand-outline" disabled={isTrue}  onclick={handleedit}>
+                </lightning-button>
+                </template>
+            </lightning-layout-item>
+        </lightning-layout>
+    <!-- -------------------------------------- -->
+
+    <div class="slds-box slds-theme_default">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+            <thead>
+                <tr>
+                    <th class="" scope="col">
+                        <div class="slds-truncate slds-text-align_center" title="Order Id">Order Id</div>
+                        </th>
+                        <th class="" scope="col">
+                        <div class="slds-truncate slds-text-align_center" title="Source Type">Source Type</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate slds-text-align_center" title="Product Type">Product Type</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate slds-text-align_center" title="Expected Arrival">Expected Arrival</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate slds-text-align_center" title="Total Quantity">Total Quantity</div>
+                            </th>
+                            <th class="" scope="col">
+                            <div class="slds-truncate slds-text-align_center" title="Total Value">Total Value</div>
+                        </th>   
+                </tr>
+            </thead>
+            <tbody>
+                <template if:true={visible}>
+                    <tr >
+                       <td class ="slds-text-align_center">{orderId.orderName}</td>
+                        <td class ="slds-text-align_center">{orderId.orderSourceType} </td>
+                        <td class ="slds-text-align_center">{orderId.orderProductType}</td>
+                        <td class ="slds-text-align_center">{orderId.orderExpectedArrival} </td>
+                        <td class ="slds-text-align_center">{orderId.orderTotalQuantity}</td>
+                        <td class ="slds-text-align_center">{orderId.orderTotalValue}</td>
+                    </tr>
+                </template>
+                <template if:true={editdata}>
+                    <tr >
+                        <td class ="slds-text-align_center">{orderId.orderName}</td>
+                        <td>
+                        <lightning-input type="text" value={orderId.orderSourceType} onchange={changeOfSourceType}></lightning-input>
+                        </td>
+                        <td><lightning-combobox
+                            name="progress"
+                            value={orderId.orderProductType}
+                            placeholder="Select Product Type"
+                            options={options}
+                            onchange={changeOfProductType} >
+                </lightning-combobox></td>
+                        <td><lightning-input type="date" value={orderId.orderExpectedArrival} onchange={changeOfExpectedArrival}>
+                        </lightning-input>
+                        </td>
+                        <td class ="slds-text-align_center">{orderId.orderTotalQuantity}</td>
+                        <td class ="slds-text-align_center">{orderId.orderTotalValue}</td>
+                    </tr>
+                </template>
+            </tbody>
+        </table>
+    </div>
+    <lightning-layout multiple-rows="true" vertical-align="end">
+        <lightning-layout-item padding="around-small">
+            <lightning-input label="Upload Files" name="file uploader" onchange={handleFilesChange} type="file" accept=".csv" multiple></lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small">
+                <lightning-button class="slds-p-right_small" label="Upload CSV File" onclick ={handleSave} variant="brand-outline"></lightning-button>
+            <!-- <lightning-button class="slds-p-right_small" title="uploadFile" label="Upload File" onclick={handleSave} variant="brand-outline" disabled={isTrue}></lightning-button> -->
+             <lightning-button class="slds-p-right_small" title="download" label="Download" variant="brand-outline" onclick={downloadCSV}></lightning-button>
+            </lightning-layout-item>
+    </lightning-layout>
+    <div class="slds-text-body_small slds-text-color_error slds-p-left_small">{validationError}
+    </div>
+    <div class="slds-text-body_small slds-text-color_success slds-p-left_small">{fileName}
+    </div>
+    <br/>
+    <div class="slds-box slds-theme_default">
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+            <thead>
+                <tr>
+                    <th class="" scope="col">
+                        <div class="slds-truncate slds-text-align_center" title="L1(OFC)">L1(OFC)</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate slds-text-align_center" title="L2(OFC)">L2(OFC)</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate slds-text-align_center" title="L3(OFC)">L3(OFC)</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate slds-text-align_center" title="Price Band">Price Band</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate slds-text-align_center" title="L4(Zari Type)">L4(Zari Type)</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate slds-text-align_center" title="Cost Band">Cost Band</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate slds-text-align_center" title="Average Cost">Average Cost</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate slds-text-align_center" title="Total Order Quantity">Total Order Quantity</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate slds-text-align_center" title="Order Value">Order Value</div>
+                    </th>
+                    <th class="" scope="col">
+                        <div class="slds-truncate slds-text-align_center" title="Remarks">Remarks</div>
+                    </th>					
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+            </thead>
+        </table>
+    </div>
+    <c-confirmation-box-component title='CSV File Errors'
+    message='Do you want to proceed?'
+    confirm-label='Close'
+    cancel-label='Close'
+    visible={isDialogVisible}
+    original-message={originalMessage}
+    name="confirmModal"
+    onclick={handleChange}>
+    </c-confirmation-box-component>
+    </lightning-card>
+</template>

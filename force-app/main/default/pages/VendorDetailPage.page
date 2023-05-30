@@ -1,0 +1,872 @@
+<apex:page standardController="Vendor__c" extensions="VendorDetailPageController" standardStylesheets="false" showHeader="false" readOnly="true" sidebar="false" id="detailPage" tabStyle="Vendor__c" lightningStylesheets="true">
+    <apex:includeScript value="{!URLFOR($Resource.JqueryA, 'js/jquery-1.6.2.min.js')}" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <apex:includeScript value="{!URLFOR($Resource.JqueryA, 'js/jquery-ui-1.8.16.custom.min.js')}" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+    <script src="../../soap/ajax/36.0/connection.js" type="text/javascript"></script>
+     <style type="text/css">
+    .design_table h3 {
+    float: left;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 0 0 0 5px;
+}
+    .design_table .pbHeader table td {
+    background: #1c91b3 none repeat scroll 0 0;
+    color: #fff; width:50%;
+}
+
+.design_table .pShowMore > a {
+  background: #f9fafa none repeat scroll 0 0;
+  color: #1c91b3;
+  display: inline-block;
+  margin: 10px 4px;
+  padding: 8px 10px;text-decoration: none;
+}
+
+.design_table .pShowMore > a:hover{ background:#1C91B3; color:#fff;}
+
+ .design_table tr.even{ background:#f9fafa;}
+ .design_table tr.odd{background:#fff;}
+    .design_table tr {
+    border-bottom: 1px solid #f2f2f2;
+}
+        .design_table th{
+        padding: 8px 10px;
+        }
+         .design_table td{
+        padding: 8px 10px;
+        }
+      .design_table .btn:hover{  
+         background-color: #f4f6f9;
+         }
+         
+        .design_table .btn:focus {
+  box-shadow: 0 0 3px #0070d2;
+  outline: 0 none;
+}
+       .design_table .btn
+       { 
+        background-color: #fff;
+    border: 1px solid #d8dde6;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    text-align: center;
+    vertical-align: middle;
+      border-radius: 0.25rem;
+    color: #0070d2;
+    display: none;
+    font-size: 0.75rem;
+    line-height: 1.875rem;
+        }
+        body {
+            background: #d9ecf1;
+        }
+        
+        .slds-page-header {
+            background: #1c91b3;
+        }
+        
+        .slds-page-header__title,
+        .slds-text-title--caps {
+            color: #fff;
+        }
+        
+        .slds-section-title--divider {
+            background: #1c91b3;
+        }
+        
+        .slds-section__title-action {
+            background: #1c91b3;
+            color: #fff;
+        }
+        
+        .slds-section__title-action:active,
+        .slds-section__title-action:focus,
+        .slds-section__title-action:hover {
+            background: #1c91b3;
+            color: #fff;
+        }
+        
+        .slds-button--brand {
+            background-color: #0d4150;
+            border: 1px solid #0d4150;
+        }
+        
+        .slds-form-element__label {
+            color: #0d4150;
+        }
+        
+        .slds-button--brand:focus,
+        .slds-button--brand:hover {
+            background-color: #1c91b3;
+            border: 1px solid #1c91b3;
+        }
+        
+        .lookup_img {
+            position: absolute;
+            right: 5px;
+            top: 2px;
+            width: 30px;
+        }
+        
+        #detail {
+            margin-bottom: 5px;
+        }
+        
+        .lookup_block {
+            position: relative;
+        }
+        
+        .lookup_block a {
+            background: rgba(0, 0, 0, 0) url("/resource/1484545177000/lookupIcon_Taneira") no-repeat scroll right center / 65% auto;
+            border-left: medium none;
+            height: 32px;
+            position: absolute;
+            right: 0;
+            width: 30px;
+            z-index: 100;
+        }
+        
+        .errorMsg {
+            color: red !important;
+        }
+        
+        .dummy {
+            padding-left: 0cm;
+        }
+        
+        .col--padded {
+            padding-right: .100rem;
+            padding-left: .100rem;
+        }
+        
+        body {
+            //  background-color:#F0FFF0;
+        }
+        
+        .slds-form--inline .slds-form-element,
+        .slds-form--inline .slds-form-element__control,
+        .slds-form--inline .slds-form-element__label {
+            display: block!important;
+        }
+    </style>
+
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <apex:stylesheet value="{!$Resource.Slds215}" />
+
+    <body>
+
+        <div class="Titan">
+            <div class="slds-grid slds-wrap" id="theDivId">
+                <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2 col--padded">
+
+                    <div class="slds-page-header">
+                        <div class="slds-grid">
+                            <div class="slds-col slds-has-flexi-truncate">
+                                <div class="slds-media slds-no-space slds-grow">
+                                    <div class="slds-media__body">
+                                        <p class="slds-text-title--caps slds-line-height--reset">Vendor</p>
+                                        <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate" title="this should match the Record Title">{!Vendor__c.Name}</h1>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <apex:form id="prodForm1" styleClass="slds-form--inline" rendered="{!isLocked}">
+                        <div class="slds stockit" height="100%">
+                            <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+                                <div class="slds-modal__container">
+
+                                    <div class="slds-modal__content slds-p-around--medium">
+                                        <h4>Record is locked</h4>
+                                    </div>
+                                    <div class="slds-modal__footer">
+                                        <input type="Button" value="OK" Class="slds-button slds-button--neutral" onclick="invokeCancel('{!Vendor__c.id}')" />
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-backdrop slds-backdrop--open"></div>
+                        </div>
+                    </apex:form>
+                    <div class="slds-tabs--default">
+                        <ul class="slds-tabs--default__nav" role="tablist">
+                            <li class="slds-tabs--default__item slds-active" title="Detail" role="presentation"><a class="slds-tabs--default__link" href="javascript:void(0);" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-default-1" id="tab-default-1__item">DETAIL</a></li>
+                            <li class="slds-tabs--default__item " title="Related" role="presentation"><a class="slds-tabs--default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2" id="tab-default-2__item">RELATED</a></li>
+
+                        </ul>
+                        
+                        <div id="tab-default-1" class="slds-tabs--default__content slds-show" role="tabpanel" aria-labelledby="tab-default-1__item">
+                        <apex:form id="prodForm" styleClass="slds-form--inline">
+                    
+                                <apex:outputPanel id="prodId" layout="block" style="height:100%;overflow:visible;">
+                                    <div class="slds-panel__section">
+                                        <div style="width:100%">
+                                            <div class="slds-form-element" role="group" style="width:100%">
+                                                <center>
+
+                                                    <apex:commandButton value="Edit" StyleClass="slds-button slds-button--neutral" rendered="{!IF($Profile.Name =='System Administrator' || $Profile.Name =='Purchase', true,false)}" action="{!editAcc}" />
+                                                   <!-- <apex:commandButton value="Submit For Approval" StyleClass="slds-button slds-button--neutral" id="approvalBtn" onclick = "confirmSubmit()" /> -->
+                                                    <apex:actionfunction action="{!submitAndProcessApprovalRequest}" name="submitAndProcessApprovalRequest" />
+                                                    <apex:outputPanel rendered="{!!isLocked}" >
+                                                    <input type="Button" value="Submit For Approval" Class="slds-button slds-button--neutral" onclick="confirmSubmit()" /></apex:outputPanel>
+                                                    <apex:outputPanel rendered="{!!isAccLocked }" >
+                                                    <apex:commandButton value="Delete" StyleClass="slds-button slds-button--neutral" action="{!delete}" /></apex:outputPanel>
+                                                    <br/><br/>
+
+                                                </center>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <apex:actionStatus id="statusId">
+                                        <apex:facet name="start">
+                                            <div class="slds-spinner_container slds-is-fixed">
+                                                <div role="status" class="slds-spinner slds-spinner--large slds-spinner--brand slds-is-relative">
+                                                    <span class="slds-assistive-text">Full Screen Loading</span>
+                                                    <div class="slds-spinner__dot-a"></div>
+                                                    <div class="slds-spinner__dot-b"></div>
+                                                </div>
+                                            </div>
+                                        </apex:facet>
+                                    </apex:actionStatus>
+
+                                    <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large">
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Vendor Name</b>
+                                                <abbr class="slds-required" title="required">*</abbr>
+                                            </label> &nbsp;
+                                                    <apex:outputText value="{!Vendor__c.name}" styleClass="" id="vendorNamId" />
+
+                                                </div>
+
+                                            </div>
+                                            <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Vendor Code</b>
+                                               
+                                            </label>&nbsp;
+                                                    <apex:outputText value="{!Vendor__c.Vendor_Code__c}" styleClass="" id="codeId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Type</b>
+                                               
+                                            </label>&nbsp;
+                                                    <apex:outputText value="{!Vendor__c.Type__c}" styleClass="" id="TypeId" />
+
+                                                </div> <br/>
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Category</b>
+                                               
+                                            </label>&nbsp;
+                                                    <apex:outputText value="{!Vendor__c.Category__c}" styleClass="" id="categoryId" />
+
+                                                </div>
+                                            </div> <br/>
+
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Approval Status</b>
+                                               
+                                            </label>&nbsp;
+                                                    <apex:outputText value="{!Vendor__c.Approval_Status__c}" styleClass="" id="approvalId" />
+
+                                                </div>
+                                            </div> <br/>
+
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Approval Date</b>
+                                               
+                                            </label>&nbsp;
+                                                    <apex:outputField value="{!Vendor__c.Approval_Date__c}" styleClass="" id="approvalDateId" />
+
+                                                </div>
+                                            </div> <br/>
+
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Vendor Owner</b>
+                                                
+                                            </label>&nbsp;
+                                                      <apex:outputText value="{!Vendor__c.Owner.Name}" styleClass="" id="ownerId"  /> 
+                                                </div>
+                                            </div><br/>
+                                        </div>
+                                        
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Pricing Type</b>
+                                            </label>&nbsp;
+                                                    <apex:outputText value="{!Vendor__c.Pricing_Type__c}" styleClass="" id="pricingTypeId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4" />
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4" />
+                                    </div>
+                                    <h3 class="slds-section-title--divider" style="width:100%">
+                                        <p class="slds-section__title-action">Address </p>
+                                    </h3><br/>
+                                    <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large">
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Title</b>
+                                               
+                                            </label>&nbsp;
+                                                    <apex:outputText value="{!Vendor__c.Title__c}" styleClass="" id="TitleId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Name 1</b>
+                                               
+                                            </label>&nbsp;
+                                                    <apex:outputText value="{!Vendor__c.Name_1__c}" styleClass="" id="Name1Id" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Name 2</b>
+                                               
+                                            </label>&nbsp;
+                                                    <apex:outputText value="{!Vendor__c.Name_2__c}" styleClass="" id="Name2Id" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Mobile/Phone</b>
+                                               
+                                            </label>&nbsp;
+                                                    <apex:outputText value="{!Vendor__c.Mobile_Phone__c}" styleClass="" id="PhoneId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Email Id</b>
+                                               
+                                            </label>&nbsp;
+                                                    <apex:outputText value="{!Vendor__c.Email_Id_Vendor__c}" styleClass="" id="emailId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Country</b>
+                                               
+                                            </label>&nbsp;
+                                                    <apex:outputText value="{!Vendor__c.Country__c}" styleClass="" id="CountryId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Postal Code</b>
+                                               
+                                            </label>&nbsp;
+                                                    <apex:outputText value="{!Vendor__c.Postal_Code__c}" styleClass="" id="PostId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4" />
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4" />
+                                    </div>
+                                    <h3 class="slds-section-title--divider" style="width:100%">
+                                        <p class="slds-section__title-action">Vendor Control </p>
+                                    </h3><br/>
+                                    <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large">
+
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>PAN Number</b>
+                                               
+                                            </label>&nbsp;
+                                                    <apex:outputText value="{!Vendor__c.PAN_Number__c}" styleClass="" id="numId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>GST</b></label>&nbsp;
+
+                                                    <apex:outputText value="{!Vendor__c.TIN_CST_Number__c}" styleClass="" id="tinId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4" />
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4" />
+                                    </div>
+                                    <h3 class="slds-section-title--divider" style="width:100%">
+                                        <p class="slds-section__title-action">Payment Transaction Accounting </p>
+                                    </h3><br/>
+
+                                    <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large">
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Payment Term</b>
+                                               
+                                            </label>&nbsp;
+                                                    <apex:outputText value="{!Vendor__c.Payment_Terms__c}" styleClass="" id="payId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Payment Methods</b></label>&nbsp;
+
+                                                    <apex:outputText value="{!Vendor__c.Payment_Methods__c}" styleClass="" id="paymthdId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4" />
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4" />
+                                    </div>
+                                    <h3 class="slds-section-title--divider" style="width:100%">
+                                        <p class="slds-section__title-action">Purchasing data</p>
+                                    </h3><br/>
+                                    <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large">
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Account Currency</b>&nbsp;
+                                               
+                                            </label>
+                                                    <apex:outputText value="{!Vendor__c.CurrencyIsoCode}" styleClass="" id="currencyId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Incoterms </b></label>&nbsp;
+
+                                                    <apex:outputText value="{!Vendor__c.Incoterms__c}" styleClass="" id="incodId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4" />
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4" />
+                                    </div>
+                                    <h3 class="slds-section-title--divider" style="width:100%">
+                                        <p class="slds-section__title-action">Bank Details</p>
+                                    </h3><br/>
+                                    <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large">
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Bank Name</b>&nbsp;
+                                               
+                                            </label>
+                                                    <apex:outputText value="{!Vendor__c.Name__c}" styleClass="" id="nameId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>IFSC</b></label>&nbsp;
+
+                                                    <apex:outputText value="{!Vendor__c.IFSC__c}" styleClass="" id="ifscId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Account Number</b></label>&nbsp;
+
+                                                    <apex:outputText value="{!Vendor__c.Account_Number__c}" styleClass="" id="accNumdId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>TaxCode</b></label>&nbsp;
+
+                                                    <apex:outputText value="{!Vendor__c.TaxCode__c}" styleClass="" id="taxCode" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4" />
+                                    </div>
+                                    <h3 class="slds-section-title--divider" style="width:100%">
+                                        <p class="slds-section__title-action">Taneira Contacts</p>
+                                    </h3><br/>
+
+                                    <div class="slds-grid slds-wrap slds-grid--pull-padded slds-align--absolute-center slds-m-horizontal--xx-large">
+
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Mail ID</b>
+                                               
+                                            </label>&nbsp;
+                                                    <apex:outputText value="{!Vendor__c.Mail_ID__c}" styleClass="" id="mailId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4">
+                                            <div class="">
+                                                <div>
+                                                    <label class="slds-label" for="text-input-01"><b>Phone No</b></label>&nbsp;
+
+                                                    <apex:outputText value="{!Vendor__c.Phone_No__c}" styleClass="" id="phoneNoId" />
+
+                                                </div>
+                                            </div> <br/>
+                                        </div>
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4" />
+                                        <div class="slds-col slds-p-horizontal--small slds-size--1-of-1 slds-medium-size--1-of-3 slds-large-size--1-of-4" />
+                                    </div>
+
+                                </apex:outputPanel>
+
+                            </apex:form>
+
+                        </div>
+                        
+                        <apex:outputPanel id="panel1Id">
+                        
+                        <div id="tab-default-2" class="slds-tabs--default__content slds-hide" role="tabpanel" aria-labelledby="tab-default-2__item">
+                          <apex:form >
+                                <article class="slds-card">
+                                    <div class="slds-card__header slds-grid">
+                                        <header class="slds-media slds-media--center slds-has-flexi-truncate">
+                                            <div class="slds-media__figure">
+                                                <span class="slds-icon_container slds-icon-standard-contact" title="description of icon when needed">
+                                              <svg class="slds-icon slds-icon--small" aria-hidden="true">
+                                                <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#contact"></use>
+                                              </svg>
+                                            </span>
+                                            </div>
+                                            <div class="slds-media__body">
+                                                <h2>
+                                                    <a href="javascript:void(0);" class="slds-card__header-link slds-truncate">
+                                                        <span class="slds-text-heading--small">Products</span>
+                                                    </a>
+                                                </h2>
+                                            </div>
+                                        </header>
+                                       <apex:actionStatus id="statusId" >       
+                                         <apex:facet name="start">
+                                         <div role="" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+                                             <div class="slds-spinner_container slds-is-fixed">
+                                                 <div role="status" class="slds-spinner slds-spinner--large slds-spinner--brand slds-is-relative">
+                                                     <span class="slds-assistive-text">Full Screen Loading</span>
+                                                     <div class="slds-spinner__dot-a"></div>
+                                                     <div class="slds-spinner__dot-b"></div>
+                                                </div>
+                                            </div>
+                                            </div>
+                                         </apex:facet>          
+                                      </apex:actionStatus>
+                                        <div class="slds-no-flex">
+                                            <!--<button class="slds-button slds-button--neutral" onclick="redirectToCreate()">New</button> -->
+                                            <apex:commandButton value="New" styleClass="slds-button slds-button--neutral" action="{!redirectToCreate}" status="statusId"/>
+                                            <apex:commandButton value="View All" styleClass="slds-button" action="{!viewAllProducts}" id="ViewAll" reRender="panelId" oncomplete="viewProdList()" rendered="{!isAllProd}" status="statusId"/>
+                                        </div>
+                                    </div>
+                                    <b><apex:outputlabel value="No Records to display" rendered="{!!isAllProd}" styleClass="slds-grid slds-wrap slds-grid--pull-padded slds-m-horizontal--xx-large" /></b>
+                                     <apex:outputPanel id="dummyId" rendered="{!isAllProd}">
+                                     
+                                    <div class="slds-card__body">
+                                    
+                                        <table class="slds-table slds-table--bordered slds-no-row-hover slds-table--cell-buffer">
+                                            <thead>
+                                                <tr class="">
+                                                    <th scope="col">
+                                                        <div class="slds-truncate" title="NAME">NAME</div>
+                                                    </th>
+                                                    <th scope="col">
+                                                        <div class="slds-truncate" title="SKU CODE">SKU CODE</div>
+                                                    </th>
+                                                    <th scope="col">
+                                                        <div class="slds-truncate" title="PRODUCT CATEGORY">PRODUCT CATEGORY</div>
+                                                    </th>
+
+                                                </tr>
+                                            </thead>
+                                            <apex:repeat value="{!Vendor__c.Products__r}" var="prod">
+                                                <tbody>
+                                                    <tr class="slds-hint-parent">
+                                                        <th scope="row">
+
+                                                            <div class="slds-truncate" title="Name">
+                                                                <apex:commandLink value="{!prod.Name}" onclick="openRecordView('{!prod.id}');return false;" />
+                                                               
+                                                            </div>
+                                                        </th>
+                                                        <td>
+                                                            <div class="slds-truncate" title="Company One">
+                                                                <apex:outputText value="{!prod.SKU_Code__c}" />
+                                                            </div>
+                                                        </td>
+                                                        <td>
+                                                            <div class="slds-truncate" title="Director of Operations">
+                                                                <apex:outputText value="{!prod.Product_Category_Taneira__c}" />
+                                                            </div>
+                                                        </td>
+
+                                                    </tr>
+                                                </tbody>
+                                            </apex:repeat>
+                                        </table>
+                                    </div>
+                                    </apex:outputPanel>
+                                    <div class="slds-card__footer"><span class="slds-assistive-text">entity type</span></div>
+                                </article>
+                                
+                               
+                                <div class="slds stockit" height="100%">
+                                 <apex:outputPanel style="display:none" id="panelId" >
+                                    <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+                                        <div class="slds-modal__container">
+
+                                            <div class="slds-modal__content slds-p-around--medium">
+                                                <article>
+                                                    <div class="slds-card__header slds-grid">
+                                                        <header class="slds-media slds-media--center slds-has-flexi-truncate">
+                                                             
+                                                            <div class="slds-media__figure">
+                                                                <span class="slds-icon_container slds-icon-standard-contact" title="description of icon when needed">
+                                                      <svg class="slds-icon slds-icon--small" aria-hidden="true">
+                                                        <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#contact"></use>
+                                                      </svg>
+                                                    </span>
+                                                            </div>
+                                                            <div class="slds-media__body">
+                                                            <button class="slds-button slds-modal__close slds-button--icon-inverse closeViewAll" title="Close" >
+                                                                <svg class="slds-button__icon slds-button__icon--large" aria-hidden="true">
+                                                                  <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                                                                </svg>
+                                                                <span class="slds-assistive-text">Close</span>
+                                                              </button>
+                                                                <h2>
+                                                                    <a href="javascript:void(0);" class="slds-card__header-link slds-truncate">
+                                                                        <span class="slds-text-heading--small">Products</span>
+                                                                    </a>
+                                                                </h2>
+                                                            </div>
+                                                        </header>
+
+                                                    </div>
+                                                    <div class="slds-card__body">
+                                                     
+                                                        <table class="slds-table slds-table--bordered">
+                            <thead>
+                                <tr class="slds-text-heading--label">
+                                    
+                                    <th focusable="true" class="slds-is-resizable" scope="col">                                                  
+                                        <span class="slds-truncate" title="SKU Code">Product Reference</span>
+                                    </th>
+                                    <th focusable="true" class="slds-is-resizable" scope="col">                                                  
+                                        <span class="slds-truncate" title="Product Name">SKU Code</span>
+                                     </th>
+                                     <th focusable="true" class="slds-is-resizable" scope="col">                                                  
+                                        <span class="slds-truncate" title="Product Category">Product Category</span>
+                                     </th>
+                                     
+                                     
+                                     <th focusable="true" class="slds-is-resizable" scope="col">                                                  
+                                        <span class="slds-truncate" title="Cost">Cost</span>
+                                     </th>
+                                     
+                                </tr> 
+                            </thead>
+                            <tbody>
+                                <apex:repeat value="{!prodListAll}" var="prod" rendered="{!IF(AND(NOT(ISBLANK(prodListAll)),prodListAll.size>0),true,false)}">
+                                    <tr class="slds-hint-parent" data-label="Select Product">
+                                        
+                                        <td role="gridcell" data-label="Product Reference">
+                                          <apex:commandLink value="{!prod.Name}" onclick="openRecordView('{!prod.id}');return false;" />
+                                          
+                                            
+                                        </td>
+                                        <td role="gridcell" data-label="SKU Code">
+                                            {!prod.SKU_Code__c}
+                                        </td>
+                                        <td role="gridcell" data-label="Product Category">
+                                            {!prod.Product_Category_Taneira__c}
+                                        </td>
+                                        <td role="gridcell" data-label="Cost Price">
+                                            {!prod.cost__c}
+                                        </td>
+                                        
+                                   </tr>
+                                </apex:repeat>
+                            </tbody>                        
+                        </table>
+                                                         
+                        </div>
+                    </article>
+                    <div class="slds-modal__footer">
+                     <input type="Button" value="Cancel" Class="slds-button slds-button--neutral" onclick="cancelPopup()" />
+                      
+
+                    </div>
+                   
+                </div>
+            </div>
+            </div>
+            <div class="slds-backdrop slds-backdrop--open"></div>
+           
+       </apex:outputPanel>
+        
+                               
+                               </div>
+                               </apex:form>
+                               <div class="design_table">
+                    <apex:relatedList list="ProcessSteps"/>  
+                </div>
+                        </div>
+                        
+               
+                        </apex:outputPanel>
+                        
+                    </div>
+            
+            
+                
+                
+                </div>
+            </div>
+        </div>
+
+
+        <script>
+            /*SLDS Tabs JS*/
+            var j$ = jQuery.noConflict();
+            j$('.slds-tabs--default__link,.slds-tabs--scoped__link').click(function() {
+                j$(this).parent().parent().find('.slds-tabs--default__link,.slds-tabs--scoped__link').attr('aria-selected', 'false');
+                j$(this).attr('aria-selected', 'true');
+                j$(this).parent().parent().find('.slds-tabs--default__link,.slds-tabs--scoped__link').attr('tabindex', '-1');
+                j$(this).attr('tabindex', '0');
+                j$(this).parent().addClass('slds-active').siblings().removeClass('slds-active');
+                j$(this).parent().parent().parent().find('.' + j$(this).parent().parent().parent().find('.slds-tabs--default__content,.slds-tabs--scoped__content')[0].classList[0]).removeClass('slds-show').addClass('slds-hide');
+                j$(this).parent().parent().parent().find('#' + j$(this).attr('aria-controls')).removeClass('slds-hide').addClass('slds-show');
+            });
+            /**** ***/
+            function invokeCancel(accId) {
+                if ((typeof sforce != 'undefined') && sforce && (!!sforce.one)) {
+                    if (accId != null && accId != '') {
+                        sforce.one.navigateToSObject(accId);
+                    }
+                } else {
+                    window.open('/' + accId, "_self");
+                }
+
+            }
+            $(document).ready(function() {
+                if('{!Message}' != ''){
+                          alert('{!Message}');
+                      }
+                $('.closeViewAll').click(function() {
+                  $('[id$=panelId]').css("display", "none");
+                });
+
+            });             function viewProdList(){
+             $('[id$=panelId]').css("display", "block");
+            }
+
+            /*function redirectToCreate() {
+                window.open('/apex/ProductCategorySelectPage?source=New');
+            } */
+            function confirmSubmit(){
+              var result = confirm('Ones submitted for approval cannot be recalled back.Confirm for Submit for Approval');
+              if(result == true){
+                  if('{!Vendor__c.Approval_Status__c}' == 'Pending' || '{!Vendor__c.Approval_Status__c}' == 'Rejected' || '{!Vendor__c.Approval_Status__c}' == 'Not submitted'){
+                      submitAndProcessApprovalRequest();
+                      
+                  }
+                  else{
+                      alert('This Record is not qualified for Approval');
+                  }
+                  
+              }
+               
+            }
+            function openRecordView(proId){
+             if ( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ){
+                       sforce.one.navigateToSObject(proId);
+                }       
+                else {
+                   window.open('/'+proId);
+                }
+        }
+        function cancelPopup(){
+            $('[id$=panelId]').css("display", "none");
+        }
+        </script>
+    </body>
+
+    </html>
+</apex:page>

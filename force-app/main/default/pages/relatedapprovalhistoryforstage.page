@@ -1,0 +1,16 @@
+<apex:page standardcontroller="NPD_Stage__c" showheader="false" extensions="NPD_ProjectDetailViewController_New">
+      <script src="https://code.jquery.com/jquery-1.8.2.js"></script>
+    <script src="/soap/ajax/26.0/connection.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/ui/1.9.0/jquery-ui.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.9.1/themes/base/jquery-ui.css"/>      
+    
+<script>
+   $j = jQuery.noConflict();
+   $j(document).ready(function(){   
+   $j("input[name='piSubmit']").hide();
+   });
+  </script>
+  
+  
+<apex:relatedList list="ProcessSteps" ></apex:relatedList>
+</apex:page>

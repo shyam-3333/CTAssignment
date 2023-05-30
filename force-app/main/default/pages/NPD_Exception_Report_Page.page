@@ -1,0 +1,138 @@
+<apex:page controller="NPD_Exception_Report_Controller" sidebar="false" id="mypage" standardStylesheets="false" showHeader="false" contentType="application/vnd.ms-excel#filename.xls" cache="true" language="en-US">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    </head>
+
+     <apex:form id="myForm">
+          <apex:outputPanel id="activityId">
+                <table border="1" align="center">
+                <tr style="font-weight: bold; color: black;font-size:12px;background:#A9A9A9;">         
+                                <td>Relationship</td>
+                                <td>Activity Name</td>
+                                <td>Predecessor</td>
+                                <td>ASD</td>
+                                <td>AED</td>
+                                <td>Status</td>
+                                <td>Plan LT</td> 
+                                <td>Model Name</td>
+                                <td>Type</td>  
+                                <td>Collection Name</td> 
+                                <td>Brand Name</td>
+                                 <td>Owner Name</td> 
+                                 <td>Owner Email</td>Record Id 
+                                <td>Function Name</td>
+                                <td>Record Id</td>                                    
+                                   
+                            </tr>
+                <apex:repeat value="{!predessorToSuccessor}" var="childMap" id="testparam111" >                         
+                            <tr style="font-family:Arial,Helvetica,sans-serif;background:#d6f5d6;font-weight:bold;font-size:12px; color:#2e5cb8;">
+                                <td>
+                                    <apex:outputText value="Predecessor" />                           
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!activityforPredessordisplay[childMap].Name__c}" />                           
+                                </td>
+                                <td></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!activityforPredessordisplay[childMap].Actual_Start_Date__c }" /></apex:outputText>                       
+                               </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!activityforPredessordisplay[childMap].Actual_End_Date__c }" /></apex:outputText>                       
+                               </td>
+                                <td>
+                                    <apex:outputText value="{!activityforPredessordisplay[childMap].Status__c}" />                           
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!activityforPredessordisplay[childMap].Planned_Lead_Time__c}" />                           
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!activityforPredessordisplay[childMap].Model_Name__c}" />                           
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!activityforPredessordisplay[childMap].Type__c}" />                           
+                                </td>
+                                
+                                <td>
+                                    <apex:outputText value="{!activityforPredessordisplay[childMap].collection_Name__c}" />                           
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!activityforPredessordisplay[childMap].Brand1__c}" />                           
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!activityforPredessordisplay[childMap].User_Name__c}" />                           
+                                </td>
+                                
+                                <td>
+                                    <apex:outputText value="{!activityforPredessordisplay[childMap].NPD_User__r.UserID__c}" />                           
+                                </td>
+                               <td>
+                                    <apex:outputText value="{!activityforPredessordisplay[childMap].Function_Name__c}" />                           
+                                </td>
+                                <td>
+                                    <apex:outputText value="{!activityforPredessordisplay[childMap].Id}" />                           
+                                </td>
+                                
+                            </tr>               
+                            
+                            <apex:repeat value="{!predessorToSuccessor[childMap]}" var="childTest">  
+                                    <tr>
+                                        <td>
+                                            <apex:outputText value="Successor" />                           
+                                        </td>
+                                        <td>
+                                            <apex:outputText value="{!childTest.Name__c}" />                           
+                                        </td>
+                                        <td>
+                                        <apex:outputText value="{!activityforPredessordisplay[childMap].Name__c}" />
+                                        </td>
+                                        <td>
+                                            <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                            <apex:param value="{!childTest.Actual_Start_Date__c }" /></apex:outputText>                       
+                                       </td>
+                                        <td>
+                                            <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                            <apex:param value="{!childTest.Actual_End_Date__c }" /></apex:outputText>                       
+                                       </td>
+                                       <td> 
+                                            <apex:outputText value="{!childTest.Status__c}" />
+                                        </td>
+                                       <td> 
+                                            <apex:outputText value="{!childTest.Planned_Lead_Time__c}" />
+                                        </td>
+                                      
+                                        <td>
+                                            <apex:outputText value="{!childTest.Model_Name__c}"/>
+                                        </td>
+                                        <td>
+                                            <apex:outputtext value="{!childTest.Type__c}"/>
+                                        </td> 
+                                        <td>
+                                            <apex:outputtext value="{!childTest.collection_Name__c}"/>
+                                        </td>
+                                        <td>
+                                            <apex:outputtext value="{!childTest.Brand1__c}"/>
+                                        </td>
+                                        <td>
+                                            <apex:outputtext value="{!childTest.User_Name__c}"/>
+                                        </td> 
+                                        <td>
+                                            <apex:outputtext value="{!childTest.NPD_User__r.UserID__c}"/>
+                                        </td>   
+                                       <td>
+                                            <apex:outputtext value="{!childTest.Function_Name__c}"/>
+                                        </td> 
+                                        <td>
+                                            <apex:outputtext value="{!childTest.Id}"/>
+                                        </td> 
+                                                             
+                                    </tr>
+                            </apex:repeat>
+                        </apex:repeat>
+                        </table>
+                        </apex:outputpanel>
+              
+                </apex:form>
+                
+</apex:page>

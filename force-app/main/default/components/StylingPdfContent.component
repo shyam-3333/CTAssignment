@@ -1,0 +1,7 @@
+<apex:component >
+    <apex:attribute required="true"  type="string" name="type" description="specify header and footer type" />
+    <apex:stylesheet value="{!$Resource.StylingForReports}"/>
+        <div class="{!type}" style="margin-bottom:200px;margin-top:5px">
+            <apex:componentBody />
+        </div>                  
+</apex:component>

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuraDefinitionBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>44.0</apiVersion>
+    <description>This component is for MTL users.Once the report reference number is generated and is sent to the MTL users as a report from IDI users,this view is opened for MTL users.This view would help MTL users to update the test view.</description>
+</AuraDefinitionBundle>

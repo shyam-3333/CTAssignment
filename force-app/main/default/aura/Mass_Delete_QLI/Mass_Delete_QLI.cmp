@@ -1,0 +1,80 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionWithoutHeader" controller="MassDeleteQLI">
+    <aura:html tag="style">
+        .slds-modal__container{
+        height : auto;
+        width: 70%;
+        max-width: 70rem;
+        
+        }
+        @keyframes glow {
+        from {
+        width: 50px;
+        height: 20px;
+        font-size: 10px;
+        margin-right: 0px;
+        margin-top: 0px;
+        }
+        to {
+        width: 105px;
+        height: 45px;
+        font-size: 20px;
+        margin-right: -10px;
+        margin-top: -10px;}
+        }
+        .btn:hover {
+        background-color: red;
+        color: black;
+        animation: glow 1s infinite;
+        
+        
+        margin-right: -10px;
+        margin-top: -10px;
+        
+        }
+        .row:hover {
+        height: 55px;
+        }
+    </aura:html>
+    <aura:attribute name="recordId" type="string" />
+    <aura:attribute name="delBtn" type="boolean" default="false" />
+    <aura:attribute name="wrapperList" type="list"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doinit}" />
+    
+    <div class="slds-col modal-header slds-modal__header">            
+        <b>Quote Line Items</b>
+    </div>
+    <table class="slds-table slds-table--bordered slds-table--striped slds-table--cell-buffer">
+        
+        <thead>          
+            <tr class="slds-text-heading--small"> 
+                <th scope="col"><span class="slds-truncate">Select  </span></th>
+                <th scope="col"><span class="slds-truncate">UCP</span></th>
+                <th scope="col"><span class="slds-truncate">Discount in %</span></th>
+                <th scope="col"><span class="slds-truncate">Net Price</span></th>
+            </tr>
+            
+        </thead>
+        
+        
+        <tbody>
+            <aura:iteration items="{!v.wrapperList}" var="wrap" indexVar="index">
+                <tr class="row">
+                    <th scope="row">
+                        <input  type="checkbox" 
+                               value="true" 
+                               id="{!index}" 
+                               onchange="{!c.onCheck}" 
+                               class="slds-text-align_right nolblstyl chk"  />
+                    </th>
+                    <td>{!wrap.qli.Sales_Price_c__c}</td>
+                    <td>{!wrap.qli.Discount_c__c}</td>
+                    <td>{!wrap.qli.Price_Per_Unit_After_Discount__c}</td>
+                    
+                </tr>
+            </aura:iteration>
+        </tbody>
+    </table>
+    <div class="slds-col modal-footer slds-modal__footer"  style="height: 70px;">            
+        <lightning:button variant="brand" class="btn" aura:id="changeIt"  disabled="{!v.delBtn}" label="Delete" onclick="{! c.DeleteQli }" />
+    </div>
+</aura:component>

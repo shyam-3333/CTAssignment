@@ -1,0 +1,51 @@
+<!--Created By : KVP- Chakresh Verma
+* Name : orderLandingComponent
+* Created on : 25 Nov 2021
+* Description : This Component is a Landing page of Proposal Tool Tab And Used to Select The Business Type Of the Titan Products and Pass the Filters Value Based On Business Type
+-->
+
+<template>
+  <template if:true={displayMainPage}>
+    <template if:true={loadSpinner}>
+      <lightning-spinner alternative-text="Loading..." size="small"></lightning-spinner>
+    </template>
+
+    <div class="about-section">
+      <img src={propsalTitanLogo} alt="Titan" style="width: 20%;">
+    </div>
+    <div class="row slds-p-top_xx-large">
+      <div class="column slds-p-top_xx-large">
+        <div class="card">
+          <img src={propsaltitanEyewearLogo} alt="Jane" class="slds-align_absolute-center" style="width:50%;">
+          <div class="container">
+          </div>
+        </div>
+        <lightning-button variant="brand" style="width:50px" class="slds-align_absolute-center" label="Eyewear"
+          title="Eyewear" onclick={openProductPage}></lightning-button>
+      </div>
+      <div class="column slds-p-top_xx-large">
+        <div class="card">
+          <img src={propsaltitanWatchesLogo} alt="Jane" class="slds-align_absolute-center" style="width:50%;">
+          <div class="container">
+          </div>
+        </div>
+        <lightning-button variant="brand" class="slds-align_absolute-center" label="Watches & Accessories"
+          title="Watches" onclick={openProductPage}></lightning-button>
+      </div>
+      <div class="column slds-p-top_xx-large">
+        <div class="card">
+          <img src={propsaltitanJewelleryLogo} alt="Jane" class="slds-align_absolute-center" style="width:50%;">
+          <div class=" container">
+          </div>
+        </div>
+        <lightning-button variant="brand" style="width:50px" class="slds-align_absolute-center" label="Jewellery"
+          title="Jewellery" onclick={openProductPage}></lightning-button>
+      </div>
+    </div>
+  </template>
+
+  <!--Child Component for Listing the Products Based On Business Type-->
+  <c-order-product-listing-component onpass={fetchValue}>
+  </c-order-product-listing-component>
+
+</template>

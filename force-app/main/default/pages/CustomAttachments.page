@@ -1,0 +1,22 @@
+<apex:page standardController="Account" extensions="UploadAttBANKINSU">
+ <apex:form >
+ <apex:pageMessages />
+     <apex:pageblock >
+     
+      <apex:inputFile id="fileToUpload1" value="{!fileBody}" filename="{!fileName}" />
+          <apex:commandButton action="{!save}" value="Save" id="theButton"/>
+          
+         <apex:pageBlockTable value="{!AttmentList1}" var="item" cellpadding="10" rules="all" styleclass="pageblock" id="atli">  
+              
+                <apex:column headerValue="Name"><apex:commandLink action="/{!item.Id}" target="_blank" value="{!item.Name}" /></apex:column>
+                <apex:column value="{!item.LastModifiedDate}" /> 
+                <apex:column value="{!item.OwnerId}"/> 
+         
+          </apex:pageBlockTable> 
+          
+         
+    </apex:pageblock>
+ 
+     
+ </apex:form>
+ </apex:page>

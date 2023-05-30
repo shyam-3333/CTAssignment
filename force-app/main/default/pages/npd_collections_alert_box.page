@@ -1,0 +1,71 @@
+<apex:page standardController="NPD_Collections__c" >
+<script src="/soap/ajax/37.0/connection.js"></script>
+
+<script language="javascript">
+        function init()
+        {         
+                var recid= '{!NPD_Collections__c.id}';
+                   
+             //   alert("hi  .."+recid);
+                sforce.connection.sessionId = '{!$Api.Session_ID}';
+     //     var qr1 = sforce.connection.query("SELECT id,Team_Leader2__c,Team_Leader2__r.UserID__c,SF_Project_Owner__r.UserID__c,from NPD_Collections__c where id='" +recid+ "'" );  
+        
+           var qr1 = sforce.connection.query("SELECT Id,Team_Leader2__c,Team_Leader2__r.UserID__c,SF_Project_Owner__c,SF_Project_Owner__r.UserID__c,Comments_Remarks__c,no_alert_box__c from NPD_Collections__c where id='" +recid+ "'" );  
+        
+      //  alert("qr1"+"......"+qr1);
+         
+          var stats= qr1.getArray("records");
+
+     //   alert(stats);
+
+    if(qr1.size > 0)
+    {    
+      //  alert("bbbbbbbbbb");
+     //   alert('---------------------'+stats[0].Team_Leader2__r.UserID__c+'.....'  +stats[0].SF_Project_Owner__r.UserID__c);
+        
+           
+      //    alert('stats[0].id 111' + stats[0].Id);
+        
+        
+        if(stats[0].Team_Leader2__r.UserID__c!= null && stats[0].SF_Project_Owner__c == null)
+        {
+          alert('Email fired to Team Leader: '+stats[0].Team_Leader2__r.UserID__c);
+        
+        }
+        
+         if(stats[0].Team_Leader2__r.UserID__c!= null  && stats[0].SF_Project_Owner__r.UserID__c != null &&  stats[0].no_alert_box__c == "false")
+        {
+          alert('Email fired to Project Owner: '+stats[0].SF_Project_Owner__r.UserID__c);
+         
+         var collection = new sforce.SObject("NPD_Collections__c");
+        collection.id = stats[0].Id;
+       // alert('stats[0].id' +stats[0].id);
+      //  alert('the collection.id ' + collection.id );
+        collection.no_alert_box__c = "true"; 
+        result = sforce.connection.update([collection]);
+     //   alert(result +'result ');
+        
+        
+        }
+        
+        
+       
+        
+       //  alert("cccccccccc");
+    }
+         
+        }        
+                    
+                                                     
+                
+         
+                window.onload=init;
+     </script>
+
+<apex:form >
+
+{!NPD_Collections__c.id}...
+
+</apex:form>
+
+</apex:page>

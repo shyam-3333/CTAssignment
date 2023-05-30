@@ -1,0 +1,14 @@
+<apex:page showChat="false" sidebar="false"> 
+     <apex:includeLightning />    
+    <div id="LightningComponentid" />    
+    <script>
+    $Lightning.use("c:l1L5EditDeleteApp", function() {
+        $Lightning.createComponent("c:l1L5EditDeleteComponent",
+          { 
+          },
+          "LightningComponentid",
+          function(cmp) {
+             console.log('LWC Componenet added in VF page');
+          });
+    });
+    </script></apex:page>

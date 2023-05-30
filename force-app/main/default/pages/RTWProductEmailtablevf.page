@@ -1,0 +1,20 @@
+<apex:page controller="RTWProductEmailtable" showHeader="false" renderAs="PDF"  cache="true" >
+      <apex:stylesheet value="{!$Resource.pdfdownloadCSS}" /> 
+    <head>
+        <style>
+            
+            img {
+            width:60px!important;
+            }
+        </style>
+    </head>
+    <body>        
+        <apex:pageBlock >
+            <apex:pageBlockTable value="{!proList}" var="dwnld" border="1px solid black" style="font-size:14px">
+            <apex:column value="{!dwnld.SKU__c}"/>
+            <apex:column value="{!dwnld.Name}"/>
+            <apex:column value="{!dwnld.Quantity__c}" style="text-align:center"/>
+             </apex:pageBlockTable>
+        </apex:pageBlock>
+    </body>
+</apex:page>

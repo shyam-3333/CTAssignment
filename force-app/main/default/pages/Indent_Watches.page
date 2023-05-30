@@ -1,0 +1,123 @@
+<apex:page standardController="Quote" showHeader="false" sidebar="false" renderAs="pdf">
+<head>
+<style>
+ @page {
+        
+        @top-center { 
+      
+            content : element(header);
+         }
+    
+        @bottom-right {
+            content : element(footer);
+            
+        }
+    
+    }
+    
+    div.header {
+        position : running(header) ;
+    }
+    
+    div.footer {
+        position : running(footer) ;
+    }
+    
+           
+</style>
+</head>
+<apex:pageBlock >
+ <div class="footer"> 
+      
+     <div > 
+     <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+           <td align="left">
+            <apex:outputText value="(*This is a system generated document & therefore does not require any signature.)" /> 
+          </td>
+           <tr><td style="font-family:Calibri"><b>{!$User.Street},{!$User.City},{!$User.State},{!$User.PostalCode}</b></td></tr>
+          </tr>         
+     </table>
+     </div>      
+  </div> 
+<apex:image value="{!$Resource.titan_logo_small}"/><br/>
+
+<apex:Panelgroup rendered="{!Quote.Approval_Status_Quote__c!='Approved'}">
+<h1>This quote is not approved </h1>
+</apex:panelgroup>
+
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName!='Received PO/Order Won'}">
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName!='Payment/Delivery'}">
+<h3>Indent can be generated only when Opportunity Stage is Received PO/Order Won or Payment/Delivery</h3>
+</apex:panelgroup>
+</apex:panelgroup>
+
+<apex:Panelgroup rendered="{!OR(Quote.Opportunity.StageName=='Received PO/Order Won',Quote.Opportunity.StageName=='Payment/Delivery')}">
+
+
+<p align='center'><b> TITAN WATCHES INDENT FORM</b></p><br/><br/>
+<table border='1' width="100%" cellspacing='0'><tr><td>
+<b><u>TO BE FILLED IN AT THE ORIGINAL PLACE</u></b><br/><br/>
+
+
+Location :{!$user.CompanyName}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    
+
+     Indent No : <apex:outputText value="{!Quote.Insti_ref__c}"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    
+    
+    Date :<apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+       
+     <apex:param value="{!Today()}" />
+   
+</apex:outputText>
+  
+    
+    
+    <br/><br/>
+<u>Name of the Indentor (Sales person)</u>:&nbsp;{!$user.FirstName}{!$user.LastName}<br/><br/>
+ 
+<u>Name of Franchisee/Institution</u> :&nbsp;{!Quote.Contact.Account.Name}<br/><br/>
+<table border='1' cellspacing='0' width="100%">
+<tr>
+    <td>Product</td>
+    <td>SalesPrice/UCP</td>
+    <td>Quantity</td>
+    <td>Net Price</td>
+    <td>Total Price</td>
+</tr>
+<apex:repeat value="{!Quote.QuoteLineItems}" var="line"> 
+    <tr>
+            
+            <td>          
+            <apex:outputLabel value="{!line.PriceBookEntry.Product2.Name }"/> 
+            </td>  
+           <td style="Text-align:right">          
+            <apex:outputLabel value="{!line.Sales_Price_c__c }"/> 
+            </td>
+            <td style="Text-align:right">
+                <apex:outputLabel value="{!line.Quantity}"/> 
+            </td>
+           <td style="Text-align:right">          
+            <apex:outputLabel value="{!line.Price_Per_Unit_After_Discount__c }"/> 
+            </td>  
+        
+            
+           <td style="Text-align:right"> <apex:outputText value="{0,number,###,###,###,###.##}"  style="font-align:right"> <apex:param value="{!line.Total_Price_Custom__c}"/></apex:outputText></td>
+            
+            
+         
+    </tr>
+     </apex:repeat></table>
+    
+        <br/><u>Delivery Date :{!Today()}</u><br/><br/>
+         <u>Discount Offerd On Watches :{!Quote.Discount_Corp__c} %</u><br/><br/>
+         <u>Signature Of Indentor</u><br/><br/>
+ </td></tr>
+ </table>
+
+
+</apex:panelgroup>
+  </apex:pageBlock>
+ 
+</apex:page>

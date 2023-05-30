@@ -1,0 +1,158 @@
+<apex:page standardController="Quote" sidebar="false" showHeader="false" renderAs="PDF">
+
+<head>
+<style>
+ @page {
+        
+        @top-center { 
+      
+            content : element(header);
+         }
+    
+        @bottom-right {
+            content : element(footer);
+            
+        }
+    
+    }
+    
+    div.header {
+        position : running(header) ;
+    }
+    
+    div.footer {
+        position : running(footer) ;
+    }
+    
+           
+</style>
+</head>
+<apex:pageBlock >
+ <div class="footer"> 
+      
+     <div > 
+     <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+           <td align="left">
+            <apex:outputText value="(*This is a system generated document & therefore does not require any signature.)" /> 
+          </td>
+           <tr><td style="font-family:Calibri"><b>{!$User.LastName} :-{!$User.Street},{!$User.City},{!$User.State},{!$User.PostalCode}</b></td></tr>
+          </tr>         
+     </table>
+     </div>      
+  </div> 
+   
+<table width = "100%">
+<tr><td align = "right">
+<apex:image value="{!$Resource.Tanishq}" width="10%" height="10%"/></td></tr></table>
+<apex:Panelgroup rendered="{!Quote.Approval_Status_Quote__c!='Approved'}">
+<h1>This quote is not approved </h1>
+</apex:panelgroup>
+
+
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName=='Requirement Analysis'||Quote.Opportunity.StageName=='RFQ_Study'||
+ Quote.Opportunity.StageName=='Revised Quote'||Quote.Opportunity.StageName=='Quote_Preparation'}">
+<h1>Opportunity Stage should be Proforma Invoice or next </h1>
+</apex:panelgroup>
+
+
+<apex:Panelgroup rendered="{!Quote.Opportunity.Payment_Criteria__c=='Credit'&& Quote.Opportunity.Credit_Approval_Status__c!='Approved'}">
+<h1>Opportunity is in credit approval process </h1>
+</apex:panelgroup>
+
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName=='Proforma Invoice'||Quote.Opportunity.StageName=='Received PO/Order Won'||
+Quote.Opportunity.StageName=='Payment/Delivery'||Quote.Opportunity.StageName=='Opportunity_On_Hold'}">
+<apex:Panelgroup rendered="{!Quote.Approval_Status_Quote__c=='Approved'}">
+
+
+<p align='center'><b>PROFORMA INVOICE</b></p>
+  <table border='1' cellspacing='0' width='700'>
+    <tr>
+            <td colspan='2'>PRODUCT : {!Quote.Subject__c} </td>
+            <td colspan='4'>KIND ATTN : {!Quote.Contact.Name} </td>
+    </tr>
+    <tr>
+            <td colspan='2'>From :{!$User.CompanyName}</td>
+            <td colspan='4'> To :<br/>{!Quote.Contact.Account.Name}<br/>{!Quote.Contact.MailingStreet},<br/>{!Quote.Contact.MailingCity},-{!Quote.Contact.MailingPostalCode},{!Quote.Contact.MailingState},{!Quote.Contact.MailingCountry},
+            </td>
+    </tr>
+    <tr>
+            <td>Doc No :{!Quote.Do_No__c}</td>
+            <td colspan='2'>Gold Rate :{!Quote.Gold_Rate__c}</td>
+            <td colspan='3'>DATE :&nbsp;<apex:outputText value="{0,date,dd'/'MM'/'yyyy}"><apex:param value="{!Today()}" /></apex:outputText></td>
+    </tr>
+
+    <tr  >
+        <th>PRODUCT CODE</th>
+        <th>WEIGHT (GMS)</th>
+        <th>QTY</th>
+        <th>TOTAL WEIGHT</TH>
+        <th>COST PER UNIT (RS.)</th>
+        <th>AMOUNT(RS.)</th>
+    </tr>
+    
+    <apex:repeat value="{!Quote.QuoteLineItems}" var="line">
+    <tr>
+            <td><apex:outputLabel value="{!line.PricebookEntry.Product2.Name}"/></td>
+            
+            <td style="Text-align:right"><apex:outputLabel value="{!line.Weight_of_the_product__c}"/></td>
+            
+            <td style="Text-align:right"> <apex:outputText value="{0,number,###,###,###,###}"  style="font-align:right"> <apex:param value="{!line.Quantity}"/></apex:outputText></td>
+            <td style="Text-align:right"><apex:outputLabel value="{!line.Total_Weight__c}"/></td>
+            <td style="Text-align:right"><apex:outputLabel value="{!line.UnitPrice}"/></td>
+            <td style="Text-align:right"> <apex:outputText value="{0,number,###,###,###,###.##}"  style="font-align:right"> <apex:param value="{!line.Total_Price_Custom__c}"/></apex:outputText></td>
+           
+    </tr>
+    </apex:repeat>
+  
+    <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+    </tr>
+ 
+     <tr>
+            <td>Total</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td style="Text-align:right"> <apex:outputText value="{0,number,###,###,###,###.##}"  style="font-align:right"> <apex:param value="{!Quote.Final_Quote_Value__c}"/></apex:outputText></td>
+         
+    </tr>
+</table>
+<h3>Terms and Conditions:</h3>
+<b>Price:</b> The above price is calculated as per today's prevailing base Gold Rate in INR {!Quote.Gold_Rate__c}<br/>The above price is valid till 5 p.m. today i.e.<apex:outputText value="{0,date,dd'/'MM'/'yyyy}"><apex:param value="{!Today()}" /></apex:outputText> <br/><br/>
+
+<b>Payment:</b> {!Quote.Payment_Term_Corporate__c}<br/><br/>
+<b>Please Also Note:</b><br/><br/>
+
+* The Rate given above includes all costs towards material cost, manufacturing,GST,customization, packaging and single location delivery.
+  Cost towards any other levies etc.would need to be paid extra in actual wherever applicable by the purchaser.<br/><br/>
+
+* Incase of customization of the coin the die/tool used for the manufacturing of the coin will not be returned, the same can be re-used for
+  future orders of the same design.<br/><br/>
+
+* Due to the manufacturing process there may be a variation of (+/-) 0.05 Gms per coin.<br/><br/>
+
+* Exchange / Buy Back of the Gold Coins will be done as per the Tanishq Exchange Policy.<br/><br/>
+
+* Force Majeure : Adherence to these commitments might not be possible in case of any prevention or hindrance in consequence of any
+  act of god or state, or any other extraneous circumstances beyond the anticipation or control of either parties.<br/><br/>
+
+<b>Delivery:</b> {!quote.Delivery__c}<br/><br/>
+<b>Delivery Comments:</b><apex:outputLabel value="{!Quote.Delivery_Comments__c}"/>.<br/>
+                          
+{!Quote.Description}<br/><br/>
+(KINDLY NOTE THAT THE ABOVE PRICES ARE INDICATIVE PRICES.THE COST PER UNIT MAY
+CHANGE AS PER THE PREVAILING GOLD RATE)<br/><br/>
+<br/><br/>FOR TITAN COMPANY LIMITED.,<br/><br/>
+AUTHORIZED SIGNATORY
+
+</apex:panelgroup>
+</apex:panelgroup>
+</apex:pageBlock>
+</apex:page>

@@ -1,0 +1,192 @@
+<apex:page controller="NPD_Case_Dev_ProductDesign_Report" sidebar="false" id="mypage" docType="HTML-5.0">
+    <apex:form id="myForm">
+    <style>
+   
+     table {
+        border-collapse: collapse;
+        }
+        /* This is for the full screen DIV */
+        
+        .popupBackground {
+            /* Background color */
+            background-color: black;
+            opacity: 0.20;
+            filter: alpha(opacity=20);
+            /* Dimensions */
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 998;
+            position: absolute;
+            /* Mouse */
+            cursor: wait;
+        }
+        /* This is for the message DIV */
+        
+        .PopupPanel {
+            /* Background color */
+            /* border: solid 2px blue;*/
+            left: 50%;
+            width: 200px;
+            margin-left: -100px;
+            top: 50%;
+            height: 250px;
+            margin-top: -25px;
+            z-index: 999;
+            position: fixed;
+            /* Mouse */
+            cursor: pointer;
+        }
+        .table_design td{
+            white-space: nowrap;
+        }
+         .table_design1 td{
+            white-space: nowrap;
+        }
+        }
+    </style>
+      <apex:actionStatus id="actStatusId" stopText="">
+        <apex:facet name="start">
+            <div>
+                <div class="popupBackground" />
+                <div class="PopupPanel">
+                    <table border="0" width="100%" height="100%">
+
+                        <tr>
+                            <!-- <td align="center"><img src="{!$Resource.Spinner}"/></td>-->
+                            <td align="center"><img src="/img/loading.gif" /></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionStatus>
+        <table class="table_design1" border="1" align="center" width="1200" style="background-color:#bee076;">
+            <tr align="center">
+                <td colspan="3" style="color:#4c76ad;font-weight:bold;font-size:16px;"><b>Basic Search</b></td>   
+                <td colspan="2" style="color:#4c76ad;font-weight:bold;font-size:16px;">
+                    <apex:outputText value="Advance Search"></apex:outputText>
+                </td>
+            </tr>
+            <td style="font-size:12px;">
+                <apex:outputPanel id="brandId"> <b>Brand:</b>
+                        <apex:selectList size="1" value="{!selectedBrandName}">
+                            <apex:selectoptions value="{!npdBrandOption}" />
+                            <apex:actionSupport event="onchange" action="{!selectCollection}" reRender="collectionId,modelId,TableRecordId" status="actStatusId"/>
+                        </apex:selectList>
+                </apex:outputPanel>
+            </td>
+            <td style="font-size:12px;">
+                <apex:outputPanel id="collectionId"> <b>Collections:</b> &nbsp;
+                    <apex:selectList size="1" value="{!selectedCollectionName}">
+                        <apex:selectoptions value="{!npdCollectionOption}" />
+                        <apex:actionSupport event="onchange" action="{!selectModel}" reRender="modelId,TableRecordId" status="actStatusId"/>
+                    </apex:selectList>
+                </apex:outputPanel>
+            </td>
+            <td style="font-size:12px;">
+                <apex:outputPanel id="modelId"> <b>Model:</b> &nbsp;
+                    <apex:selectList size="1" value="{!selectedModelName}">
+                        <apex:selectoptions value="{!npdModelOption}" />
+                    </apex:selectList>
+                </apex:outputPanel>
+            </td>
+            <td style="font-size:12px;">
+                <apex:outputPanel id="statusId"> <b>Status:</b> &nbsp;
+                    <apex:selectList size="1" value="{!selectedStatus}">
+                        <apex:selectoptions value="{!npdStatusOption}" />
+                    </apex:selectList>
+                </apex:outputPanel>
+            </td>
+            <td style="font-size:12px;">
+                <apex:outputPanel id="functionId"> <b>Function:</b> &nbsp;
+                    <apex:selectList size="1" value="{!selectedFunctionName}">
+                        <apex:selectoptions value="{!npdFunctionOption}" />
+                    </apex:selectList>
+                </apex:outputPanel>
+            </td>
+        </table>
+        
+        <table class="table_design1" border="0" align="center" width="100" style="">
+            <tr align="center">
+                <td style="color:#ff9f80;font-weight:bold;font-size:14px;">
+                    <apex:commandButton id="reportId" value="Display Report"  action="{!displayTable}" reRender="TableRecordId" status="actStatusId"/> 
+
+                </td>
+            </tr>
+        </table>
+        
+        <div class="scrollmenu">
+            <apex:outputPanel id="TableRecordId" >
+                <apex:outputPanel id="innerTableDataId" rendered="{!isDisplayTable}" >
+                    <table class="table_design" width="100%" border="1" cellspacing="0" cellpadding="1" align="center" style=" border-bottom-style: none;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">
+                        <tr style="background:#D3D3D3;font-weight:bold;" align="center">
+                            <td rowspan = "2">
+                                <apex:outputText value="Brand" />
+                            </td>
+                            <td rowspan = "2" align="center">
+                                <apex:outputText value="Collection" />
+                            </td> 
+                            <td rowspan = "2">
+                                <apex:outputText value="Model" />
+                            </td>
+                            <td colspan = "2">
+                                <apex:outputText value="Product Design Plan" />
+                            </td>
+                            <td colspan = "2">
+                                <apex:outputText value="Tool Design Input - Actual" />
+                            </td>
+                            <td>
+                                <apex:outputText value="Plan LT" />
+                            </td>
+                            <td>
+                                <apex:outputText value="Actual LT" />
+                            </td>
+                            <td>
+                                <apex:outputText value="Variance" />
+                            </td>
+                        </tr>
+                        <tr style="background:#D3D3D3;font-weight:bold;" align="center">
+                            <td><apex:outputText value="Start" /></td>
+                            <td><apex:outputText value="End" /></td>
+                            <td><apex:outputText value="Start" /></td>
+                            <td><apex:outputText value="End" /></td>
+                            <td><apex:outputText value="Days" /></td>
+                            <td><apex:outputText value="Days" /></td>
+                            <td><apex:outputText value="Days" /></td>
+                        </tr>
+                        <apex:repeat value="{!lWrapperList}" var="stageValue">
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="{!stageValue.brand}" /></td>
+                                <td><apex:outputText value="{!stageValue.collection}" /></td>
+                                <td><apex:outputText value="{!stageValue.model}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!stageValue.productDesignSD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!stageValue.productDesignED}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!stageValue.toolDesignInputSD}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!stageValue.toolDesignInputED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!stageValue.planLT}" /></td>
+                                <td><apex:outputText value="{!stageValue.actualLT}" /></td>
+                                <!--<td><apex:outputText value="{!stageValue.variance}" /></td> -->
+                                <td><font color ="{!If(AND(NOT(ISNULL(stageValue.variance)),stageValue.variance > 0),'red','black')}">{!stageValue.variance}</font></td>
+                            </tr>
+                        </apex:repeat>
+                                
+                    </table>
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </div>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,74 @@
+<apex:page controller="NPDCreateProjectItemsController" title="Search" 
+  showHeader="false" 
+  sideBar="false" 
+  tabStyle="Account" 
+  id="pg">
+    <script>
+        function fieldFillIn(checklistString,checkColumn)
+        {
+                        
+              var winMain=window.opener;
+              if (null==winMain)
+              {
+                 winMain=window.parent.opener;
+              }
+              
+              var elem=winMain.document.getElementById('{!$CurrentPage.parameters.checkCol}');             
+              elem.value = checkColumn.split(",").join(","+"\n");    
+              
+               var ele=winMain.document.getElementById('{!$CurrentPage.parameters.checkListRec}');             
+              ele.value = checklistString.split(",").join(","+"\n"); 
+                        
+              CloseWindow();
+           
+        }
+        
+        function CloseWindow()
+         {
+          var winMain=window.opener; 
+          if (null==winMain) 
+          { 
+          winMain=window.parent.opener; 
+          }
+           winMain.closePopup();
+        }
+    </script>
+    <apex:form >
+    <apex:outputPanel id="page" layout="block" style="margin:5px;padding:10px;padding-top:2px;">
+    <apex:tabPanel switchType="client" selectedTab="name1" id="tabbedPanel">
+        <apex:tab label="Search" name="tab1" id="tabOne">    
+        <apex:outputPanel id="pnlSearchResults" style="margin:10px;height:350px;overflow-Y:auto;" layout="block">
+        <apex:pageBlock id="searchResults"> 
+            <apex:pageBlockTable value="{!checkListWrapperList}" var="check" id="tblResults" >
+                <apex:column >
+                <apex:facet name="header">
+                <apex:outputPanel >Check</apex:outputPanel>
+                </apex:facet>
+                <apex:inputcheckbox value="{!check.selected}">
+                <!-- <apex:actionSupport event="onclick" rerender="pnlSearchResults" /> -->
+                </apex:inputcheckbox>
+                </apex:column>
+                <apex:column width="18%">
+                <apex:facet name="header">
+                <apex:outputPanel >Name</apex:outputPanel>
+                </apex:facet>
+                <apex:outputText value="{!check.field}"></apex:outputText>
+                </apex:column>
+                <apex:column >
+                <apex:facet name="header">
+                <apex:outputPanel >Columns to be copied</apex:outputPanel>
+                </apex:facet>
+                <apex:inputcheckbox value="{!check.copied}">
+                </apex:inputcheckbox>
+                 </apex:column>
+                
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        </apex:outputPanel>            
+            <apex:commandButton value="OK" action="{!doCheckListSelection}" oncomplete="fieldFillIn('{!strCheklistName}','{!strCopyTableName}')"/> 
+            <apex:commandButton value="Cancel"  onclick="CloseWindow()"/> 
+        </apex:tab>      
+    </apex:tabPanel>
+    </apex:outputPanel>
+    </apex:form> 
+</apex:page>

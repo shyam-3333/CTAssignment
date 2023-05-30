@@ -1,0 +1,603 @@
+<apex:page controller="NPD_Collection_Report" contentType="application/vnd.ms-excel#Collection_Report.xls" sidebar="false" id="mypage" action="{!newcollectionReportExc}">
+ 
+    <head>
+        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2015.2.902/styles/kendo.common.min.css" />
+        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2015.2.902/styles/kendo.rtl.min.css" />
+        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2015.2.902/styles/kendo.default.min.css" />
+        <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2015.2.902/styles/kendo.mobile.all.min.css" />
+        <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+        <script src="https://kendo.cdn.telerik.com/2015.2.902/js/angular.min.js"></script>
+        <script src="https://kendo.cdn.telerik.com/2015.2.902/js/jszip.min.js"></script>
+        <script src="https://kendo.cdn.telerik.com/2015.2.902/js/kendo.all.min.js"></script>
+    </head>
+
+    <style>
+    .scrollmenu {
+      overflow-y:scroll;
+      width: 1300px;
+    }
+        .block {
+            float: left;
+            width: 50%;
+            min-height: 445px;
+            display: none;
+        }
+        
+        .block_table {
+            display: none;
+            width: 500px;
+            margin: 0 auto;
+        }
+        
+        .block_table th {
+            border-top: 1px solid #ccc;
+            background: #f2f2f2;
+            width: 12.5%;
+        }
+        
+        .block_table td,
+        .block_table th {
+            border-right: 1px solid #ccc;
+            border-bottom: 1px solid #ccc;
+            padding: 3px 5px;
+        }
+        
+        .block_table td:first-child,
+        .block_table th:first-child {
+            border-left: 1px solid #ccc;
+        }
+        
+        .cls {
+            clear: both;
+        }
+        /* This is for the full screen DIV */
+        
+        .popupBackground {
+            /* Background color */
+            background-color: black;
+            opacity: 0.20;
+            filter: alpha(opacity=20);
+            /* Dimensions */
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 998;
+            position: absolute;
+            /* Mouse */
+            cursor: wait;
+        }
+        /* This is for the message DIV */
+        
+        .PopupPanel {
+            /* Background color */
+            /* border: solid 2px blue;*/
+            left: 50%;
+            width: 200px;
+            margin-left: -100px;
+            top: 50%;
+            height: 250px;
+            margin-top: -25px;
+            z-index: 999;
+            position: fixed;
+            /* Mouse */
+            cursor: pointer;
+        }
+    </style>
+    <apex:actionStatus id="actStatusId" stopText="">
+        <apex:facet name="start">
+            <div>
+                <div class="popupBackground" />
+                <div class="PopupPanel">
+                    <table border="0" width="100%" height="100%">
+
+                        <tr>
+                            <!-- <td align="center"><img src="{!$Resource.Spinner}"/></td>-->
+                            <td align="center"><img src="/img/loading.gif" /></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionStatus>
+
+    <script>
+    </script>
+
+    <apex:form id="myForm">
+      <!--  <apex:actionFunction name="RenderSection" action="{!selectedType}" />   -->
+      
+   <!--     <table class="header_table" border="1" align="center" width="1000" style="background-color:#bee076;">
+         <tr>
+                <td>
+                    <apex:outputPanel id="typeId"> <b>Report Type:</b> &nbsp;&nbsp;&nbsp;
+                        <apex:selectList size="1" multiselect="false" value="{!selectedType}">
+                            <apex:selectoptions value="{!npdType}" />
+                            <apex:actionSupport event="onchange" action="{!selectedType}" reRender="BrandManagerId,ProductDesignerId,collectionId,TableRecordId,TableRecordIdtwo" status="actStatusId"/>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </td>
+                  <td>
+                    <apex:outputPanel id="collectionTypeId"> <b>Collection Status:</b> &nbsp;&nbsp;&nbsp;
+                        <apex:selectList size="1" multiselect="false" value="{!selectedCollectionType}">
+                            <apex:selectoptions value="{!npdCollectionType}" />
+                            <apex:actionSupport event="onchange" action="{!selectedType}" reRender="collectionId,TableRecordId,TableRecordIdtwo" status="actStatusId"/>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </td>
+                  <td>
+                    <apex:outputPanel id="downloadTypeId">
+                                <apex:commandButton value="Click to Download" action="{!ClickToDownload}" id="op3" reRender="myForm"/>
+
+                    </apex:outputPanel>
+                </td>
+        </tr>
+        </table>
+        <table class="header_table" border="1" align="center" width="1000" style="background-color:#bee076;">
+            <tr>
+                <td>
+                    <apex:outputPanel id="brandId"> <b>Brand:</b> &nbsp;&nbsp;&nbsp;
+                        <apex:selectList size="1" value="{!selectedBrandName}">
+                            <apex:selectoptions value="{!npdBrandOption}" />
+                            <apex:actionSupport event="onchange" action="{!selectCollection}" reRender="collectionId,TableRecordId,TableRecordIdtwo" status="actStatusId" />
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </td>
+                <td>
+                    <apex:outputPanel id="fiscalYearId"> <b>Fiscal Year:</b> &nbsp;&nbsp;&nbsp;
+                        <apex:selectList size="1" value="{!selectedFiscalYear}">
+                            <apex:selectoptions value="{!npdfiscalYearOption}" />
+                            <apex:actionSupport event="onchange" action="{!selectCollection}" reRender="collectionId,TableRecordId,TableRecordIdtwo" status="actStatusId" />
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </td>
+                <td><b>From Date</b> &nbsp;&nbsp;&nbsp;
+                    <apex:input type="date" id="fromDates" value="{!fromDate}">
+                    <apex:actionSupport event="onchange" action="{!selectCollection}" reRender="collectionId,TableRecordId,TableRecordIdtwo" />
+                    </apex:input>
+                </td>
+                <td><b>To Date</b> &nbsp;&nbsp;&nbsp;
+                    <apex:input type="date" id="toDates" value="{!toDate}">
+                    <apex:actionSupport event="onchange" action="{!selectCollection}" reRender="collectionId,TableRecordId,TableRecordIdtwo" />
+                    </apex:input>
+                </td>                
+            </tr>
+            <tr>
+                <td>
+                    <apex:outputPanel id="BrandManagerId"> <b>Brand Manager:</b> &nbsp;&nbsp;&nbsp;
+                         <apex:selectList size="1" value="{!npdBrandManagerName}">
+                            <apex:selectoptions value="{!npdBrandManagerOption}" />
+                            <apex:actionSupport event="onchange" action="{!selectCollection}" reRender="collectionId,TableRecordId,TableRecordIdtwo" status="actStatusId" />   
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </td>
+                 <td>
+                    <apex:outputPanel id="ProductDesignerId"> <b>Product Designer:</b> &nbsp;&nbsp;&nbsp;
+                         <apex:selectList size="1" value="{!npdDesignManagerName}">
+                            <apex:selectoptions value="{!npdDesignManagerOption}" />
+                            <apex:actionSupport event="onchange" action="{!selectCollection}" reRender="collectionId,TableRecordId,TableRecordIdtwo" status="actStatusId" />   
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </td>
+                  <td>
+                    <apex:outputPanel id="collectionId"> <b>Collections:</b> &nbsp;&nbsp;&nbsp;
+                        <apex:selectList size="1" value="{!selectedCollectionName}">
+                            <apex:selectoptions value="{!npdCollectionOption}" />
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </td>
+             <td>
+                    <apex:commandButton value="Run Report" reRender="" action="{!displayTable}" status="actStatusId" />
+                </td>
+            </tr>
+        </table>
+        -->
+        <br></br>
+        <div class="scrollmenu">
+        <apex:outputPanel id="TableRecordId" rendered="{!showUpstream}">
+            <table width="90%" cellspacing="0" cellpadding="3" align="center" border="1" style="border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">
+
+                <!--  <table class="header_table" border="1" align="center" width="1000" style="border-style:solid;border-width:5px;border-collapse:collapse;"> -->
+                <tr style="background:#F0F8FF;" align="center">
+                    <td colspan="5"></td>
+
+                    <td colspan="4" style="color:#4c76ad;font-weight:bold;font-size:14px;"><b>Marketing Brief</b></td>
+
+
+                   
+                    <td colspan="8" style="color:#4c76ad;font-weight:bold;font-size:14px;">
+                        <apex:outputText value="Concept Design"></apex:outputText>
+                    </td>
+                    <td colspan="5" style="color:#4c76ad;font-weight:bold;font-size:14px;">
+                        <apex:outputText value="Engineering Design (IDS)"></apex:outputText>
+                    </td>
+                    <td colspan="1" style="color:#4c76ad;font-weight:bold;font-size:14px;">
+                        <apex:outputText value="ISCM Briefing (LT)"></apex:outputText>
+                    </td>
+                     <td colspan="1" style="color:#4c76ad;font-weight:bold;font-size:14px;">
+                        <apex:outputText value="ISCM Briefing (DT)"></apex:outputText>
+                    </td>
+                </tr>
+                <tr style="background:#D3D3D3;">
+                    <th>
+                        <apex:outputText value="Brand" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Collection" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Design No" />
+                    </th>
+                    <th>
+                        <apex:outputText value="PSY No" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Model" />
+                    </th>
+                     <th>
+                        <apex:outputText value="Brand Manager" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Release" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Acceptance" />
+                    </th>
+                    <th>
+                        <apex:outputText value="LT (Days)" />
+                    </th>
+                    <!-- <th><apex:outputText value="id"/></th> -->
+                     <th>
+                        <apex:outputText value="Product Designer" />
+                    </th>
+                     <th>
+                        <apex:outputText value="Approval Status" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Complexity"/>
+                    </th>
+                    <th>
+                        <apex:outputText value="Start Date" />
+                    </th>
+                    <th>
+                        <apex:outputText value="End Date" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Plan LT" />
+                    </th>
+                    <th>
+                        <apex:outputText value="App Date" />
+                    </th>
+                     <th>
+                        <apex:outputText value="Act LT(Days)" />
+                    </th>
+                     <th>
+                        <apex:outputText value="Engg designer" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Start Date" />
+                    </th>
+                    <th>
+                        <apex:outputText value="End Date" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Plan LT" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Act LT(Days)" />
+                    </th>
+                    <th>
+                        <apex:outputText value="ISCM Briefing (DT)" />
+                    </th>
+                     <th>
+                        <apex:outputText value="ISCM Briefing (LT)" />
+                    </th>
+
+                </tr>
+                <apex:repeat value="{!lWrapperList}" var="stageValue">
+                    <tr style="background:#fcfcf9;">
+                        <td>
+                            <apex:outputText value="{!stageValue.brand}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!stageValue.collection}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!stageValue.designNo}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!stageValue.Psynum}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!stageValue.model}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!stageValue.owner}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                <apex:param value="{!stageValue.submittedDate}" /></apex:outputText>
+                        </td>
+                        <td>
+                            <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                <apex:param value="{!stageValue.approvedDate}" /></apex:outputText>
+                        </td>
+                        <td>
+                            <apex:outputText value="{!stageValue.noOfDays}" />
+                        </td>
+                        <!--  <td><apex:outputText value="{!stageValue.id}"/></td> -->
+                        <td>
+                            <apex:outputText value="{!stageValue.productDegName}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!stageValue.conceptDgnApprovalSt }" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!stageValue.complexity }" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                <apex:param value="{!stageValue.startDate}" /></apex:outputText>
+                        </td>
+                        <td>
+                            <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                <apex:param value="{!stageValue.endDate}" /></apex:outputText>
+                        </td>
+                        <td>
+                            <apex:outputText value="{!stageValue.PlanLT}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{0,date,dd'-'MM'-'yyyy}"><apex:param value="{!stageValue.Approval}" /></apex:outputText>
+                        </td>
+                        
+                        <td>
+                            <apex:outputText value="{!stageValue.conceptdesignLT}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!stageValue.EnggDegName}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                <apex:param value="{!stageValue.startDateEd}" /></apex:outputText>
+                        </td>
+                        <td>
+                            <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                <apex:param value="{!stageValue.endDateEd}" /></apex:outputText>
+                        </td>
+                        <td>
+                            <apex:outputText value="{!stageValue.PlanLTEd}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!stageValue.endminusstart}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                <apex:param value="{!stageValue.ISCM}" /></apex:outputText>
+                        </td>
+                          <td>
+                            <apex:outputText value="{!stageValue.ISCMLT}" />
+                        </td>
+
+                    </tr>
+                </apex:repeat>
+            </table>
+        </apex:outputpanel>
+        </div>
+        <div class="scrollmenu">
+        <apex:outputPanel rendered="{!showDesign}" id="TableRecordIdtwo">
+            <table width="90%" cellspacing="0" cellpadding="3" align="center" border="1" style="border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">
+
+
+                <tr style="background:#F0F8FF;" align="center">
+                    <td colspan="7"></td>
+                    <td colspan="3" style="color:#4c76ad;font-weight:bold;font-size:14px;"><b>Proto Tech Design </b></td>
+                    <td colspan="5" style="color:#4c76ad;font-weight:bold;font-size:14px;"><b>Proto Mfg </b></td>
+                    <td colspan="5" style="color:#4c76ad;font-weight:bold;font-size:14px;"><b>Final Design Release</b></td>
+                    <td colspan="3" style="color:#4c76ad;font-weight:bold;font-size:14px;"><b>Additional Development</b></td>
+                    <td colspan="3" style="color:#4c76ad;font-weight:bold;font-size:14px;"><b>Planned Order Loading</b></td>
+                    <td colspan="3" style="color:#4c76ad;font-weight:bold;font-size:14px;"><b>Launch</b></td>
+
+                </tr>
+                <tr style="background:#D3D3D3;">
+                    <th>
+                        <apex:outputText value="Brand" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Collection" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Design No" />
+                    </th>
+                    <th>
+                        <apex:outputText value="PSY No" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Model" />
+                    </th>
+                      <th>
+                        <apex:outputText value="Tech Designer" />
+                    </th>
+                      <th>
+                        <apex:outputText value="Tech Approver Name" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Upstream Input" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Acceptance" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Act LT" />
+                    </th>
+                     <th>
+                        <apex:outputText value="Complexity" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Start date" />
+                    </th> 
+                    <th>
+                        <apex:outputText value="End date" />
+                    </th> 
+                    <th>
+                        <apex:outputText value="Plan LT" />
+                    </th> 
+                    <th>
+                        <apex:outputText value="Act LT" />
+                    </th>
+                     <th>
+                        <apex:outputText value="Complexity" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Start date" />
+                    </th> 
+                    <th>
+                        <apex:outputText value="End date" />
+                    </th> 
+                    <th>
+                        <apex:outputText value="Plan LT(days)" />
+                    </th> 
+                    <th>
+                        <apex:outputText value="Act LT(Days)" />
+                    </th>
+                    <th>
+                        <apex:outputText value="Start date" />
+                    </th> 
+                    <th>
+                        <apex:outputText value="End date" />
+                    </th> 
+                    <th>
+                        <apex:outputText value="LT(Days)" />
+                    </th> 
+                    <th>
+                        <apex:outputText value="Start date" />
+                    </th> 
+                    <th>
+                        <apex:outputText value="End date" />
+                    </th> 
+                    <th>
+                        <apex:outputText value="LT(Days)" />
+                    </th> 
+                    <th>
+                        <apex:outputText value="Start date" />
+                    </th> 
+                    <th>
+                        <apex:outputText value="End date" />
+                    </th> 
+                    <th>
+                        <apex:outputText value="LT(Days)" />
+                    </th>        
+                </tr>
+               
+                <apex:repeat value="{!lWrapperList}" var="stageValue">
+                    <tr style="background:#fcfcf9;">
+                        <td>
+                            <apex:outputText value="{!stageValue.brand}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!stageValue.collection}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!stageValue.designNo}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!stageValue.Psynum}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!stageValue.model}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!stageValue.TechDesigner}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!stageValue.TechApproverName}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                <apex:param value="{!stageValue.proendDate}" /></apex:outputText>
+                        </td>
+
+                        <td>
+                            <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                <apex:param value="{!stageValue.RelEndDate}" /></apex:outputText>
+                        </td>
+
+                        <td>
+                            <apex:outputText value="{!stageValue.ActLTDesign}" />
+
+                        </td>
+                         <td>
+                            <apex:outputText value="{!stageValue.designComplexity}" />
+
+                        </td>
+                         <td>
+                             <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                             <apex:param value="{!stageValue.protoDgnReleaseAED}" /></apex:outputText>
+                        </td>
+                         <td>
+                             <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                             <apex:param value="{!stageValue.protoMfgAslyAED}" /></apex:outputText>
+                        </td>
+                           <td>
+                            <apex:outputText value="{!stageValue.designPlanLT}" />
+                        </td>
+                           <td>
+                            <apex:outputText value="{!stageValue.designProtoMfgLT}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!stageValue.designFPDRComplexity}" />
+                        </td>
+                         <td>
+                             <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                             <apex:param value="{!stageValue.designFPDRATD}" /></apex:outputText>
+                        </td>
+                         <td>
+                             <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                             <apex:param value="{!stageValue.designFPDRAED}" /></apex:outputText>
+                        </td>
+                         <td>
+                            <apex:outputText value="{!stageValue.designIFPDRlanLTCal}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!stageValue.designFPDRLT}" />
+                        </td>
+                        <td>
+                             <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                             <apex:param value="{!stageValue.addDevStartDate}" /></apex:outputText>
+                        </td>
+                        <td>
+                             <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                             <apex:param value="{!stageValue.watchBOCompDevAED}" /></apex:outputText>
+                        </td>
+                         <td>
+                            <apex:outputText value="{!stageValue.addDevLT}" />
+                        </td>
+                        <td>
+                             <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                             <apex:param value="{!stageValue.planedOrderLodingSD}" /></apex:outputText>
+                        </td>
+                        <td>
+                             <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                             <apex:param value="{!stageValue.planedOrderLodingAED}" /></apex:outputText>
+                        </td>
+                         <td>
+                            <apex:outputText value="{!stageValue.planedOrderLodingLT}" />
+                        </td>
+                        <td>
+                             <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                             <apex:param value="{!stageValue.launchSD}" /></apex:outputText>
+                        </td>
+                        <td>
+                             <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                             <apex:param value="{!stageValue.launchED}" /></apex:outputText>
+                        </td>
+                         <td>
+                            <apex:outputText value="{!stageValue.launchLT}" />
+                        </td>
+                    </tr>
+                </apex:repeat>
+            </table>
+        </apex:outputpanel>
+        </div>
+
+    </apex:form>
+</apex:page>

@@ -1,0 +1,69 @@
+<apex:page controller="PopUpController" title="Search" 
+  showHeader="false" 
+  sideBar="false" 
+  tabStyle="Account" 
+  id="pg">
+    <script>
+   
+      function fieldFillIn(subBrand)
+        {           
+              var winMain=window.opener;
+              if (null==winMain)
+              {
+                 winMain=window.parent.opener;
+              }
+              
+             
+               
+           var elem=winMain.document.getElementById('{!$CurrentPage.parameters.SubBrandComponent}');             
+           elem.value = subBrand;
+         
+          
+           CloseWindow();  
+                    
+        }
+        
+        
+        
+        function CloseWindow()
+         {
+          var winMain=window.opener; 
+          if (null==winMain) 
+          { 
+          winMain=window.parent.opener; 
+          }
+           winMain.closeComplexitypopup();
+        }
+        
+        
+    
+    </script>
+    <apex:form >
+    <apex:outputPanel id="page" layout="block" style="margin:5px;padding:10px;padding-top:2px;">
+    <apex:tabPanel switchType="client" selectedTab="name1" id="tabbedPanel">
+        <apex:tab label="Search" name="tab1" id="tabOne">    
+        <apex:outputPanel id="pnlSearchResults" style="margin:10px;height:350px;overflow-Y:auto;" layout="block">
+        <apex:pageBlock id="searchResults">
+            <apex:pageMessages id="Err"></apex:pageMessages> 
+            <apex:pageBlockTable value="{!SubBrandValues}" var="check" id="tblResults" >
+          
+                <apex:column width="18%">
+                <apex:facet name="header">
+                <apex:outputPanel >Name</apex:outputPanel>
+                </apex:facet>
+                <apex:commandLink value="{!check.com.Name}" action="{!doSubBrandSelection}" oncomplete="fieldFillIn('{!subBrand}')">
+                 <apex:param name="" value="{!check.com.Name}" assignTo="{!strComCat}" />
+                </apex:commandLink>
+                </apex:column>
+                
+                
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        </apex:outputPanel>            
+            <apex:commandButton value="OK" action="{!doSubBrandSelection}" oncomplete="fieldFillIn('{!subBrand}')"/> 
+            <apex:commandButton value="Cancel"  onclick="CloseWindow()"/> 
+        </apex:tab>      
+    </apex:tabPanel>
+    </apex:outputPanel>
+    </apex:form> 
+</apex:page>

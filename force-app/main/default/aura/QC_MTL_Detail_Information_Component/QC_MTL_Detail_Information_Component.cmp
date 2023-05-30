@@ -1,0 +1,128 @@
+<aura:component controller="QCMTLDetailInformationComponentClass" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+   
+    <!--attribute-->
+    <aura:attribute name="titanSpecificationReferenceId" type="String" />
+    <aura:attribute name="lookupValueIncrementerForTitanSpec" type="integer" default="0"/>
+    <aura:attribute name="lookupValueIncrementerForSupplrGrd" type="Integer" default="0" />
+    <aura:attribute name="selectedLookUpRecordForTitanSpec" type="sObject" default="{}"/> <!-- attribute is used to hold the selected record in titan specification look up -->
+    <aura:attribute name="selectedLookUpRecordForSupplierGrd" type="sObject" default="{}"/> <!-- attribute is used to hold the selected record in supplier Grade look up -->
+    <aura:attribute name="isReadonly" type="Boolean" default="true"/>
+    <aura:attribute name="QCMTlComponentObject" type="sObject" default="{'sObject' : 'QC_MTL_Component__c',
+                                                                        'Report_Reference_Number__c':'',
+                                                                        'Sample_Size_Qty__c':'',
+                                                                        'Supply_Quantity__c':'',
+                                                                        'Heat_No_Grade__c' : '',
+                                                                        'RM_Size__c': '',
+                                                                        'Invoice_Dc_No__c' : '',
+                                                                        'Supplier_Name__c' : '',
+                                                                        'Raw_Material_Name__c' : '',
+                                                                        'Testing_Type__c' : '',
+                                                                        'Raw_Material_Type__c' : '',
+                                                                        'Specification_revision__c' : '',
+                                                                        'Titan_Specification_Reference__c' : ''}"/>
+    
+    <!--handler-->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="oSelectedRecordEvent" event="c:LookUpEvent" action="{!c.handleLookupComponentEvent}"/>
+
+    <div class="slds-section slds-is-open">
+        <h3 class="slds-section__title slds-theme_success" >
+            <span class="slds-truncate slds-p-horizontal_small" title="Section Title" style="font-weight: bold;">Product Information</span>
+        </h3>
+        <aura:if>
+        <div aria-hidden="false" class="slds-section__content">
+            <form class="slds-form slds-form_compound" >
+                <div class="slds-form-element__control">
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2 ">
+                                    <span class="slds-form-element__label">Report Reference No</span>
+                                    <span class="slds-form-element__static">{!v.QCMTlComponentObject.Report_Reference_Number__c}</span>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-p-left_x-small">
+                                    <span class="slds-form-element__label">Testing Type</span>
+                                    <span class="slds-form-element__static">{!v.QCMTlComponentObject.Testing_Type__c}</span> 
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2 ">
+                                    <lightning:input aura:id="specRevisionId" label="Specification Revision" value="{!v.QCMTlComponentObject.Specification_revision__c}" disabled="{!v.isReadonly}"/>
+                                </div>
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <span class="slds-form-element__label">Raw Material Type</span>
+                                    <span class="slds-form-element__static">{!v.QCMTlComponentObject.Raw_Material_Type__c}</span> 
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <lightning:input aura:id="rawMatNameId" label="Raw Material Name" value="{!v.QCMTlComponentObject.Raw_Material_Name__c}" disabled="{!v.isReadonly}"/>
+                                </div>
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <c:CustomLookupComponentParent isDisabled ="{!v.isReadonly}" aura:id="lookupId"  customId = "qcMTLTitanSpecId"  objectAPIName="QC_Access_Master__c" lookupValueIncrementerForTitanSpec="{!v.lookupValueIncrementerForTitanSpec}" whereCondition="RecordType.Name = 'Specification Details'" IconName="standard:account" selectedRecord="{!v.selectedLookUpRecordForTitanSpec}" label="Titan Specification Reference"/>   
+                                </div>
+                            </div> 
+                        </div> 
+                    </fieldset>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <lightning:input aura:id="supplierId" label="Supplier Name" value="{!v.QCMTlComponentObject.Supplier_Name__c}" disabled="{!v.isReadonly}"/>
+                                </div>
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <lightning:input aura:id="invoiceId" label="Invoice/Dc.No" value="{!v.QCMTlComponentObject.Invoice_Dc_No__c}" disabled="{!v.isReadonly}"/>    
+                                </div> 
+                            </div> 
+                        </div> 
+                    </fieldset>
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <lightning:input aura:id="materialSizeId" label="Raw Material Size" value="{!v.QCMTlComponentObject.RM_Size__c}" disabled="{!v.isReadonly}"/>
+                                </div> 
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <lightning:input aura:id="heatNoId" label="Heat No/Grade" value="{!v.QCMTlComponentObject.Heat_No_Grade__c}" disabled="{!v.isReadonly}"/>    
+                                </div> 
+                            </div>
+                        </div>
+                    </fieldset>   
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                
+                                <div class="slds-form-element slds-size_1-of-2">       
+                                    <lightning:input type="number" aura:id="sampleQtyId" label="Supply Quantity" value="{!v.QCMTlComponentObject.Supply_Quantity__c}" placeholder="Enter a number!" disabled="{!v.isReadonly}"/>
+                                </div>
+                                <div class="slds-form-element slds-size_1-of-2">
+                                    <c:CustomLookupComponentParent aura:id="lookupId" isDisabled="{!v.isReadonly}" lookupValueIncrementerForSupplrGrd="{!v.lookupValueIncrementerForSupplrGrd}" customId = "qcMTLSupplierGradeId"  objectAPIName="Supplier_Grade__c" whereCondition="{!'QC_Access_Master__c =  \''+v.selectedLookUpRecordForTitanSpec.Id+ '\''}" IconName="standard:account" selectedRecord="{!v.selectedLookUpRecordForSupplierGrd}" label="Supplier Grade"/>   
+                                </div> 
+                            </div>
+                        </div>
+                    </fieldset>  
+                    <fieldset class="slds-form-element"> 
+                        <div class="slds-form-element__group"> 
+                            <div class="slds-form-element__row"> 
+                                <div class="slds-form-element slds-size_1-of-2">       
+                                    <lightning:input type="number" aura:id="sampleSizeId" label="Sample Size" value="{!v.QCMTlComponentObject.Sample_Size_Qty__c}" placeholder="Enter a number!" disabled="{!v.isReadonly}"/>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>  
+                </div>
+                <br/>
+            </form>  
+        </div>
+        </aura:if>
+    </div>	
+</aura:component>

@@ -1,0 +1,46 @@
+<apex:page controller="TaneiraProdAttributionVF" cache="true" readOnly="true" contentType="application/vnd.ms-excel#ZTANMM_{!param}.xls; charset=UTF-8">
+    <style> .red {   background: red; } </style>
+    <table class="slds-table slds-table--bordered slds-resizable pt20 ">
+        <tr>
+            <th>Material Number</th>
+            <th>Plant</th>
+            <th>Storage Location</th>
+            <th>Unit of Measure</th>
+            <th>Material Description</th>
+            <th>Material group</th>
+            <th>ECOM Material</th>
+            <th>Profit Center</th>
+            <th>Control code</th>
+            <th>Product hierarchy</th>
+        </tr>
+        
+        <apex:repeat value="{!mmWrapper}" var="mm">
+            <tr>
+                <td align="center"> {!mm.proRec.SKU_Code__c}</td>
+                <td align="center"> {!mm.plant}</td>
+                <td align="center"> {!mm.storageLocation}</td> 
+                <td align="center">{!mm.unitOfMeasure}</td>
+                <!--<apex:outputPanel rendered="{!if(mm.conditionsMet==true , true ,false)}">  -->
+					<!-- <td align="center">{!mm.materialDescription} </td> -->
+					<!--</apex:outputPanel>-->
+                <!-- <apex:outputPanel rendered="{!(!mm.conditionsMet)}"> -->
+			    <td align="center" class="{!mm.cellHighlight}">{!mm.materialDescription} </td>
+                <!--<td align="center">{!mm.materialDescription} </td> -->
+                <td align="center"> {!mm.proRec.Product_Category_Taneira__c}</td>
+                <td align="center"> {!mm.proRec.SKU_Code__c}</td>
+                <td align="center"> {!mm.profitCenter}</td>
+                <td align="center">{!mm.controlCode}</td>
+                <td align="center" class="{!mm.cellHighlightHierarchy}">{!mm.productHierarchy} </td>
+                <!--<td align="center">{!mm.productHierarchy} </td>-->
+                <!--<apex:outputPanel rendered="{!if(mm.conditionsMet==true , true ,false)}"> 
+                <!--<apex:outputPanel rendered="{!mm.conditionsMet}">
+					 <td align="center">{!mm.productHierarchy} </td> 
+					</apex:outputPanel>-->
+                <!--<apex:outputPanel rendered="{!if(mm.conditionsMet==false , true ,false)}">
+                 <apex:outputPanel rendered="{!(!mm.conditionsMet)}">
+					    <td align="center" class="red">{!mm.productHierarchy} </td>
+					</apex:outputPanel>-->
+            </tr>
+        </apex:repeat>
+        </table>
+</apex:page>

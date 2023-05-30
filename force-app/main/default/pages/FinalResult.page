@@ -1,0 +1,273 @@
+<!--**************************************************************************************
+**Created By   :  vijayavardan reddy.
+**Modified By  :  Vijayavardan reddy, Avinash.
+**Created Date :  12-May-2014.
+**Description  :  Dispalys variant details differently for process users and product  users.
+********************************************************************************************-->
+
+<apex:page controller="FinalResultExtensions"  action="{!sessionManagement}"  standardStylesheets="true" docType="html-5.0" sidebar="false" showHeader="false" id="pageId" >
+    
+    <head>
+    
+        <title>Keyboard navigation</title>
+        <meta charset="utf-8"/>
+        <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.common.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.rtl.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.blueopal.min.css')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/js/jquery.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/js/kendo.web.min.js')}"/>
+               
+    </head>
+    
+    <style>
+    
+        body{
+            background: url('{!$Resource.Login}') no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            
+        }
+        
+        #VariantAttributes{
+            background: url('{!$Resource.Login}') no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            font-family:Arial;
+        }
+        
+        thead tr th {
+            font-weight:bold !important;
+            font-family:Arial !important;
+        }
+        
+        .acnchorTagColor{
+            color:#35C7E1 !important;
+        }
+    </style>
+    
+    <script>
+        //Displays model document details in seperate window
+        function moreDocuments(modelId){
+            window.open('/NewLogin/MoreDocument?id='+modelId);
+        } 
+        
+        function moreProcessDocuments(variantId){
+            window.open('/NewLogin/MoreProcessDocument?id='+variantId);
+        }
+        
+        
+        //Displays variant image in seperate window
+        function imageclick(imgId){
+            window.open('/NewLogin/documentDisplay?id='+imgId);
+        }
+        
+        
+    </script>
+    
+    
+    <script >
+    
+        var jsonData = {!VariantsJSON};
+        var profileName = '{!currentProfileName}';
+        
+        if(profileName=='What user profile'){
+            column=[
+                        
+                    {field: "attachmentId",title: "Image",
+                        template:"# if( imageId != '' && imageId!=null) {#<a onClick = 'imageclick(\"${imageId}\");'  title='Click to see the image' style='cursor:pointer;' ><img src='/NewLogin/servlet/servlet.FileDownload?file=${imageId}' width='80px' height='100px'/></a># }  #",
+                         width: "90px", height: "6%" },
+                    { field: "model", title: "Model", width: "6%"}, 
+                    { field: "variant", title: "Variant", width: "7%"},    
+                    { field: "brand", title: "Brand", width: "6%"},
+                    { field: "cluster", title: "Cluster", width: "6%"},
+                    { field: "range", title: "Range", width: "6%"},
+                    { field: "gender", title: "Gender", width: "5%"},
+                    { field: "dialNum", title: "Dial No", width: "6%"},
+                    { field: "CaseMat", title: "Case Mat", width: "6%"},
+                    { field: "movement", title: "Movement", width: "8%"},
+                    { field: "function", title: "Function", width: "8%"},
+                    { field: "strap", title: "Strap", width: "6%"},
+                    { field: "Rev", title: "Revision", width: "6%"},
+                    { field: "AltRemarks", title: "Alt Remarks", width: "6%"},
+                    { title: "Product Master/Spec", template:"<a class='acnchorTagColor' onClick = 'moreDocuments(\"${productId}\");' title='Click to see more master documetns' style='cursor:pointer'><b><u>Specs</u></b></a>",   width: "6%"},
+                        
+                ];    
+        
+        }else if(profileName=='Process and Product end user'){
+        
+            column=[
+                        
+                    {field: "attachmentId",title: "Image",
+                        template:"# if( imageId != '' && imageId!=null) {#<a onClick = 'imageclick(\"${imageId}\");'  title='Click to see the image' style='cursor:pointer;' ><img src='/NewLogin/servlet/servlet.FileDownload?file=${imageId}' width='80px' height='100px'/></a># }  #",
+                         width: "90px", height: "6%" },
+                    { field: "model", title: "Model", width: "6%"}, 
+                    { field: "variant", title: "Variant", width: "7%"},    
+                    { field: "brand", title: "Brand", width: "6%"},
+                    { field: "cluster", title: "Cluster", width: "6%"},
+                    { field: "range", title: "Range", width: "6%"},
+                    { field: "gender", title: "Gender", width: "5%"},
+                    { field: "dialNum", title: "Dial No", width: "6%"},
+                    { field: "CaseMat", title: "Case Mat", width: "6%"},
+                    { field: "movement", title: "Movement", width: "8%"},
+                    { field: "function", title: "Function", width: "8%"},
+                    { field: "strap", title: "Strap", width: "6%"},
+                    { field: "Rev", title: "Revision", width: "6%"},
+                    { field: "AltRemarks", title: "Alt Remarks", width: "6%"},
+                    { title: "Product Master/Spec", template:"<a class='acnchorTagColor' onClick = 'moreDocuments(\"${productId}\");' title='Click to see more master documetns' style='cursor:pointer'><b><u>Specs</u></b></a>",   width: "6%"},
+                    {title:"Process documents",template:"<a class='acnchorTagColor' onClick = 'moreProcessDocuments(\"${variantId}\");' title='Click to see more process documetns' style='cursor:pointer'><b><u>Docs</u></b></a>",   width: "6%"}        
+                
+                
+                ];  
+        
+        }
+        
+                
+        $(document).ready(function () {
+        
+        
+            var crudServiceBaseUrl = "https://demos.telerik.com/kendo-ui/service",
+            dataSource = new kendo.data.DataSource({
+                transport: {
+                    read: function(e) {
+                       dataSource.sync();
+                       e.success(jsonData)  
+                    },
+                    update: function(e){
+                        var StringifiedData = JSON.stringify(e.data);
+                        alert(StringifiedData);
+                        
+                    },
+                    create: {
+                        url: crudServiceBaseUrl + "/Products/Create",
+                        dataType: "jsonp"
+                    },
+                    parameterMap: function(options, operation) {
+                        if (operation !== "read" && options.models) {
+                            return {models: kendo.stringify(options.models)};
+                        }
+                    }
+                },
+                batch: true,
+                pageSize: 20,
+                schema: {
+                    data: function(response){
+                        return response
+                    }
+                }
+            });
+            
+            if(profileName == 'What user profile' || profileName  ==  'Process and Product end user'){    
+            
+                $("#VariantAttributes").kendoGrid({
+                    dataSource: dataSource,
+                    scrollable: true,
+                    sortable: true,
+                    filterable: true,
+                    columnMenu: true,
+                    pageable: {
+                        input: true,
+                        numeric: true,
+                        previousNext: false,
+                    },
+                    columns: column,
+                    editable: "inline", 
+                });
+            
+            }else if(profileName  ==  'Work instructions user profile'){
+            
+                $("#VariantAttributes").kendoGrid({
+                    dataSource: dataSource,
+                    scrollable: true,
+                    sortable: true,
+                    filterable: true,
+                    columnMenu: true,
+                    pageable: {
+                        input: true,
+                        numeric: true,
+                        previousNext: false,
+                    },
+                    columns: [
+                        
+                        { field: "model", title: "Model", width: "7%"},
+                        { field: "variant", title: "Variant", width: "7%"},    
+                        { field: "brand", title: "Brand", width: "7%"},
+                        { field: "gender", title: "Gender", width: "6%"},
+                        { field: "cluster", title: "Cluster", width: "7%"},
+                        { field: "DialNum", title: "Dial No.", width: "7%"},
+                        { field: "movement", title: "Movement", width: "7%"},
+                        { field: "strap", title: "Strap", width: "6%"},
+                        
+                        { field: "workins", title: "Work Inst.", 
+                          template:"# if( workins != '' && workins!=null) {#<b><u><a class='acnchorTagColor' onClick = 'imageclick(\"${workins}\");' style='cursor:pointer;' title='Click to see the details'  alt='No Image'  target='_blank'><font  >${titleWI}</font></a></u></b># }  #",
+                          width: "8%"},
+                            
+                        { field: "doAndDonots", title: "Do\'s & Don\'t\'s", 
+                          template:"# if( doAndDonots != '' && doAndDonots!=null) {#<b><u><a class='acnchorTagColor' onClick = 'imageclick(\"${doAndDonots}\");' style='cursor:pointer;' title='Click to see the details'  alt='No Image' target='_blank'><font  >${titleDD}</font></a></u></b># }  #",
+                          width: "8%"},
+                        
+                        { field: "troubleShooting", title: "Troubleshooting", 
+                          template:"# if( troubleShooting != '' && troubleShooting!=null) {#<b><u><a class='acnchorTagColor' onClick = 'imageclick(\"${troubleShooting}\");' style='cursor:pointer;' title='Click to see the details'  alt='No Image' target='_blank'><font >${titleTS}</font></a></u></b># }  #",
+                          width: "9%"},
+                            
+                        { field: "packInfo", title: "Packing Info", 
+                          template:"# if( packInfo != '' && packInfo!=null) {#<b><u><a class='acnchorTagColor' onClick = 'imageclick(\"${packInfo}\");' style='cursor:pointer;' title='Click to see the details'  alt='No Image' target='_blank'><font  >${titlePI}</black></a></u></b># }  #",
+                          width: "8%"},
+                        
+                        { field: "IBDSpares", title: "IBD", 
+                          template:"# if( IBDSpares != '' && IBDSpares!=null) {#<b><u><a class='acnchorTagColor' onClick = 'imageclick(\"${IBDSpares}\");' style='cursor:pointer;' title='Click to see the details'  alt='No Image' target='_blank'><font  >${titleIbd}</black></a></u></b># }  #",
+                          width: "8%"},
+                        
+                    ],
+                    editable: "inline", 
+                });
+            }
+        });
+    
+    </script>
+    
+    <body>
+        <apex:form id="formId">
+            <apex:actionFunction action="{!movetohome}" name="moveTologin" id="actionid"/>
+            
+            <table width="100%">
+            
+                <tr>
+                    <td  width="5%">
+                        <apex:image value="{!$Resource.New_titan_logo}"  height="80px" width="80px" style="margin-top:1%;margin-left:1%;"/>
+                    </td>
+                    
+                    <td  valign="top" align="right" width="3%">
+                        <apex:commandLink type="image" action="{!moveToBack}" title="Click to Go to previous page">
+                            <apex:image value="{!$Resource.BackIcon}"  height="32px" width="32px" style="margin-top:1%;"/> 
+                        </apex:commandLink>&nbsp;&nbsp;
+                        <apex:commandLink type="image" action="{!moveToHome}" title="Click to Go to home page">
+                            <apex:image value="{!$Resource.HomeIcon}"  height="32px" width="32px" style="margin-top:1%;" /> 
+                        </apex:commandLink>&nbsp;&nbsp;
+                        <apex:commandLink type="image" action="{!logout}" title="Click to logout" >
+                            <apex:image value="{!$Resource.LogOut}"  height="32px" width="32px" style="margin-top:1%;margin-right:2%" /> 
+                        </apex:commandLink>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td colspan="2" align="center" >
+                      <font size="4">  <apex:outputText rendered="{!noRecordDisplay}" value="No Records Found." style="Color:Grey;font-family:Arial;"/></font>
+                    </td>
+                </tr>
+                
+            </table>
+            
+        </apex:form><br/>
+        <div id="VariantAttributes" style="margin-right:0.5%;margin-left:0.5%;margin-bottom:1%"></div>
+    </body>
+    
+    <div style="position: relative">
+      <p style="position: relative;  width:100%; text-align: center; font-family:Arial;margin-top:0%"> Copyright © 2014 Under Titan Company. All Rights Reserved. No imagery or logos contained within this site may be used without the express permission of Titan Company</p>
+    </div>
+    
+    
+</apex:page>

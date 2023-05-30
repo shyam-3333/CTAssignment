@@ -1,0 +1,18 @@
+<!--Name           : BiIndentFile 
+    Created By         : Suyog B Magar
+    Email              : magarsuyog.b@kvpcorp.com
+    Created Date       :
+    Modified By        :
+    Last Modified Date :
+    Description        : Indent records created within 24 hours should be sent in  txt file format    -->
+<apex:page controller="BiIndentFile" standardStylesheets="false" sidebar="false" action="{!fetch}" ContentType="text/plain/#indent.txt" showHeader="false" applyHtmlTag="false" applyBodyTag="false">
+
+    <apex:repeat value="{!IndentRecords}" var="qt">
+    {!qt.SI_No}||{!qt.Account_Name}||{!qt.Industry_Channel}||{!qt.Account_Owner_Full_Name}||{!qt.Customer_Subsegment}||{!qt.Customer_Category}||{!qt.YES_Tata_And_Tata_Group_of_Companies}||{!qt.Account_Type}||
+    {!qt.Financial_Year}||{!qt.Region}||{!qt.Sale_Target}||{!qt.Opportunity_Type}||{!qt.Lead_Source }||{!qt.Sambandh_Classification }||{!qt.Opportunity_Name }||
+    {!qt.Insti_Order_Reference }||
+    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}"><apex:param value="{!qt.Indent_Created_Date}" /></apex:outputText>{!newLine}
+    </apex:repeat>
+    
+
+</apex:page>

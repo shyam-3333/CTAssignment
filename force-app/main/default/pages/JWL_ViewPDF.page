@@ -1,0 +1,195 @@
+<apex:page standardController="JWL_Component__c" renderAs="pdf" extensions="JWL_ViewPDF_controller"   showHeader="false" sidebar="false" standardStylesheets="false" applyHtmlTag="false" applyBodyTag="false"  > 
+    
+    <html>
+        <head>
+            <style type="text/CSS">
+                @page:first{
+                
+                @top-right {
+                content: "Page 1 ""-"" "counter(pages);
+                position:absolute;
+                top:-100px;
+                }
+                }
+                @page {
+                @top-right {
+                content: "Page " counter(page) " - " counter(pages);
+                position:absolute;
+                top:-100px;
+                }
+                @bottom-right
+                   {
+                        content: element(footer);
+                   }
+                }
+                div.footer 
+                {
+                    position: running(footer);
+                }
+                @page {
+        size:A4 portrait;
+        border-top: 1px solid black; 
+        border-bottom : 1px solid black;    
+    }
+            </style>
+        </head>
+        <body>
+            
+           
+        </body>
+        
+    </html>  
+ <!-- ***************************************************************************************************************** -->
+    <table width="100%" style="border-collapse:collapse; table-layout:auto;border:1px solid black;" >
+        <tr>
+            <td style="border:1px solid black;text-align:center;font-size:20px; width:100px;hieght:100px;"  rowspan="2" ><apex:image width="100" height="100" url="{!$Resource.TITANJEWELLOGO}"  alt="Description of image here"/></td>
+            <td style="border:1px solid black;text-align:center;color:black;font-size:20px;font-weight:bold;padding:15px;" colspan="2"  >TITAN COMPANY LIMITED <br/>JEWELLERY DIVISION</td>
+            <td style="border:1px solid black;text-align:center;color:black;font-size:15px;font-weight:bold;width:100px;hieght:100px;"   rowspan="2">QUALITY ASSURANCE</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid black;text-align:center;color:black;font-size:20px;font-weight:bold;padding:15px;" colspan="2" >RELIABILITY TEST REPORT</td>
+        </tr>
+    </table>  
+     <table width="100%" style="border-collapse:collapse; table-layout:auto;border:1px solid black;" >   
+        <tr >
+            <td style="border:1px solid black;text-align:left;color:black;font-size:15px;overflow-wrap: break-word;word-break: break-all;border-right-style:hidden;border-bottom-style:hidden;padding:7px 5px 7px 5px;" colspan="2" > <b>Doc No &nbsp; :</b> {!JWL_Component__c.Report_Reference_Number__c  }</td>
+            <!-- <td style="border:1px solid black;text-align:left;color:black;font-size:15px;" colspan="2" >  <b> Department &nbsp; : </b> QA</td> -->
+            <td class="pageno" style="border:1px solid black;text-align:left;color:black;font-size:15px;border-bottom-style:hidden;padding:7px 5px 7px 30px;" colspan="2"><b>REF Standard &nbsp; :</b> TITAN</td>
+        </tr>
+        
+        
+        <tr>
+            <td style="border:1px solid black;text-align:left;color:black;font-size:15px;overflow-wrap: break-word;word-break: break-all;border-right-style:hidden;border-bottom-style:hidden;padding:7px 5px 7px 5px;" colspan="2"  ><b> Product: </b> {!JWL_Component__c.Product_Category__c} </td>
+            <td style="border:1px solid black;text-align:left;color:black;font-size:15px;overflow-wrap: break-word;word-break: break-all;border-bottom-style:hidden;padding:7px 5px 7px 30px;" colspan="2"  ><b>Recieved from: </b> {!JWL_Component__c.Submitted_by_Name__c} </td>
+        </tr>
+        <tr>       
+            <td style="border:1px solid black;text-align:left;color:black;font-size:15px;overflow-wrap: break-word;word-break: break-all;border-right-style:hidden;border-bottom-style:hidden;padding:7px 5px 7px 5px;" colspan="2"> <b>Code: </b> {!JWL_Component__c.Product_Code__c}</td>  
+            <td style="border:1px solid black;text-align:left;color:black;font-size:15px;overflow-wrap: break-word;word-break: break-all;border-bottom-style:hidden;padding:7px 5px 7px 30px;" colspan="2" ><b>Lot No:  </b> {!JWL_Component__c.Lot_no__c} </td>
+        </tr>
+        <tr>
+            <td style="border:1px solid black;text-align:left;color:black;font-size:15px;overflow-wrap: break-word;word-break: break-all;border-right-style:hidden;border-bottom-style:hidden;padding:7px 5px 7px 5px;" colspan="2" ><b>Sample Quantity: </b>  {!FLOOR(JWL_Component__c.No_of_samples__c)}</td>
+            <td style="border:1px solid black;text-align:left;color:black;font-size:15px;overflow-wrap: break-word;word-break: break-all;border-bottom-style:hidden;padding:7px 5px 7px 30px;" colspan="2" ><b>Vendor/Dept: </b> {!JWL_Component__c.Vendor__r.Name}</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid black;color:black;text-align:left;font-size:15px;overflow-wrap: break-word;word-break: break-all;padding:10px 5px 10px 5px;" colspan="4" > <b>Date: </b>
+                 <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                    <apex:param value="{!JWL_Component__c.Publish_Date__c}" /> 
+                    </apex:outputText>  <!-- &nbsp;/ {!JWL_Component__c.Sample_Submission_time__c} -->
+            </td>
+        </tr>
+        <tr >
+            <td style="border:1px solid black;text-align:left;color:black;font-size:15px;overflow-wrap: break-word;word-break: break-all;border-top-style:hidden;padding:10px 5px 10px 5px;"  colspan="4"> <b>Process Change/Concept: </b> <BR/> {!JWL_Component__c.Process__c}</td>
+        </tr>
+        
+        
+    </table>
+     
+    <table  width="100%" style="border-collapse:collapse;border:1px solid black;" >
+        
+        <thead>
+            <tr>
+                <th style="border:1px solid black;text-align:center;color:black;font-size:15px;font-weight:bold;padding:8px;" colspan="6" > TEST OVERVIEW </th>
+            </tr>
+            <tr>
+                <th style="border:1px solid black;text-align:center;color:black;font-size:15px;" >SL.No</th>
+                <th style="border:1px solid black;text-align:center;color:black;font-size:15px;" >Test details</th>
+                <th style="border:1px solid black;text-align:center;color:black;font-size:15px;" >Dimension Parameters</th>
+                <th style="border:1px solid black;text-align:center;color:black;font-size:15px;" > Specification</th>
+                <th style="border:1px solid black;text-align:center;color:black;font-size:15px;" >Observation</th>
+                <th style="border:1px solid black;text-align:center;color:black;font-size:15px;" >Result</th>
+            </tr>
+        </thead>
+        <tbody>
+            <apex:variable value="{!1}" var="count" />
+            <apex:repeat value="{!jwlresponsetable}" var="jwl">
+                <tr style="text-align:center;page-break-inside: ;" >
+                    <td style="border:1px solid black;">{!count}</td>
+                    <td style="border:1px solid black;overflow-wrap: break-word;word-break: break-all;width:20%;padding:10px;"><apex:outputField value="{!jwl.Test_Name__c}" /></td>
+                    
+                    <td style="border:1px solid black;overflow-wrap: break-word;word-break: break-all;width:20%;padding:10px;">{!jwl.Dimension_Mannual_test__c}  </td>
+                    <td style="border:1px solid black;overflow-wrap: break-word;word-break: break-all;width:20%;padding:10px;" >{!jwl.Specification_mannual_test__c} </td>
+                    <td style="border:1px solid black;overflow-wrap: break-word;word-break: break-all;width:20%;text-align:left;padding:10px;"> <apex:outputField value="{!jwl.Observation__c}" /></td>
+                    <td style="border:1px solid black;overflow-wrap: break-word;word-break: break-all;padding:10px;">
+                        
+                        <apex:outputPanel rendered="{!jwl.Conclusion__c == 'Pass'}"  >
+                        <b style="color:green;"> {!UPPER(jwl.Conclusion__c) } </b>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!jwl.Conclusion__c == 'Fail'}">
+                        <b style="color:red;"> {!UPPER(jwl.Conclusion__c) } </b>
+                        </apex:outputPanel>
+<!---                        <apex:outputPanel rendered="{ !jwl.Conclusion__c == 'Pass'}"  > <b style="color:green;"> {!jwl.Conclusion__c } </b> </apex:outputPanel>
+                        <apex:outputPanel rendered="{ !jwl.Conclusion__c == 'Fail'}"  > <b style="color:red;" >  {!jwl.Conclusion__c }  </b> </apex:outputPanel>
+ -->                   </td>
+                    
+                </tr>
+                <apex:variable value="{!count+1}" var="count"/>
+            </apex:repeat>
+            
+        </tbody>
+        
+    </table>
+    <table width="100%"  style="border-collapse:collapse; border:1px solid black;page-break-inside: avoid;">
+        
+        <tr>
+            <td style="border:1px solid black;text-align:left;font-size:15px;padding:12px 5px 12px 5px; " width="100%" >
+                <b style="font-size:14px;">General Observation :</b> <br/><apex:outputField value="{!JWL_Component__c.General_Observation__c }" /> 
+            </td>
+        </tr>
+    </table>
+    
+    
+    <div width="100%" style="border:1px solid black;border-collapse:collapse;page-break-inside: avoid;">
+        <table width="75%" style=" border:1px solid white;text-align:center;border-collapse:collapse; " align="center" >
+            <caption  style="text-align:left;"> <b style="text-align:left;font-size:15px;"> &nbsp;Images &nbsp; : </b></caption>
+            <tr>
+                <td style="border:0px solid black;border-right-style:hidden;border-top-style:hidden;width:120px;height:100px;"><apex:outputPanel rendered="{!IF(JWL_Component__c.Image_1__c!=null,true,false)}"> 
+                    <img src="{!JWL_Component__c.Image_1__c}"   alt="" width="200px" height="200px" /></apex:outputPanel>
+                </td>
+                <td style="border:0px solid black;border-right-style:hidden;border-top-style:hidden;width:120px;height:100px;"><apex:outputPanel rendered="{!IF(JWL_Component__c.Image_2__c!=null,true,false)}"> 
+                    <img src="{!JWL_Component__c.Image_2__c}"   alt=""  width="200px" height="200px" /></apex:outputPanel>
+                </td>
+                <td style="border:0px solid black;border-top-style:hidden;width:120px;height:100px;"><apex:outputPanel rendered="{!IF(JWL_Component__c.Image_3__c!=null,true,false)}"> 
+                    <img src="{!JWL_Component__c.Image_3__c}"   alt="" width="200px" height="200px"   /></apex:outputPanel>
+                </td>
+            </tr>
+            
+        </table></div>
+    <table width="100%"  style=" border:1px solid white;text-align:center;border-collapse:collapse;page-break-inside: avoid;" >
+        
+        <tr style="border:1px solid black;">
+            <td style="border:1px solid black;text-align:left;font-size:15px;padding:12px 5px 12px 5px;"  colspan="2" >
+                <b style="font-size:15px;" > Final Verdict :</b>   
+                <apex:outputPanel rendered="{!JWL_Component__c.Final_Verdict__c == 'Accepted'}"  >
+                    <b style="color:green;font-size:15px;"> {!UPPER(JWL_Component__c.Final_Verdict__c) } </b>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!JWL_Component__c.Final_Verdict__c == 'Rejected'}"  >
+                    <b style="color:Red;font-size:15px;"> {!UPPER(JWL_Component__c.Final_Verdict__c) } </b>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!JWL_Component__c.Final_Verdict__c != 'Accepted' && JWL_Component__c.Final_Verdict__c != 'Rejected'}"  >
+                    <b style="color:Black;font-size:15px;" > {!UPPER(JWL_Component__c.Final_Verdict__c) } </b>
+                </apex:outputPanel>
+            </td>
+        </tr>
+      </table>
+    <apex:pageBlock >
+    <apex:pageBlockTable value="{!JWL_Component__c}" var="jwl" columns="3" rendered="{!if(myDate > DATE(2023,03,28),true,false)}">
+        
+        <apex:column style="border:1px solid black;text-align:center;font-size:15px;font-weight:bold;padding:15px;white-space:pre;" width="225" >TESTED BY :<br/><br/>-SD-<br/><br/>({!UPPER(QAuserName.Name)})</apex:column>
+        <apex:column style="border:1px solid black;text-align:center;font-size:15px;font-weight:bold;padding:15px;" width="225" >VALIDATED BY :<br/><br/>-SD-<br/><br/>({!UPPER(JWL_Component__c.validated__c) })</apex:column>
+        <apex:column style="border:1px solid black;text-align:center;font-size:15px;font-weight:bold;padding:15px;" width="225" >APPROVED BY :<br/><br/>-SD-<br/><br/>({!UPPER(JWL_Component__c.Approver_Name__c)})</apex:column>
+   
+</apex:pageBlockTable>
+        
+        <apex:pageBlockTable value="{!JWL_Component__c}" var="jwl" columns="2" rendered="{!if(myDate <= DATE(2023,03,28),true,false)}">
+        
+        <apex:column style="border:1px solid black;text-align:center;font-size:15px;font-weight:bold;padding:15px;white-space:pre;" width="335" >TESTED BY :<br/><br/>-SD-<br/><br/>({!UPPER(QAuserName.Name)})</apex:column>
+        <apex:column style="border:1px solid black;text-align:center;font-size:15px;font-weight:bold;padding:15px;" width="335" >APPROVED BY :<br/><br/>-SD-<br/><br/>({!UPPER(JWL_Component__c.Approver_Name__c)})</apex:column>
+   
+</apex:pageBlockTable>
+        </apex:pageBlock>
+        
+    
+    <div class="footer" style="text-align: right;">
+        IMS/IPD/ QAL/009
+    </div>
+</apex:page>

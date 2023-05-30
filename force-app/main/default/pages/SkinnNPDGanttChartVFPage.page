@@ -1,0 +1,332 @@
+<apex:page controller="SkinnNPDGanttChartVFPageController" sidebar="false">   
+     <head>
+        <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+      
+    </head>  
+    <style>
+
+
+        /* 
+         #tooltip1 { position: relative; }
+         #tooltip1 a span { display: none; color: #FFFFFF; }
+         #tooltip1 a:hover span { 
+             display: block; 
+             position: absolute;
+             width: 200px; 
+             background: #aaa url(images/horses200x50.jpg); 
+             height: 50px;
+             left: 100px;
+             top: -10px;
+             color: #FFFFFF;
+             padding: 0 5px;
+         
+         }*/
+        
+        
+        table.header_table1 {
+         width:800px;
+         background: #666666;
+         margin-bottom: 0px;
+         margin-top: 5px;
+         border-radius: 5px 5px 0px 0px;
+         padding: 10px;color:#fff;
+     }
+     table.header_table1 td{
+         padding-left: 5px;
+        
+         }
+     table.header_table1 select{
+         height: 22px;
+         border: 1px solid #B7B5B5;
+         border-radius: 4px;
+     }
+     table.header_table2 {
+         width:800px;
+         background: #666666;
+         margin-bottom: 15px;
+         margin-top: 1px;
+         border-radius: 0px 0px 5px 5px;
+         padding: 10px;color:#000;
+     }
+     table.header_table2 td:not(:first-child) {
+         text-align: center;
+     }
+     table.header_table2 td span{
+         padding: 6px;
+         margin:2px;
+         background-color: #4F81BD;
+         border: 1px solid none;
+         border-radius: 4px;
+         }
+     .test{
+         color:blue;
+     }
+         .header_table td{color:#fff;}
+         table.header_table select, table.header_table input {
+         border-radius: 3px;
+         padding: 2px 5px;
+     }    
+     .h_btn {
+         background: #b7b5b5!important;
+         background-image: none;
+         color: #000!important;
+         border: none!important;
+         padding: 5px 11px!important;
+     }   
+     .h_table{
+     background:#ddd9c3;    margin-bottom: 3px;
+     } 
+     .h_table  td{
+     padding: 5px 5px;
+     font-weight: bold;}
+     .width250{width:250px;} 
+     .width150{width:150px;} 
+     .m_table_title {
+         background: #006600;
+         padding: 5px 5px;
+         font-weight: bold;
+         color: #fff;
+     }
+     .m_table_stage{    background: #003399;
+         padding: 5px 10px;
+         color: #fff;
+         font-weight: bold;}
+     .m_table_substage{background: #009999;
+         padding: 5px 10px;
+         color: #fff;
+         font-weight: bold;}
+     .m_table_plan{    
+         padding: 5px 10px;
+         background: #bebbbb;
+         color: #000;
+         font-weight: bold;
+         text-align:right!important;; 
+         }
+     .m_table_substage_plan{
+     padding: 5px 10px;
+         background: #9cdcd4;
+         color: #000;
+         border-bottom: 
+         font-weight: bold;
+         text-align:right;
+     }    
+     .m_table_data {
+         color: #fff;
+         padding: 0 10px;
+     }
+     .border_bottom {
+         border-bottom: 2px solid #fff;
+     }    
+     .h_width{width:50px;}
+     .ganttTable{border:1px solid #ccc;}
+     .ganttTable td, .ganttTable th{border-right:1px solid #ccc;border-bottom:1px solid #ccc;
+     }
+     .ganttTable td{background-color:#eeeeee;text-align:center}
+     .t_day{
+         background: #999999;
+         color: #fff;
+         text-align: center;
+         padding: 3px 2px;
+         font-size: 10px;
+         font-weight: bold;
+     }
+     .t_months{
+     background: #4e4747!important;
+         color: #fff;
+         text-align: center;
+         padding: 3px 0;
+     }
+     .fleft{float:left;}
+     .fright{float:right;}
+     .fcenter{float:center;}
+     </style>
+     <!-- Start of Status -->
+    <apex:actionStatus id="statusSaveTrip" stopText="">
+        <apex:facet name="start">
+        <div>
+            <div class="popupBackground"> </div>
+                <div class="PopupPanel">
+                    <table border="0" width="100%" height="100%">
+                        <tr>
+                            <td align="center"><img src="/img/waiting_dots.gif" border="0" width="156" height="25"/></td>
+                        </tr>
+                    </table>
+                </div>
+        </div>
+        </apex:facet>
+    </apex:actionStatus>
+    <!-- End of Status -->
+        <apex:form >
+            <div style="width:800px">
+        <table class="header_table1" border="0" align="left">
+           
+            <tr>
+                <td>
+                    <apex:outputPanel id="collectionId" > <span style="color: white;"><b>Collections:</b> </span> &nbsp;&nbsp;&nbsp;
+                    <apex:selectList size="1" value="{!selectedCollectionName}">
+                        <apex:selectoptions value="{!collectionNameOption}"/>
+                        <apex:actionSupport event="onchange" action="{!queryModels}" reRender="modelId" status="statusSaveTrip" />
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </td>
+                
+                <td>
+                    <apex:outputPanel id="modelId" > <span style="color: white;"><b>Models:</b> </span>&nbsp;&nbsp;&nbsp;
+                    <apex:selectList size="1" value="{!selectedModelName}">
+                        <apex:selectoptions value="{!modelNameOption}"/>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </td>
+                
+                <td>
+                    <apex:outputPanel id="stageId" ><span style="color: white;"> <b>Stages:</b> </span>&nbsp;&nbsp;&nbsp;
+                    <apex:selectList size="1" value="{!selectedStageName}">
+                        <apex:selectoptions value="{!stageNameOption}"/>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </td>
+                
+                <td>
+                    <apex:commandButton styleClass="h_btn" action="{!queryData}" value="Run Report"/>
+                </td>
+                
+            </tr>            
+      </table>
+      
+    
+    <table border="0" align="left" class="header_table2">
+       
+        <tr>
+             <td><span style="color: white;"><b>Legend:</b></span></td>
+            <td ><span style="background-color:#003399;color: white;"><b>PLAN</b></span></td>
+             <td><span style="background-color:#006600;color: white;"><b>COMPLETED(On-time)</b></span></td>
+             <td><span style="background-color:#66ff33;color: white;"><b>COMPLETED(Delayed)</b></span></td>
+             <td><span style="background-color:#A52A2A;color: white;"><b>IN-PROGRESS</b></span></td>
+             <td><span style="background-color:#F40830;color: white;"><b>NOT STARTED</b></span></td>
+        </tr> 
+    </table>
+    </div>
+        </apex:form>
+	    <table width="100%" cellpadding ="0" cellspacing = "0" border="0" class="ganttTable">
+    
+        <tr>
+            <th style="padding: 5px 10px;" class="t_months" colspan="2" rowspan="2"><div>Collection/Model Name</div> </th>             
+            
+           <apex:repeat value="{!noOfModelMonths}" var="month" id="monthId">
+                <td class="width150 t_months" colspan="{!monthToDaysMap[month]}">
+                    <div><apex:outputText value="{!month}"/></div>
+                </td>                 
+            </apex:repeat>
+        </tr>
+        <tr>
+            <apex:repeat value="{!stringDays}" var="day" id="dayId">
+                <td>
+                <apex:outputPanel rendered="{!OR(day==1, day==7, day==14, day==21, day==28)}">
+                    <div class="t_day"><apex:outputText value="{!day}"/></div>
+                </apex:outputPanel>
+                </td>
+                                 
+            </apex:repeat>
+        </tr>
+       
+        <apex:repeat value="{!listDatatableInfo}" var="model">
+            
+            <tr>
+                <td class="width150" colspan="2" style="text-align:center">
+                       <div class="m_table_title"> <apex:outputText value="{!model.skinnModelName}"/></div>
+                </td>                
+            </tr>
+                       <apex:repeat value="{!model.skinnStageRecords}" var="stage">
+                
+                <tr>
+                    <th rowspan="2" class="m_table_stage"> <div><apex:outputText value="{!stage.Name}"/></div> </th>
+                    
+                    <td class="m_table_plan">
+                       <div> <apex:outputText value="{!stage.plan}"/></div>
+                    </td>
+                    <apex:outputPanel >
+                    <td   colspan="{!stage.firstSpanForPlan}"> 
+                    <div class="fright">{!stage.strPlanStartDate }</div>
+                    </td>
+                    </apex:outputPanel>
+                    <td  style="color:#fff;padding:0 5px;" colspan="{!stage.secondSpanForPlan}">
+                   <div class="fcenter" style="background-color:{!stage.planhighlighted}; border-radius:10px;">{!stage.strPlanLeadTime}</div>
+                   
+                   
+                    </td> 
+                    <apex:outputPanel >
+                    <td colspan="{!stage.thirdSpanForPlan}"> 
+                        <div class="fleft">{!stage.strPlanEndDate }</div>
+                    </td>
+                    </apex:outputPanel>
+                                
+                </tr>
+                       <tr>
+                    <td>
+                      <div class="m_table_plan">  <apex:outputText value="{!stage.actual}"/></div>
+                    </td>
+                    <apex:outputPanel >
+                    <td   colspan="{!stage.firstSpanForActual}"> 
+                        <div class="fright">{!stage.strActualStartDate}</div>
+                    </td>
+                    </apex:outputPanel>
+                    <td  style="color:#fff;padding:0 5px;" colspan="{!stage.secondSpanForActual}">
+                        <div class="fcenter" style="background-color: {!stage.actualhighlighted}; border-radius:10px;">{!stage.strActualLeadTime} </div>
+                    </td> 
+                    <apex:outputPanel >
+                    <td   colspan="{!stage.thirdSpanForActual}"> 
+                        <div class="fleft">{!stage.strActualEndDate}</div>
+                    </td>
+                    </apex:outputPanel>                  
+                </tr>
+                       <apex:repeat value="{!stage.skinnSubStageRecords}" var="substage">
+                           <tr>
+                    <th class="m_table_substage" rowspan="2"><div><apex:outputText value="{!subStage.name}"/></div></th>
+                    <td class="m_table_substage_plan">
+                       <div ><apex:outputText value="{!subStage.plan}"/></div> 
+                    </td>
+                    <apex:outputPanel >
+                    <td colspan="{!subStage.firstSpanForPlan}"> 
+                        <div class="fright">{!subStage.strPlanStartDate}</div>
+                    </td>
+                    </apex:outputPanel>
+                    <td  style="color:#fff;padding:0 2px;" colspan="{!subStage.secondSpanForPlan}">
+                    <div class="fcenter" style="background-color: {!subStage.planhighlighted}; border-radius:10px;">{!subStage.strPlanLeadTime}</div>
+                    </td> 
+                    <apex:outputPanel >
+                    <td colspan="{!subStage.thirdSpanForPlan}"> 
+                        <div class="fleft">{!subStage.strPlanEndDate }</div>
+                    </td> 
+                    </apex:outputPanel>                   
+                </tr>
+                
+                <tr>
+                    <td>
+                        <div class="m_table_substage_plan"><apex:outputText value="{!subStage.actual}"/></div> 
+                    </td>
+                    <apex:outputPanel >
+                    <td  colspan="{!subStage.firstSpanForActual}"> 
+                        <div class="fright"> {!subStage.strActualStartDate }</div>
+                    </td>
+                    </apex:outputPanel>
+                    <td  style="color:#fff;padding:0 5px;" colspan="{!subStage.secondSpanForActual}">
+                   <!--<div class="fleft"> {!subStage.strActualStartDate } {!subStage.strActualStartLtDate}</div> <div class="fright"> {!subStage.strActualEndDate} {!subStage.strActualEndLtDate}</div>-->
+                        <div class="fcenter" style="background-color:{!subStage.actualhighlighted}; border-radius:10px;">{!subStage.strActualLeadTime}</div>
+                    </td>
+                    <apex:outputPanel >
+                    <td   colspan="{!subStage.thirdSpanForActual}"> 
+                        <div class="fleft"> {!subStage.strActualEndDate}</div>
+                    </td>
+                    </apex:outputPanel> 
+                </tr>
+                           </apex:repeat>
+                
+                
+                
+                
+            </apex:repeat>
+        </apex:repeat>
+        <!-- Data Table End -->
+        
+    </table>
+</apex:page>

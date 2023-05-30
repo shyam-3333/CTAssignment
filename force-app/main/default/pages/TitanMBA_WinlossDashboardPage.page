@@ -1,0 +1,1022 @@
+<apex:page controller="TitanMBA_WinlossDashboard" docType="HTML-5.0" sidebar="false" id="pg" readOnly="true" >
+<head>
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2015.2.902/styles/kendo.common.min.css"/>
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2015.2.902/styles/kendo.rtl.min.css"/>
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2015.2.902/styles/kendo.default.min.css"/>
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2015.2.902/styles/kendo.mobile.all.min.css"/>
+<script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2015.2.902/js/angular.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2015.2.902/js/jszip.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2015.2.902/js/kendo.all.min.js"></script>
+</head>
+
+<style>
+.block {
+    float: left;
+    width: 50%;
+    min-height: 445px;
+    display:none;
+}
+.block_table {
+    display: none;
+    
+    width:500px;
+    margin:0 auto;
+   
+    
+    
+}
+    
+    .block_table th
+    { border-top: 1px solid #ccc;background: #f2f2f2; 
+    width:12.5%;}
+   .block_table td, .block_table th {
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
+      padding: 3px 5px;
+    
+}
+
+.block_table td:first-child, 
+.block_table th:first-child {
+    border-left: 1px solid #ccc;
+}
+    
+.cls {
+    clear: both;
+}
+
+ /* This is for the full screen DIV */
+    .popupBackground {
+        /* Background color */
+        background-color:black;
+        opacity: 0.20;
+        filter: alpha(opacity = 20);
+    
+        /* Dimensions */
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        z-index: 998;
+        position: absolute;
+        
+        /* Mouse */
+        cursor:wait;
+    }
+ 
+    /* This is for the message DIV */
+    .PopupPanel {
+        /* Background color */
+        /* border: solid 2px blue;*/
+   
+ 
+       left: 50%;
+        width: 200px;
+        margin-left: -100px;
+        top: 50%;
+        height: 250px;
+        margin-top: -25px;
+        z-index: 999;
+        position: fixed;
+        
+        /* Mouse */
+        cursor:pointer;
+    
+               
+    }  
+    
+     
+</style>
+     <apex:actionStatus id="statusSaveTrip" stopText="">
+    <apex:facet name="start">
+        <div>
+            <div class="popupBackground" />
+            <div class="PopupPanel">
+                <table border="0" width="100%" height="100%">
+                   
+                    <tr>
+                         <!-- <td align="center"><img src="{!$Resource.Spinner}"/></td>-->
+                        <td align="center"><img src="/img/waiting_dots.gif" border="0" width="156" height="25"/></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </apex:facet>
+</apex:actionStatus>
+
+<script>
+    
+          
+    </script>
+<apex:form >
+    <table class="header_table" border="1" align="center" style="background-color:#cc6666;border-radius:13px;border-style:solid;border-width:5px;" >
+  <tr>
+    <td><b>Industry</b> &nbsp;&nbsp;&nbsp;
+      <apex:actionRegion >
+      <apex:selectList size="1" value="{!selectedIndustry}" >
+        <apex:selectOptions value="{!industryOption}"/>
+        <apex:actionSupport event="onchange" action="{!changeOnIndustrySelection}" reRender="one" status="statusSaveTrip" />
+      </apex:selectList>
+          </apex:actionRegion>
+        </td>
+    <td>
+        <apex:actionRegion >
+        <apex:outputPanel id="one" > <b>Account</b> &nbsp;&nbsp;&nbsp;
+        <apex:selectList size="1" value="{!selectedAccountName}">
+          <apex:selectoptions value="{!accountNameOption}"/>
+        </apex:selectList>
+      </apex:outputPanel>
+      </apex:actionRegion>
+      </td>
+  </tr>
+  <tr>
+    <td><b>Duration</b> &nbsp;&nbsp;&nbsp;
+      <apex:selectList size="1" value="{!monthSelected}" id="mons">
+        <apex:selectoptions value="{!monthSelectedFilter}"  />
+      </apex:selectList></td>
+    <td><b>From Date</b> &nbsp;&nbsp;&nbsp;
+      <apex:input type="date" id="fromDates" value="{!fromDate}"/></td>
+    <td><b>To Date</b> &nbsp;&nbsp;&nbsp;
+      <apex:input type="date" id="toDates" value="{!toDate}"/></td>
+    <td><apex:commandButton value="Run Report" reRender="ones"  action="{!runReportChart}" status="statusSaveTrip" oncomplete="test(),call(),call1(),call2(),call3(),call4(),call5(),call6(),call7(),call8(),call9(),call10()"/>
+      </td>
+  </tr>
+</table>
+<br/>
+<br/>
+<apex:outputPanel id="ones">                    
+<table border="1">
+  <apex:outputPanel id="ace">
+  
+  </apex:outputPanel> 
+  
+    <div id="linear-gauge"   ></div>
+    <div class="block">
+      <div id="proposal"></div>
+      <table class="block_table" cellspacing="0" cellpadding="0" >
+        <tr>
+          <th></th>
+            <th>0-10</th>
+            <th>10-50</th>
+            <th>51-150</th>
+            <th>151-350</th>
+            <th>351-700</th>
+            <th> >700 </th>
+            <th>Total</th>
+        </tr>
+        <tr>
+          <td>Value</td>
+            <apex:repeat value="{!holdProposalValues}" var="a">
+             <td>  {!ROUND(a,0)}
+                </td>
+                
+            </apex:repeat>
+            
+        </tr>
+           <tr>
+          <td>Won</td>
+               <apex:repeat value="{!holdProposalwonValues}" var="b">
+                   <td>{!ROUND(b,0)}</td>
+               </apex:repeat>
+          </tr>
+              <tr>
+                  <td>In %</td>
+                
+                  <apex:repeat value="{!proposalChartDivision1}" var="c">
+                      <td>{!c}</td>
+                  </apex:repeat>
+             
+                
+                  
+        </tr>
+      </table>
+    </div>
+   
+    <div class="block">
+      <div id="orderWon" ></div>
+      <table class="block_table" cellspacing="0" cellpadding="0" >
+        <tr>
+          <th></th>
+          <th>0-10</th>
+            <th>10-50</th>
+            <th>51-150</th>
+            <th>151-350</th>
+            <th>351-700</th>
+            <th> >700 </th>
+            <th>Total</th> 
+        </tr>
+        <tr>
+              <td>Total Projects</td>
+              <apex:repeat value="{!holdtotProposalValues}" var="d">
+                  <td>{!ROUND(d,0)}</td>
+              </apex:repeat>
+          
+        </tr>
+           <tr>
+              <td>Won</td>
+              <apex:repeat value="{!hodtotProposalwonValues}" var="e">
+                  <td>{!ROUND(e,0)}</td>
+              </apex:repeat>
+          
+        </tr>
+          <tr>
+              <td>In %</td>
+              <apex:repeat value="{!proposalChartDivision2}" var="f">
+                  <td>{!f}</td>
+              </apex:repeat>
+          </tr>
+      </table>
+    </div>
+    <div class="cls"></div>
+    <div class="block">
+      <div id="existingcustomer" > </div>
+      <table class="block_table" cellspacing="0" cellpadding="0" >
+        <tr>
+          <th></th>
+           <th>0-10</th>
+            <th>10-50</th>
+            <th>51-150</th>
+            <th>151-350</th>
+            <th>351-700</th>
+            <th> >700 </th>
+            <th>Total</th>   
+        </tr>
+        <tr>
+          <td>Value</td>
+            <apex:repeat value="{!ExistingProposalValues}" var="g">
+                <td>{!ROUND(g,0)}</td>
+            </apex:repeat>
+        </tr>
+          <tr>
+              <td>Won</td>
+              <apex:repeat value="{!ExistingProposalWonvalues}" var="h">
+                  <td>{!ROUND(h,0)}</td>
+              </apex:repeat>
+          </tr>
+          <tr>
+              <td>In %</td>
+              <apex:repeat value="{!ExistingChartDivision1}" var="i">
+                  <td>{!i}</td>
+              </apex:repeat>
+          </tr>
+      </table>
+    </div>
+    <div class="block">
+      <div id="exiscustomerWon" > </div>
+      <table class="block_table" cellspacing="0" cellpadding="0" >
+        <tr>
+          <th></th>
+           <th>0-10</th>
+            <th>10-50</th>
+            <th>51-150</th>
+            <th>151-350</th>
+            <th>351-700</th>
+            <th> >700 </th>
+            <th>Total</th>   
+        </tr>
+        <tr>
+          <td>Total Projects</td>
+          <apex:repeat value="{!ExistingProposalTotals}" var="j">
+             <td>{!ROUND(j,0)}</td>
+          </apex:repeat>
+        </tr>
+          <tr>
+              <td>Won</td>
+              <apex:repeat value="{!ExistingProposalWonTotals}" var="k">
+                  <td>{!ROUND(k,0)}</td>
+              </apex:repeat>
+          </tr>
+          <tr>
+              <td>In %</td>
+              <apex:repeat value="{!ExistingChartDivision2}" var="l">
+                  <td>{!l}</td>
+              </apex:repeat>
+          </tr>
+      </table>
+    </div>
+    <div class="cls"></div>
+    <div class="block">
+      <div id="newcustomer" > </div>
+      <table class="block_table" cellspacing="0" cellpadding="0" >
+        <tr>
+          <th></th>
+          <th>0-10</th>
+            <th>10-50</th>
+            <th>51-150</th>
+            <th>151-350</th>
+            <th>351-700</th>
+            <th> >700 </th>
+            <th>Total</th>    
+        </tr>
+        <tr>
+          <td>Value</td>
+            <apex:repeat value="{!newProposalValues}" var="m">
+                <td>{!ROUND(m,0)}</td>
+            </apex:repeat>
+        </tr>
+          <tr>
+              <td>Won</td>
+              <apex:repeat value="{!newProposalWonValues}" var="n">
+                  <td>{!ROUND(n,0)}</td>
+              </apex:repeat>
+          </tr>
+          <tr>
+              <td>In %</td>
+              <apex:repeat value="{!NewChartDivision1}" var="o">
+                  <td>{!o}</td>
+              </apex:repeat>
+          </tr>
+      </table>
+    </div>
+    <div class="block">
+      <div id="newcusttot" > </div>
+      <table class="block_table" cellspacing="0" cellpadding="0" >
+        <tr>
+          <th></th>
+             <th>0-10</th>
+            <th>10-50</th>
+            <th>51-150</th>
+            <th>151-350</th>
+            <th>351-700</th>
+            <th> >700 </th>
+            <th>Total</th>   
+        </tr>
+        <tr>
+          <td>Total Projects</td>
+            <apex:repeat value="{!newProposalTotals}" var="p">
+                <td>{!ROUND(p,0)}</td>
+            </apex:repeat>
+        </tr>
+          <tr>
+              <td>Won</td>
+              <apex:repeat value="{!newProposalWontotals}" var="q">
+                  <td>{!ROUND(q,0)}</td>
+              </apex:repeat>
+          </tr>
+          <tr>
+              <td>In %</td>
+              <apex:repeat value="{!NewChartDivision2}" var="r">
+                  <td>{!r}</td>
+              </apex:repeat>
+          </tr>
+      </table>
+    </div>
+    <div class="cls"></div>
+    <div class="block">
+      <div id="expcust" ></div>
+      <table class="block_table" cellspacing="0" cellpadding="0" >
+        <tr>
+          <th></th>
+             <th>0-10</th>
+            <th>10-50</th>
+            <th>51-150</th>
+            <th>151-350</th>
+            <th>351-700</th>
+            <th> >700 </th>
+            <th>Total</th>   
+        </tr>
+        <tr>
+          <td>Value</td>
+            <apex:repeat value="{!ExportProposalValues}" var="s">
+                <td>{!ROUND(s,0)}</td>
+            </apex:repeat>
+        </tr>
+          <tr>
+              <td>Won</td>
+              <apex:repeat value="{!ExportProposalWonValues}" var="t">
+                  <td>{!ROUND(t,0)}</td>
+              </apex:repeat>
+          </tr>
+          <tr>
+              <td>In %</td>
+              <apex:repeat value="{!ExportChartDivision1}" var="u">
+                  <td>{!u}</td>
+              </apex:repeat>
+          </tr>
+      </table>
+    </div>
+    <div class="block">
+      <div id="expcustwon" ></div>
+      <table class="block_table" cellspacing="0" cellpadding="0" >
+        <tr>
+          <th></th>
+              <th>0-10</th>
+            <th>10-50</th>
+            <th>51-150</th>
+            <th>151-350</th>
+            <th>351-700</th>
+            <th> >700 </th>
+            <th>Total</th>   
+        </tr>
+        <tr>
+          <td>Total Projects</td>
+            <apex:repeat value="{!ExportProposalTotal}" var="v">
+                <td>{!ROUND(v,0)}</td>
+            </apex:repeat>
+        </tr>
+          <tr>
+              <td>Won</td>
+              <apex:repeat value="{!ExportProposalWonTotal}" var="w">
+                  <td>{!ROUND(w,0)}</td>
+              </apex:repeat>
+          </tr>
+          <tr>
+              <td>In %</td>
+              <apex:repeat value="{!ExportChartDivision1}" var="x">
+                  <td>{!x}</td>
+              </apex:repeat>
+          </tr>
+      </table>
+    </div>
+    <div class="cls"></div>
+    <div class="block">
+      <div id="Domesticcust" > </div>
+      <table class="block_table" cellspacing="0" cellpadding="0" >
+        <tr>
+          <th></th>
+             <th>0-10</th>
+            <th>10-50</th>
+            <th>51-150</th>
+            <th>151-350</th>
+            <th>351-700</th>
+            <th> >700 </th>
+            <th>Total</th>   
+        </tr>
+        <tr>
+          <td>Value</td>
+            <apex:repeat value="{!DomesticProposalValues}" var="y">
+                <td>{!ROUND(y,0)}</td>
+            </apex:repeat>
+        </tr>
+          <tr>
+              <td>Won</td>
+              <apex:repeat value="{!DomesticProposalWonValues}" var="z">
+                  <td>{!ROUND(z,0)}</td>
+              </apex:repeat>
+          </tr>
+          <tr>
+              <Td>In %</Td>
+              <apex:repeat value="{!DomesticChartDivision1}" var="ab">
+                  <td>{!ab}</td>
+              </apex:repeat>
+          </tr>
+      </table>
+    </div>
+    <div class="block">
+      <div id="Domesticwon" > </div>
+      <table class="block_table" cellspacing="0" cellpadding="0" >
+        <tr>
+          <th></th>
+            <th>0-10</th>
+            <th>10-50</th>
+            <th>51-150</th>
+            <th>151-350</th>
+            <th>351-700</th>
+            <th> >700 </th>
+            <th>Total</th>
+          
+        </tr>
+        <tr>
+          <td>Total Projects</td>
+          
+              <apex:repeat value="{!DomesticProposalTotal}" var="ac">
+                  <td>{!ROUND(ac,0)}</td>
+              </apex:repeat>
+          
+        </tr>
+          <tr>
+              <td>Won</td>
+              <apex:repeat value="{!DomesticProposalWonTotal}" var="ad">
+                  <td>{!ROUND(ad,0)}</td>
+              </apex:repeat>
+              
+          </tr>
+          <tR>
+              <td>In %</td>
+              <apex:repeat value="{!DomesticChartDivision2}" var="ae">
+                  <td>{!ROUND(ae,0)}</td>
+              </apex:repeat>
+          </tR>
+      </table>
+    </div>
+    <script>
+           
+           function test()
+           {
+               $('.block').css('display', 'block');
+               $('.block_table').css('display', 'block');
+               
+           };
+           function validate()
+           {
+                alert('testing');
+                alert(document.getElementById("pg:mons").value);
+               
+           }     
+           
+           
+           
+        function call()
+    {
+         var value1={!opportunityQuoteSubmitted};
+         var value2={!opportunityStillActive};
+         var value3={!opportunityonHold};
+         var value4={!opportunityShelved};
+         var value5={!opportunityAwardedPO};
+         var value6={!opportunityOrderWon};
+         var value7={!opportunityReasonLostonCost};
+         var value8={!opportunityLeadTime};
+         var value9={!opportunityStrageticReason};
+         var value10={!opportunityRegret};
+         
+          var blogComments = [ {
+                "axisdata": "Quote Submitted",
+                "value": value1,
+                "userColor": "#ff1a1a"
+            }, {
+                "axisdata": "Still Active",
+                "value": value2,
+                "userColor": "#ffd600"
+            }, 
+             {
+                "axisdata": "Opportunity on Hold",
+                "value": value3,
+                "userColor": "#ff0055"
+            },
+             {
+                "axisdata": "Project Shelved",
+                "value": value4,
+                "userColor": "#996633"
+            },
+             {
+                "axisdata": "Awarded PO by Customer",
+                "value": value5,
+                "userColor": "#333300"
+            },
+             {
+                "axisdata": "Order Won",
+                "value": value6,
+                "userColor": "#ccff33"
+            },
+             {
+                "axisdata": "Lost on Cost",
+                "value": value7,
+                "userColor": "#6600ff"
+            },
+            {
+                "axisdata": "Lost on Lead Time",
+                "value": value8,
+                "userColor": "#666633"
+            },{
+                "axisdata": "Lost on Strategic Reasons",
+                "value": value9,
+                "userColor": "#996633"
+            },{
+                "axisdata": "Regret",
+                "value": value10,
+                "userColor": "#003366"
+            } ];
+
+        $("#linear-gauge").kendoChart({
+  seriesColors: ["red", "green","black"],
+    dataSource: {
+                    data: blogComments
+                },
+ 
+      title: {
+                    text: "Opportunity Pipeline & Winloss chart"
+                    },
+      series: [{
+                    field: "value",
+                    colorField: "userColor"
+                }],
+     
+              valueAxis: [{
+                                  
+                                    title: {
+                                            text: "value in Cores"
+                                       } 
+                                
+                                }] ,
+                                categoryAxis: {
+                                            field: "axisdata",
+                                            majorGridLines: {
+                                                visible: true
+                                            },
+                                            labels: { 
+                                                rotation: -40
+                                               
+                                            }
+                              }, 
+                      tooltip: {
+                    visible: true,
+                    template: "#= category #: #= kendo.format('{0:N1}',value + ' cores' ) # "
+                },
+
+                                 seriesDefaults: {
+                    type: "column",
+                    labels: {
+                        visible: true,
+                         font: "bold 14px Arial,Helvetica,sans-serif",
+                        template: " #: value+','+((100*value)/{!opportunityQuoteSubmitted}).toFixed(1) #%",
+                        background: "transparent"
+                    }
+                }
+});
+   }                                                              
+           
+   function call1()
+    {
+          
+            var chartData = {!convertedJSON1}
+        
+          $("#proposal").kendoChart({
+            title: {
+                    text: "Proposal Submitted Vs Order Won (By Value)"
+                    },
+    series: chartData,
+              
+                valueAxis: [{
+                                  
+                                    title: {
+                                            text: "value in lakhs"
+                                       } 
+                                
+                                }] ,
+
+ categoryAxis: {
+                                            categories:{!bindReportTwo} ,
+                                            majorGridLines: {
+                                                visible: true
+                                            },
+                                            labels: { 
+                                                rotation: -40
+                                               
+                                            }
+                              } 
+   
+,
+               
+                tooltip: {
+                    visible: true,
+                    template: "#= category #: #= kendo.format('{0:N1}', value+' Lakhs' ) # "
+                }
+               
+            });
+   }
+           function call2()
+    {
+          
+            var chartData = {!convertedJSON2}
+        
+          $("#orderWon").kendoChart({
+            title: {
+                    text: "Proposal Submitted Vs Order Won (By No.of.Proposals)"
+                    },
+    series: chartData,
+                valueAxis: [{
+                                  
+                                    title: {
+                                            text: "Number Of Proposals"
+                                       } 
+                                
+                                }] ,
+
+ categoryAxis: {
+                                            categories:{!bindReportTwo} ,
+                                            majorGridLines: {
+                                                visible: true
+                                            },
+                                            labels: { 
+                                                rotation: -40
+                                               
+                                            }
+                              } 
+   
+,
+               
+                tooltip: {
+                    visible: true,
+                    template: "#= category #: #= kendo.format('{0:N1}', value+' Lakhs' ) # "
+                }
+               
+            });
+   }
+    
+        function call3()
+    {
+          
+            var chartData = {!convertedJSON3}
+        
+          $("#existingcustomer").kendoChart({
+            title: {
+                    text: "Existing customers- Proposal submitted  vs Order won (By value)"
+                    },
+    series: chartData,
+                valueAxis: [{
+                                  
+                                    title: {
+                                            text: "value in lakhs"
+                                       } 
+                                
+                                }] ,
+
+ categoryAxis: {
+                                            categories:{!bindReportTwo} ,
+                                            majorGridLines: {
+                                                visible: true
+                                            },
+                                            labels: { 
+                                                rotation: -40
+                                               
+                                            }
+                              } 
+   
+,
+               
+                tooltip: {
+                    visible: true,
+                    template: "#= category #: #= kendo.format('{0:N1}', value+' Lakhs' ) # "
+                }
+               
+            });
+   }      
+    function call4()
+    {
+          
+            var chartData = {!convertedJSON4}
+        
+          $("#exiscustomerWon").kendoChart({
+            title: {
+                    text: "Existing customers- Proposal submitted  vs Order won (By No of proposals)"
+                    },
+    series: chartData,
+              
+                valueAxis: [{
+                                  
+                                    title: {
+                                            text: "Number Of Proposals"
+                                       } 
+                                
+                                }] ,
+
+ categoryAxis: {
+                                            categories:{!bindReportTwo} ,
+                                            majorGridLines: {
+                                                visible: true
+                                            },
+                                            labels: { 
+                                                rotation: -40
+                                               
+                                            }
+                              } 
+   
+,
+               
+                tooltip: {
+                    visible: true,
+                    template: "#= category #: #= kendo.format('{0:N1}', value+' Lakhs' ) # "
+                }
+               
+            });
+   }                
+    function call5()
+    {
+          
+            var chartData = {!convertedJSON5}
+        
+          $("#newcustomer").kendoChart({
+            title: {
+                    text: "New customers- Proposal submitted vs Order won (value)"
+                    },
+    series: chartData,
+              
+                valueAxis: [{
+                                  
+                                    title: {
+                                            text: "value in lakhs"
+                                       } 
+                                
+                                }] ,
+
+ categoryAxis: {
+                                            categories:{!bindReportTwo} ,
+                                            majorGridLines: {
+                                                visible: true
+                                            },
+                                            labels: { 
+                                                rotation: -40
+                                               
+                                            }
+                              } 
+   
+,
+               
+                tooltip: {
+                    visible: true,
+                    template: "#= category #: #= kendo.format('{0:N1}', value+' Lakhs' ) # "
+                }
+               
+            });
+   }                
+   function call6()
+    {
+          
+            var chartData = {!convertedJSON6}
+        
+          $("#newcusttot").kendoChart({
+            title: {
+                    text: "New customers- Proposal submitted vs Order won (No of projects) "
+                    },
+    series: chartData,
+                valueAxis: [{
+                                  
+                                    title: {
+                                            text: "Number Of Proposals"
+                                       } 
+                                
+                                }] ,
+
+ categoryAxis: {
+                                            categories:{!bindReportTwo} ,
+                                            majorGridLines: {
+                                                visible: true
+                                            },
+                                            labels: { 
+                                                rotation: -40
+                                               
+                                            }
+                              } 
+   
+,
+               
+                tooltip: {
+                    visible: true,
+                    template: "#= category #: #= kendo.format('{0:N1}', value+' Lakhs' ) # "
+                }
+               
+            });
+   }                               
+      function call7()
+    {
+          
+            var chartData = {!convertedJSON7}
+        
+          $("#expcust").kendoChart({
+            title: {
+                    text: "Export customers- Proposal submitted vs Order won (value) "
+                    },
+    series: chartData,
+                valueAxis: [{
+                                  
+                                    title: {
+                                            text: "value in lakhs"
+                                       } 
+                                
+                                }] ,
+
+ categoryAxis: {
+                                            categories:{!bindReportTwo} ,
+                                            majorGridLines: {
+                                                visible: true
+                                            },
+                                            labels: { 
+                                                rotation: -40
+                                               
+                                            }
+                              } 
+   
+,
+               
+                tooltip: {
+                    visible: true,
+                    template: "#= category #: #= kendo.format('{0:N1}', value+' Lakhs' ) # "
+                }
+               
+            });
+   }    
+    function call8()
+    {
+          
+            var chartData = {!convertedJSON8}
+        
+          $("#expcustwon").kendoChart({
+            title: {
+                    text: "Export customers- Proposal submitted vs Order won (No of projects)"
+                    },
+    series: chartData,
+                valueAxis: [{
+                                  
+                                    title: {
+                                            text: "Number Of Proposals"
+                                       } 
+                                
+                                }] ,
+
+ categoryAxis: {
+                                            categories:{!bindReportTwo} ,
+                                            majorGridLines: {
+                                                visible: true
+                                            },
+                                            labels: { 
+                                                rotation: -40
+                                               
+                                            }
+                              } 
+   
+,
+               
+                tooltip: {
+                    visible: true,
+                    template: "#= category #: #= kendo.format('{0:N1}', value+' Lakhs' ) # "
+                }
+               
+            });
+   }  
+     function call9()
+    {
+          
+            var chartData = {!convertedJSON9}
+        
+          $("#Domesticcust").kendoChart({
+            title: {
+                    text: "Domestic customers- Proposal submitted vs Order won (value) "
+                    },
+    series: chartData,
+                valueAxis: [{
+                                  
+                                    title: {
+                                            text: "value in lakhs"
+                                       } 
+                                
+                                }] ,
+
+ categoryAxis: {
+                                            categories:{!bindReportTwo} ,
+                                            majorGridLines: {
+                                                visible: true
+                                            },
+                                            labels: { 
+                                                rotation: -40
+                                               
+                                            }
+                              } 
+   
+,
+               
+                tooltip: {
+                    visible: true,
+                    template: "#= category #: #= kendo.format('{0:N1}', value+' Lakhs' ) # "
+                }
+               
+            });
+   }     
+   function call10()
+    {
+          
+            var chartData = {!convertedJSON10}
+        
+          $("#Domesticwon").kendoChart({
+            title: {
+                    text: "Domestic customers- Proposal submitted vs Order won (No of projects)"
+                    },
+    series: chartData,
+                valueAxis: [{
+                                  
+                                    title: {
+                                            text: "Number Of Proposals"
+                                       } 
+                                
+                                }] ,
+
+ categoryAxis: {
+                                            categories:{!bindReportTwo} ,
+                                            majorGridLines: {
+                                                visible: true
+                                            },
+                                            labels: { 
+                                                rotation: -40
+                                               
+                                            }
+                              } 
+   
+,
+               
+                tooltip: {
+                    visible: true,
+                    template: "#= category #: #= kendo.format('{0:N1}', value+' Lakhs' ) # "
+                }
+               
+            });
+   }           
+                         
+
+       </script> 
+   
+  
+      
+</table>
+    </apex:outputPanel>
+</apex:form>
+</apex:page>

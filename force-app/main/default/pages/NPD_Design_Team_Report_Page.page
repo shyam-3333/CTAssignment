@@ -1,0 +1,246 @@
+<apex:page controller="NPD_Design_Team_Report" sidebar="false" id="mypage" docType="HTML-5.0">
+    <apex:form id="myForm">
+    <style>
+    .scrollmenu {
+      overflow-y:scroll;
+      width: 1520px;
+    }
+     table {
+        border-collapse: collapse;
+        }
+        /* This is for the full screen DIV */
+        
+        .popupBackground {
+            /* Background color */
+            background-color: black;
+            opacity: 0.20;
+            filter: alpha(opacity=20);
+            /* Dimensions */
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 998;
+            position: absolute;
+            /* Mouse */
+            cursor: wait;
+        }
+        /* This is for the message DIV */
+        
+        .PopupPanel {
+            /* Background color */
+            /* border: solid 2px blue;*/
+            left: 50%;
+            width: 200px;
+            margin-left: -100px;
+            top: 50%;
+            height: 250px;
+            margin-top: -25px;
+            z-index: 999;
+            position: fixed;
+            /* Mouse */
+            cursor: pointer;
+        }
+        .table_design td{
+            white-space: nowrap;
+        }
+         .table_design1 td{
+            white-space: nowrap;
+        }
+        }
+    </style>
+      <apex:actionStatus id="actStatusId" stopText="">
+        <apex:facet name="start">
+            <div>
+                <div class="popupBackground" />
+                <div class="PopupPanel">
+                    <table border="0" width="100%" height="100%">
+
+                        <tr>
+                            <td align="center"><img src="/img/loading.gif" /></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </apex:facet>
+    </apex:actionStatus>
+        <table class="table_design1" border="1" align="center" width="1200" style="background-color:#FFA500;">
+            <tr align="center">
+                <td colspan="3" style="color:#4c76ad;font-weight:bold;font-size:16px;"><b>Basic Search</b></td> 
+                <td colspan="3" style="color:#4c76ad;font-weight:bold;font-size:16px;"><b>Advance Search</b></td>   
+            </tr> 
+            <tr>
+                <td style="font-size:12px;">
+                    <apex:outputPanel id="brandId"> <b>Brand:</b>
+                        <apex:selectList size="1" value="{!selectedBrandName}">
+                            <apex:selectoptions value="{!npdBrandOption}" />
+                            <apex:actionSupport event="onchange" action="{!selectCollection}" reRender="collectionId,modelId,TableRecordId" status="actStatusId"/>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </td>
+                <td style="font-size:12px;">
+                    <apex:outputPanel id="collectionId"> <b>Collections:</b> &nbsp;
+                        <apex:selectList size="1" value="{!selectedCollectionName}">
+                            <apex:selectoptions value="{!npdCollectionOption}" />
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </td>
+                <td style="font-size:12px;">
+                    <apex:outputPanel id="statusId"> <b>SubStage/Activity</b> &nbsp;
+                        <apex:selectList size="1" value="{!selectedSubActName}">
+                            <apex:selectoptions value="{!npdSubStgActOption}" />
+                            
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </td>
+				<td style="font-size:12px;"><b>From Date</b> &nbsp;
+                    <apex:input type="date" id="fromDates" value="{!fromDate}">
+                        <apex:actionSupport event="onchange" action="{!selectCollection}" reRender="collectionId,TableRecordId" status="actStatusId"/>
+                    </apex:input>
+                </td>
+                <td style="font-size:12px;"><b>To Date</b> &nbsp;
+                    <apex:input type="date" id="toDates" value="{!toDate}">
+                        <apex:actionSupport event="onchange" action="{!selectCollection}" reRender="collectionId,TableRecordId" status="actStatusId"/>
+                    </apex:input>
+                </td>
+                <td style="font-size:12px;">
+                    <apex:outputPanel id="functionId"> <b>Design Manager:</b> &nbsp;
+                        <apex:selectList size="1" value="{!selectedDesgnManagName}">
+                            <apex:selectoptions value="{!npdDsgnManagOption}" />
+                            <apex:actionSupport event="onchange" action="{!selectCollection}" reRender="collectionId,TableRecordId" status="actStatusId"/>
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </td>
+            </tr>
+        </table>
+        <table class="table_design1" border="0" align="center" width="100" style="">
+            <tr align="center">
+                <td style="color:#ff9f80;font-weight:bold;font-size:14px;">
+                    <apex:commandButton value="Run Report"  action="{!displayStageActTable}" reRender="TableRecordId"  status="actStatusId" /><br/><br/>
+                </td>
+            </tr>
+        </table> 
+		<apex:outputPanel id="TableRecordId" >
+			<div class="scrollmenu">
+				<apex:outputPanel id="InnerTableId" rendered="{!isDisplayTable}">
+					<table class="table_design" width="100%" border="1" cellspacing="0" cellpadding="1" align="center" style=" border-bottom-style: none;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">
+						<tr style="background: #1a75ff;font-weight:bold;font-size:20px;" align="center">
+							<td colspan = "9"><font color="white">For Activity</font></td>
+						</tr>
+						<tr style="background:#D3D3D3;font-weight:bold;font-size:15px;" align="center">
+							<td >
+								<apex:outputText value="Brand" />
+							</td>
+							<td >
+								<apex:outputText value="Collection" />
+							</td>
+							<td >
+								<apex:outputText value="Design Manager" />
+							</td>
+							<td >
+								<apex:outputText value="Launch month & Year" />
+							</td>
+							<td >
+								<apex:outputText value="Case Num" />
+							</td>
+							<td >
+								<apex:outputText value="Stage / Activity" />
+							</td>
+							<td >
+								<apex:outputText value="Start Date" />
+							</td>
+							<td >
+								<apex:outputText value="End date" />
+							</td>
+							<td>
+								<apex:outputText value="Status" />
+							</td>
+						</tr>
+						<apex:repeat value="{!lWrapperList}" var="actValue">
+							<tr style="background:#ccffe6;" align="center">
+								<td><apex:outputText value="{!actValue.brand}" /></td>
+								<td><apex:outputText value="{!actValue.collection}" /></td>
+								<td><apex:outputText value="{!actValue.designManager}" /></td>
+								<td>
+									<apex:outputText value="{0,date,MMMM'-'yy}">
+									<apex:param value="{!actValue.launchMonth}" /></apex:outputText>
+								</td>
+								<td><apex:outputText value="{!actValue.caseNo}" /></td>
+								<td><apex:outputText value="{!actValue.subStageacitvityName}" /></td>
+								<td>
+									<apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+									<apex:param value="{!actValue.startDate}" /></apex:outputText>
+								</td>
+								<td>
+									<apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+									<apex:param value="{!actValue.endDate}" /></apex:outputText>
+								</td>
+								<td><apex:outputText value="{!actValue.status}" /></td>
+							</tr>
+						</apex:repeat>
+					
+					</table><br/><br/>
+					
+                </apex:outputPanel>
+				<apex:outputPanel id="innerStageTableId" rendered="{!isSubStageTable}">
+					<table class="table_design" width="100%" border="1" cellspacing="0" cellpadding="1" align="center" style=" border-bottom-style: none;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">
+						<tr style="background: #1a75ff;font-weight:bold;font-size:20px;" align="center">
+							<td colspan = "8"><font color="white"> For Stage</font></td>
+						</tr>
+						<tr style="background:#D3D3D3;font-weight:bold;font-size:15px;" align="center">
+							<td >
+								<apex:outputText value="Brand" />
+							</td>
+							<td >
+								<apex:outputText value="Collection" />
+							</td>
+							<td >
+								<apex:outputText value="Design Manager" />
+							</td>
+							<td >
+								<apex:outputText value="Launch month & Year" />
+							</td>
+							
+							<td >
+								<apex:outputText value="Stage / Activity" />
+							</td>
+							<td >
+								<apex:outputText value="Start Date" />
+							</td>
+							<td >
+								<apex:outputText value="End date" />
+							</td>
+							<td>
+								<apex:outputText value="Status" />
+							</td>
+						</tr>
+						<apex:repeat value="{!subStageWrapperList}" var="stageValue">
+							<tr style="background:#ccffe6;" align="center">
+								<td><apex:outputText value="{!stageValue.brand}" /></td>
+								<td><apex:outputText value="{!stageValue.collection}" /></td>
+								<td><apex:outputText value="{!stageValue.designManager}" /></td>
+								<td>
+									<apex:outputText value="{0,date,MMMM'-'yy}">
+									<apex:param value="{!stageValue.launchMonth}" /></apex:outputText>
+								</td>
+								
+								<td><apex:outputText value="{!stageValue.subStageacitvityName}" /></td>
+								<td>
+									<apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+									<apex:param value="{!stageValue.startDate}" /></apex:outputText>
+								</td>
+								<td>
+									<apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+									<apex:param value="{!stageValue.endDate}" /></apex:outputText>
+								</td>
+								<td><apex:outputText value="{!stageValue.status}" /></td>
+							</tr>
+						</apex:repeat>
+					
+					</table>
+					</apex:outputPanel>
+				
+			</div>
+		</apex:outputPanel>
+    </apex:form>
+</apex:page>

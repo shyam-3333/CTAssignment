@@ -1,0 +1,462 @@
+<apex:page showHeader="true" sidebar="true" standardController="Quote"  extensions="Titan_SelectProductForQuoteController" >
+    <apex:includeScript value="{!URLFOR($Resource.jquery1, 'js/jquery-1.6.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.jquery1, 'js/jquery-ui-1.8.16.custom.min.js')}"/>
+     
+    <script type="text/javascript">
+        
+   
+    var walkme_load_in_iframe = true;
+    (function() {var walkme = document.createElement('script'); walkme.type = 'text/javascript'; walkme.async = true; walkme.src = 'https://d3b3ehuo35wzeh.cloudfront.net/users/07c4c39c10a948b083dcf8627258bf74/walkme_07c4c39c10a948b083dcf8627258bf74_https.js';
+     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(walkme, s);})();</script>
+    <script>
+       
+        function checkAll(cb)
+        {
+            var inputElem = document.getElementsByTagName("input");
+            for(var i=0; i<inputElem.length; i++)
+            {
+                if(inputElem[i].id.indexOf("checkedone")!=-1)
+                inputElem[i].checked = cb.checked;
+            }
+        }
+        
+           
+        
+    </script>
+    <script>
+        function filter(){
+            document.getElementById('pageId:formId:PageBlockId:filterPanel').style.display = 'none';
+            document.getElementById('pageId:formId:PageBlockId:moreFilter').style.display = '';
+            document.getElementById('pageId:formId:PageBlockId:andId').style.display = 'none';
+        }
+        function filterShow(){
+            document.getElementById('pageId:formId:PageBlockId:filterPanel').style.display = '';
+            document.getElementById('pageId:formId:PageBlockId:moreFilter').style.display = 'none';
+            document.getElementById('pageId:formId:PageBlockId:andId').style.display = '';
+        }
+        function fgetValue(size){
+                //alert(size);
+                if(size==1){
+                 var prodId = $('.HiddenId').val();
+                // alert(prodId);
+                 var varucp = $('.ucpId').val();
+                // alert(varucp);
+                 var varsaleprice = $('.Salesprice').val();
+                    //alert(varsaleprice);
+                 var varquantity =$('.Quantity').val();
+                // alert(varquantity);
+                 var vardiscount = $('.discountPer').val();
+                // alert(vardiscount);
+                 var vardiscountvalues = $('.discountValue').val();
+                 //alert(vardiscountvalues);
+                 var varnooflineitem = $('.nooflineitem').val();
+                 //alert(varnooflineitem);
+                 methodOneInJavascript(prodId,varucp,varsaleprice,varquantity,vardiscount,varnooflineitem,vardiscountvalues)
+             }
+        }
+        
+        
+        function changeDiscountPer(valueOf,salesprice,discountValue){
+           // alert(salesprice);
+            var varucp = document.getElementById(salesprice).value;
+            //alert(varucp);
+            //salesprice = salesprice * quantity;
+            var result = (valueOf * varucp)/100;
+            var amount = varucp-result;
+            //alert(amount);
+            amount = varucp-amount; 
+            amount = amount.toFixed(4);
+            
+            document.getElementById(discountValue).value = amount;
+        
+        }
+        
+        
+        function changeDiscountVal(valueOff,salesprice,discountPer){
+        
+        var varucp = document.getElementById(salesprice).value;
+        alert(valueOff);
+        if(valueOff == '' ){
+            //alert('hyyy');
+            var  k = 0.00;
+            //alert(k);
+            document.getElementById(discountPer).value = k;
+            return;
+        }
+        
+        var result = (valueOff*100)/ varucp ;
+        result = result.toFixed(4);
+        //alert(result);
+        document.getElementById(discountPer).value = result;
+        }
+        
+        function fis(){
+        
+        //  alert('hy');
+        
+        
+        }
+    
+    
+    </script>  
+     <apex:form id="formId" >
+         <apex:actionFunction action="{!createRecords}"  name="methodOneInJavascript" rerender="PBid" oncomplete="fis()">
+              <apex:param assignTo="{!objProduct.id}" value="prodId" name="selectedI"/>
+                  <apex:param assignTo="{!intUcp}" value="varucp" name="intUcp"/>
+                  <apex:param assignTo="{!intSalesValue}" value="salesprice" name="selectedName"/>
+                  <apex:param assignTo="{!intQuantity}" value="varquantity" name="Quantity"/>
+                  <apex:param assignTo="{!intDiscount}" value="vardiscount" name="Discount"/>
+                  <apex:param assignTo="{!intNoOfLineItems}" value="varnooflineitem" name="NoOflineitem"/>
+                  <apex:param assignTo="{!intDiscountValues}" value="vardiscountvalues" name="DiscountValue"/>
+        </apex:actionFunction>
+   <!--- <apex:outputPanel rendered="{!if((Quote.Pricebook2Id == null),true,false)}">----->
+<!--         <apex:outputPanel rendered="{!pricePanel}"> -->
+<!--         <apex:sectionHeader title="Choose Price Book for {!Quote.name}"/>  -->
+<!--         Select a price book for this quote. You can add products only from a single price book.<br/><br/> -->
+<!--         Choose a price book that contains products with the same currency as the quote. If no products are available for the chosen currency, ask your administrator to create them.<br/><br/> -->
+<!--         <apex:pageBlock id="PricebookPageId" title="Choose Price Book for {!Quote.name}"> -->
+<!--             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+<!--             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+<!--             <apex:selectList size="1" multiselect="false" value="{!pricebookValue}"> Price book  -->
+<!--                 <apex:selectOptions value="{!pricebookName}"/> -->
+<!--             </apex:selectList> -->
+<!--             <center> -->
+<!--                 <apex:commandButton value="Save" action="{!pricebookSave}" />              -->
+<!--                 <apex:commandButton value="cancel" action="{!cancel}"  immediate="true" />   -->
+<!--             </center> -->
+<!--         </apex:pageBlock> -->
+<!--     </apex:outputPanel> -->
+    
+    <apex:outputPanel id="mainPageId" rendered="{!mainPanel}">
+   
+        <apex:sectionHeader title="product selection for"  subtitle="Quote {!Quote.name}"/>                
+         Enter your keyword and filter criteria, then click Search to begin your search. Click More filters to use more than one filter. Search results include all records that match both your keyword and filter entries.  
+        <br/><br/>
+        <center>
+            <apex:commandButton value="Select" action="{!SelectProduct}" />  
+            <apex:commandButton action="{!cancelQuote}" value="cancel" immediate="true"/>
+        </center>
+        <br/>
+        <apex:pageBlock Id="PageBlockId" title="Find Products">   
+                            
+            <Table id="TabId" height="30">
+                <tr>               
+                    <th>
+                        By Keyword
+                    </th>
+                    <th>
+                        By Field Filter
+                    </th>          
+                </tr>
+                <tr>                    
+                    <td>
+                        <apex:inputText id="KeyId" value="{!keyValue}"/>    
+                    </td>
+                    <td>
+                        <apex:selectList size="1" multiselect="false" value="{!fieldValue}"  >
+                            <apex:selectOptions value="{!options}"/>
+                        </apex:selectList>
+                    </td>
+                    <td>
+                        <apex:selectList multiselect="false" size="1" value="{!conditionValues}">
+                            <apex:selectOptions value="{!items}"/>
+                        </apex:selectList>
+                    </td>
+                    <td>
+                        <apex:inputText value="{!lValue}"/>    
+                    </td> 
+                    <td>
+                        <apex:outputpanel Id="moreFilter" style="display:block;">     
+                            <a onclick="filterShow()"  style="color:RoyalBlue;">More filters</a>
+                        </apex:outputPanel>
+                        <apex:outputpanel Id="andId" style="display:none;">     
+                            AND
+                        </apex:outputPanel>
+                    </td>                   
+                </tr>
+            </table>
+                
+            <apex:outputpanel Id="filterPanel" style="display:none;"> 
+                <table>
+                    <tr>                    
+                        <td width="157">
+                                
+                        </td>
+                        <td>
+                            <apex:selectList size="1" multiselect="false" value="{!fieldValue1}" >
+                                <apex:selectOptions value="{!options}"/>
+                            </apex:selectList>
+                        </td>
+                        <td>
+                            <apex:selectList multiselect="false" size="1" value="{!conditionValues1}">
+                                <apex:selectOptions value="{!items}"/>
+                            </apex:selectList>
+                        </td>
+                        <td>
+                            <apex:inputText value="{!lValue1}" />    
+                        </td> 
+                        <td>
+                            AND    
+                        </td>                    
+                    </tr>       
+                    <tr>                    
+                        <td>
+                               
+                        </td>
+                        <td>
+                            <apex:selectList size="1" multiselect="false" value="{!fieldValue2}">
+                                <apex:selectOptions value="{!options}"/>
+                            </apex:selectList>
+                        </td>
+                        <td>
+                            <apex:selectList multiselect="false" size="1" value="{!conditionValues2}">
+                                <apex:selectOptions value="{!items}"/>
+                            </apex:selectList>
+                        </td>
+                        <td>
+                            <apex:inputText value="{!lValue2}" />    
+                        </td>
+                        <td>
+                            AND    
+                        </td>                     
+                    </tr>       
+                    <tr>                    
+                        <td>
+                               
+                        </td>
+                        <td>
+                            <apex:selectList size="1" multiselect="false" value="{!fieldValue3}" >
+                                <apex:selectOptions value="{!options}"/>
+                            </apex:selectList>
+                        </td>
+                        <td>
+                            <apex:selectList multiselect="false" size="1" value="{!conditionValues3}">
+                                <apex:selectOptions value="{!items}"/>
+                            </apex:selectList>
+                        </td>
+                        <td>
+                            <apex:inputText value="{!lValue3}" />    
+                        </td> 
+                        <td>
+                            AND    
+                        </td>                    
+                    </tr>
+                    <tr>                    
+                        <td>
+                               
+                        </td>
+                        <td>
+                            <apex:selectList size="1" multiselect="false" value="{!fieldValue4}" >
+                                <apex:selectOptions value="{!options}"/>
+                            </apex:selectList>
+                        </td>
+                        <td>
+                            <apex:selectList multiselect="false" size="1" value="{!conditionValues4}">
+                                <apex:selectOptions value="{!items}"/>
+                            </apex:selectList>
+                        </td>
+                        <td>
+                            <apex:inputText value="{!lValue4}" />    
+                        </td> 
+                        <td>
+                             <a onclick="filter()"  style="color:RoyalBlue;">Less filters</a>
+                        </td>                   
+                    </tr> 
+                </Table>
+            </apex:outputpanel>
+           
+            <apex:commandButton value="Search" action="{! Search}" reRender="oId"/>
+            
+        </apex:pageBlock> 
+       
+        <apex:pageBlock id="PId" >
+                <table id="Tid">
+                    <th width="10">
+                         <apex:inputCheckbox >
+                            <apex:actionSupport event="onclick"   onsubmit="checkAll(this)" rerender="oId"/>
+                         </apex:inputCheckbox>
+                    </th>
+                    <th width="250" >
+                        Product Name  
+                    </th>
+                    <th width="250">
+                        Product Code  
+                    </th>
+                    <th width="230">
+                        Standard Price 
+                    </th>
+                    <th width="250">
+                        Product Description  
+                    </th>
+                    <th width="250">
+                        Product Family 
+                    </th>
+                     <th width="250">
+                        Record Type
+                    </th>
+                 </table>
+              
+                 <apex:outputPanel id="oId" style="overflow:scroll;height:400px;" layout="block">
+                 <table width="100%" >
+                   <apex:variable var="indexNo" value="{! 0}"/>
+                    <apex:repeat value="{!lstrecWrapp}" var="line" >
+                   
+                        <tr style="{!IF(line.isselected,'background-color:#808080','background-color:#FFFFFF')}">
+                            <td width="10">
+                                <apex:inputCheckbox value="{!line.isSelected}" id="checkedone">
+                                </apex:inputCheckbox>                                                          
+                            </td> 
+                            
+                            <td width="250">
+                                <a href="/{! line.pro2.id }">{!line.pro2.Name}  </a>
+                            </td>
+                            <td width="250">
+                                <a href="/{! line.pro2.id }"> {!line.pro2.ProductCode}  </a>
+                            </td>
+                            <td>
+                                <apex:repeat value="{! line.pro2.PricebookEntries}" var="rec">
+                                    <apex:outputText value="INR{0, number, #,##0.00}">
+                                        <apex:param value="{! rec.UnitPrice}"/>                                       
+                                    </apex:outputText>
+                               <apex:variable var="indexNo" value="{! indexNo+1}"/>     
+                               </apex:repeat>
+                            </td>
+                            <td width="250">
+                                {!line.pro2.Description}  
+                            </td>
+                            <td width="250">
+                                {!line.pro2.family}  
+                            </td>
+                            <td width="250">
+                                {!line.pro2.RecordType.Name}  
+                            </td>
+                        </tr>
+                    </apex:repeat>
+                    
+                </table>
+           </apex:outputpanel>
+            <apex:outputPanel layout="block" styleClass="pSearchShowMore" id="otpNav2">  
+     
+                Total Records Found: <apex:outputText rendered="{!IF(resultSize==10000,true,false)}">10000 +</apex:outputText><apex:outputText rendered="{!IF(resultSize < 10000,true,false)}">{!resultSize}</apex:outputText>  
+                <apex:image url="/img/search_prevarrow_disabled.gif" styleClass="prevArrow" rendered="{!NOT(hasPrevious)}"/>  
+                <apex:image url="/img/search_prevarrow.gif" title="Previous Page" styleClass="prevArrow" rendered="{!hasPrevious}"/>  
+                <apex:commandLink action="{!Previous}" title="Previous Page" value="Previous Page" rendered="{! hasPrevious}" rerender="oId"/>  
+                <apex:outputPanel styleClass="pShowLess noLink" style="color:grey" rendered="{!NOT(hasPrevious)}">Previous Page</apex:outputPanel>           
+                &nbsp;({!IF(pageNumber == 1,1,((pageNumber -1) * pageSize)+1)}-{!IF(resultSize < pageSize,resultSize,pageNumber * pageSize)})&nbsp;  
+                <apex:outputPanel styleClass="pShowLess noLink" style="color:grey" rendered="{!NOT(hasNext)}">Next Page</apex:outputPanel>           
+                <apex:commandLink title="Next Page" value="Next Page" rendered="{!hasNext}" action="{!Next}"/>&nbsp;  
+                <apex:image url="/img/search_nextarrow.gif" title="Next Page" styleClass="nextArrow" rendered="{!hasNext}"/>  
+                <apex:image url="/img/search_nextarrow_disabled.gif" rendered="{!NOT(hasNext)}"/>            
+   
+            </apex:outputPanel> 
+             
+        </apex:pageBlock>
+      
+    
+    </apex:outputPanel> 
+    
+    <apex:outputPanel id="secondId" rendered="{!secondPanel}">
+        <apex:pagemessages ></apex:pagemessages>  
+        <apex:sectionHeader title="Add Quote Line Items to"  subtitle="{!Quote.name}"/>
+        <br/>
+        Add products to this quote from Standard Price Book price book.
+        <br/>
+        <apex:pageBlock id="PBid">
+            <center>
+                <apex:commandButton value="Save" action="{!Save}" />             
+                <apex:commandButton value="cancel" action="{!cancel}"  />  
+           </center>
+          <!-- <apex:outputPanel rendered="{!(IF(lstrecordWrapper[0].pro2.IS_GV_GC__c == true,true,false))}"> -->
+                Create No Of Records <apex:inputText styleclass="nooflineitem" id="NoOfLineitem" value="{!decUcpQLIno}"  /> 
+                <input type="button" value ="Create Record" onclick="fgetValue('{!lstrecordWrapper.size}')"/>
+                
+         <!--  </apex:outputPanel> -->
+           <br/>
+           <br/>
+           <br/>
+           <br/>
+           <br/>
+            <table id="tableId">
+                <th width="100px">
+                    Product
+                </th>               
+                 <th width="100px">
+                    List Price 
+                </th>
+                <th width="100px">
+                    UCP
+                </th>
+                 <th>
+                    Discount in % 
+                </th>
+                <th>
+                    Discount in values
+                </th>
+                 <th>
+                    Sales Price  
+                </th>
+<!--                 <th> -->
+<!--                     Enquired Quantity   -->
+<!--                 </th> -->
+                 <th>
+                    Quantity  
+                </th>                
+                
+               
+                 
+                <apex:repeat value="{!lstrecordWrapper}" var="line" >
+                <tr>
+                    <td>
+                        <apex:outputText value="{!line.pro2.Name}" />
+                    </td>                    
+                     <td>
+                         <apex:repeat value="{! line.pro2.PricebookEntries}" var="rec">
+                             <apex:outputText value="INR{0, number, #,##0.0000}">
+                                 <apex:param value="{! rec.UnitPrice}"/>                                       
+                             </apex:outputText>
+                         </apex:repeat>
+                    </td>
+                    <td>
+                         <apex:inputText styleclass="ucpId" id="ucpId" value="{!line.decUcpQLI}"  />   
+                    </td>
+                    <td> 
+                        <apex:inputText styleclass="discountPer" id="discountPer" value="{!line.discount}" onchange="changeDiscountPer(this.value,'{!$Component.ucpId}','{!$Component.discountValue}')" />       
+                    </td>    
+                     <td> 
+                        <apex:inputText styleclass="discountValue" id="discountValue" value="{!line.discountvalues}" onchange="changeDiscountVal(this.value,'{!$Component.ucpId}','{!$Component.discountPer}')"/>       
+                    </td>
+                     <td>
+                         <apex:outputText id="Salesprice" value="{!line.salesValue}" />   
+                                
+                            
+                    </td>
+<!--                     <td> -->
+<!--                          <apex:inputText id="EnquiredQuantity" value="{!line.EnquiredQuantity}" size="9" />    -->
+<!--                     </td> -->
+                    <td>
+                         <apex:inputText styleclass="Quantity" id="Quantity" value="{!line.quantity}" />   
+                    </td>                   
+                    
+                    <td> 
+                        <input type="Hidden" class="HiddenId" id="HiddenId" value="{!line.pro2.id}"  />  
+                        <input type="Hidden"  class="Salesprice" id="Salesprice1" value="{!line.salesValue}" />   
+<!--                         <apex:inputText id="NoOfLineitem" value="{!line.NoOfLineItems}"  />   -->
+                    </td>     
+<!--                     <td> -->
+<!--                        <input type="button" value ="Create Record" onclick="fgetValue()"/>  -->
+                    
+<!--                     </td>            -->
+                </tr> 
+                </apex:repeat>
+            </table>
+            
+            <center>
+            <apex:commandButton value="Save" action="{!Save}" />  
+            <apex:commandButton value="cancel" action="{!cancelQuote}" />  
+           </center>
+        </apex:pageBlock>
+        
+    </apex:outputPanel>
+    
+    </apex:form> 
+</apex:page>

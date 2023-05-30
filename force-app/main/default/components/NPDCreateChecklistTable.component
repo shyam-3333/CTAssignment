@@ -1,0 +1,25 @@
+<apex:component controller="NPDemailattachment" access="global">
+    <apex:attribute name="activityID" description="DisplayTable" access="global" type="String" assignTo="{!actid}"/> 
+    <html>       
+        <body>
+            <table border="1">                   
+                    <apex:repeat value="{!fieldapi2}" var="key">
+                        
+                    <tr>    <th >                        
+                            <apex:outputText Value="{!$ObjectType.NPD_Checklist__c.Fields[key].Label}" style="width:100%;color:black;font-weight:800;"/>    </th>                  
+                        
+                        
+                            <apex:repeat value="{!checklist}" var="Sobject" >                    
+                                    <td>
+                                       <apex:outputField value="{!Sobject[key]}"    style="width:100%;color:grey;"/>                                                  
+                                   </td>                   
+                            </apex:repeat>
+                          </tr>  
+                            
+                       
+                        
+                    </apex:repeat>
+                </table>
+        </body>              
+    </html>
+</apex:component>

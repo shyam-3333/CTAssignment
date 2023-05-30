@@ -1,0 +1,8 @@
+<apex:page controller="OfflineProdTestingClass" id="MainPage"
+           showHeader="false" 
+           cache="true"
+           contentType="application/x-pdf#{!param}.pdf">
+
+    <!-- Here comes another page with a content to be converted to PDF -->
+    <apex:include pageName="ProductPDFDownload"/>
+</apex:page>

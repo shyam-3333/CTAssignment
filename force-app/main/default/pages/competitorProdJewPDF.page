@@ -1,0 +1,715 @@
+<apex:page controller="CompetitorProdJewPDFController" renderAs="pdf"  standardStylesheets="false" showHeader="false" sidebar="false"  applyBodyTag="false" docType="HTML-5.0">
+    <head>
+        
+        <style type="text/css" media="print">
+            @page {
+            margin-top : 150px;
+            
+            @top-center {
+            content: element(header);
+            }
+            @bottom-right {
+            content: "Page " counter(page) " - " counter(pages);
+            position:absolute;
+            top:-100px;
+            }
+            }
+            
+            div.header {
+            padding-top : 40px;
+            position: running(header);
+            } 
+            
+            @page:first{
+            
+            @bottom-right {
+            content: "Page 1 ""-"" "counter(pages);
+            position:absolute;
+            top:-100px;
+            }
+            }
+        </style>
+    </head>
+    <body >
+        <div class="header" >
+            <table width="100%" style="border-collapse:collapse; table-layout:auto;border:1px solid black;" >
+                <tr>
+                    <td style="border:1px solid black;text-align:center;font-size:20px; width:100px;hieght:100px;"  rowspan="2" ><apex:image width="100" height="100" url="{!$Resource.TitanCompanyLogo}"  alt="Description of image here"/></td>
+                    <td style="border:1px solid black;text-align:center;color:black;font-size:20px;font-weight:bold;padding:15px;" colspan="2"  >TITAN COMPANY LIMITED </td>
+                    
+                </tr>
+                <tr>
+                    <td style="border:1px solid black;text-align:center;color:black;font-size:20px;font-weight:bold;padding:15px;" colspan="2" >{!comProd.RecordType.Name} Competitor Product Analysis Report</td>
+                </tr>
+            </table>
+        </div>
+        
+        <!--div style="text-align:center;">
+<h1>
+{!comProd.RecordType.Name} Competitor Product
+</h1>
+</div-->  
+        <div class="content" >
+            
+            <table  width="100%" style="page-break-inside: avoid;">
+                <tr>
+                    <td width="20%" style="text-align:left;">
+                        Report ref number:
+                    </td>
+                    <td width="20%" style="text-align:left;">
+                        {!comProd.name}
+                    </td>
+                    <td width="20%">
+                    </td>
+                    
+                    <td width="20%" style="text-align:left;">
+                    </td>
+                    <td width="20%" style="text-align:left;"> 
+                    </td>
+                </tr>
+                <tr>
+                  <td width="20%" style="text-align:left;">
+                        Competitor Name:
+                    </td>
+                    <td width="20%" style="text-align:left;">
+                        {!comProd.Competitor_name__c}
+                    </td>
+                    <td width="20%">
+                    </td>
+                    
+                    <td width="20%" style="text-align:left;">
+                        Date of purchase:
+                    </td>
+                    <td width="20%" style="text-align:left;"> 
+                        {!dateOfPurchase}
+                    </td>
+                </tr>
+                <tr>
+                    <td width="20%" style="text-align:left;">
+                        City:
+                    </td>
+                    <td width="20%" style="text-align:left;">
+                        {!comProd.city__c}
+                    </td>
+                    <td width="20%">
+                    </td>
+                    
+                    <td width="20%" style="text-align:left;">
+                        Product Category:
+                    </td>
+                    <td width="20%" style="text-align:left;"> 
+                        {!comProd.Product_Category__c}
+                    </td>
+                </tr>
+                <tr>
+                    <td width="20%" style="text-align:left;">
+                        Product Group:
+                    </td>
+                    <td width="20%" style="text-align:left;">
+                        {!comProd.Product_Group__c}
+                    </td>
+                    <td width="20%">
+                    </td>
+                    
+                    <td width="20%" style="text-align:left;">
+                        Metal:
+                    </td>
+                    <td width="20%" style="text-align:left;"> 
+                        {!comProd.Metal__c}
+                    </td>
+                </tr>
+                <tr>
+                    <td width="20%" style="text-align:left;">
+                        Manufacturing route:
+                    </td>
+                    <td width="20%" style="text-align:left;">
+                        {!comProd.Manufacturing_route__c}
+                    </td>
+                    <td width="20%">
+                    </td>
+                    
+                    <td width="20%" style="text-align:left;">
+                        Purchased Department:
+                    </td>
+                    <td width="20%" style="text-align:left;"> 
+                        {!comProd.Purchased_Department__c}
+                    </td>
+                </tr>
+                <tr>
+                    <td width="20%" style="text-align:left;">
+                        Email
+                    </td>
+                    <td width="20%" style="text-align:left;">
+                        {!comProd.Email__C}
+                    </td>
+                    <td width="20%">
+                    </td>
+                    
+                    <td width="20%" style="text-align:left;">
+                        Purchased by:
+                    </td>
+                    <td width="20%" style="text-align:left;"> 
+                        {!comProd.Purchased_by__c}
+                    </td>
+                </tr>
+            </table>
+            <table  border="0.1" width="100%" style="page-break-inside: avoid;">
+                <tr style="background-color: #3EBACB;">
+                    <th width="5%">
+                        
+                    </th>
+                    <th width="7%" style="text-align:center;">
+                        Sl No
+                    </th>
+                    <th width="22%" style="text-align:center;">
+                        Parameters
+                    </th>
+                    <th width="22%" style="text-align:center;">
+                        As per Bill
+                    </th>
+                    <th width="22%" style="text-align:center;">
+                        Physical analysis
+                    </th>
+                    <th width="22%" style="text-align:center;">
+                        Remarks
+                    </th>
+                </tr>
+                <tr>
+                    <th rowspan="4" style="text-align:center;" >
+                        Material
+                    </th>
+                    <td style="text-align:center;">
+                        1
+                    </td>
+                    <td>
+                        Color of the metal
+                    </td>
+                    <td>
+                        {!comProd.Color_of_the_metal__c}
+                    </td>
+                    <td>
+                        {!comProd.Color_of_the_metal_Physical_analysis__c}
+                    </td>
+                    <td>
+                        {!comProd.Color_of_the_metal_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="text-align:center;">
+                        2
+                    </td>
+                    <td>
+                        Purity (checked by fire assay/EDXRF)
+                    </td>
+                    <td>
+                        {!comProd.Purity_Competitor_Billing__c}
+                    </td>
+                    <td>
+                        {!comProd.Purity_Physical_analysis__c}
+                    </td>
+                    <td>
+                        {!comProd.Purity_remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="text-align:center;">
+                        3
+                    </td>
+                    <td>
+                        Gross Weight in grams
+                    </td>
+                    <td>
+                        {!comProd.Gross_Weight_Competitor_Billing__c}
+                    </td>
+                    <td>
+                        {!comProd.Gross_Weight_Physical_analysis__c}
+                    </td>
+                    <td>
+                        {!comProd.Gross_Weight_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="text-align:center;">
+                        4
+                    </td>
+                    <td>
+                        Net Weight in grams
+                    </td>
+                    <td>
+                        {!comProd.Net_Weight_Competito_Billing__c}
+                    </td>
+                    <td>
+                        {!comProd.Net_Weight_Physical_analysis__c}
+                    </td>
+                    <td>
+                        {!comProd.Net_Weight_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    <th rowspan="4" style="text-align:center;">
+                        Stone
+                    </th>
+                    <td style="text-align:center;">
+                        5
+                    </td>
+                    <td>
+                        Stone Detail
+                    </td>
+                    <td>
+                        {!comProd.Stone_Detail_Competitor_Billing__c}
+                    </td>
+                    <td>
+                        {!comProd.Stone_Detail__c}
+                    </td>
+                    <td>
+                        {!comProd.Stone_detail_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">
+                        6
+                    </td>
+                    <td>
+                        Stone Quality
+                    </td>
+                    <td>
+                        {!comProd.Stone_Quality_Competitor_Billing__c}
+                    </td>
+                    <td>
+                        {!comProd.Stone_Quality_Physical_analysis__c}
+                    </td>
+                    <td>
+                        {!comProd.Stone_quantity_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">
+                        7
+                    </td>
+                    <td>
+                        Color
+                    </td>
+                    <td>
+                        {!comProd.Colour__c}
+                    </td>
+                    <td>
+                        {!comProd.Color__c}
+                    </td>
+                    <td>
+                        {!comProd.Color_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align:center;">
+                        8
+                    </td>
+                    <td>
+                        Weight in Carat
+                    </td>
+                    <td>
+                        {!comProd.Weight_in_Carat_Competitor_Billing__c}
+                    </td>
+                    <td>
+                        {!comProd.Weight_in_Carat__c}
+                    </td>
+                    <td>
+                        {!comProd.Weight_in_Carat_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    <th rowspan="7" style="text-align:center;">
+                        Finish
+                    </th>
+                    <td style="text-align:center;">
+                        9
+                    </td>
+                    <td>
+                        Prong thickness in mm
+                    </td>
+                    <td>
+                        {!comProd.Prong_thickness_in_mm_Competitor_Bill__c}
+                    </td>
+                    <td>
+                        {!comProd.Prong_thickness_Physical_analysis__c}
+                    </td>
+                    <td>
+                        {!comProd.Prong_thickness_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="text-align:center;">
+                        10
+                    </td>
+                    <td>
+                        Setting Type
+                    </td>
+                    <td>
+                        {!comProd.Setting_Type_Competitor_Billling__c}
+                    </td>
+                    <td>
+                        {!comProd.Setting_Type_PA__c}
+                    </td>
+                    <td>
+                        {!comProd.Setting_Type_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="text-align:center;">
+                        11
+                    </td>
+                    <td>
+                        Stone Visibility
+                    </td>
+                    <td>
+                        
+                    </td>
+                    <td>
+                        {!comProd.Stone_Visibility_Physical_analysis__c}
+                    </td>
+                    <td>
+                        {!comProd.Stone_Visibility_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="text-align:center;">
+                        12
+                    </td>
+                    <td>
+                        Finish
+                    </td>
+                    <td>
+                        {!comProd.Finish_Competitor_Billing__c}
+                    </td>
+                    <td>
+                        {!comProd.Finish_Physical_analysis1__c}
+                    </td>
+                    <td>
+                        {!comProd.Finish_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="text-align:center;">
+                        13
+                    </td>
+                    <td>
+                        Plating
+                    </td>
+                    <td>
+                        {!comProd.Plating_Competitor_Billing__c}
+                    </td>
+                    <td>
+                        {!comProd.Plating_Physical_analysis__c}
+                    </td>
+                    <td>
+                        {!comProd.Plating_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="text-align:center;">
+                        14
+                    </td>
+                    <td>
+                        Marking
+                    </td>
+                    <td>
+                        <!--  {!comProd.Marking_Competitor_Billing__c} -->
+                    </td>
+                    <td>
+                        {!comProd.Marking_Physical_analysis__c}
+                    </td>
+                    <td>
+                        {!comProd.Marking_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="text-align:center;">
+                        15
+                    </td>
+                    <td>
+                        Findings used
+                    </td>
+                    <td>
+                        <!-- {!comProd.Findings_used_Competitor_Billing__c}  -->
+                    </td>
+                    <td>
+                        {!comProd.Findings_used_Physical_analysis__c}
+                    </td>
+                    <td>
+                        {!comProd.Findings_used_Remarks__c}
+                    </td>
+                </tr>
+            </table>
+            <br/>
+            <table  border="0.1" width="100%" style="page-break-inside: avoid;margin-top:50px;" >
+                <tr style="background-color: #3EBACB;">
+                    <th colspan="3" style="text-align:center;">
+                        Pricing Comparison
+                    </th>
+                    <th style="text-align:center;">
+                        Competitor
+                    </th>
+                    <th style="text-align:center;">
+                        Equalent at Tanishq
+                    </th>
+                    <th style="text-align:center;">
+                        Conclusion
+                    </th>
+                    <th style="text-align:center;">
+                        Remarks
+                    </th>
+                </tr>
+                <tr>
+                    <th rowspan="7" style="text-align:center;" width="10%">
+                        Cost
+                    </th>
+                    <td style="text-align:center;" width="7%">
+                        16
+                    </td>
+                    <td width="22%">
+                        Gold Rate per Gram
+                    </td>
+                    <td width="16%">
+                        {!comProd.Gold_Rate_Gram_Competitor_Billing__c}
+                    </td>
+                    <td width="16%">
+                        {!comProd.Gold_Rate_per_Gram_Equalent_at_Tanishq__c}
+                    </td>
+                    <td width="9%">
+                        {!comProd.Gold_Rate_per_Gram_Conclusion__c}
+                    </td>
+                    <td width="20%">
+                        {!comProd.Gold_Rate_per_Gram_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="text-align:center;">
+                        17
+                    </td>
+                    <td>
+                        Stone Rate per Carat
+                    </td>
+                    <td>
+                        {!comProd.Stone_Rate_per_Carat_Competitor__c}
+                    </td>
+                    <td>
+                        {!comProd.Stone_Rate_per_Carat_Equalent_at_Tanishq__c}
+                    </td>
+                    <td>
+                        {!comProd.Stone_Rate_per_Carat_Conclusion__c}
+                    </td>
+                    <td>
+                        {!comProd.Stone_Rate_per_Carat_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="text-align:center;">
+                        18
+                    </td>
+                    <td>
+                        Gold price ( Gold rate X weight)
+                    </td>
+                    <td>
+                        {!comProd.Gold_price_Competitor__c}
+                    </td>
+                    <td>
+                        {!comProd.Gold_price_Equalent_at_Tanishq__c}
+                    </td>
+                    <td>
+                        {!comProd.Gold_price_Conclusion__c}
+                    </td>
+                    <td>
+                        {!comProd.Gold_price_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="text-align:center;">
+                        19
+                    </td>
+                    <td>
+                        Stone price ( Stone rate X weight)
+                    </td>
+                    <td>
+                        {!comProd.Stone_price_Competitor__c}
+                    </td>
+                    <td>
+                        {!comProd.Stone_price_Equalent_at_Tanishq__c}
+                    </td>
+                    <td>
+                        {!comProd.Stone_price_Conclusion__c}
+                    </td>
+                    <td>
+                        {!comProd.Stone_price_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="text-align:center;">
+                        20
+                    </td>
+                    <td>
+                        Making charges 
+                    </td>
+                    <td>
+                        {!comProd.Making_charges_Competitor__c}
+                    </td>
+                    <td>
+                        {!comProd.Making_charges_Equalent_at_Tanishq__c}
+                    </td>
+                    <td>
+                        {!comProd.Making_charge_Conclusion__c}
+                    </td>
+                    <td>
+                        {!comProd.Making_charge_Remarks__c}
+                    </td>
+                </tr>
+                <tr>
+                    
+                    <td style="text-align:center;">
+                        21
+                    </td>
+                    <td>
+                        Paid
+                    </td>
+                    <td>
+                        {!comProd.Total_amount_paid_Competitor__c}
+                    </td>
+                    <td>
+                        {!comProd.Total_amount_paid_Equalent_at_Tanishq__c}
+                    </td>
+                    <td>
+                        {!comProd.Total_amount_paid_Conclusion__c}
+                    </td>
+                    <td>
+                        {!comProd.Total_amount_paid_Remarks__c}
+                    </td>
+                </tr>
+                <!--
+<tr>
+
+<td style="text-align:center;">
+22
+</td>
+<td>
+Difference
+</td>
+<td>
+{!comProd.Difference_Competitor__c}
+</td>
+<td>
+{!comProd.Difference_Equalent_at_Tanishq__c}
+</td>
+<td>
+{!comProd.Difference_Conclusion__c}
+</td>
+<td>
+{!comProd.Difference_Remarks__c}
+</td>
+</tr>
+-->
+            </table>
+            <br/>
+            
+            
+            <table  width="100%">
+                <tr>
+                    <th width="20%" style="text-align:left;">
+                        Workmenship/Aesthetics:
+                    </th>
+                    <td width="20%" style="text-align:left;">
+                        {!comProd.Workmenship_Aesthetics__c}
+                    </td>
+                    <td width="20%">
+                    </td>
+                    
+                    <th width="20%" style="text-align:left;">
+                        Authenticity:
+                    </th>
+                    <td width="20%" style="text-align:left;"> 
+                        {!comProd.Authenticity__c}
+                    </td>
+                </tr>
+                <tr>
+                    <th width="20%" style="text-align:left;">
+                        Ovearall Comment:
+                    </th>
+                    <td width="20%" style="text-align:left;">
+                        {!comProd.Ovearall_Comment__c}
+                    </td>
+                    
+                    <td width="20%">
+                    </td>
+                    <th width="20%" style="text-align:left;">
+                        Remarks:
+                    </th>
+                    <td width="20%" style="text-align:left;">
+                        {!comProd.Remarks__c}
+                    </td>
+                    
+                </tr>
+                <tr>
+                    <th width="20%" style="text-align:left;">
+                        Other observation /Special features:
+                    </th>
+                    <td width="20%" style="text-align:left;">
+                        {!comProd.Other_observation_Special_features__c}
+                    </td>
+                    <td width="20%">
+                    </td>
+                    
+                    <th width="20%" style="text-align:left;">
+                        Attachment:
+                    </th>
+                    <td width="20%" style="text-align:left;"> 
+                        {!comProd.Attachment__c}
+                    </td>
+                </tr>
+                
+            </table>
+            <br/>
+            <table width="100%">
+                <tr>
+                    <th></th>
+                    <th>Investigated by</th>
+                    <th>Approved by</th>
+                </tr>
+                <tr>
+                    <th width="20%">Signature</th>
+                    <td width="40%">{!comProd.Investigated_by__c}</td>
+                    <td width="40%">{!comProd.Approved_by__c}</td>
+                </tr>
+                <tr>
+                    <th>Date</th>
+                    <td>{!investigatedByDate}</td>
+                    <td>{!approvedByDate}</td>
+                </tr>
+            </table>
+            <br/><br/>
+                 <div width="100%" style="page-break-inside: avoid;">
+                         <caption  style="text-align:left;"> 
+                         <b style="text-align:left;font-size:17px;"> &nbsp;Image </b>
+                     </caption><br/>             
+                 <div>
+                 <apex:repeat value="{!imageURLlist}" var="image">
+                     <div style="margin-right:20px;">
+                             <apex:image url="{!image}" width="100%" height="100%"/>
+                         </div><br/>
+                     
+                 </apex:repeat>
+             </div>
+          </div>
+      </div>
+        
+    </body>
+</apex:page>

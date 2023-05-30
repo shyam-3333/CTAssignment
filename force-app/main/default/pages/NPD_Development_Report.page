@@ -1,0 +1,142 @@
+<apex:page controller="NPD_Development_Controller" sidebar="false" id="mypage" docType="HTML-5.0">
+    
+    
+    
+    <apex:form id="myForm">
+        <table class="table_design1" border="1" align="center" width="1200" style="background-color:#bee076;">
+            <tr align="center">
+                   
+                <td colspan="2" style="color:#4c76ad;font-weight:bold;font-size:16px;"><b>Basic Search</b></td>   
+                <td colspan="3" style="color:#4c76ad;font-weight:bold;font-size:16px;">
+                    <apex:outputText value="Advance Search"></apex:outputText>
+                </td>
+                    
+            </tr>
+                <td style="font-size:12px;">
+                    <apex:outputPanel id="brandId"> <b>Brand:</b>
+                        <apex:selectList size="1" value="{!selectedBrandName}">
+                            <apex:selectoptions value="{!npdBrandOption}" />
+                            <apex:actionSupport event="onchange" action="{!selectCollection}" />
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </td>
+                <td style="font-size:12px;">
+                    <apex:outputPanel id="collectionId"> <b>Collections:</b> &nbsp;
+                        <apex:selectList size="1" value="{!selectedCollectionName}">
+                            <apex:selectoptions value="{!npdCollectionOption}" />
+                        </apex:selectList>
+                    </apex:outputPanel>
+                </td>
+                <td style="font-size:12px;"><b>From Date</b> &nbsp;
+                    <apex:input type="date" id="fromDates" value="{!fromDate}">
+                    <apex:actionSupport event="onchange" action="{!selectCollection}" />
+                    </apex:input>
+                </td>
+                <td style="font-size:12px;"><b>To Date</b> &nbsp;
+                    <apex:input type="date" id="toDates" value="{!toDate}">
+                    <apex:actionSupport event="onchange" action="{!selectCollection}" />
+                    </apex:input>
+                </td>
+                
+        </table>
+        <table class="table_design1" border="0" align="center" width="100" style="">
+            <tr align="center">
+                <td style="color:#ff9f80;font-weight:bold;font-size:14px;">
+                    <apex:commandButton id="reportId" value="Display Report" action="{!displayTableDev}" reRender="TableRecordId" status="actStatusId"/> 
+                
+                    <apex:actionStatus id="actStatusId" >
+                        <apex:facet name="start">
+                
+                            <table border="0" width="100%" height="100%">
+
+                                <tr>
+                                    <!-- <td align="center"><img src="{!$Resource.Spinner}"/></td>-->
+                                    <td align="center"><img src="/img/loading.gif" /></td>
+                                </tr>
+                            </table>
+                   
+                        </apex:facet>
+                    </apex:actionStatus>
+                </td>
+            </tr>
+        </table>
+        <div class="scrollmenu">
+            <apex:outputPanel id="TableRecordId" >
+                <apex:outputPanel id="innerTableDataId" rendered="{!isDisplayTable}">
+                    <table class="table_design" width="100%" border="1" cellspacing="0" cellpadding="1" align="center" style=" border-bottom-style: none;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">
+                        <tr style="background:#D3D3D3;font-weight:bold;" align="center">
+                            <td rowspan = "2">
+                                <apex:outputText value="Brand" />
+                            </td>
+                            <td rowspan = "2" align="center">
+                                <apex:outputText value="Collection" />
+                            </td>
+                            <td rowspan = "2">
+                                <apex:outputText value="PSY No" />
+                            </td>
+                            <td rowspan = "2">
+                                <apex:outputText value="Model" />
+                            </td>
+                            <td><apex:outputText value="A" /></td>
+                            <td><apex:outputText value="B" /></td>
+                            <td><apex:outputText value="C" /></td>
+                            <td></td>
+                            <td><apex:outputText value="D" /></td>
+                            <td></td>
+                            <td></td>
+                            <td><apex:outputText value="E" /></td>
+                            <td></td>
+                            
+                        </tr>
+                            
+                        <tr style="background:#D3D3D3;font-weight:bold;" align="center">    
+                            <td><apex:outputText value="Proto & Cost App" /></td>
+                            <td><apex:outputText value="Final PB+PM Rel" /></td>
+                            <td><apex:outputText value="Planned Order Loading" /></td>
+                            <td><apex:outputText value="PB to Plan loading LT" /></td>
+                            <td><apex:outputText value="Actual Launch Dt" /></td>
+                            <td><apex:outputText value="Pl.Ord to Launch LT" /></td>
+                            <td><apex:outputText value="PB to Launch LT" /></td>
+                            <td><apex:outputText value="Product Certification Date" /></td>
+                            <td><apex:outputText value="Launch to Certification" /></td>
+                        </tr>
+                        
+                        <apex:repeat value="{!lWrapperList}" var="stageValue">
+                            <tr style="background:#ccffe6;" align="center">
+                                <td><apex:outputText value="{!stageValue.brand}" /></td>
+                                <td><apex:outputText value="{!stageValue.collection}" /></td>
+                                <td><apex:outputText value="{!stageValue.Psynum}" /></td>
+                                <td><apex:outputText value="{!stageValue.model}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!stageValue.protoSubDnDAppAED}" /></apex:outputText>
+                                    ( {!stageValue.ApprovStatus} )
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!stageValue.inputFinalProdDesgnAED}" /></apex:outputText>
+                                </td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!stageValue.planedOrderLodingAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!stageValue.planedOrderLodingLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!stageValue.launchED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!stageValue.planedOrderlaunchLT}" /></td>
+                                <td><apex:outputText value="{!stageValue.launchLT}" /></td>
+                                <td>
+                                    <apex:outputText value="{0,date,dd'-'MM'-'yyyy}">
+                                    <apex:param value="{!stageValue.prodctCertifnAED}" /></apex:outputText>
+                                </td>
+                                <td><apex:outputText value="{!stageValue.launchCertfcn}" /></td>
+                            </tr>
+                        </apex:repeat>  
+                    </table>
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </div>
+     </apex:form>
+</apex:page>

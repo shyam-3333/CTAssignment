@@ -1,0 +1,6 @@
+<apex:page controller="npd_newProjectControllerExtension" action="{!fillComplexityLeadTimes}">
+<apex:form >
+Processing!...
+
+</apex:form>
+</apex:page>

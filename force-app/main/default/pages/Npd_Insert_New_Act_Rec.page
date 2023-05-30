@@ -1,0 +1,71 @@
+<apex:page standardcontroller="NPD_Activity__c" extensions="Npd_Insert_New_Act_Rec_Controller" showHeader="false">
+<head>
+<style>
+table.filterTable{width:100%;}
+
+table.recordTable tr:nth-child(even) { background: #D6E4BF; }
+table.recordTable tr:nth-child(odd) { background: #ECF0E0; }
+table.recordTable,table.filterTable {
+    table-layout: fixed;
+    margin: 0 auto;
+    border-collapse: collapse;
+    border: 1px solid red;
+} 
+table.recordTable{border: 5px solid green;}
+table.recordTable td{border:1px solid #fff;padding:5px; }
+table.filterTable td{border:1px solid red;padding:5px; }
+ 
+
+</style>
+</head>
+  <apex:form id="pageblock1">
+  <apex:pageblock title="Where to insert" >
+  <table border="1" class="filterTable"> <tr> <th> Collection </th>  <th> Project Name</th> <th>Stage</th>  <th>Sub Stage</th> <th>Activity</th></tr>
+     <tr> <td>
+                   <apex:selectList size="1" value="{!selectedCollection}">
+                   <apex:actionsupport event="onchange" action="{!callmeth}" rerender="pageblock1"/>
+                   <apex:selectOptions value="{!collections}"/>
+                   </apex:selectList>
+       </td><td>
+                   <apex:selectList size="1" value="{!selectedProjectName}">
+                    <apex:actionsupport event="onchange" action="{!callmeth}" rerender="pageblock1"/>
+                   <apex:selectOptions value="{!ProjectName}"/>
+                   </apex:selectList>
+         </td><td>          
+                   <apex:selectList size="1" value="{!selectedStage}">
+                    <apex:actionsupport event="onchange" action="{!callmeth}" rerender="pageblock1"/>
+                   <apex:selectOptions value="{!stage}"/>
+                   </apex:selectList>
+          </td><td>         
+                   <apex:selectList size="1" value="{!selectedubstage}">
+                    <apex:actionsupport event="onchange" action="{!callmeth}" rerender="pageblock1"/>
+                   <apex:selectOptions value="{!substage}"/>
+                   </apex:selectList>
+           </td><td>        
+                   
+                    <apex:selectList size="1" value="{!SelectedActivity}">
+                    <apex:actionsupport event="onchange" action="{!callmeth}" rerender="pageblock1"/>
+                   <apex:selectOptions value="{!Activity}"/>
+                   </apex:selectList>
+             </td></tr></table>      
+  </apex:pageblock>
+  
+        <apex:pageMessages id="msgs" /> 
+        <table border="1" width="60%" class="recordTable">
+        <apex:repeat value="{!$ObjectType.NPD_Activity__c.FieldSets.InsertNewRecord}" var="isn">
+           <tr>
+                <td>
+                    <span> {!isn.label} </span>
+                </td>
+                <td>
+                    <apex:inputfield value="{!obj[isn]}" ></apex:inputfield>
+                </td>  
+            </tr> 
+        </apex:repeat>
+        </table> 
+        <div style="text-align:center;padding: 10px;background: #f8f8f8;margin:10px 0px;"><apex:commandButton value="Insert" action="{!SaveRecord}" rerender="form1" oncomplete="location.reload();"/></div><br/><br/><br/><br/><br/><br/>
+    
+   <p> "Only we can disply thes fields after creating the record.    Actual Start Date,Actual End Date,Status,Approval Status,Brand,Sub-Brand,Collection reference,Source,Market,MB Ref Number,Phase,Complexity Type,Planned Lead Time,Lead Time,Comments/Remarks,Owner."</p>
+    </apex:form>
+    
+</apex:page>

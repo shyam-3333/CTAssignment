@@ -1,0 +1,53 @@
+<aura:component controller="ApprovalComponentController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >  
+      <aura:attribute name="recordId" type="Id"/>  
+    
+   <aura:handler name="init" value="{!this}" action="{!c.doInit}" />  
+   <aura:attribute name="approvalList" type="object"/>  
+   <!-- WRAPPER DIV --> 
+   <lightning:card title="Approval History" class="c-container slds-p-around_large"> 
+       <div class="wk_static">  
+         <!-- BODY -->  
+         <div class="slds-scrollable" style="height: 300px;">  
+           <table class="slds-table slds-table--bordered slds-max-medium-table--stacked">  
+             <thead>  
+               <tr class="slds-text-title--caps">  
+                 <th scope="col" >  
+                   <div class="slds-truncate" title="Date">Date</div>  
+                 </th>  
+                 <th scope="col" >  
+                   <div class="slds-truncate" title="Status">Status</div>  
+                 </th>  
+                 <th scope="col" >  
+                   <div class="slds-truncate" title="Assigned To">Assigned To</div>  
+                 </th>  
+                 <th scope="col" >  
+                   <div class="slds-truncate" title="Approver">Approver</div>  
+                 </th>  
+               </tr>  
+             </thead>  
+             <tbody>  
+               <!-- aura equivalent of apex:repeat -->  
+               <aura:iteration items="{!v.approvalList.approvals}" var="appRec">   
+                 <aura:iteration items="{!appRec.listOfSteps}" var="step">  
+                   <tr >  
+                     <td data-label="Date">  
+                       <div class="slds-truncate" title="Date">{!step.createdDate}</div>  
+                     </td>  
+                     <td data-label="Status">  
+                       <div class="slds-truncate" title="Status">{!step.steps}</div>  
+                     </td>  
+                     <td data-label="Assigned To">  
+                       <div class="slds-truncate" title="Assigned To">{!step.assignedTo}</div>  
+                     </td>  
+                     <td data-label="Approver">  
+                       <div class="slds-truncate" title="Approver">{!step.actorName}</div>  
+                     </td>  
+                   </tr>  
+                 </aura:iteration>  
+               </aura:iteration>   
+             </tbody>  
+           </table>  
+         </div>  
+       </div>  
+   </lightning:card>    
+ </aura:component>

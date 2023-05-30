@@ -1,0 +1,134 @@
+<apex:page standardController="Quote" sidebar="false" showHeader="false" renderAs="PDF">
+<head>
+<style>
+ @page {
+        
+        @top-center { 
+      
+            content : element(header);
+         }
+    
+        @bottom-right {
+            content : element(footer);
+            
+        }
+    
+    }
+    
+    div.header {
+        position : running(header) ;
+    }
+    
+    div.footer {
+        position : running(footer) ;
+    }
+    
+           
+</style>
+</head>
+<apex:pageBlock >
+ <div class="footer"> 
+      
+     <div > 
+     <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+           <td align="left">
+            <apex:outputText value="(*This is a system generated document & therefore does not require any signature.)" /> 
+          </td>
+           <tr><td style="font-family:Calibri"><b>{!$User.LastName} :- {!$User.Street},{!$User.City},{!$User.State},{!$User.PostalCode}</b></td></tr>
+          </tr>         
+     </table>
+     </div>      
+  </div> 
+<table width = "100%">
+<tr><td align = "right">
+<apex:image value="{!$Resource.titan_logo_small}"/></td></tr></table>
+<apex:Panelgroup rendered="{!Quote.Approval_Status_Quote__c!='Approved'}">
+<h1>This quote is not approved </h1>
+</apex:panelgroup>
+
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName=='Requirement Analysis'||Quote.Opportunity.StageName=='RFQ_Study'||
+ Quote.Opportunity.StageName=='Revised Quote'||Quote.Opportunity.StageName=='Quote_Preparation'}">
+<h1>Opportunity Stage should be Proforma Invoice or next </h1>
+</apex:panelgroup>
+
+<apex:Panelgroup rendered="{!Quote.Opportunity.Payment_Criteria__c=='Credit'&& Quote.Opportunity.Credit_Approval_Status__c!='Approved'}">
+<h1>Opportunity is in credit approval process </h1>
+</apex:panelgroup>
+
+
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName=='Proforma Invoice'||Quote.Opportunity.StageName=='Received PO/Order Won'||
+Quote.Opportunity.StageName=='Payment/Delivery'||Quote.Opportunity.StageName=='Opportunity_On_Hold'}">
+<apex:Panelgroup rendered="{!Quote.Approval_Status_Quote__c=='Approved'}">
+
+
+
+<h2 align='center'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PROFORMA INVOICE</h2>
+  <table border='1' cellspacing='0' width='700'>
+    <tr>
+            <td colspan='2'>PRODUCT :  {!Quote.Product_Line_For_Proforma__c}</td>
+            <td colspan='3'>KIND ATTN :{!Quote.Contact.Name}</td>
+    </tr>
+    <tr>
+            <td colspan='2'>FROM:<br/>{!$User.CompanyName}</td>
+            <td colspan='3'>TO:<br/>{!Quote.Contact.Account.Name}<br/>{!Quote.Contact.Account.BillingStreet},<br/>{!Quote.Contact.Account.BillingCity},-{!Quote.Contact.Account.BillingPostalCode},
+            <br/><br/>VAT :{!Quote.VAT__c} <br/>CST :{!Quote.CST_No__c}</td>
+    </tr>
+    <tr>
+            <td > Doc No :{!Quote.Do_No__c}</td>
+            <td  colspan='2'>PO Number :{!Quote.Opportunity.PO_No__c}</td>
+            <td  colspan='2'>DATE :&nbsp;<apex:outputText value="{0,date,dd'/'MM'/'yyyy}"><apex:param value="{!Today()}" /></apex:outputText></td>
+    </tr>
+
+    <tr >
+        <th>Model No</th>
+        <th>Qty(nos)</th>
+        <th>UCP</th>
+        <th>Offer Price</th>
+        <th>Amount</th>
+    </tr>
+    
+    <apex:repeat value="{!Quote.QuoteLineItems}" var="line">
+    <tr>
+            <td><apex:outputLabel value="{!line.PricebookEntry.Product2.Name}"/></td>
+            <td style="Text-align:right"><apex:outputLabel value="{!line.Quantity}"/></td>
+            <td style="Text-align:right"><apex:outputLabel value="{!line.Sales_Price_c__c}"/></td>
+            <td style="Text-align:right"><apex:outputLabel value="{!line.Price_Per_Unit_After_Discount__c}"/></td>
+           <td style="Text-align:right"> <apex:outputText value="{0,number,###,###,###,###.##}"  style="font-align:right"> <apex:param value="{!line.TotalPrice}"/></apex:outputText></td>
+          
+    </tr>
+    </apex:repeat>
+    
+    <tr>
+            <td></td>
+            <td><apex:outputLabel value=""/></td>
+            <td></td>
+            <td></td>
+             <td style="Text-align:right"> <apex:outputText value="{0,number,###,###,###,###.##}"  style="font-align:right"> <apex:param value="{!Quote.TotalPrice}"/></apex:outputText></td>
+        
+    </tr>
+    
+     <tr>
+            <td>&nbsp;</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+    </tr>
+     <tr>
+            <td>Total</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td style="Text-align:right"> <apex:outputText value="{0,number,###,###,###,###.##}"  style="font-align:right"> <apex:param value="{!Quote.TotalPrice}"/></apex:outputText></td>
+    </tr>
+</table><br/><br/>
+
+<br/><br/>FOR TITAN COMPANY LIMITED.,<br/><br/>
+AUTHORIZED SIGNATORY
+
+</apex:panelgroup>
+</apex:panelgroup>
+</apex:pageBlock>
+</apex:page>

@@ -1,0 +1,91 @@
+<template>
+    <lightning-card title="RangePlan Summary" icon-name="standard:identifier">
+        <div class="slds-text-body_small slds-text-color_error slds-p-left_small">{noRecordFound}
+        </div>
+        <lightning-layout multiple-rows="true" vertical-align="end">
+            <lightning-layout-item size="2" padding="around-small">
+                <lightning-input type="text" label="Enter Order ID" value={searchKey} 
+                onchange={handelSearchKey} placeholder="Type here... ">
+                </lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item size="2" padding="around-small">
+                <lightning-button class="slds-p-right_small" title="search" label="Search" variant="brand-outline" onclick={SearchRangePlanHandler}>
+                </lightning-button>
+                <lightning-button class="slds-p-right_small" title="download" label="Download" variant="brand-outline" disabled={isTrue} onclick={downloadTableData}>
+                </lightning-button>
+            </lightning-layout-item>
+        </lightning-layout>
+        </lightning-card>
+        <div class="slds-box slds-theme_default">
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered">
+                <thead>
+                    <tr>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="L1(OFC)">L1(OFC)</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="L2(OFC)">L2(OFC)</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="L3(OFC)">L3(OFC)</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Price Band">Price Band</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="L4(Zari Type)">L4(Zari Type)</div>
+                        </th>
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Cost Band">Cost Band</div>
+                        </th> 
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Average Cost">Average Cost</div>
+                        </th>   
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Total Order Quantity">Total Order Quantity</div>
+                        </th>   
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Actual Procured">Actual Procured</div>
+                        </th>   
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Balance">Balance</div>
+                        </th>   
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Order Value">Order Value</div>
+                        </th>   
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Actual Procured Value">Actual Procured Value</div>
+                        </th>   
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Balance">Balance</div>
+                        </th>   
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Remarks">Remarks</div>
+                        </th>    
+                    </tr>
+                </thead>
+                <tbody>
+                    <template if:true={orderId}>
+                        <template for:each={orderId} for:item="wrapper">
+                            <tr key={wrapper.orderId}>
+                                <td style="text-align: center;">{wrapper.l1}</td>
+                                <td style="text-align: center;">{wrapper.l2}</td>
+                                <td style="text-align: center;">{wrapper.l3}</td>
+                                <td style="text-align: center;">{wrapper.priceBand}</td>
+                                <td style="text-align: center;">{wrapper.l4}</td>
+                                <td style="text-align: center;">{wrapper.costBand}</td>
+                                <td style="text-align: center;">{wrapper.averageCost}</td>
+                                <td style="text-align: center;">{wrapper.totalOrderQuantity}</td>
+                                <td style="text-align: center;">{wrapper.actualProcured}</td>
+                                <td class={wrapper.cssRedIndicatorQuantity} style="text-align: center;">{wrapper.balance_Quantity}</td>
+                                <td style="text-align: center;">{wrapper.orderValue}</td>
+                                <td style="text-align: center;">{wrapper.actualProcuredValue}</td>
+                                <td class={wrapper.cssRedIndicatorCost} style="text-align: center;">{wrapper.balance_Cost}</td>
+                                <td style="text-align: center;">{wrapper.remarks}</td>
+                            </tr>
+                        </template>
+                    </template>  
+                </tbody>
+            </table>
+        </div>    
+</template>

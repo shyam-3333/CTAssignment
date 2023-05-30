@@ -1,0 +1,50 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+	<aura:attribute name = "QCquestionsTestParam" type="QC_MTL_TestResponse__c[]"/>
+   <aura:attribute name = "rowIndex" type="String"/>
+   <aura:attribute name = "countTestParamLength" type = "Integer" />
+    <aura:attribute name="mtlCompId" type="String"/>
+    <aura:attribute name="newAddedRowDataList" type="List"/>
+   <aura:attribute name="verdict" type="List" default="[{'label': 'None', 'value': '', 'selected': true},
+                                                            {'label': 'Accept', 'value': 'Accept', 'selected': false},
+                                                            {'label': 'Reject', 'value': 'Reject', 'selected': false}
+                                                           ]"/>
+   
+   <aura:registerEvent name="DeleteRowEvent" type="c:DeleteRowEvent"/>
+   <aura:registerEvent name="AddRowEvent" type="c:AddRowEvent"/> 
+   <!-- <aura:registerEvent name="addRowTestData" type="c:PassAddRowDataToInputParamEvnt"/>-->
+   
+   <tr class="slds-text-title_caps">
+       
+       <td>
+            <lightning:input  type="text" value="{!v.QCquestionsTestParam.Name}"/>
+        </td>
+       <td>
+            <lightning:input type="text" value="{!v.QCquestionsTestParam.Standard_Defined_Value__c}" />
+        </td>
+       <td>
+            <lightning:input  type="text" value="{!v.QCquestionsTestParam.User_Defined_Value__c}"/>
+        </td>
+       <td>
+            <lightning:input  type="text" value="{!v.QCquestionsTestParam.Minimum__c}" />
+        </td>
+       <td>
+            <lightning:input  type="text" value="{!v.QCquestionsTestParam.Maximum__c}"/>
+        </td>
+       <td>
+            <lightning:input type="text" value="{!v.QCquestionsTestParam.Average_Value__c}" />
+        </td>
+       <td>
+           <lightning:select name="verdicts" aura:id="verdictId" value="{!v.QCquestionsTestParam.Result__c}" >
+               <aura:iteration items="{!v.verdict}" var="finalVerd">
+                   <option text="{!finalVerd.label}" value="{!finalVerd.value}" selected="{!finalVerd.selected}" ></option>
+               </aura:iteration>
+           </lightning:select>
+        </td>
+       <td>
+       <a onclick="{!c.deleteRow}">
+           <lightning:icon variant="error" iconName="utility:delete" class="slds-icon slds-icon_small" size="small" alternativeText="icon"/>
+           <span class="slds-assistive-text">Delete Icon</span>
+       </a>
+       </td>
+    </tr>
+</aura:component>

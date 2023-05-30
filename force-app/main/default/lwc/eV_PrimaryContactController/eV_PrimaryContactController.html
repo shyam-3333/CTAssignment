@@ -1,0 +1,17 @@
+<template>
+<lightning-card title="Related Contacts" icon-name="standard:contact">
+     <template if:true={contactData}>  
+        <div class="slds-p-left_small">
+            <template for:each={contactData} for:item="contact">    
+                <div key={contact.Id} >    
+                    <lightning-input type="radio" name="contactRadio" label={contact.Name} value={contact.Id}    
+                    checked={contact.Primary_Contact__c} onchange={handleContactSelection}></lightning-input>
+                </div>    
+            </template> 
+        </div> 
+    </template> 
+    <div class="slds-m-top_medium slds-m-left_large">
+        <lightning-button variant="brand" label="Save" onclick={handleSave}></lightning-button>
+    </div>     
+        </lightning-card>
+    </template>

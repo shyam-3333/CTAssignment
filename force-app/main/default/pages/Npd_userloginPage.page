@@ -1,0 +1,14 @@
+<apex:page controller="Npd_userloginClass">
+<apex:form >
+<apex:pageMessages ></apex:pageMessages>
+
+<apex:pageblock title="Enter email & Password">
+Email Id:<apex:inputtext value="{!userid}"/> <br/><br/>
+Password: <apex:inputtext value="{!password}"/><br/><br/><br/><br/>
+<apex:commandButton value="Login" action="{!loginChecking}"/>
+</apex:pageblock>
+
+</apex:form>
+
+
+</apex:page>

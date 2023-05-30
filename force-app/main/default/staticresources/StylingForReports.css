@@ -1,0 +1,85 @@
+@page {
+	 margin : 100px 1in 1.2in 1in;
+     counter-increment : page;
+	@top-center {
+		content: element(header);
+	}
+	@bottom-left {
+		content: element(footer);
+	}
+	@bottom-center {
+		content: element(footer1);
+	}
+	@bottom-right {
+		content: element(footer2);
+	}	
+    }
+	div.header {
+		
+		font-family:Arial,Helvetica,sans-serif; 
+		padding: 10px;
+		font-size:12px; 
+		color:#ccc;
+		position: running(header);
+	}
+
+	div.footer {
+		
+		font-family:Arial,Helvetica,sans-serif; 
+		padding: 10px;
+		font-size:12px; 
+		color:#ccc;
+		position: running(footer);
+	}
+	div.footer1{
+		
+		font-family:Arial,Helvetica,sans-serif; 
+		padding: 10px;
+		font-size:12px; 
+		color:#ccc;
+		position: running(footer1);
+	}
+	div.footer2{
+		
+		font-family:Arial,Helvetica,sans-serif; 
+		padding: 10px;
+		font-size:12px; 
+		color:#ccc;
+		position: running(footer2);
+	}
+	.pagenumber:before {
+		
+		font-family:Arial,Helvetica,sans-serif; 
+		content: counter(page);
+	}
+	.pagecount:before {
+		
+		font-family:Arial,Helvetica,sans-serif; 
+		content: counter(page);
+	}
+	table{ 
+		font-family:Arial,Helvetica,sans-serif; 
+		font-size:12px; 
+		color:#ccc;                                 
+		border:1px solid #ccc;
+		width:100%;
+		cellspacing :0;
+		cellpadding :0;
+	 } 
+	.headings{ 
+		font-family:Arial,Helvetica,sans-serif; 
+			
+	}
+	.div{
+	     font-family:Arial,Helvetica,sans-serif;
+	}
+	tr{
+	     font-family:Arial,Helvetica,sans-serif;
+	} 
+	 td{ 
+	   font-family:Arial,Helvetica,sans-serif;  
+	   vertical-align: middle;                           
+	   border-right:1px solid #ccc; 
+	   border-bottom:1px solid #ccc;
+	   padding: 5px;
+	 }

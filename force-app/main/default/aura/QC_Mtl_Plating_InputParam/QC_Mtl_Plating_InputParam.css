@@ -1,0 +1,12 @@
+.THIS .ErrorBody{
+     padding: 5px;
+     color: red;
+    text-align : center;
+}
+.THIS .MandatoryTestClass{
+    padding: inherit;
+    border-radius: 4px;
+    background-color: darkmagenta;
+    color: white;
+    text-align: center;
+}

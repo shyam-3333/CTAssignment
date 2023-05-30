@@ -1,0 +1,107 @@
+<aura:component controller="IDICSVfileUplaodComponentApexController">
+    <aura:attribute name="parentTestingType" type="String" />
+    <aura:attribute name="csvFile" type="String" />
+    <aura:attribute name="Spinner" type="boolean" default="false" />
+    <aura:attribute name="attachment" type="Object[]" />
+    <aura:attribute name="attachmentObject" type="Object" />
+    <aura:attribute name="noOfLetestRecords" type="Integer" default="10" />
+    <aura:attribute name="listRequestedRecords" type="List" default="[
+        {'label': '10', 'value': '10', 'selected': true},
+        {'label': '50', 'value': '50', 'selected': false},
+        {'label': '100', 'value': '100', 'selected': false}]" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler name="change" value="{!v.noOfLetestRecords}" action="{!c.doInit}" />
+
+    <lightning:card title="Upload CSV File" class="slds-p-around_large">
+        <aura:if isTrue="{!v.Spinner}">
+            <div aura:id="spinnerId" class="slds-spinner_container" style="position: fixed;">
+                <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                    <span class="slds-assistive-text">Loading</span>
+                    <div class="slds-spinner__dot-a"></div>
+                    <div class="slds-spinner__dot-b"></div>
+                </div>
+            </div>
+        </aura:if>
+        <div class="slds-m-around--xx-large">
+            <table>
+                <tr>
+                    <td colspan="2">
+                        <div class="slds-box">
+                            <p>Notes.</p>
+                            <p>1. Click on Downloading Button for fatch the existing records in CSV File</p>
+                            <p style="color: red;font-weight: bold;">2. Don't remove the EOF(End Of File from the CSV
+                                file in case of Raw Material and Plating)</p>
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <br />
+                    </td>
+                </tr>
+                <tr>
+
+                    <td colspan="3">
+                        <button class="slds-button slds-button--brand" onclick="{!c.dwonLoadCSVFile}">Download
+                            CSV File</button> <br /><br />
+                    </td>
+                    <td>
+                        <lightning:select name="resuestedRecord" aura:id="resuestedRecordId"
+                            value="{!v.noOfLetestRecords}" label="Select No of latest records">
+                            <aura:iteration items="{!v.listRequestedRecords}" var="requestedRecord">
+                                <option text="{!requestedRecord.label}" value="{!requestedRecord.value}"
+                                    selected="{!requestedRecord.selected}"></option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </td>
+                </tr>
+
+
+
+                <tr>
+                    <td colspan="2">
+                        <lightning:input name="file1" type="file" files="{!v.attachment}" label="Select CSV File"
+                            multiple="true" accept=".csv" onchange="{!c.handleFilesChange }" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <br />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <aura:if isTrue="{!v.attachmentObject!=undefined}">
+                            File Name:
+                            <ui:outputText value="{!v.attachmentObject.filename}" />
+                        </aura:if>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <br />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <aura:if isTrue="{!v.attachmentObject!=undefined}">
+                            <lightning:button variant="brand" aura:id="saveAttacId" label="Upload"
+                                onclick="{!c.uploadMethod}" />
+                        </aura:if>
+
+                        <aura:if isTrue="{!v.attachmentObject!=undefined}">
+                            <lightning:button variant="brand" aura:id="clearAttacId" label="ClearFile"
+                                onclick="{!c.clearAttachmentMethod}" />
+                        </aura:if>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <br />
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </lightning:card>
+</aura:component>

@@ -1,0 +1,1384 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 06-20-2021
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+  Modifications Log 
+  Ver   Date         Author  
+  ABCDE                             Modification
+  1.0   05-31-2021   ChangeMeIn@UserSettingsUnder.SFDoc   Initial Version
+-->
+<aura:component Controller="QC_RelaibilityTestingTabCompClass"  >
+
+   <!-- <aura:handler name='init' value='{!this}' action='{!c.doInit}' />
+
+    <aura:attribute name="baseUrl" type="String" />
+    <aura:attribute name="today" type="Date" />
+    <aura:attribute name="QcQuestionMList" type="List" />
+    <aura:attribute name="QcConditionMList" type="List" />
+    <aura:attribute name="QcResponseMList" type="List" />
+    <aura:attribute name="QcMasterMList" type="List" />
+
+    <aura:attribute name="isQcCompEdit" type="Boolean" default="true" />
+    <aura:attribute name="isRecordLock" type="Boolean" default="false" />
+    <aura:attribute name="allQcCompList" type="List"  />
+    <aura:attribute name="QcRecord" type="QC_Components__c" default="{'sobjectType' : 'QC_Components__c'}"/>
+    <aura:attribute name = "qcCompResetObj" type="object"  />
+    <aura:attribute name="masterVarient" type="String"  />
+    <aura:attribute name="BrandsList" type="List"  />
+    <aura:attribute name="ClusterList" type="List"  />
+    <aura:attribute name="sampleDepartmentList" type="List" />
+    <aura:attribute name="finalVerdictList" type="List"  />
+    <aura:attribute name="dependentPickList" type="Object"  />
+    <aura:attribute name="seleteBrandLookup" type="QC_Master__c"/>
+    <aura:attribute name="seleteVendorLookup" type="QC_Master__c"/>
+    <aura:attribute name="showLookupfields" type="Boolean" default="false" />
+    <aura:attribute name="filetype" type="List" default="['.png', '.jpg', '.jpeg']" />
+    <aura:attribute name="oldFinalVerdict" type="string" />
+
+    <aura:attribute name="isInputParamEdit" type="Boolean" default="true" />
+    <aura:attribute name="inputParamList" type="List"  />
+    <aura:attribute name="inputParamResetList" type="List"  />
+    <aura:attribute name="isAddRow" type="Boolean" default="false" />
+    
+    <aura:attribute name="qcTestList" type="List"  />
+    <aura:attribute name="qcTestResetList" type="List"  />
+    <aura:attribute name="genarateTestDisabled" type="Boolean" default="false" />
+    <aura:attribute name="tetConclusionList" type="List"  />
+    <aura:attribute name="typeOfModule" type="String"  />
+    <aura:attribute name="batteryTests" type="object"  />
+    <aura:attribute name="batteryResetTests" type="object"  />
+    <aura:attribute name="isTestEdit" type="Boolean" default="true" />
+
+    <aura:handler name="selectedRecordEvent" event="c:LookUpEvent" action="{!c.selectLookupRec}" />-->
+    <!-- <aura:handler name='change' value='{!v.QcRecord}' action='{!c.doInit}' /> -->
+ <!--   <aura:registerEvent name="sendAllQcCompRecord" type="c:QcChildCompUpdateEvent" />
+    <aura:handler name="MultivaluePicklistEvent" event="c:QcInputParamPicklistEvent" action="{!c.onChangePickVal}" />-->
+    <!-- <aura:handler name="change" value="{!v.QcRecord.Final_Verdict__c}" action="{!c.changefinalVerdict}"/>  -->
+    
+   <!-- <div class="slds-card slds-show slds-m-bottom_xx-large slds-p-bottom_xx-large " aura:id="" style="padding-bottom:20%;  ">
+        <div class="slds-scrollable">
+        <aura:if isTrue="{!v.QcRecord.Parent__c == null}">
+            <div class="slds-align_absolute-center slds-m-vertical_medium "  >
+                <div class="slds-align_absolute-center slds-p-horizontal_large " >
+                                        
+                    <lightning:button variant="brand" label="Approval History"  onclick="{! c.clickApproval}"/>
+
+                        <aura:if isTrue="{!v.QcRecord.Name__c == 'Full-Watch' || v.QcRecord.Name__c == 'Watch-Head'}">
+                            <lightning:button variant="brand" label="Reliability Report"  onclick="{! c.reliabilityReport }"/>
+                        </aura:if>
+                        <lightning:button variant="brand" label="Detailed Report"  onclick="{! c.detailedReport }"/>
+                        <aura:if isTrue="{!v.QcRecord.Name__c == 'Full-Watch' || v.QcRecord.Name__c == 'Watch-Head'}">
+                            <lightning:button variant="brand" label="All Test Finding Report"  onclick="{! c.allTestfindingReport }"/>
+                        </aura:if>
+                        <aura:if isTrue="{!v.QcRecord.Name__c == 'Case' || v.QcRecord.Name__c == 'Dial' || v.QcRecord.Name__c == 'Leather-Strap' || v.QcRecord.Name__c == 'Metal-Strap' || v.QcRecord.Name__c == 'Special-Strap' || v.QcRecord.Name__c == 'Battery' || v.QcRecord.Name__c == 'Packaging'}">
+                            <lightning:button variant="brand" label="{!v.QcRecord.Name__c +' Report'}"  onclick="{! c.allTestfindingReport }"/>
+                        </aura:if>
+                </div>   
+            </div>
+        </aura:if>
+        <div class="slds-align_absolute-center slds-p-horizontal_large slds-m-vertical_small" style="Background-color: #596d90; font-size: 20px; color: white; height: 40px;">
+            Reliability Testing -{!v.QcRecord.Name__c}
+        </div>
+
+        <aura:if isTrue="{! v.isRecordLock == false  }">
+            <aura:if isTrue="{!v.QcRecord.IsCopied_From_Master__c == false}">
+                <div class="slds-align_absolute-center slds-m-vertical_medium "  >
+                    <div class="slds-show" aura:id="qcCompButton">
+                        <div class="slds-align_absolute-center slds-p-horizontal_large slds-show" aura:id="editQcComp" >
+                            <lightning:button variant="brand" label="Edit"  onclick="{! c.clickQcCompEdit }"/>
+                        </div>
+                        <div class="slds-align_absolute-center slds-p-horizontal_large slds-hide" aura:id="saveQcComp" >-->
+                            <!-- <lightning:button type="submit" variant="brand" name="Save" label="Save" /> -->
+                           <!-- <lightning:button variant="brand" label="Save"  onclick="{! c.clickQcCompSave }"/>
+                            <lightning:button variant="brand" label="Cancel"  onclick="{! c.clickQcCompCancel }"/>
+                        </div>   
+                    </div> 
+                </div>
+            </aura:if>
+        </aura:if>
+        
+
+        <div class="slds-p-horizontal_xx-large slds-p-vertical_xx-large" >
+
+            <div class="slds-form__row">
+                <div class="slds-form__item" role="listitem">
+                  <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                    <aura:if isTrue="{!v.QcRecord.Parent__c == null}">
+                        <label class="slds-form-element__label"> <b> Report Ref Number </b> </label>
+                        <div class="slds-form-element__control" >
+                            <ui:outputText value="{!v.QcRecord.Report_Ref_Number__c}"/>
+                        </div>
+                    </aura:if>-->
+                        <!-- <lightning:input disabled="true" label="Report Ref Number" value="{!v.QcRecord.Report_Ref_Number__c}" /> -->
+                        
+               <!--   </div>
+                </div>
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                       
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form__row">
+                <div class="slds-form__item" role="listitem">
+                  <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                    <label class="slds-form-element__label"> <b> Record Number </b> </label>
+                    <div class="slds-form-element__control" >
+                        <ui:outputText value="{!v.QcRecord.Name}"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_horizontal slds-is-editing">-->
+                        <!-- <lightning:input disabled="{!v.QcRecord.Parent__c != null }" label="Record status" value="{!v.QcRecord.Component_Status__c}" /> -->
+                      <!--  <label class="slds-form-element__label"> <b> Record status </b> </label>
+                        <div class="slds-form-element__control" >
+                            <ui:outputText value="{!v.QcRecord.Component_Status__c}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-form__row">
+                <div class="slds-form__item" role="listitem">
+                  <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                    <aura:if isTrue="{!v.QcRecord.Parent__c == null}">
+                        <label class="slds-form-element__label"> <b> Sample Date  <abbr class="slds-required" title="required">* </abbr> </b> </label>
+                        <div class="slds-form-element__control" >
+                            <lightning:input type="Date" disabled="{!v.isQcCompEdit }"  value="{!v.QcRecord.Sample_Date__c}" messageWhenValueMissing="Please select Sample Date"  />-->
+                            <!--
+                                
+                            <lightning:input type="Date" disabled="{! !and(v.isQcCompEdit == false , (v.QcRecord.Sample_Date__c == v.today || v.QcRecord.Sample_Date__c == null ))  }"  value="{!v.QcRecord.Sample_Date__c}" messageWhenValueMissing="Please select Sample Date"  />
+                            -->
+                      <!--  </div>
+                    </aura:if>
+                    <aura:if isTrue="{!v.QcRecord.Parent__c != null }">
+                        <label class="slds-form-element__label"> <b> Sample Date  <abbr class="slds-required" title="required">* </abbr> </b> </label>
+                        <div class="slds-form-element__control" >
+                            <ui:outputDate value="{!v.QcRecord.Sample_Date__c}"/>
+                        </div>
+                    </aura:if> 
+                        
+                  </div>
+                </div>
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                        <label class="slds-form-element__label"> <b> Document Status </b> </label>
+                        <div class="slds-form-element__control" >
+                            <ui:outputText value="{!v.QcRecord.Document_Status__c}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="slds-form__row">
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                        <aura:if isTrue="{!v.QcRecord.Parent__c == null}">
+                            <label class="slds-form-element__label"> <b> Vendor </b> </label>
+                            <div class="slds-form-element__control">
+                                <aura:if isTrue="{!v.showLookupfields}">
+                                    <c:LookupfieldComponent objectName="QC_master__c" label ="Vendor" whereCondition="RecordType.Name='Vendor Details'" selectedRecord="{!v.seleteVendorLookup}" searchFieldName = "Name" isdisable="{!v.isQcCompEdit}" />
+                                </aura:if>
+                            </div>
+                        </aura:if>
+                        <aura:if isTrue="{!v.QcRecord.Parent__c != null }">
+                            <label class="slds-form-element__label"> <b> Vendor </b> </label>
+                            <div class="slds-form-element__control">
+                                <ui:outputText value="{!v.seleteVendorLookup.Name}"/>
+                            </div>
+                        </aura:if>
+                    </div>
+                </div>
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                        <aura:if isTrue="{!v.QcRecord.Parent__c == null}">
+                            <label class="slds-form-element__label"> <b>Brand  <abbr class="slds-required" title="required">* </abbr> </b> </label>
+                            <div class="">
+                                <aura:if isTrue="{!v.showLookupfields}">
+                                    <c:LookupfieldComponent objectName="QC_master__c"  label ="Brand" whereCondition="RecordType.Name='Brand Details'" selectedRecord="{!v.seleteBrandLookup}" searchFieldName = "Name" isdisable="{!v.isQcCompEdit}"  required = "true"/>
+                                </aura:if>
+                            </div>
+                        </aura:if>
+                        <aura:if isTrue="{!v.QcRecord.Parent__c != null }">
+                            <label class="slds-form-element__label"> <b> Brand  <abbr class="slds-required" title="required">* </abbr> </b> </label>
+                            <div class="slds-form-element__control">
+                                <ui:outputText value="{!v.seleteBrandLookup.Name}"/>
+                            </div>
+                        </aura:if>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-form__row">
+                <div class="slds-form__item" role="listitem">
+                  <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                    <aura:if isTrue="{!v.QcRecord.Parent__c == null}">
+                        <label class="slds-form-element__label"> <b> Model </b> </label>
+                        <div class="slds-form-element__control" >
+                            <lightning:input disabled="{!v.isQcCompEdit }" value="{!v.QcRecord.Model__c}" />
+                        </div>
+                        
+                    </aura:if>
+                    <aura:if isTrue="{!v.QcRecord.Parent__c != null }">
+                        <label class="slds-form-element__label"> <b> Model </b></label>
+                        <div class="slds-form-element__control" >
+                            <ui:outputText value="{!v.QcRecord.Model__c}"/>
+                        </div>
+                    </aura:if>
+                  </div>
+                </div>
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                        <label class="slds-form-element__label"> <b> Master Variant </b> </label>
+                        <div class="slds-form-element__control" >
+                            <ui:outputText value="{!v.masterVarient}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="slds-form__row">
+                <div class="slds-form__item" role="listitem">
+                  <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                    <aura:if isTrue="{!v.QcRecord.Parent__c == null}">
+                        <label class="slds-form-element__label"> <b> Watch Variant   </b> </label>
+                        <div class="slds-form-element__control" >
+                            <lightning:input disabled="{!v.isQcCompEdit }"  value="{!v.QcRecord.Watch_variant__c}" />
+                        </div>
+                        
+                    </aura:if>
+                    <aura:if isTrue="{!v.QcRecord.Parent__c != null }">
+                        <label class="slds-form-element__label"> <b> Watch Variant </b></label>
+                        <div class="slds-form-element__control" >
+                            <ui:outputText value="{!v.QcRecord.Watch_variant__c}"/>
+                        </div>
+                    </aura:if>
+                  </div>
+                </div>
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                        <label class="slds-form-element__label"> <b> Master </b> </label>
+                        <div class="slds-form-element__control" >
+                            <ui:outputCheckbox value="{!v.QcRecord.Master__c}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="slds-form__row">
+                <div class="slds-form__item" role="listitem">
+                  <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                      <aura:if isTrue="{!v.QcRecord.Parent__c == null}">
+                        <label class="slds-form-element__label"> <b> PSY Ref / Concept Ref / Vendor Ref  </b> </label>
+                        <div class="slds-form-element__control" >
+                            <lightning:input disabled="{!v.isQcCompEdit }"  value="{!v.QcRecord.PSY_Reference__c}" />
+                        </div>
+                        
+                      </aura:if>
+                      <aura:if isTrue="{!v.QcRecord.Parent__c != null }">
+                        <label class="slds-form-element__label"> <b> PSY Ref / Concept Ref / Vendor Ref </b></label>
+                        <div class="slds-form-element__control" >
+                            <ui:outputText value="{!v.QcRecord.PSY_Reference__c}"/>
+                        </div>
+                      </aura:if>
+                  </div>
+                </div>
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                        <aura:if isTrue="{!v.QcRecord.Parent__c == null}">
+                            <label class="slds-form-element__label"> <b> Test Back Ground  </b> </label>
+                            <div class="slds-form-element__control" >
+                                <lightning:input disabled="{!v.isQcCompEdit }"  value="{!v.QcRecord.Test_Back_Ground__c}" />
+                            </div>
+                            
+                        </aura:if>
+                        <aura:if isTrue="{!v.QcRecord.Parent__c != null }">
+                            <label class="slds-form-element__label"> <b> Test Back Ground </b></label>
+                            <div class="slds-form-element__control" >
+                                <ui:outputText value="{!v.QcRecord.Test_Back_Ground__c}"/>
+                            </div>
+                        </aura:if>
+                    </div>
+                </div>
+            </div>
+        
+            <div class="slds-form__row">
+                <div class="slds-form__item" role="listitem">
+                  <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                    <label class="slds-form-element__label"> <b> Sample Category </b> </label>
+                    <div class="slds-form-element__control" >
+                        <ui:outputText value="{!v.QcRecord.Sample_Category__c}"/>
+                    </div>
+                  </div>
+                </div>
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                        <aura:if isTrue="{!v.QcRecord.Parent__c == null}">
+                            <label class="slds-form-element__label"> <b> Cluster  </b> </label>
+                            <div class="slds-form-element__control" >
+                                <lightning:combobox disabled="{!v.isQcCompEdit}" placeholder="Select an Option"  options="{! v.ClusterList }" value = "{!v.QcRecord.Cluster__c}"  />
+                            </div>
+                            
+                        </aura:if>
+                        <aura:if isTrue="{!v.QcRecord.Parent__c != null }">
+                            <label class="slds-form-element__label"> <b> Cluster </b> </label>
+                            <div class="slds-form-element__control" >
+                                <ui:outputText value="{!v.QcRecord.Cluster__c}"/>
+                            </div>
+                        </aura:if>
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-form__row">
+                <div class="slds-form__item" role="listitem">
+                  <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                    <aura:if isTrue="{!v.QcRecord.Parent__c == null}">
+                        
+                        <label class="slds-form-element__label"> <b> No Of Sample Received  </b> </label>
+                        <div class="slds-form-element__control" >
+                            <lightning:input disabled="{!v.isQcCompEdit }"  value="{!v.QcRecord.No_Of_Sample_Received__c}" />
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue="{!v.QcRecord.Parent__c != null }">
+                        <label class="slds-form-element__label"> <b> No Of Sample Received </b></label>
+                        <div class="slds-form-element__control" >
+                            <ui:outputText value="{!v.QcRecord.No_Of_Sample_Received__c}"/>
+                        </div>
+                    </aura:if>
+                  </div>
+                </div>
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                        <aura:if isTrue="{!v.QcRecord.Parent__c != null}">
+                            <label class="slds-form-element__label"> <b> SKU Reference  </b> </label>
+                            <div class="slds-form-element__control" >
+                                <lightning:input disabled="{!v.isQcCompEdit}" type="text"  value="{!v.QcRecord.SKU_Reference__c}" />
+                            </div>
+                            
+                        </aura:if>
+                    </div>
+                </div>
+            </div>
+
+            
+        
+        
+            <div class="slds-form__row">
+                <div class="slds-form__item" role="listitem">
+                  <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                    <aura:if isTrue="{!v.QcRecord.Parent__c == null}">
+                        <label class="slds-form-element__label"> <b> Sample Received From  </b> </label>
+                        <div class="slds-form-element__control" >
+                            <lightning:combobox disabled="{!v.isQcCompEdit}" placeholder="Select an Option" options="{! v.sampleDepartmentList }" value = "{!v.QcRecord.Sample_Department__c}"  />
+                        </div>
+                        
+                    </aura:if>
+                    <aura:if isTrue="{!v.QcRecord.Parent__c != null }">
+                        <label class="slds-form-element__label"> <b> Sample Received From </b> </label>
+                        <div class="slds-form-element__control" >
+                            <ui:outputText value="{!v.QcRecord.Sample_Department__c}"/>
+                        </div>
+                    </aura:if>
+                        
+                  </div>
+                </div>
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                        
+                    </div>
+                </div>
+            </div>
+        
+            <div class="slds-form__row">
+                <div class="slds-form__item" role="listitem">
+                  <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                    <aura:if isTrue="{!v.QcRecord.Parent__c == null}">
+                        <label class="slds-form-element__label"> <b> Email Sample Received From  <abbr class="slds-required" title="required">* </abbr> </b> </label>
+                        <div class="slds-form-element__control" >
+                            <lightning:input disabled="{!v.isQcCompEdit}" type="Email"  value="{!v.QcRecord.Sample_Received_From__c}" />
+                        </div>
+                    </aura:if>
+                    <aura:if isTrue="{!v.QcRecord.Parent__c != null }">
+                        <label class="slds-form-element__label"> <b> Email Sample Received From  <abbr class="slds-required" title="required">* </abbr> </b> </label>
+                        <div class="slds-form-element__control" >
+                            <ui:outputText value="{!v.QcRecord.Sample_Received_From__c}"/>
+                        </div>
+                    </aura:if>
+                        
+                  </div>
+                </div>
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                        
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="slds-form__row">
+                <div class="slds-form__item" role="listitem">
+                  <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                    <aura:if isTrue="{!v.QcRecord.Parent__c == null}">
+                        <label class="slds-form-element__label"> <b> Additional email address  </b> </label>
+                        <div class="slds-form-element__control" >
+                            <lightning:textarea disabled="{!v.isQcCompEdit}"  value="{!v.QcRecord.Additional_email_address__c}" />
+                        </div>
+                        
+                    </aura:if>
+                    <aura:if isTrue="{!v.QcRecord.Parent__c != null }">
+                        <label class="slds-form-element__label"> <b> Additional email address </b> </label>
+                        <div class="slds-form-element__control" >
+                            <ui:outputTextArea value="{!v.QcRecord.Additional_email_address__c}"/>
+                        </div>
+                    </aura:if>
+                        
+                  </div>
+                </div>
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="slds-form__row">
+                <div class="slds-form__item" role="listitem">
+                  <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                        
+                        <label class="slds-form-element__label"> <b> Final Verdict  </b> </label>
+                        <div class="slds-form-element__control" >
+                            <lightning:combobox disabled="{!v.isQcCompEdit}" placeholder="Select an Option" options="{! v.finalVerdictList }" value = "{!v.QcRecord.Final_Verdict__c}"  />
+                        </div>
+                  </div>
+                </div>
+                <div class="slds-form__item" role="listitem">
+                    <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <div class="slds-align_absolute-center slds-p-horizontal_large slds-m-vertical_small" style="Background-color: #596d90; font-size: 20px; color: white; height: 40px;">
+            General Observation
+        </div>
+          <div class="slds-form__row ">
+            <div class="slds-form__item" role="listitem">
+              <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                  <lightning:textarea disabled="{!v.isQcCompEdit}" label="General Observation" value="{!v.QcRecord.General_Observation__c}"  /> 
+              </div>
+            </div>
+          </div>
+
+
+          <div class="slds-align_absolute-center slds-p-horizontal_large slds-m-vertical_small" style="Background-color: #596d90; font-size: 20px; color: white; height: 40px;margin-top: 5%;">
+            Input Parameters
+          </div>
+
+          <aura:if isTrue="{!v.isRecordLock == false }">
+              <aura:if isTrue="{!v.QcRecord.IsCopied_From_Master__c == false}">
+                <div class="slds-align_absolute-center slds-m-vertical_medium" >
+                    <div class="slds-show" aura:id="inputParamButton">
+                        <div class="slds-align_absolute-center slds-p-horizontal_large slds-show" aura:id="editInputParam" >
+                        <lightning:button variant="brand" label="Edit"  onclick="{! c.clickInputParamEdit }"/>
+                        </div>
+                        <div class="slds-align_absolute-center slds-p-horizontal_large slds-hide" aura:id="saveInputParam" >
+                            <aura:if isTrue="{!v.QcRecord.Sample_Category__c == 'Competitor Products' }">
+                                <lightning:button variant="brand" label="Add Input"  onclick="{! c.clickAddInput }"/>
+                            </aura:if>
+                        
+                        <lightning:button variant="brand" label="Save"  onclick="{! c.clickInputParamSave }"/>
+                        <lightning:button variant="brand" label="Cancel"  onclick="{! c.clickInputParamCancel }"/>
+                        </div>
+                    </div>
+                  </div>
+              </aura:if>
+          </aura:if>
+          
+          <table  class="slds-table slds-table_cell-buffer slds-table_bordered ">
+            <thead>
+              <tr style="width:3.25rem" >
+                <aura:if isTrue="{!v.QcRecord.Sample_Category__c == 'Competitor Products' }">
+                    <th> Action</th>
+                </aura:if>
+                <th> Question Name</th>
+                <th> Value </th>
+                <th> Comment </th>
+              </tr>
+            </thead>
+            <tbody>
+                <aura:iteration items="{!v.inputParamList}" var="inputParam" indexVar="index">
+                <tr style="width:3.25rem" >
+                    <aura:if isTrue="{!v.QcRecord.Sample_Category__c == 'Competitor Products' }">
+                        <td scope="col" > 
+                            <aura:if isTrue="{!and(v.isInputParamEdit  , inputParam.question.isManual__c == false )}">
+                            
+                                <lightning:buttonIcon iconName="utility:delete" variant="destructive" value ="{!index}" onclick="{!c.clickDeleteInputData}"    />
+                            
+                            </aura:if>
+                            <aura:if isTrue="{!and(v.isInputParamEdit == false , inputParam.question.isManual__c )}">
+                            <lightning:buttonIcon iconName="utility:delete" variant="destructive" value ="{!index}" onclick="{!c.clickDeleteInputData}"   />
+                            </aura:if>
+                        </td>
+                    </aura:if>
+                
+                <th class="slds-m-horizontal_xx-large slds-p-horizontal_xx-large" scope="col"> 
+                    <aura:if isTrue="{! not(inputParam.question.isManual__c)}">
+                    <label> 
+                        {!inputParam.question.Question__r.Question__c}  
+                        <aura:if isTrue="{!and(inputParam.question.Question__r.Response_Required__c , v.QcRecord.Sample_Category__c != 'Competitor Products')}">
+                        <abbr class="slds-required" title="required">* </abbr>
+                        </aura:if>
+                    </label> 
+                    
+                    </aura:if>
+                    <aura:if isTrue="{!inputParam.question.isManual__c}">
+                    <lightning:input type="text" value="{!inputParam.question.Question_Name__c}" disabled="{!v.isInputParamEdit}" />
+                    </aura:if>
+                    
+                </th>
+                <td class="slds-m-horizontal_xx-large slds-p-horizontal_xx-large" scope="col">
+                    
+                    
+                    <aura:if isTrue="{!inputParam.question.Question__r.Type__c == 'Picklist'}">
+                        <lightning:combobox placeholder="Select an Option"  options="{!inputParam.picklist}" name="{!inputParam.question}" value="{!inputParam.question.Value__c}" disabled="{!v.isInputParamEdit}" onchange="{!c.onInputValuechange}"/>
+                    </aura:if>
+                    <aura:if isTrue="{!inputParam.question.Question__r.Type__c == 'Multi-select'}"  >-->
+                        <!-- <lightning:input type="text" value="{!inputParam.question.Value__c}" disabled="{!v.isInputParamEdit}" /> -->
+                       <!-- <c:Qc_InputParam_MultiSelectField options ="{!inputParam.picklist}" questionIndex="{!index}" multiValpicklistName = "inputParamList" isdisabled="{!v.isInputParamEdit}" selectedOptions="{!inputParam.question.Value__c}"/>
+                    </aura:if>
+                    <aura:if isTrue="{!inputParam.question.Question__r.Type__c == 'Free Text'}"  >
+                        <lightning:input type="text" value="{!inputParam.question.Value__c}" disabled="{!v.isInputParamEdit}" />
+                    </aura:if>
+                    <aura:if isTrue="{!inputParam.question.isManual__c}"  >
+                        <lightning:input type="text" value="{!inputParam.question.Value__c}" disabled="{!v.isInputParamEdit}" />
+                    </aura:if>
+                    
+                </td>
+                <td class="slds-m-horizontal_xx-large slds-p-horizontal_xx-large" scope="col" > 
+                    
+                    <lightning:input type="text" value="{!inputParam.question.Comments__c}" disabled="{!v.isInputParamEdit}" /> 
+                    
+                </td>
+                </tr>
+                </aura:iteration>
+            </tbody>
+          </table>
+          <div class="slds-m-top_large slds-p-top_large">
+            <div class="slds-form__row" style="background-color: cadetblue;padding-top:15px;padding-bottom:10px;">
+                <div class="slds-form__item" role="listitem">
+                  <div class="slds-form-element_horizontal slds-is-editing">
+                    <div class="slds-p-horizontal_large slds-grid">
+                        <div class="slds-col">
+                            <label  style="font-size: 16px;"><b>Generate test :</b> </label>
+                        </div>
+                        <div class="slds-col slds-p-top_xx-small">
+                            <ui:inputCheckbox  aura:id="genTest" change="{!c.genTest}" disabled="{!v.genarateTestDisabled}" />
+                        </div>
+                      </div>-->
+                    <!-- <div class="slds-form-element__control"  >
+                    </div> -->
+               <!--   </div>
+                </div>
+                <div class="slds-form__item" role="listitem">-->
+                    <!-- <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                        <lightning:button label="Refresh"  onclick="{! c.refreshTestData }" class="slds-float_right"/>
+                    </div> -->
+               <!-- </div>
+            </div>
+          </div>
+        
+        <div class="slds-hide" aura:id="testFindings">
+            <div class="slds-align_absolute-center slds-p-horizontal_large slds-m-vertical_small" style="Background-color: #596d90; font-size: 20px; color: white; height: 40px;margin-top: 5%;">
+                Test Findings
+            </div>
+            <aura:if isTrue="{!v.isRecordLock == false}">
+                <aura:if isTrue="{!v.QcRecord.IsCopied_From_Master__c == false}">
+                    <div class="slds-align_absolute-center slds-m-vertical_medium" >
+                        <div class="slds-show" aura:id="testFindingButton">
+                            <div class="slds-align_absolute-center slds-p-horizontal_large slds-show" aura:id="editTest" >
+                            <lightning:button variant="brand" label="Edit"  onclick="{! c.clickTestEdit }"/>
+                            </div>
+                            <div class="slds-align_absolute-center slds-p-horizontal_large slds-hide" aura:id="saveTest" >
+                                <aura:if isTrue="{!v.QcRecord.Name__c != 'Battery'}">
+                                    <lightning:button variant="brand" label="Add Test"  onclick="{! c.clickAddTest }"/>
+                                </aura:if>
+                            <lightning:button variant="brand" label="Save"  onclick="{! c.clickTestSave }"/>
+                            <lightning:button variant="brand" label="Cancel"  onclick="{! c.clickTestCancel }"/>
+                            </div>
+                        </div>
+                      </div>
+                </aura:if>
+            </aura:if>
+            
+              <aura:if isTrue="{! not( v.QcRecord.Name__c == 'Module' || v.QcRecord.Name__c == 'Battery' || v.QcRecord.Name__c == 'Packaging'   ) }">
+                
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered " >
+                    <thead>-->
+                        <!-- <th></th> -->
+                       <!-- <th>Test</th>
+                        <th>Specification</th>
+                        <th>UOM</th>
+                        <th>Observation</th>
+                        <th>Remark</th>
+                        <th>Conclusion</th>
+                        <th></th>
+                        <th>Image</th>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.qcTestList}" var="test" indexVar="testIndex">
+                            <tr style="width:3.25rem" >-->
+                                <!-- <td scope="col" > 
+                                    <aura:if isTrue="{!and(v.isTestEdit,!test.isManual__c)}">
+                                        <lightning:buttonIcon iconName="utility:delete" variant="destructive" value ="{!testIndex}" onclick="{!c.clickDeleteTest}"    />
+                                    </aura:if>
+                                    <aura:if isTrue="{!test.isManual__c}">
+                                        <lightning:buttonIcon iconName="utility:delete" variant="destructive" value ="{!testIndex}" onclick="{!c.clickDeleteTest}"    />
+                                    </aura:if>
+                                </td> -->
+                               <!-- <td  scope="col"> 
+                                    <aura:if isTrue="{!!test.isManual__c}">
+                                        {!test.Test_Name__c}
+                                    </aura:if>
+                                    <aura:if isTrue="{!test.isManual__c}">
+                                        <lightning:input type="text" value="{!test.Test_Name__c}" disabled="{!v.isTestEdit}" /> 
+                                    </aura:if>
+                                    
+                                </td>
+                                <td  scope="col">
+                                    <aura:if isTrue="{!!test.isManual__c}">
+                                        {!test.Specification_Input__c}
+                                    </aura:if>
+                                    <aura:if isTrue="{!test.isManual__c}">
+                                        <lightning:input type="text" value="{!test.Specification_Input__c}" disabled="{!v.isTestEdit}" /> 
+                                    </aura:if>
+                                </td>
+                                <td scope="col" >
+                                    <aura:if isTrue="{!!test.isManual__c}">
+                                        {!test.UOM_Input__c}
+                                    </aura:if>
+                                    <aura:if isTrue="{!test.isManual__c}">
+                                        <lightning:input type="text" value="{!test.UOM_Input__c}" disabled="{!v.isTestEdit}" /> 
+                                    </aura:if>
+                                    
+                                </td>
+                                <td scope="col" > 
+                                    <lightning:input type="text" value="{!test.Observation__c}" disabled="{!v.isTestEdit}" /> 
+                                </td>
+                                <td scope="col" > 
+                                    <lightning:input type="text" value="{!test.Comments_and_Remarks__c}" disabled="{!v.isTestEdit}" /> 
+                                </td>
+                                <td scope="col" > 
+                                    <lightning:combobox disabled="{!v.isTestEdit}" placeholder="Select an Option"  options="{! v.tetConclusionList }" value="{!test.Conclusion__c}"  />
+                                </td>
+                                <td scope="col">
+                                    <lightning:fileUpload  name="{!testIndex}"
+                                            accept="{!v.filetype}" 
+                                            recordId="{!test.Id}"
+                                            disabled="{!v.isTestEdit}"
+                                            onuploadfinished="{! c.imageuploadToTest }"/>
+                                </td>
+                                <td scope="col">
+                                    <aura:if isTrue="{!test.imageurl__c != null}">
+                                        <a href="{! v.baseUrl  + test.imageurl__c}" target="_blank"> <img src="{! v.baseUrl  + test.imageurl__c}" width="100"  height="100" /> </a>
+                                    </aura:if>
+                                </td>
+                            </tr>
+                        </aura:iteration>
+                    </tbody>
+                </table>
+              </aura:if>
+              <aura:if isTrue="{!v.QcRecord.Name__c == 'Packaging'}">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered " >
+                    <thead>
+                        <tr>-->
+                        <!-- <th></th> -->
+                       <!-- <th>Test Parameter</th>
+                        <th>Test Specification</th>
+                        <th>Test Condition</th>
+                        <th>Acceptance Criteria</th>
+                        <th>Observation</th>
+                        <th>Remark</th>
+                        <th>Conclusion</th>
+                        <th></th>
+                        <th>Image</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <aura:iteration items="{!v.qcTestList}" var="test" indexVar="testIndex">
+                            <tr  >-->
+                                <!-- <td scope="col" style="overflow-wrap: break-word;word-break: break-all;width:15%;"> 
+                                    <aura:if isTrue="{!and(v.isTestEdit,!test.isManual__c)}">
+                                        <lightning:buttonIcon iconName="utility:delete" variant="destructive" value ="{!testIndex}" onclick="{!c.clickDeleteTest}"    />
+                                    </aura:if>
+                                    <aura:if isTrue="{!test.isManual__c}">
+                                        <lightning:buttonIcon iconName="utility:delete" variant="destructive" value ="{!testIndex}" onclick="{!c.clickDeleteTest}"    />
+                                    </aura:if>
+                                </td> -->
+                             <!--   <td  scope="col" style="overflow-wrap: break-word;word-break: break-all; width:15%;" > 
+                                    <aura:if isTrue="{!!test.isManual__c}">
+                                        {!test.Test_Name__c}
+                                    </aura:if>
+                                    <aura:if isTrue="{!test.isManual__c}">
+                                        <lightning:input type="text" value="{!test.Test_Name__c}" disabled="{!v.isTestEdit}" /> 
+                                    </aura:if>
+                                    
+                                </td>
+                                <td  scope="col" style="overflow-wrap: break-word;word-break: break-all;width:15%; " >
+                                    <aura:if isTrue="{!!test.isManual__c}">
+                                        {!test.Specification_Input__c}
+                                    </aura:if>
+                                    <aura:if isTrue="{!test.isManual__c}">
+                                        <lightning:input type="text" value="{!test.Specification_Input__c}" disabled="{!v.isTestEdit}" /> 
+                                    </aura:if>
+                                </td>
+                                <td scope="col" style="overflow-wrap: break-word;word-break: break-all;width:15%;" >
+                                    <aura:if isTrue="{!!test.isManual__c}">
+                                        {!test.UOM_Input__c}
+                                    </aura:if>
+                                    <aura:if isTrue="{!test.isManual__c}">
+                                        <lightning:input type="text" value="{!test.UOM_Input__c}" disabled="{!v.isTestEdit}" /> 
+                                    </aura:if>
+                                    
+                                </td>
+                                <td scope="col" style="overflow-wrap: break-word;word-break: break-all;width:15%;" >
+                                    <aura:if isTrue="{!!test.isManual__c}">
+                                        {!test.Acceptance_Criteria__c}
+                                    </aura:if>
+                                    <aura:if isTrue="{!test.isManual__c}">
+                                        <lightning:input type="text" value="{!test.Acceptance_Criteria__c}" disabled="{!v.isTestEdit}" /> 
+                                    </aura:if>
+                                    
+                                </td>
+                                <td scope="col" > 
+                                    <lightning:input type="text" value="{!test.Observation__c}" disabled="{!v.isTestEdit}" /> 
+                                </td>
+                                <td scope="col" > 
+                                    <lightning:input type="text" value="{!test.Comments_and_Remarks__c}" disabled="{!v.isTestEdit}" /> 
+                                </td>
+                                <td scope="col" > 
+                                    <lightning:combobox disabled="{!v.isTestEdit}" placeholder="Select an Option"  options="{! v.tetConclusionList }" value="{!test.Conclusion__c}"  />
+                                </td>
+                                <td scope="col">
+                                    <lightning:fileUpload  name="{!testIndex}"
+                                            accept="{!v.filetype}" 
+                                            recordId="{!test.Id}"
+                                            disabled="{!v.isTestEdit}"
+                                            onuploadfinished="{! c.imageuploadToTest }"/>
+                                </td>
+                                <td scope="col">
+                                    <aura:if isTrue="{!test.imageurl__c != null }">
+                                        <a href="{! v.baseUrl  + test.imageurl__c}" target="_blank"> <img src="{! v.baseUrl  + test.imageurl__c}" width="100"  height="100" /> </a>
+                                    </aura:if>
+                                </td>
+                            </tr>
+                        </aura:iteration>
+                    </tbody>
+                </table>
+              </aura:if>
+              <aura:if isTrue="{!v.QcRecord.Name__c == 'Module'}">
+                <aura:if isTrue="{!v.typeOfModule != 'Smart Watch' }">
+                    <aura:iteration items="{!v.qcTestList}" var="test" >
+                        <aura:if isTrue="{!test.Test_Name__c == 'General Observation' }">
+                            <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                
+                                    <tr class="slds-hint-parent">-->
+                                        <!-- <th scope="row"></th> -->
+                                    <!--    <th scope="row"> <b>{!test.Test_Name__c} </b> </th>
+                                        <th scope="row"></th><th scope="row"></th>
+                                        <th scope="row" colspan="5"> </th>
+                                        <th scope="row" colspan="5"> </th>
+                                        <th scope="row" colspan="5"> </th>
+                                        <th scope="row"> <lightning:input type="text" value="{!test.Observation__c}" disabled="{!v.isTestEdit}" />  </th>
+                                        <th scope="row"> <lightning:input type="text" value="{!test.Comments_and_Remarks__c}" disabled="{!v.isTestEdit}" />  </th>
+                                        <th scope="row"> <lightning:combobox disabled="{!v.isTestEdit}" placeholder="Select an Option"  options="{! v.tetConclusionList }" value="{!test.Conclusion__c}"  /> </th>
+                                        <td scope="col">
+                                            <lightning:fileUpload  name="{!testIndex}"
+                                                    accept="{!v.filetype}" 
+                                                    recordId="{!test.Id}"
+                                                    disabled="{!v.isTestEdit}"
+                                                    onuploadfinished="{! c.imageuploadToTest }"/>
+                                        </td>
+                                        <td scope="col">
+                                            <aura:if isTrue="{!test.imageurl__c != null }">
+                                                <a href="{! v.baseUrl  + test.imageurl__c}" target="_blank"> <img src="{! v.baseUrl  + test.imageurl__c}" width="100"  height="100" /> </a>
+                                            </aura:if>
+                                        </td>
+                                    </tr>
+                            </table>
+                        </aura:if>
+                    </aura:iteration>
+                    
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-scrollable_x " >
+                        <thead>
+                            <tr class="slds-line-height_reset" >-->
+                            <!-- <th scope="col"></th> -->
+                           <!-- <th class="testNameClass" scope="col">Test Parameter</th>
+                            <th class="testUOMClass" scope="col">Test Condition</th>
+                            <th class="testSpecificClass" scope="col" >Evaluation Criteria</th>
+                            <th scope="col" colspan="5" >Initial</th>
+                            <th scope="col" colspan="5" >After</th>
+                            <th scope="col" colspan="5" >Observation</th>
+                            <th scope="col" >Remark</th>
+                            <th scope="col">Conclusion</th>
+                            <th></th>
+                        	<th>Image</th>
+                            </tr>
+                            <tr >
+                                <th scope="row"></th>
+                                <th scope="row"></th>
+                                <th scope="row"></th>
+                                <th scope="row">1</th>
+                                <th scope="row">2</th>
+                                <th scope="row">3</th>
+                                <th scope="row">4</th>
+                                <th scope="row">5</th>
+                                <th scope="row">1</th>
+                                <th scope="row">2</th>
+                                <th scope="row">3</th>
+                                <th scope="row">4</th>
+                                <th scope="row">5</th>
+                                <th scope="row">1</th>
+                                <th scope="row">2</th>
+                                <th scope="row">3</th>
+                                <th scope="row">4</th>
+                                <th scope="row">5</th>
+                                <th scope="row"></th>
+                                <th scope="row"></th>
+                                <th scope="row"></th>
+                                <th scope="row"></th>
+                                <th scope="row"></th>
+                                </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.qcTestList}" var="test" indexVar="testIndex">
+                                <aura:if isTrue="{! !(test.Specification_Input__c == 'Test observation' || test.Specification_Input__c == '24 Hours/Color Change' || test.Specification_Input__c == '3000 Actuation' || test.Test_Name__c == 'General Observation' ) }">
+                                    <tr class="slds-hint-parent" >-->
+                                        <!-- <td scope="row" data-label="Select"> 
+                                            <aura:if isTrue="{!and(v.isTestEdit,!test.isManual__c)}">
+                                                <lightning:buttonIcon iconName="utility:delete" variant="destructive" value ="{!testIndex}" onclick="{!c.clickDeleteTest}"    />
+                                            </aura:if>
+                                            <aura:if isTrue="{!test.isManual__c}">
+                                                <lightning:buttonIcon iconName="utility:delete" variant="destructive" value ="{!testIndex}" onclick="{!c.clickDeleteTest}"    />
+                                            </aura:if>
+                                        </td> -->
+                                       <!-- <td  class="testNameClass" scope="row" data-label="Select" > 
+                                            <aura:if isTrue="{!!test.isManual__c}">
+                                                <aura:if isTrue="{!!test.rowSpan}">
+                                                    <b> <ui:outputTextArea value="{!test.Test_Name__c}" />  </b>
+                                                </aura:if>
+                                                
+                                            </aura:if>
+                                            <aura:if isTrue="{!test.isManual__c}">
+                                                <lightning:input type="text" value="{!test.Test_Name__c}" disabled="{!v.isTestEdit}" /> 
+                                            </aura:if>
+                                        </td>
+                                        <td class="testUOMClass" scope="row" data-label="Select" >
+                                            <aura:if isTrue="{!!test.isManual__c}">
+                                                <aura:if isTrue="{!!test.rowSpan}">
+                                                    <b> <ui:outputTextArea value="{!test.UOM_Input__c}" /> </b>
+                                                </aura:if>
+                                            </aura:if>
+                                            <aura:if isTrue="{!test.isManual__c}">
+                                                <lightning:input type="text" value="{!test.UOM_Input__c}" disabled="{!v.isTestEdit}" /> 
+                                            </aura:if>
+                                        </td>
+                                        <td class="testSpecificClass" scope="row" data-label="Select" >
+                                            <aura:if isTrue="{!!test.isManual__c}">
+                                            <b > <ui:outputTextArea value="{!test.Specification_Input__c}" />  </b>
+                                            </aura:if>
+                                            <aura:if isTrue="{!test.isManual__c}">
+                                                <lightning:input type="text" value="{!test.Specification_Input__c}" disabled="{!v.isTestEdit}" /> 
+                                            </aura:if>
+                                        </td>
+                                        <aura:if isTrue="{!test.condition.isVisible__c}">
+                                            <td scope="row" data-label="Select"> 
+                                                <lightning:input class="inputclass" type="text" id="{!testIndex}" onkeyup="{!c.onTestkeyup}"  name="Initial1__c" value="{!test.Initial1__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td scope="row" data-label="Select" > 
+                                                <lightning:input class="inputclass" type="text" id="{!testIndex}" onkeyup="{!c.onTestkeyup}" name="Initial2__c" value="{!test.Initial2__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td scope="row" data-label="Select" > 
+                                                <lightning:input class="inputclass" type="text" id="{!testIndex}" onkeyup="{!c.onTestkeyup}" name="Initial3__c" value="{!test.Initial3__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td scope="row" data-label="Select" > 
+                                                <lightning:input class="inputclass" type="text" id="{!testIndex}" onkeyup="{!c.onTestkeyup}" name="Initial4__c" value="{!test.Initial4__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td scope="row" data-label="Select" > 
+                                                <lightning:input class="inputclass" type="text" id="{!testIndex}" onkeyup="{!c.onTestkeyup}"  name="Initial5__c" value="{!test.Initial5__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td scope="row" data-label="Select" > 
+                                                <lightning:input class="inputclass" type="text" id="{!testIndex}" onkeyup="{!c.onTestkeyup}" name="After_Test1__c" value="{!test.After_Test1__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td scope="row" data-label="Select" > 
+                                                <lightning:input class="inputclass" type="text" id="{!testIndex}" onkeyup="{!c.onTestkeyup}" name="After_Test2__c" value="{!test.After_Test2__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td scope="row" data-label="Select" > 
+                                                <lightning:input class="inputclass" type="text" id="{!testIndex}" onkeyup="{!c.onTestkeyup}" name="After_Test3__c" value="{!test.After_Test3__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td scope="row" data-label="Select" > 
+                                                <lightning:input class="inputclass" type="text" id="{!testIndex}" onkeyup="{!c.onTestkeyup}" name="After_Test4__c" value="{!test.After_Test4__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td scope="row" data-label="Select" > 
+                                                <lightning:input class="inputclass" type="text" id="{!testIndex}" onkeyup="{!c.onTestkeyup}" name="After_Test5__c" value="{!test.After_Test5__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td scope="row" data-label="Select" > 
+                                                <lightning:input class="inputclass" type="text" id="{!testIndex}"  name="Observation1__c" value="{!test.Observation1__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td scope="row" data-label="Select" > 
+                                                <lightning:input class="inputclass" type="text" id="{!testIndex}"  name="Observation2__c" value="{!test.Observation2__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td scope="row" data-label="Select" > 
+                                                <lightning:input class="inputclass" type="text" id="{!testIndex}"  name="Observation3__c" value="{!test.Observation3__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td scope="row" data-label="Select" > 
+                                                <lightning:input class="inputclass" type="text" id="{!testIndex}"  name="Observation4__c" value="{!test.Observation4__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td scope="row" data-label="Select" > 
+                                                <lightning:input class="inputclass" type="text" id="{!testIndex}"  name="Observation5__c" value="{!test.Observation5__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <aura:set attribute="else">
+                                                <td scope="row" data-label="Select"> 
+                                                    <lightning:input class="inputclass" type="text" id="{!testIndex}"  onblur="{!c.onNumkeyup}" name="Initial1__c" value="{!test.Initial1__c}" disabled="{!v.isTestEdit}" /> 
+                                                </td>
+                                                <td scope="row" data-label="Select" > 
+                                                    <lightning:input class="inputclass" type="text" id="{!testIndex}" onblur="{!c.onNumkeyup}" name="Initial2__c" value="{!test.Initial2__c}" disabled="{!v.isTestEdit}" /> 
+                                                </td>
+                                                <td scope="row" data-label="Select" > 
+                                                    <lightning:input class="inputclass" type="text" id="{!testIndex}" onblur="{!c.onNumkeyup}" name="Initial3__c" value="{!test.Initial3__c}" disabled="{!v.isTestEdit}" /> 
+                                                </td>
+                                                <td scope="row" data-label="Select" > 
+                                                    <lightning:input class="inputclass" type="text" id="{!testIndex}" onblur="{!c.onNumkeyup}" name="Initial4__c" value="{!test.Initial4__c}" disabled="{!v.isTestEdit}" /> 
+                                                </td>
+                                                <td scope="row" data-label="Select" > 
+                                                    <lightning:input class="inputclass" type="text" id="{!testIndex}" onblur="{!c.onNumkeyup}" name="Initial5__c" value="{!test.Initial5__c}" disabled="{!v.isTestEdit}" /> 
+                                                </td>
+                                                <td scope="row" data-label="Select" > 
+                                                    <lightning:input class="inputclass" type="text" id="{!testIndex}" onblur="{!c.onNumkeyup}" name="After_Test1__c" value="{!test.After_Test1__c}" disabled="{!v.isTestEdit}" /> 
+                                                </td>
+                                                <td scope="row" data-label="Select" > 
+                                                    <lightning:input class="inputclass" type="text" id="{!testIndex}" onblur="{!c.onNumkeyup}" name="After_Test2__c" value="{!test.After_Test2__c}" disabled="{!v.isTestEdit}" /> 
+                                                </td>
+                                                <td scope="row" data-label="Select" > 
+                                                    <lightning:input class="inputclass" type="text" id="{!testIndex}" onblur="{!c.onNumkeyup}" name="After_Test3__c" value="{!test.After_Test3__c}" disabled="{!v.isTestEdit}" /> 
+                                                </td>
+                                                <td scope="row" data-label="Select" > 
+                                                    <lightning:input class="inputclass" type="text" id="{!testIndex}" onblur="{!c.onNumkeyup}" name="After_Test4__c" value="{!test.After_Test4__c}" disabled="{!v.isTestEdit}" /> 
+                                                </td>
+                                                <td scope="row" data-label="Select" > 
+                                                    <lightning:input class="inputclass" type="text" id="{!testIndex}" onblur="{!c.onNumkeyup}" name="After_Test5__c" value="{!test.After_Test5__c}" disabled="{!v.isTestEdit}" /> 
+                                                </td>
+                                                <td scope="row" data-label="Select" > 
+                                                    <lightning:input class="inputclass" type="text" id="{!testIndex}"  name="Observation1__c"  value="{!test.Observation1__c}" disabled="{!v.isTestEdit}" /> 
+                                                </td>
+                                                <td scope="row" data-label="Select" > 
+                                                    <lightning:input class="inputclass" type="text" id="{!testIndex}"  name="Observation2__c" value="{!test.Observation2__c}" disabled="{!v.isTestEdit}" /> 
+                                                </td>
+                                                <td scope="row" data-label="Select" > 
+                                                    <lightning:input class="inputclass" type="text" id="{!testIndex}"  name="Observation3__c"  value="{!test.Observation3__c}" disabled="{!v.isTestEdit}" /> 
+                                                </td>
+                                                <td scope="row" data-label="Select" > 
+                                                    <lightning:input class="inputclass" type="text" id="{!testIndex}"  name="Observation4__c" value="{!test.Observation4__c}" disabled="{!v.isTestEdit}" /> 
+                                                </td>
+                                                <td scope="row" data-label="Select" > 
+                                                    <lightning:input class="inputclass" type="text" id="{!testIndex}"  name="Observation5__c" value="{!test.Observation5__c}" disabled="{!v.isTestEdit}" /> 
+                                                </td>
+                                            </aura:set>
+                                        </aura:if>
+                                        <td scope="row" data-label="Select" > 
+                                            <lightning:input class="remarksClass" type="text" value="{!test.Comments_and_Remarks__c}" disabled="{!v.isTestEdit}" /> 
+                                        </td>
+                                        <td scope="row" data-label="Select" > 
+                                            <lightning:combobox class="conclusionClass" disabled="{!v.isTestEdit}" placeholder="Select an Option"  options="{! v.tetConclusionList }" value="{!test.Conclusion__c}"  />
+                                        </td>
+                                        <td scope="row">
+                                            <lightning:fileUpload  name="{!testIndex}"
+                                                    accept="{!v.filetype}" 
+                                                    recordId="{!test.Id}"
+                                                    disabled="{!v.isTestEdit}"
+                                                    onuploadfinished="{! c.imageuploadToTest }"/>
+                                        </td>
+                                        <td scope="row">
+                                            <aura:if isTrue="{!test.imageurl__c != null }">
+                                                <a href="{! v.baseUrl  + test.imageurl__c}" target="_blank"> <img src="{! v.baseUrl  + test.imageurl__c}" width="100"  height="100" /> </a>
+                                            </aura:if>
+                                        </td>
+                                    </tr>
+                                    
+                                </aura:if>
+                                <aura:if isTrue="{!test.Specification_Input__c == 'Test observation' || test.Specification_Input__c == '24 Hours/Color Change' || test.Specification_Input__c == '3000 Actuation' }">
+                                        <tr class="slds-hint-parent" >-->
+                                            <!-- <td scope="row" data-label="Select"> 
+                                                <aura:if isTrue="{!and(v.isTestEdit,!test.isManual__c)}">
+                                                    <lightning:buttonIcon iconName="utility:delete" variant="destructive" value ="{!testIndex}" onclick="{!c.clickDeleteTest}"    />
+                                                </aura:if>
+                                                <aura:if isTrue="{!test.isManual__c}">
+                                                    <lightning:buttonIcon iconName="utility:delete" variant="destructive" value ="{!testIndex}" onclick="{!c.clickDeleteTest}"    />
+                                                </aura:if>
+                                            </td> -->
+                                          <!--  <td  class="testNameClass" scope="row" data-label="Select" > 
+                                                <aura:if isTrue="{!!test.isManual__c}">
+                                                    <aura:if isTrue="{!!test.rowSpan}">
+                                                        <b> <ui:outputTextArea value="{!test.Test_Name__c}" />  </b>
+                                                    </aura:if>
+                                                    
+                                                </aura:if>
+                                                <aura:if isTrue="{!test.isManual__c}">
+                                                    <lightning:input type="text" value="{!test.Test_Name__c}" disabled="{!v.isTestEdit}" /> 
+                                                </aura:if>
+                                            </td>
+                                            <td class="testUOMClass" scope="row" data-label="Select" >
+                                                <aura:if isTrue="{!!test.isManual__c}">
+                                                    <aura:if isTrue="{!!test.rowSpan}">
+                                                        <b> <ui:outputTextArea value="{!test.UOM_Input__c}" /> </b>
+                                                    </aura:if>
+                                                </aura:if>
+                                                <aura:if isTrue="{!test.isManual__c}">
+                                                    <lightning:input type="text" value="{!test.UOM_Input__c}" disabled="{!v.isTestEdit}" /> 
+                                                </aura:if>
+                                            </td>
+                                            <td class="testSpecificClass" scope="row" data-label="Select" >
+                                                <aura:if isTrue="{!!test.isManual__c}">
+                                                <b > <ui:outputTextArea value="{!test.Specification_Input__c}" />  </b>
+                                                </aura:if>
+                                                <aura:if isTrue="{!test.isManual__c}">
+                                                    <lightning:input type="text" value="{!test.Specification_Input__c}" disabled="{!v.isTestEdit}" /> 
+                                                </aura:if>
+                                            </td>
+                                            
+                                            <td colspan="5" scope="row" data-label="Select"> 
+                                                <Lightning:input  type="text" value="{!test.Initial_Test_Observation__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td colspan="5" scope="row" data-label="Select" > 
+                                                <Lightning:input  type="text" value="{!test.After_Test_Observation__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td colspan="5" scope="row" data-label="Select" > 
+                                                <Lightning:input  type="text" value="{!test.Observation__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td scope="row" data-label="Select" > 
+                                                <Lightning:input  type="text" value="{!test.Comments_and_Remarks__c}" disabled="{!v.isTestEdit}" /> 
+                                            </td>
+                                            <td scope="row" data-label="Select" > 
+                                                <lightning:combobox class="conclusionClass" disabled="{!v.isTestEdit}" placeholder="Select an Option"  options="{! v.tetConclusionList }" value="{!test.Conclusion__c}"  />
+                                            </td>
+                                            <td scope="row">
+                                                <lightning:fileUpload  name="{!testIndex}"
+                                                        accept="{!v.filetype}" 
+                                                        recordId="{!test.Id}"
+                                                        disabled="{!v.isTestEdit}"
+                                                        onuploadfinished="{! c.imageuploadToTest }"/>
+                                            </td>
+                                            <td scope="row">
+                                                <aura:if isTrue="{!test.imageurl__c != null }">
+                                                    <a href="{! v.baseUrl  + test.imageurl__c}" target="_blank"> <img src="{! v.baseUrl  + test.imageurl__c}" width="100"  height="100" /> </a>
+                                                </aura:if>
+                                            </td>
+                                        </tr>
+                                    </aura:if>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </aura:if>    
+                <aura:if isTrue="{!v.typeOfModule == 'Smart Watch' }">
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                        <thead>
+                            <tr class="slds-line-height_reset">-->
+                                <!-- <th scope="col"> </th> -->
+                              <!--  <th scope="col"> Test Description </th>
+                                <th scope="col"> Testing Condition </th>
+                                <th scope="col"> Duration/Cycle </th>
+                                <th scope="col"> Observation </th>
+                                <th scope="col"> Remark </th>
+                                <th scope="col"> Conclusion </th>
+                                <th scope="col"> No. of Samples </th>
+                                <th></th>
+                        		<th>Image</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.qcTestList}" var="test" indexVar="testIndex">
+                                <tr class="slds-hint-parent">-->
+                                    <!-- <th scope="row"> 
+                                        <aura:if isTrue="{!and(v.isTestEdit,!test.isManual__c)}">
+                                            <lightning:buttonIcon iconName="utility:delete" variant="destructive" value ="{!testIndex}" onclick="{!c.clickDeleteTest}"    />
+                                        </aura:if>
+                                        <aura:if isTrue="{!test.isManual__c}">
+                                            <lightning:buttonIcon iconName="utility:delete" variant="destructive" value ="{!testIndex}" onclick="{!c.clickDeleteTest}"    />
+                                        </aura:if>
+                                    </th> -->
+                                   <!-- <th scope="row"> 
+                                        <aura:if isTrue="{!!test.isManual__c}">
+                                            <aura:if isTrue="{!!test.rowSpan}">
+                                                <b> <ui:outputTextArea value="{!test.Test_Name__c}" />  </b>
+                                            </aura:if>
+                                            
+                                        </aura:if>
+                                        <aura:if isTrue="{!test.isManual__c}">
+                                            <lightning:input type="text" value="{!test.Test_Name__c}" disabled="{!v.isTestEdit}" /> 
+                                        </aura:if>
+                                    </th>
+                                    <th scope="row"> 
+                                        <aura:if isTrue="{!!test.isManual__c}">
+                                            <aura:if isTrue="{!!test.rowSpan}">
+                                                <b> <ui:outputTextArea value="{!test.UOM_Input__c}" /> </b>
+                                            </aura:if>
+                                        </aura:if>
+                                        <aura:if isTrue="{!test.isManual__c}">
+                                            <lightning:input type="text" value="{!test.UOM_Input__c}" disabled="{!v.isTestEdit}" /> 
+                                        </aura:if>
+                                    </th>
+                                    <th scope="row"> 
+                                        <aura:if isTrue="{!!test.isManual__c}">
+                                        <b > <ui:outputTextArea value="{!test.Specification_Input__c}" />  </b>
+                                        </aura:if>
+                                        <aura:if isTrue="{!test.isManual__c}">
+                                            <lightning:input type="text" value="{!test.Specification_Input__c}" disabled="{!v.isTestEdit}" /> 
+                                        </aura:if>
+                                    </th>
+                                    <th scope="row"> 
+                                        <Lightning:input  type="text" value="{!test.Observation__c}" disabled="{!v.isTestEdit}" />
+                                    </th>
+                                    <th scope="row"> 
+                                        <Lightning:input  type="text" value="{!test.Comments_and_Remarks__c}" disabled="{!v.isTestEdit}" />
+                                    </th>
+                                    <th scope="row"> 
+                                        <lightning:combobox class="conclusionClass" disabled="{!v.isTestEdit}" placeholder="Select an Option"  options="{! v.tetConclusionList }" value="{!test.Conclusion__c}"  />
+                                    </th>
+                                    <th scope="row"> 
+                                        <Lightning:input  type="text" value="{!test.No_of_Samples__c}" disabled="{!v.isTestEdit}" />
+                                    </th>
+                                    <td scope="col">
+                                        <lightning:fileUpload  name="{!testIndex}"
+                                                accept="{!v.filetype}" 
+                                                recordId="{!test.Id}"
+                                                disabled="{!v.isTestEdit}"
+                                                onuploadfinished="{! c.imageuploadToTest }"/>
+                                    </td>
+                                    <td scope="col">
+                                        <aura:if isTrue="{!test.imageurl__c != null }">
+                                            <a href="{! v.baseUrl  + test.imageurl__c}" target="_blank"> <img src="{! v.baseUrl  + test.imageurl__c}" width="100"  height="100" /> </a>
+                                        </aura:if>
+                                    </td>
+                                </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                </aura:if>
+              </aura:if>
+              <aura:if isTrue="{!v.QcRecord.Name__c == 'Battery'}">
+                  <aura:iteration items="{!v.batteryTests.viTests}" var="test" indexVar="testIndex" >
+                      <aura:if isTrue="{!test.Test_Name__c == 'Visual Inspection'}">
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <tbody>
+                                <tr class="slds-hint-parent">
+                                    <th scope="row"> <ui:outputTextArea value="{!test.Test_Name__c}" />  </th>
+                                    <th scope="row"> <lightning:input type="text" name="" value="{!test.Observation__c}" disabled="{!v.isTestEdit}" /> </th>
+                                    <th scope="row"> <lightning:input type="text" name="" value="{!test.Comments_and_Remarks__c}" disabled="{!v.isTestEdit}" /> </th>
+                                    <th scope="row"> <lightning:combobox class="conclusionClass" disabled="{!v.isTestEdit}" placeholder="Select an Option"  options="{! v.tetConclusionList }" value="{!test.Conclusion__c}" /> </th>
+                                    <td scope="row">
+                                        <lightning:fileUpload  name="{!testIndex}"
+                                                accept="{!v.filetype}" 
+                                                recordId="{!test.Id}"
+                                                disabled="{!v.isTestEdit}"
+                                                onuploadfinished="{! c.imageuploadToTest }"/>
+                                    </td>
+                                    <td scope="row">
+                                        <aura:if isTrue="{!test.imageurl__c != null }">
+                                            <a href="{! v.baseUrl  + test.imageurl__c}" target="_blank"> <img src="{! v.baseUrl  + test.imageurl__c}" width="100"  height="100" /> </a>
+                                        </aura:if>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                      </aura:if>
+                  </aura:iteration>
+                  
+                    <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                        <thead>
+                            <tr class="slds-line-height_reset">
+                                <th scope="col"> Capacity </th>
+                                <th scope="col"> Specification </th>
+                                <th scope="col"> Measured Capacity (mAh) </th>
+                                <th scope="col"> Determined Value </th>
+                                <th scope="col"> Remarks </th>
+                                <th scope="col"> Conclusion</th>
+                                <th></th>
+                        		<th>Image</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <aura:iteration items="{!v.batteryTests.capacityTests}" var="test" indexVar="testIndex" >
+                            <tr class="slds-hint-parent">
+                                <th scope="row"> <ui:outputTextArea value="{!test.Test_Name__c}" />  </th>
+                                <th scope="row"> <ui:outputTextArea value="{!test.Specification_Input__c}" />  </th>
+                                <th scope="row"> <lightning:input type="text" id="{!testIndex}" onblur="{!c.capacityKeyup}" value="{!test.Observation__c}" disabled="{!v.isTestEdit}" /> </th>
+                                <th scope="row"> <lightning:input type="text" name="" value="{!test.Determined_value__c}" disabled="true" /> </th>
+                                <th scope="row"> <lightning:input type="text" name="" value="{!test.Comments_and_Remarks__c}" disabled="{!v.isTestEdit}" />  </th>
+                                <th scope="row"> <lightning:combobox class="conclusionClass" disabled="{!v.isTestEdit}" placeholder="Select an Option"  options="{! v.tetConclusionList }" value="{!test.Conclusion__c}" /> </th>
+                                <td scope="row">
+                                    <lightning:fileUpload  name="{!testIndex}"
+                                            accept="{!v.filetype}" 
+                                            recordId="{!test.Id}"
+                                            disabled="{!v.isTestEdit}"
+                                            onuploadfinished="{! c.imageuploadToTest }"/>
+                                </td>
+                                <td scope="row">
+                                    <aura:if isTrue="{!test.imageurl__c != null }">
+                                        <a href="{! v.baseUrl  + test.imageurl__c}" target="_blank"> <img src="{! v.baseUrl  + test.imageurl__c}" width="100"  height="100" /> </a>
+                                    </aura:if>
+                                </td>
+                            </tr>
+                            </aura:iteration>
+                        </tbody>
+                    </table>
+                        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                            <caption> <b> Leakage Test </b></caption>
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col">Characteristics </th>
+                                    <th scope="col"> </th>
+                                    <th scope="col">Grade </th>
+                                    <th scope="col"> Standard </th>
+                                    <th scope="col"> Observation </th>
+                                    <th scope="col"> Conclusion </th>
+                                    <th></th>
+                        			<th>Image</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <aura:iteration items="{!v.batteryTests.leakageTests}" var="test" indexVar="testIndex" >
+                                    <tr class="slds-hint-parent">
+                                        <th scope="row"> 
+                                            <aura:if isTrue="{!!test.rowSpan}">
+                                                <b> <ui:outputTextArea value="{!test.Test_Name__c}" />  </b>
+                                            </aura:if>
+                                        </th>
+                                        <th scope="row"> 
+                                            <aura:if isTrue="{!!test.rowSpan}">
+                                                <aura:if isTrue="{!test.UOM_Input__c == 'S1' || test.UOM_Input__c == 'S2' || test.UOM_Input__c == 'S3' }">
+                                                    <b> Salting  </b>
+                                                </aura:if>
+                                                <aura:if isTrue="{!test.UOM_Input__c == 'C1' || test.UOM_Input__c == 'C2' }">
+                                                    <b> Creep  </b>
+                                                </aura:if>
+                                                <aura:if isTrue="{!test.UOM_Input__c == 'L1' || test.UOM_Input__c == 'L2' }">
+                                                    <b> Leaks </b>
+                                                </aura:if>
+                                                
+                                            </aura:if>
+                                        </th>
+                                        <th scope="row"> 
+                                            <ui:outputTextArea value="{!test.UOM_Input__c}" /> 
+                                        </th>
+                                        <th scope="row"> 
+                                            <ui:outputTextArea value="{!test.Specification_Input__c}" /> 
+                                        </th>
+                                        <th scope="row"> 
+                                            <lightning:input type="text" name="" value="{!test.Observation__c}" disabled="{!v.isTestEdit}" />  
+                                        
+                                        </th>
+                                        <th scope="row"> <lightning:combobox class="conclusionClass" disabled="{!v.isTestEdit}" placeholder="Select an Option"  options="{! v.tetConclusionList }" value="{!test.Conclusion__c}" /> </th>
+                                        <td scope="col">
+                                            <lightning:fileUpload  name="{!testIndex}"
+                                                    accept="{!v.filetype}" 
+                                                    recordId="{!test.Id}"
+                                                    disabled="{!v.isTestEdit}"
+                                                    onuploadfinished="{! c.imageuploadToTest }"/>
+                                        </td>
+                                        <td scope="col">
+                                            <aura:if isTrue="{!test.imageurl__c != null }">
+                                                <a href="{! v.baseUrl  + test.imageurl__c}" target="_blank"> <img src="{! v.baseUrl  + test.imageurl__c}" width="100"  height="100" /> </a>
+                                            </aura:if>
+                                        </td>
+                                    </tr>
+                                </aura:iteration>
+                            </tbody>
+                        </table>
+              </aura:if>
+        </div>
+
+        <div class="slds-align_absolute-center slds-p-horizontal_large slds-m-vertical_small" style="Background-color: #596d90; font-size: 20px; color: white; height: 40px;">
+            Image Uploads
+        </div>
+        <div>-->
+            <!-- <input type = "file" onchange="{!c.imageupload}" /> -->
+           <!-- <div class="slds-align_absolute-center slds-grid slds-wrap" >
+                <div class="slds-p-around_xx-large ">
+                        <div  >
+                            <lightning:fileUpload  name="imageurl__c"
+                                                label="Image 1"
+                                                accept="{!v.filetype}" 
+                                                recordId="{!v.QcRecord.Id}"
+                                                onuploadfinished="{! c.imageupload }"/>
+                        </div>
+                </div>
+                <div class="slds-p-around_xx-large ">
+                    <div  >
+                        <lightning:fileUpload  name="imageurl2__c"
+                                            label="Image 1"
+                                            accept="{!v.filetype}" 
+                                            recordId="{!v.QcRecord.Id}"
+                                            onuploadfinished="{! c.imageupload }"/>
+                    </div>
+                </div>
+                <div class="slds-p-around_xx-large ">
+                    <div  >
+                        <lightning:fileUpload  name="imageurl3__c"
+                                            label="Image 1"
+                                            accept="{!v.filetype}" 
+                                            recordId="{!v.QcRecord.Id}"
+                                            onuploadfinished="{! c.imageupload }"/>
+                    </div>
+                </div>
+                <div class="slds-align_absolute-center slds-grid slds-wrap" >
+                    <div class="slds-p-around_xx-large slds-size_1-of-3  ">
+                        <aura:if isTrue="{!v.QcRecord.imageurl__c != null }">
+                            <img src="{! v.baseUrl  +  v.QcRecord.imageurl__c}" width="100"  height="100"   />
+                        </aura:if>    
+                        
+                    </div>
+                    <div class="slds-p-around_xx-large slds-size_1-of-3 ">
+                        <aura:if isTrue="{!v.QcRecord.imageurl2__c != null }">
+                            <img src="{! v.baseUrl  +  v.QcRecord.imageurl2__c}"  width="100"  height="100"  />
+                        </aura:if>    
+                    </div>
+                    <div class="slds-p-around_xx-large slds-size_1-of-3">
+                        <aura:if isTrue="{!v.QcRecord.imageurl3__c != null }">
+                            <img src="{! v.baseUrl  + v.QcRecord.imageurl3__c}" width="100"  height="100" />
+                        </aura:if>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <aura:renderIf isTrue="{!v.QcRecord.Parent__c == null  }">
+        <div class="slds-align_absolute-center slds-p-horizontal_large slds-m-vertical_small" style="Background-color: #596d90; font-size: 20px; color: white; height: 40px;" >
+          Approval 
+        </div>
+        <div >
+          <div class="slds-align_absolute-center slds-m-vertical_medium" >
+            <div class="slds-align_absolute-center slds-p-horizontal_large slds-show" aura:id="" >
+              <lightning:button variant="brand" label="Submit to Approval"  onclick="{!c.submitRecordForApproval}"/>
+            </div>
+          </div>
+        </div>
+        <div  >
+          <div>
+            <aura:if isTrue="{!v.showApprovalHistroy }">
+              <c:ApprovalHistoryComponent recordId="{!v.QcRecord.Id}" approvalList="{!v.approvalList}" />
+            </aura:if>
+              
+          </div>
+        </div>
+      </aura:renderIf>
+    </div>
+</div>-->
+    
+</aura:component>

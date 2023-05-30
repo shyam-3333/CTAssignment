@@ -1,0 +1,7 @@
+<apex:page controller="ImagePreviewClass" >
+<apex:form >
+<apex:outputText value="{!imagesrc}" escape="false"></apex:outputText>
+
+</apex:form>
+  
+</apex:page>

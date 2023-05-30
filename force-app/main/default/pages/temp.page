@@ -1,0 +1,38 @@
+<apex:page controller="Googlechartclass">
+<head>
+<style type="text/css" media="print">
+
+    table, td, th
+{
+    border:1px solid black;
+}
+    
+</style>
+</head>
+<body>
+<apex:variable value="{!1}" var="rowNum"/> 
+<apex:variable value="{!0}" var="Total"/>
+<table border="1">
+<tr><td>Sr.No.</td><td>ID</td><td>Name</td><td>AccountRecordTypeId</td><td>OpRecordTypeID</td><td>OpRecordTypeName</td><td>OpportunityStage</td><td>Amount</td></tr>
+<apex:repeat value="{!oplisttemp}" var="rec">
+<tr>
+<td><apex:outputText value="{!FLOOR(rowNum)}"/></td>
+<td>{!rec.id}</td>
+<td>{!rec.Name}</td>
+<td>{!rec.Account.RecordTypeId}</td>
+<td>{!rec.RecordTypeId}</td>
+<td>{!rec.RecordType.Name}</td>
+<td>{!rec.StageName}</td>
+<td width="30%"><apex:outputText value="{!rec.Amount}"/></td>
+<!--<td>{!rec.}</td>
+<td>{!rec.}</td>
+<td>{!rec.}</td>
+<td>{!rec.}</td> -->
+</tr>
+<apex:variable var="rowNum" value="{!rowNum + 1}"/>
+<apex:variable var="Total" value="{! Total+ rec.Amount}"/>
+</apex:repeat>
+</table>
+<apex:outputText value="{!Total}"/>
+</body>
+</apex:page>

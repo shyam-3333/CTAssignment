@@ -1,0 +1,204 @@
+<!------
+    Created By : Shweta kumari
+    Description : Page for mass product Approval
+----->
+<apex:page sidebar="false" showHeader="false" standardStylesheets="true" controller="ProductApprovalVendorMng" id="pageId">   
+    <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script>
+        var j$ = jQuery.noConflict();
+        var chekBoxcount = 0;
+        function selectAll(){         
+            j$("input:checkbox").prop('checked', true);
+            j$("#selectId").css("display", "none");
+            j$("#deselectId").css("display", "block");
+        }
+        function selectAllCheckBox(){
+            var status = false;
+            if(j$("#select_all:checked").length == 1){
+                status = true;
+            }
+            j$("input:checkbox").prop('checked', status);
+            j$("#selectId").css("display", "none");
+            j$("#deselectId").css("display", "block");
+        }
+        function deSelectAll(){
+           
+            j$("input:checkbox").prop('checked', false);
+            j$("#selectId").css("display", "block");
+            j$("#deselectId").css("display", "none");
+        } 
+        function deSelect(){
+            if(j$("#proRecId:checked").length == 0){
+                j$("#select_all")[0].checked = false; 
+                j$("#selectId").css("display", "block");
+                j$("#deselectId").css("display", "none");
+            }
+        }
+        function openRecordView(proId){
+             if ( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ){
+                       sforce.one.navigateToSObject(proId);
+                }       
+                else {
+                   window.open('/'+proId);
+                }
+        }
+    </script>
+    <style>
+        body {
+            font-family: "ProximaNovaSoft-Regular", Calibri; 
+            font-size: 110%;
+            padding-top: 12px; background:#d9ecf1; padding-bottom: 12px;
+        }
+        .slds-table th {
+    background: #1c91b3 none repeat scroll 0 0;
+    color: #fff;
+}
+    </style>
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS202,'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        </head>
+        <apex:form id="frmId">       
+        <apex:pageMessages id="msgId"></apex:pageMessages> 
+       
+        <div class="slds stockit" height="100%">
+        <!---<apex:outputPanel id="filterPanel" rendered="{!isApprover == true}">--->
+        
+       <!--- </apex:outputPanel>--->
+        <apex:outputPanel id="proViewId">
+       
+        
+            <div class="slds-grid slds-wrap" id="theDivId">
+                <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2">
+                    <div class="slds-form--stacked">
+                        <center>                         
+                             <apex:commandButton action="{!SubmitForApproval}" value="Submit For Approval" styleclass="slds-button slds-button--neutral slds-not-selected" reRender="proViewId,msgId" status="actStatusId" />                            
+                             <apex:actionStatus id="actStatusId" >
+                                <apex:facet name="start" >
+                                    <img src="/img/loading.gif" />                    
+                                </apex:facet>
+                            </apex:actionStatus>
+                        </center><br/>
+                      
+        
+                        <br/>
+                        <!---<input type="Button" value="Select All" Class="slds-button slds-button--neutral" id="selectId" onClick="selectAll()" style="display:block" />
+                        <input type="Button" value="Deselect All" Class="slds-button slds-button--neutral" id="deselectId" onClick="deSelectAll()" style="display:none"/>
+                        <br/>--->
+                        <table class="slds-table slds-table--bordered">
+                            <thead>
+                                <tr class="slds-text-heading--label">
+                                    <th scope="col" style="width:3.25rem;" class="slds-text-align--right">
+                                        <div class="slds-th__action slds-th__action--form">
+                                            <span class="slds-checkbox">
+                                               
+                                                <label class="slds-checkbox__label" for="select_all">
+                                                     <input type="checkbox" name="options" id="select_all" checked="" onclick="selectAllCheckBox()"/> 
+                                                    <span class="slds-checkbox--faux" ></span>
+                                                    <span class="slds-form-element__label slds-assistive-text">Select All</span>                                                    
+                                                </label>
+                                            </span>
+                                        </div>
+                                     </th>
+                                    <th focusable="true" class="slds-is-resizable slds-text-title--caps" scope="col">                                                  
+                                        <span class="slds-truncate" title="SKU Code">SKU Code</span>
+                                    </th>
+                                    <th focusable="true" class="slds-is-resizable slds-text-title--caps" scope="col">                                                  
+                                        <span class="slds-truncate" title="Product Name">SKU Ref</span>
+                                     </th>
+                                     <th focusable="true" class="slds-is-resizable slds-text-title--caps" scope="col">                                                  
+                                        <span class="slds-truncate" title="Product Category">Product Category</span>
+                                     </th>
+                                     <th focusable="true" class="slds-is-resizable slds-text-title--caps" scope="col">                                                  
+                                        <span class="slds-truncate" title="Vendor">Vendor</span>
+                                     </th>
+                                     
+                                     <th focusable="true" class="slds-is-resizable slds-text-title--caps" scope="col">                                                  
+                                        <span class="slds-truncate" title="Cost">Cost</span>
+                                     </th>
+                                     <th focusable="true" class="slds-is-resizable slds-text-title--caps" scope="col">                                                  
+                                        <span class="slds-truncate" title="Quantity">Quantity</span>
+                                     </th>
+                                     <th focusable="true" class="slds-is-resizable slds-text-title--caps" scope="col">                                                  
+                                        <span class="slds-truncate" title="Photo">Photo</span>
+                                     </th>
+                                    <th focusable="true" class="slds-is-resizable slds-text-title--caps" scope="col">                                                  
+                                        <span class="slds-truncate" title="Approval Status">Approval Status</span>
+                                     </th>
+                                     <!---<th focusable="true" class="slds-is-resizable slds-text-title--caps" scope="col" style="{!if(isApprover,'','display:none')}">                                                  
+                                        <span class="slds-truncate" title="Reject/Need Clarification Comment">Reject/Need Clarification Comment</span>
+                                     </th>--->
+                                </tr> 
+                            </thead>
+                            <tbody>
+                                <apex:repeat value="{!wrraperList}" var="pro">
+                                    <tr class="slds-hint-parent" data-label="Select Product">
+                                        <td role="gridcell" class="slds-text-align--right" style="width:3.25rem;">
+                                            <span class="slds-checkbox">
+                                              <label class="slds-checkbox__label" >
+                                                <apex:inputcheckbox id="proRecId" styleclass="slds-input" value="{!pro.isSelected}" onclick="deSelect()" />  <!----onclick="deSelectAll()"---->
+                                                <span class="slds-checkbox--faux"></span>
+                                                <span class="slds-form-element__label slds-assistive-text">Select Product</span>
+                                              </label>
+                                            </span>
+                                        </td>
+                                        <td role="gridcell" data-label="SKU Code">
+                                            <apex:commandLink value="{!pro.productRec.SKU_Code__c}" onclick="openRecordView('{!pro.productRec.id}');return false;" />
+                                            
+                                        </td>
+                                        <td role="gridcell" data-label="Product Name">
+                                            {!pro.productRec.Name}
+                                        </td>
+                                        <td role="gridcell" data-label="Product Category">
+                                            {!pro.productRec.Product_Category_Taneira__c}
+                                        </td>
+                                        <td role="gridcell" data-label="Vendor">
+                                            {!pro.productRec.Account__r.Name}
+                                        </td>
+                                       
+                                        <td role="gridcell" data-label="Cost">
+                                            {!pro.productRec.Cost__c}
+                                        </td>
+                                        <td role="gridcell" data-label="Quantity">
+                                            {!pro.productRec.Quantity__c}
+                                        </td>
+                                        <td role="gridcell" data-label="Photo">
+                                            <apex:image value="{!pro.imgLink}" height="80px" width="80px" />
+                                            
+                                        </td>
+                                         <td role="gridcell" data-label="Approval Status">
+                                            {!pro.productRec.Approval_Status__c}
+                                        </td>
+                                        
+                                       <!--- <td role="gridcell" style="{!if(isApprover,'','display:none')}" data-label="Reject/Need Clarification Comment">                                                
+                                            <apex:inputText styleclass="slds-input" value="{!pro.productRec.Reject_Need_Clarification_Comment__c}" rendered="{!if(pro.isError || pro.isEditable,true,false)}" />
+                                            <apex:outputText value="{!pro.productRec.Reject_Need_Clarification_Comment__c}" rendered="{!if(pro.isError || pro.isEditable,false,true)}" />
+                                            <span class="slds-grid slds-grid--align-spread">                                                
+                                                <div class="errorMsg" style="display:{!if(pro.isError,'block','none')}"><strong>Error:</strong> You must enter a value</div>
+                                            </span>
+                                        </td>---->
+                                        
+                                   </tr>
+                                </apex:repeat>
+                            </tbody>                        
+                        </table><br/>
+                        <center>
+                        <!---<apex:outputPanel rendered="{!isApprover == false}"> --->                          
+                            <apex:commandButton action="{!SubmitForApproval}" value="Submit For Approval" styleclass="slds-button slds-button--neutral slds-not-selected" reRender="proViewId,msgId" />
+                        <!---</apex:outputPanel>
+                        <apex:outputPanel rendered="{!isApprover}">
+                            <apex:commandButton action="{!approveProduct}" value="Approve" rendered="{!if((isReject == true && isClrf == true),true,false )}" styleclass="slds-button slds-button--neutral slds-not-selected" reRender="proViewId,msgId" />
+                            <apex:commandButton action="{!rejectProduct}" value="Reject" reRender="proViewId,msgId" styleclass="slds-button slds-button--neutral slds-not-selected"  rendered="{!isClrf}" />                          
+                            <apex:commandButton action="{!needClarification}" value="Need Clarification" rendered="{!isReject}" styleclass="slds-button slds-button--neutral slds-not-selected" reRender="proViewId,msgId" />   
+                            <apex:commandButton action="{!CancelProcess}" value="Cancel" rendered="{!if((isReject == true && isClrf == true),false,true )}" styleclass="slds-button slds-button--neutral slds-not-selected" reRender="proViewId,msgId" />                            
+                        </apex:outputPanel>----->
+                        </center>
+                    </div>
+                </div>
+            </div>
+        
+            </apex:outputPanel>
+            </div>
+        </apex:form>
+    </html>
+</apex:page>

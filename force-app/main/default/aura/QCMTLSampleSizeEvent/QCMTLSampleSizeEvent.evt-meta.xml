@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<AuraDefinitionBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>44.0</apiVersion>
+    <description>this even is to set the sample size from one sibling to parent and then pass to another sibling</description>
+</AuraDefinitionBundle>

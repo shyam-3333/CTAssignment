@@ -1,0 +1,37 @@
+<apex:page controller="ProductDownload_Helper" readonly="true"  contentType="text/csv#ProductList.csv">"Product Name","Product Id","Price Book Entry Id","UCP","Discount in %","Sales Price","Quantity"
+    
+    <apex:repeat value="{!WrapList}" var="prod">
+        {!prod.prodName},{!prod.prodId},{!prod.priceBookEntry}," "," "," "," "
+    </apex:repeat>
+   <!--apex:form >
+    <apex:pageBlock >
+        <table >
+            <tr>
+				<td>Product Name</td>                
+                <td>Product Id</td>
+                <td>Price Book Entry Id</td>
+                <td>UCP</td>
+                <td>Discount in %</td>
+                <td>Sales Price</td>
+                <td>Quantity</td>
+
+            </tr>
+            <apex:repeat value="{!WrapList}" var="prod">
+            <tr>
+            <td>{!prod.prodName}
+                </td>
+                <td>
+                {!prod.prodId}
+                </td>
+                <td> {!prod.priceBookEntry}</td>
+            </tr>
+                </apex:repeat>
+        </table>
+            <!--apex:pageBlockTable value="{!WrapList}" var="prod" border="1px solid black" style="font-size:14px"> 
+                <apex:column value="{!prod.prodId}"/>
+                <apex:column value="{!prod.prodName}"/>
+            </apex:pageBlockTable>
+    </apex:pageBlock>
+        </apex:form-->
+    
+</apex:page>

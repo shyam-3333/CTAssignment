@@ -1,0 +1,58 @@
+<apex:page controller="TaneiraProdCategoryClass" cache="true" readOnly="true" contentType="application/vnd.ms-excel#MasterData.xls; charset=UTF-8">
+    <table class="slds-table slds-table--bordered slds-resizable pt20 ">
+        <tr>
+            <th>Origin</th>
+            <th>Vendor Type</th>
+            <th>Fabric</th>
+            <th>Craft</th>
+            <th>Zari</th>
+            <th>Cost Band</th>
+            <th>Multiplier</th>
+            <th>Concatenation</th><!--Origin + Vendor Type + Fabric + Craft + Zari + Cost Band-->
+        </tr>
+        <apex:repeat value="{!MultiplierLst1}" var="cost">
+            <tr>
+                <td align="center"> {!cost.Origin__c} 			</td>
+                <td align="center"> {!cost.Vendor_Type__c} 	</td>
+                <td align="center"> {!cost.Fabric__c} 			</td> 
+                <td align="center"> {!cost.Craft__c} 			</td>
+                <td align="center"> {!cost.Zari__c} 			</td>
+                <td align="center"> {!cost.Cost_Band__c} 		</td>
+                <td align="center"> {!cost.Multiplier__c} 		</td>
+                <td align="center"> {!cost.Concatenation__c} 	</td>
+            </tr>
+        </apex:repeat>
+    </table>
+    <table>
+        <apex:repeat value="{!MultiplierLst}" var="cost">
+            <tr>
+                <td align="center"> {!cost.Origin__c} 			</td>
+                <td align="center"> {!cost.Vendor_Type__c} 	</td>
+                <td align="center"> {!cost.Fabric__c} 			</td> 
+                <td align="center"> {!cost.Craft__c} 			</td>
+                <td align="center"> {!cost.Zari__c} 			</td>
+                <td align="center"> {!cost.Cost_Band__c} 		</td>
+                <td align="center"> {!cost.Multiplier__c} 		</td>
+                <td align="center"> {!cost.Concatenation__c} 	</td>
+            </tr>
+        </apex:repeat>
+        
+    </table>
+    <table class="slds-table slds-table--bordered slds-resizable pt20 " id="tableId">
+        <tr></tr>
+        <tr>
+        	<th>combinedKey</th>
+        	<th>Min</th>
+            <th>Max</th>
+            <th>Band</th>
+        </tr>
+        <apex:repeat value="{!costBandList}" var="cost">
+            <tr>
+                <td align="center"> {!cost.combinedKey__c} 	</td>
+                <td align="center"> {!cost.Min__c} 			</td>
+                <td align="center"> {!cost.Max__c} 			</td>
+                <td align="center"> {!cost.Band__c} 			</td>
+            </tr>
+        </apex:repeat>
+    </table>
+</apex:page>

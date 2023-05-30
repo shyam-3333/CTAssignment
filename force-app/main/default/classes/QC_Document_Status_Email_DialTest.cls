@@ -1,0 +1,71 @@
+/**
+ * This class contains unit tests for validating the behavior of Apex classes
+ * and triggers.
+ *
+ * Unit tests are class methods that verify whether a particular piece
+ * of code is working properly. Unit test methods take no arguments,
+ * commit no data to the database, and are flagged with the testMethod
+ * keyword in the method definition.
+ *
+ * All test methods in an organization are executed whenever Apex code is deployed
+ * to a production organization to confirm correctness, ensure code
+ * coverage, and prevent regressions. All Apex classes are
+ * required to have at least 75% code coverage in order to be deployed
+ * to a production organization. In addition, all triggers must have some code coverage.
+ * 
+ * The @isTest class annotation indicates this class only contains test
+ * methods. Classes defined with the @isTest annotation do not count against
+ * the organization size limit for all Apex scripts.
+ *
+ * See the Apex Language Reference for more information about Testing and Code Coverage.
+ */
+@isTest
+private class QC_Document_Status_Email_DialTest{
+  static QC_Components__c  comp;
+  
+  @testsetup static void commonData(){
+      //Inserting custom setting records 
+        list<QC_Component_Prefix__c> custSettingList = new list<QC_Component_Prefix__c>();
+        custSettingList = QC_TestHandlerCls.getCustomSetting();
+        insert custSettingList;
+    }
+    static testMethod void myUnitTest() {
+        // TO DO: implement unit test
+        comp = new QC_Components__c(name__c='Dial',Watch_variant__c='Fastrack');
+        insert comp;
+        //Inserting Input parameters questions
+        id rtId = [select id from recordtype where developername='Question' and SobjectType='QC_Question__c'].id;
+        
+        QC_Question__c ques = new QC_Question__c(Question__c= 'Dial No',Component_Type__c='Dial',Order_Number__c = 10,Onload__c= false,Type__c= 'Free Text',Comment_Required__c = false,recordtypeid = rtid);
+        insert ques;
+        
+       //inserting question responses
+        QC_Response__c res = new QC_Response__c(Question__c =ques.id ,Response__c ='xsdsds',Order_Number__c=10);        
+        insert res;
+         //Insert input parameters
+        QC_Input_Data__c inputMaterial = new QC_Input_Data__c(Component_No__c=comp.id,Question__c =ques.id,Value__c='sdsdsdsd');
+     insert inputMaterial;
+     
+     QC_Condition__c condition = new QC_Condition__c(Question__c=ques.id,Response__c=res.id);
+     insert condition;
+     
+     //Insert test parameter record
+     QC_Test_Data__c testList = new QC_Test_Data__c(Condition_Ref__c=condition.id,Component_Name__c=comp.id,Observation__c='shkfbkhsb',Conclusion__c='Accept');
+     insert testList;
+     
+        QC_Document_Status_Email_Dial qcDialRep       = new QC_Document_Status_Email_Dial();
+        qcDialRep.compId = comp.Id;
+        qcDialRep.getComponent();   
+        
+        QC_Document_Status_Email_Dial.DefinedParameters  dp   = new QC_Document_Status_Email_Dial.DefinedParameters();
+        dp.inputParam     = 'input param';
+        dp.value       = 'value';
+        QC_Document_Status_Email_Dial.DefinedTestParam  dtp    = new QC_Document_Status_Email_Dial.DefinedTestParam();
+        dtp.observation    = 'onservation';
+        dtp.uom        = 'uom';
+        dtp.specification  = 'specification';
+        dtp.testName    = 'test name';
+        dtp.verdict      = 'verdict';
+     
+    }
+}

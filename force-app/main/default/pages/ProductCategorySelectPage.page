@@ -1,0 +1,129 @@
+<!----
+    Created By : Shweta kumari
+    Description : Page to select category. Used to redirect to difffrent page based on selected category  
+----->
+<apex:page standardController="Product__c" extensions="ProductCategorySelect" standardStylesheets="false" showHeader="false" sidebar="false" >
+    <apex:includeScript value="{!URLFOR($Resource.JqueryA, 'js/jquery-1.6.2.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.JqueryA, 'js/jquery-ui-1.8.16.custom.min.js')}"/>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"/>   
+    <script src="../../soap/ajax/36.0/connection.js" type="text/javascript"></script>
+    <style>
+    .stockit .slds-fade-in-open{background:#D9ECF1;}
+    .stockit .slds-modal__header {
+    background: #1c91b3 none repeat scroll 0 0;}
+    .stockit .slds-modal__header h2{color:#fff;}
+        .slds-backdrop{
+            background: #8199af!important;
+        }
+        
+.ui-widget-content a {
+    display: inline-block;
+       padding: 1% 2%;
+    width: 96%;
+}.ui-menu .ui-menu-item{background: #f2f2f2 none repeat scroll 0 0;margin: 0 0 1px;}
+     // .stockit .slds-modal__footer{ background: #1c91b3 none repeat scroll 0 0;}  
+    </style>
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <apex:stylesheet value="{!URLFOR($Resource.SLDS202,'assets/styles/salesforce-lightning-design-system-vf.css')}" />
+        </head>
+        <apex:form >
+            <div class="slds stockit" height="100%">
+                <div role="dialog" tabindex="-1" aria-labelledby="header43" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <div class="slds-modal__header">                           
+                            <h2 id="header43" class="slds-text-heading--medium">Select Product Category</h2>
+                        </div>
+                        <div class="slds-modal__content slds-p-around--medium">
+                            <label class="slds-form-element__label" for="text-input-01"><b>Product Category</b>
+                                <abbr class="slds-required" title="required">*</abbr>
+                            </label>
+                            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon--right slds-picklist__input">
+                                <apex:inputtext value="{!Product__c.Product_Category_Taneira__c}" styleClass="slds-input autoFill" id="inputCat" />
+                                <p id="error3" style="display:none;color:red">Please Select a value</p>
+                            </div>
+                        </div>
+                        <div class="slds-modal__footer">
+                            <input type="Button" value="Continue" Class="slds-button slds-button--neutral" id="ContinueId" />
+                            <apex:actionFunction name="doRedirect" action="{!RedirectToPage}" />
+                             <input type="Button" value="Cancel" Class="slds-button slds-button--neutral" onclick="invokeCancel('{!Product__c.vendor_custom__c}')"/>
+                                <apex:actionFunction name="Cancel" action="{!doCancel}" />
+                        </div>
+                   </div>
+               </div>
+               <div class="slds-backdrop slds-backdrop--open"></div>
+            </div>
+        </apex:form>
+    </html>
+     <script>
+        $(document).ready(function() {
+            var isErr;
+            isErr = false;
+            $( ".autoFill" ).autocomplete({
+            
+             source: function( request, response ) {
+                 var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+                 var arr = $.grep( {!autoCompleteList}, function( item ){  return matcher.test( item );    })
+                   //  alert('arr.length=='+arr.length)
+                 if(arr.length == 0){
+                 
+                     $("#error3").text("No results found");
+                     $("#error3").show();
+                     jQuery('[id$=values]').css("border-color", "red");
+                     isErr = true;
+                 }
+                 else{
+                     response(arr);
+                
+                     $("#error3").hide();
+                     isErr = false;
+                 }
+                 // response( arr );
+             },
+             close: function(e, ui) {   
+                  $(this).blur();  
+              },
+             
+             minLength:0,
+         });
+           $( ".autoFill" ).focus(function () {
+                $(this).autocomplete("search", "");
+            });
+         $('[id$=ContinueId]').click(function() {
+             clickId = this.id;
+             if (jQuery('[id$=inputCat]').val() == '' || jQuery('[id$=inputCat]').val() == null) {
+                    isErr = true;
+                    jQuery('[id$=error3]').show();
+                    jQuery('[id$=inputCat]').css("border-color", "red");
+
+                } 
+              if (!isErr && clickId == 'ContinueId') {
+
+                    doRedirect();
+                } 
+              });
+             
+        });
+        
+        function invokeCancel(accountId){
+              // alert('accountId==='+accountId);
+               if ( (typeof sforce != 'undefined') && sforce && (!!sforce.one) ){
+                   
+                   if(accountId != null && accountId != ''){
+                       sforce.one.navigateToSObject(accountId);
+                   }
+                  
+                   else if(accountId == null || accountId == ''){
+                      sforce.one.navigateToList('00B5B000000N39Q','null','Product__c');
+                   }
+                   else{}
+                }       
+                else {
+                   //  alert('***$$');                   
+                    Cancel();
+                }
+               
+           
+         }
+     </script>
+</apex:page>

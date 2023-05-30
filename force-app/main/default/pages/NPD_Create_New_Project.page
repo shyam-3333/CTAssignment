@@ -1,0 +1,28 @@
+<apex:page controller="NPD_Create_New_Project" sidebar="false">
+    <script>
+        onload();
+
+        function OpenEditPage(projectitems, activityid) {
+            console.log('projectitems' + projectitems);
+            console.log('activityid' + activityid);
+            var url = "/apex/NPDDynamicTable?projectitems=" + projectitems + "&activityid=" + activityid;
+            newWin = window.open(url, 'Popup6', 'height=500,width=600,left=100,top=100,resizable=no,scrollbars=yes,toolbar=no,status=no');
+        }
+
+        function openProjectdetailPage(proId,brand,coll,owner) {
+            //alert(proId);
+            //window.location.href = "/apex/NPD_DetailView_Page?proID="+ proId; 
+            //Added by roshi
+            window.location.href = "/apex/PDMSEditPage?proID=" + proId + "&brand=" + brand + "&coll=" + coll + "&owner=" +owner;
+            //window.location.href = "/apex/PDMSEditPage?proID="+proId;
+
+        }
+    </script>
+   <!-- <apex:form >
+        <apex:actionStatus id="splashStatus" onstart="startSplash();" onstop="endSplash(); " />
+        <apex:actionFunction name="onload" action="{!mapStageActivityData}" oncomplete="openProjectdetailPage('{!strProjectId}','{!strbrand}','{!strCollectionName}','{!strOwner}');" rendered="{!strMarketingTeam != null}" status="splashStatus">
+        </apex:actionFunction>
+        <apex:actionFunction name="af" action="{!mapStageActivityData}" rerender="tableId,thePanel,subStageRepeatId,activityRepeatId" oncomplete="callTablegrid();">
+        </apex:actionFunction>
+    </apex:form>-->
+</apex:page>

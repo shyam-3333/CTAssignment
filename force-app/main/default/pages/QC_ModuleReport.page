@@ -1,0 +1,276 @@
+<apex:page renderAs="pdf" controller="QC_ModuleReport" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" showHeader="false" doctype="html-5.0" id="pge">
+    <head>
+      <style>
+      @page{
+      margin-left:1.00in;margin-right:0.10in;
+      margin-top:0.50in;
+      }
+     </style>
+     </head>   
+ <body>   
+ <apex:stylesheet value="{!$Resource.pdfcss}"/>
+<div style="width:100%;">
+    <c:StylingPdfContent type="header" >  
+        <div style="page-break-after:always;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;text-align:right;">Page <span class="pagenumber" /> of <span class="pagecount"/></div>
+    </c:StylingPdfContent>
+    
+    <div style="display:{!if(component.Sample_Category__c != 'Competitor Products','block','none')}">   
+        
+        <table width="100%" style="border-collapse:collapse;">
+            <tr>
+                <td style="border:1px solid black;" rowspan="2" width="15%"><apex:image value="{!$Resource.Titan_logo}" width="100" alt="Description of image here"/></td>
+                <td style="border:1px solid black;text-align:center;color:black;font-size:20px;font-weight:bold;" width="70%">TITAN COMPANY LIMITED</td>
+                <td style="border:1px solid black;text-align:center;color:black;font-size:20px;font-weight:bold" width="15%" rowspan="2">CUSTOMER ASSURANCE</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid black;text-align:center;color:black;font-size:20px;font-weight:bold">Reliability Test Report -  {!component.Name__c}</td>
+            </tr>
+        </table> 
+    </div>
+    <div style="display:{!if(component.Sample_Category__c == 'Competitor Products','block','none')}"> 
+        
+        <table width="100%" style="border-collapse:collapse;">
+            <tr>
+                <td style="border:1px solid black;" rowspan="2" width="15%"><apex:image value="{!$Resource.Titan_logo}" width="100" alt="Description of image here"/></td>
+                <td style="border:1px solid black;text-align:center;color:black;font-size:20px;" width="70%">TITAN COMPANY LIMITED</td>
+                <td style="border:1px solid black;text-align:center;color:black;font-size:20px;" width="15%" rowspan="2">QUALITY ASSURANCE</td>
+            </tr>
+            <tr>
+                <td style="border:1px solid black;text-align:center;color:black;font-size:20px;">Competitor Product Evaluation report -  {!component.Name__c}</td>
+            </tr>
+        </table> 
+    </div>
+    
+      <div style="display:{!if(component.Sample_Category__c != 'Competitor Products','block','none')}">
+    <c:StylingPdfContent type="footer" >
+         <table>
+         <tr><td colspan="4"><div align="center" style="color:black;font-size:10pt;">  LEGEND:U-Undersize Sample,R-Running,S-Stoppage,N-Not Applicable</div> </td> </tr>
+            <tr>
+               <td width="30%"><div align="center" style="color:black;font-size:10pt;"><b>Product Approval</b></div> </td>
+               <td width="23%"><div align="center" style="color:black;font-size:10pt;"><b>Inspected </b></div></td>
+               <td width="23%"><div align="center" style="color:black;font-size:10pt;"><b>Checked </b> </div></td>
+               <td width="24%"><div align="center" style="color:black;font-size:10pt;"><b>Approved </b> </div></td>
+            </tr>
+            <tr>
+                <td>
+             <div align="center">   <apex:outputtext value="{!component.Final_Verdict__c}"  style="font-size:16pt;color:{!IF(component.Final_Verdict__c == 'Accept', 'green', 'red')}"/></div>
+                </td>
+              <td>
+              <div align="center"> <apex:outputtext value="{!component.Owner.name}"  style="font-size:10pt;color:{!IF(component.Final_Verdict__c != '', 'black', '')}"/></div>
+              </td>
+              <td>
+             <div align="center"> <apex:outputtext value="{!firstActorName}"  style="font-size:10pt;color:black;"/> </div>
+              </td>      
+              <td>
+              <div align="center"> <apex:outputtext value="{!secondActorName}"  style="font-size:10pt;color:black;"/> </div>
+              </td>
+            </tr>
+        </table>     
+    </c:StylingPdfContent>
+   </div>
+     <div align="Left">
+         <apex:image value="{!component.imageurl__c}" url="{!component.imageurl__c}"  width="10%" height="10%" rendered="{!If(component.imageurl__c!=null ,True,False)}" /> 
+          <apex:image value="{!component.imageurl2__c}" url="{!component.imageurl2__c}"  width="10%" height="10%" rendered="{!If(component.imageurl2__c!=null ,True,False)}" /> 
+         <apex:image value="{!component.imageurl3__c}" url="{!component.imageurl3__c}"  width="10%" height="10%" rendered="{!If(component.imageurl3__c!=null ,True,False)}" /> 
+     </div> 
+  <!--  <div style="display:{!if(component.Sample_Category__c != 'Competitor Products','block','none')}">
+        <div style="font-family:Arial,Helvetica,sans-serif; font-size:18px; font-weight:bold;text-align:center;">Reliability Test Report - {!component.Name__c}</div><br/>
+    </div>  
+    <div style="display:{!if(component.Sample_Category__c == 'Competitor Products','block','none')}">
+        <div style="font-family:Arial,Helvetica,sans-serif; font-size:18px; font-weight:bold;text-align:center;">Competitor Product Evaluation report - {!component.Name__c}</div><br/>
+    </div> -->    
+            <table width="100%" cellspacing="0" border="1" align="left" style="border-bottom-style: none;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">
+                <tr style="line-height: 25px;">
+                    <td>Report Date</td> 
+                    <td width="25%">
+                        <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                            <!--<apex:param value="{!Today()}" />-->
+                            <apex:param value="{!component.Published_Date__c}" />
+                        </apex:outputText></td>
+                    <td>Report Ref. No.</td>
+                    <td><apex:outputLabel value="{!component.Report_Ref_Number__c}"></apex:outputLabel></td>
+                  </tr>   
+                  <tr >
+                      <td class="fieldLabel">Vendor</td>
+                     <td>
+                        <apex:outputtext value="{!component.Vendor__r.Name}"  />
+                     </td>    
+                     <td class="fieldLabel">Sample Source</td>
+                     <td><apex:outputLabel value="{!component.Sample_Department__c}">&nbsp;</apex:outputLabel></td>
+                </tr>
+                <tr style="line-height: 25px;">      
+                     <td class="fieldLabel">SKU</td>
+                     <td>
+                        <apex:outputtext value="{!component.SKU_Reference__c}"  />
+                     </td>
+                     <td class="fieldLabel">Sample Date</td>
+                      <td> 
+                        <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                            <apex:param value="{!component.Sample_Date__c}" /> 
+                        </apex:outputText>                  
+                    </td>
+                    
+                </tr>
+                <tr >
+                     <td class="fieldLabel">Test Background</td>
+                     <td ><apex:outputfield value="{!component.Test_Back_Ground__c}"  /></td>    
+                     <td class="fieldLabel">No. of Sample</td>
+                     <td><apex:outputfield value="{!component.No_Of_Sample_Received__c}"  /></td>
+                     
+                </tr>
+        <!--<table width="1280" cellspacing="0" align="left" border="1" style="font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;">
+             <th align="center"><b>Note: Values marked with red are deviation from standard</b></th>              
+        </table>-->
+               
+            <!--       
+            <apex:repeat value="{!moduleModuleRef}"   var="modulRef" >
+                <tr >     
+                     <td ><apex:outputText value="{!modulRef.inputParam}"/></td>
+                     <td colspan="3"><apex:outputText value="{!modulRef.value}" /></td>
+                </tr>
+            </apex:repeat> 
+            -->
+            <!--<tr >
+                <td class="fieldLabel">Publish Date</td>
+                <td colspan="3">
+                    <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                        <apex:param value="{!component.Published_Date__c}" />
+                    </apex:outputText>
+                </td>
+            </tr>-->
+            <apex:variable var="v" value="" rendered="{!NOT(ISBLANK(component.General_Observation__c))}">
+                <tr >
+                     <td class="fieldLabel">
+                         <div >General Observation</div>
+                     </td>
+                     <td colspan="3" ><apex:outputfield value="{!component.General_Observation__c}"/></td>
+                </tr>
+                
+                
+            </apex:variable> 
+        </table>
+    <br /><br />
+        <!-- OUTPUT Test parameters for MODULE component except Smart watch-->
+         <div style="display:{!if(typeOfModule,'none','block')}">
+         <apex:variable var="call" value="{!0}" /> 
+            <table border="1" class="report-module"  cellspacing="0" cellpadding="0" align="left" style="border-top-style: none;font-family:Arial,Helvetica,sans-serif;font-size:9pt;color:#000;"> 
+                <td colspan="10" style="font-family:Arial,Helvetica,sans-serif;background:#f7ffe6;font-weight:bold;font-size:16px; color:#2e5cb8;"><div align="center"><b>Reliability Test Certificate</b></div></td>   
+                <tr style="background:#F0F8FF;">
+                    <td width="50%" colspan="3" style="color:#0000FF;font-weight:bold;font-size:16px;"><b>Module</b></td>
+                    <td colspan="7" style="color:#0000FF;font-weight:bold;font-size:16px;"><apex:outputText value="{!component.Final_Verdict__c}" style="color:{!if(component.Final_Verdict__c == 'Accept','Green','red')};"></apex:outputText></td>
+                </tr>
+                <tr style=" display:{!if(moduleTestParamList.size != 0,'inline','none')};color:#000;">
+                    <td style="background:#D3D3D3;"><b>Test Parameter</b></td>
+                    <td style="background:#D3D3D3;"><b>Test Condition</b></td>
+                    <td style="background:#D3D3D3;"><b>Evaluation Criteria</b></td>
+                    <td style="background:#D3D3D3;" colspan="5"><b>Observation</b></td>
+                    <td style="background:#D3D3D3;"><b>Verdict</b></td>
+                    <td style="background:#D3D3D3;"><b>Comments and Remarks</b></td>   
+                </tr>  
+                <tr>
+                    <td></td>
+                    <td></td>  
+                    <td></td>                  
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>4</td>
+                    <td>5</td>
+                    <td></td>
+                    <td></td>        
+                </tr>            
+            <apex:repeat value="{!moduleTestParamList}" var="modTP" id="modOutputRepeat2">   
+              <tr> 
+                  <td>  
+                    <div style="display:{!if(modTP.isManual,'block','none')}">     
+                              <apex:outputtext value="{!modTP.testname}" styleclass="moduletest" />  
+                    </div>
+                    <div style="display:{!if(modTP.isVisible,'block','none')}">     
+                              <apex:outputtext value="{!modTP.testname}" styleclass="moduletest" />  
+                    </div>             
+                  </td> 
+                  <td > 
+                        <div style="display:{!if(modTP.isManual,'block','none')}">     
+                              <apex:outputtext value="{!modTP.uUOM}" styleclass="moduletest" />  
+                       </div> 
+                        <div style="display:{!if(modTP.isVisible,'block','none')}">     
+                              <apex:outputtext value="{!modTP.uUOM}" styleclass="moduletest" />  
+                       </div>
+                  </td>
+
+               <apex:panelGroup rendered="{!(modTP.specification!='Test observation')&&(modTP.specification !='24 Hours/Color Change')&&(modTP.specification!='3000 Actuation') && (!modTP.isLast)}"> 
+                      <td ><apex:outputtext value="{!modTP.specification}"/></td>
+                      <td><apex:outputtext value="{!modTP.observation1}" styleClass="inputbox"/></td>
+                      <td><apex:outputtext value="{!modTP.observation2}" styleClass="inputbox"/></td>
+                      <td><apex:outputtext value="{!modTP.observation3}" styleClass="inputbox"/></td>
+                      <td><apex:outputtext value="{!modTP.observation4}" styleClass="inputbox"/></td>
+                      <td><apex:outputtext value="{!modTP.observation5}" styleClass="inputbox"/></td>   
+                      <td><apex:outputtext value="{!modTP.verdict}" /></td>   
+                      <td><apex:outputtext value="{!modTP.commentAndRemarks}" /></td>      
+                </apex:panelGroup>                 
+                 <!-- below row rendered only with specification  Test observation,24 Hours/Color Change,3000 Actuation-->
+                <apex:panelGroup rendered="{!(modTP.specification=='Test observation') || (modTP.specification =='24 Hours/Color Change') || (modTP.specification=='3000 Actuation') || (modTP.isLast)}">
+                      <td><apex:outputtext value="{!modTP.specification}"/></td>
+                      <td colspan="5"><apex:outputtext value="{!modTP.observation}"/></td>  
+                        <td style="font-weight:{!if(modTP.verdict == 'Reject','bold','Standard')}">    
+                            <apex:outputText value="{!modTP.verdict}" />
+                       </td>
+                      <td><apex:outputtext value="{!modTP.commentAndRemarks}" /></td>    
+                </apex:panelGroup>     
+              </tr>
+             <apex:variable var="call" value="{!call+1}"/>
+          </apex:repeat>
+        </table>  
+      </div>  
+ <!-- OUTPUT Test parameters for MODULE component only for Smart watch-->
+         <div style="display:{!if(typeOfModule,'block','none')}">
+         <apex:variable var="call" value="{!0}" /> 
+            <table border="1" class="report-module"  cellspacing="0" cellpadding="0" align="left" style="border-top-style: none;font-family:Arial,Helvetica,sans-serif;font-size:9pt;color:#000;"> 
+                <td colspan="10" style="font-family:Arial,Helvetica,sans-serif;background:#f7ffe6;font-weight:bold;font-size:16px; color:#2e5cb8;"><div align="center"><b>Reliability Test Certificate</b></div></td>   
+                <tr style="background:#F0F8FF;">
+                    <td width="50%" colspan="3" style="color:#0000FF;font-weight:bold;font-size:16px;"><b>Module</b></td>
+                    <td colspan="7" style="color:#0000FF;font-weight:bold;font-size:16px;"><apex:outputText value="{!component.Final_Verdict__c}" style="color:{!if(component.Final_Verdict__c == 'Accept','Green','red')};"></apex:outputText></td>
+                </tr>
+                <tr style=" display:{!if(moduleTestParamList.size != 0,'inline','none')};color:#000;">
+                    <td style="background:#D3D3D3;"><b>Test Parameter</b></td>
+                    <td style="background:#D3D3D3;"><b>Test Condition</b></td>
+                    <td style="background:#D3D3D3;"><b>Duration/Cycle</b></td>
+                    <td style="background:#D3D3D3;"><b>Observation</b></td>
+                     <td style="background:#D3D3D3;"><b>Comments and Remarks</b></td>   
+                    <td style="background:#D3D3D3;"><b>Conclusion</b></td>
+                    <td style="background:#D3D3D3;"><b>No of Samples</b></td>
+                </tr>  
+            <apex:repeat value="{!moduleTestParamList}" var="modTP" id="modOutputRepeat3">   
+              <tr> 
+                  <td>  
+                    <div style="display:{!if(modTP.isManual,'block','none')}">     
+                              <apex:outputtext value="{!modTP.testname}" styleclass="moduletest" />  
+                    </div>
+                    <div style="display:{!if(modTP.isVisible,'block','none')}">     
+                              <apex:outputtext value="{!modTP.testname}" styleclass="moduletest" />  
+                    </div>             
+                  </td> 
+                  <td > 
+                        <div style="display:{!if(modTP.isManual,'block','none')}">     
+                              <apex:outputtext value="{!modTP.uUOM}" styleclass="moduletest" />  
+                       </div> 
+                        <div style="display:{!if(modTP.isVisible,'block','none')}">     
+                              <apex:outputtext value="{!modTP.uUOM}" styleclass="moduletest" />  
+                       </div>
+                  </td>
+                  <td><apex:outputtext value="{!modTP.specification}"/></td>
+                  <td><apex:outputtext value="{!modTP.observation}" styleClass="inputbox"/></td>  
+                  <td><apex:outputtext value="{!modTP.commentAndRemarks}" /></td>     
+                   <td style="font-weight:{!if(modTP.verdict == 'Reject','bold','Standard')}">    
+                            <apex:outputText value="{!modTP.verdict}" />
+                   </td>
+                 <td><apex:outputtext value="{!modTP.noOfSample}" /></td>     
+              </tr>
+             <apex:variable var="call" value="{!call+1}"/>
+          </apex:repeat>
+        </table>  
+      </div>  
+   
+      </div>
+      </body>
+</apex:page>

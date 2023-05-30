@@ -1,0 +1,166 @@
+<apex:page standardController="Quote" sidebar="false" showHeader="false" renderas="pdf">
+<head>
+<style>
+ @page {
+        
+        @top-center { 
+      
+            content : element(header);
+         }
+    
+        @bottom-right {
+            content : element(footer);
+            
+        }
+    
+    }
+    
+    div.header {
+        position : running(header) ;
+    }
+    
+    div.footer {
+        position : running(footer) ;
+    }
+    
+           
+</style>
+</head>
+<apex:pageBlock >
+ <div class="footer"> 
+      
+     <div > 
+     <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+           <td align="left">
+            <apex:outputText value="(*This is a system generated document & therefore does not require any signature.)" /> 
+          </td>
+           <tr><td style="font-family:Calibri"><b>{!$User.LastName} :-{!$User.Street},{!$User.City},{!$User.State},{!$User.PostalCode}</b></td></tr>
+          </tr>         
+     </table>
+     </div>      
+  </div> 
+   
+   
+<table width = "100%">
+<tr>
+<td align = "left"><apex:image value="{!$Resource.Tanishq}" width="1800%" height="1800%"/></td>
+<td align = "center" style="font-size:22px;font-family:Calibri"><center><b>PROFORMA INVOICE</b></center></td></tr>
+</table>
+<br/>
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName=='Requirement Analysis'||Quote.Opportunity.StageName=='RFQ_Study'||
+ Quote.Opportunity.StageName=='Revised Quote'||Quote.Opportunity.StageName=='Quote_Preparation'}">
+<h1>Opportunity Stage should be Proforma Invoice or next </h1>
+</apex:panelgroup>
+
+<apex:Panelgroup rendered="{!Quote.Opportunity.Payment_Criteria__c=='Credit'&& Quote.Opportunity.Credit_Approval_Status__c!='Approved'}">
+<h1>Opportunity is in credit approval process </h1>
+</apex:panelgroup>
+
+
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName=='Proforma Invoice'||Quote.Opportunity.StageName=='Received PO/Order Won'||
+Quote.Opportunity.StageName=='Payment/Delivery'||Quote.Opportunity.StageName=='Opportunity_On_Hold'}">
+<apex:Panelgroup rendered="{!Quote.Approval_Status_Quote__c=='Approved'}">
+
+
+
+<table style="border:1px solid black" width="100%" cellspacing="0">
+<tr>
+    <td width="30%" height="30px" style="font-family:Calibri"><b>Product:</b>&nbsp;{!Quote.Subject__c} </td><td width="15%" height="30px"></td> <td width="25%" height="30px" style="font-family:Calibri"><b>Kind Attn:</b>&nbsp;{!Quote.Contact.Name} </td><td width="30%" height="30px"> </td>
+</tr>
+
+</table>
+<table style="border-top:0px solid black;border-bottom:0px solid black;border-right:1px solid black;border-left:1px solid black" width="100%" cellspacing="0">
+<tr>
+    <td width="40%" height="175px" style="border-right:1px solid black">
+   <table style="margin-top:-80px">
+   <tr><td style="font-family:Calibri"><b>From:</b></td> </tr></table><br/>
+   <table >
+   <tr><td style="font-family:Calibri">:{!$User.CompanyName}<br/>{!$User.Street},{!$User.City},{!$User.State},{!$User.PostalCode}</td> </tr></table>
+   </td>
+   
+   <td width="60%" height="175px" >
+   <table style="margin-top:-80px">
+   <tr><td  style="font-family:Calibri"><b> TO:</b>{!Quote.Contact.Account.Name}<br/>{!Quote.Contact.MailingStreet},<br/>{!Quote.Contact.MailingCity},-{!Quote.Contact.MailingPostalCode},{!Quote.Contact.MailingState},{!Quote.Contact.MailingCountry}</td></tr></table>
+   
+   </td></tr>
+
+</table>
+
+<table style="border:1px solid black" width="100%" cellspacing="0" >
+<tr>
+    <td width="25%" height="40px" style="font-family:Calibri"><b>Doc No :</b>&nbsp;{!Quote.Do_No__c} </td> <td width="25%" height="40px"></td> <td width="25%" height="40px" style="font-family:Calibri"><b>P.O.No:</b> {!Quote.Opportunity.PO_No__c}</td><td width="25%" height="40px"></td>
+</tr>
+
+<tr>
+    <td width="25%" height="40px" style="font-family:Calibri"><b>DATE :</b>&nbsp;<apex:outputText value="{0,date,dd'/'MM'/'yyyy}"><apex:param value="{!Today()}" /></apex:outputText> </td> <td width="25%" height="40px"></td> <td width="25%" height="40px"></td> <td width="25%" height="40px"></td> 
+</tr>
+</table>
+
+
+<table style="border-top:0px solid black;border-right:1px solid black;border-left:1px solid black;border-bottom:1px solid black;" cellspacing="0" width="100%" >
+<tr>
+    <td width="25%" height="20px" style="border-right:1px solid black;font-family:Calibri"><center><b>Product Name</b></center></td> <td width="15%" height="20px" style="border-right:1px solid black;font-family:Calibri"><center><b>Qty</b></center></td> <td width="35%" height="20px" style="border-right:0.5px solid black;font-family:Calibri"><center> <b>Cost Per Unit(INR)</b></center></td><td width="25%" height="20px" style="font-family:Calibri"><center><b>Amount(INR)</b></center></td>
+</tr>
+</table>
+
+<table style="border-top:0px solid black;border-right:0px solid black;border-left:1px solid black;" cellspacing="0" width="100%" >
+   <apex:repeat value="{!Quote.QuoteLineItems}" var="line">
+    <tr>
+            <td style="border-right:1px solid black;border-bottom:1px solid black;font-family:Calibri"  width="25%" height="20px"><center><apex:outputLabel value="{!line.PricebookEntry.Product2.Name}"/></center></td>
+            <td style="border-right:1px solid black;border-bottom:1px solid black;font-family:Calibri;Text-align:right"  width="15%" height="20px"><left><apex:outputLabel value="{!line.Quantity}"/></left></td>
+            <td style="border-right:1px solid black;border-bottom:1px solid black;font-family:Calibri;Text-align:right"  width="35%" height="20px"><left><apex:outputLabel value="{!line.UnitPrice}"/></left></td>
+            <td style="border-right:1px solid black;border-bottom:1px solid black;font-family:Calibri;Text-align:right"  width="25%" height="20px"><left><apex:outputText value="{0,number,###,###,###,###.##}"  style="font-align:right"> <apex:param value="{!(line.Quantity)*(line.UnitPrice)}"/></apex:outputText></left></td>
+        
+    </tr>
+   
+   </apex:repeat>
+         
+    
+     </table>
+
+
+<table border='1' style="border-top:0px solid black;border-right:0px solid black;border-left:1px solid black;border-bottom:0px solid black;margin-top:" cellspacing="0" width="100%" >
+<tr >
+    <td width="25%" height="20px" style="border-right:1px solid black;font-family:Calibri"><center>Total</center></td>
+    <td width="15%" height="20px" style="border-right:1px solid black;font-family:Calibri"></td> <td width="35%" height="20px" style="border-right:0.5px solid black;font-family:Calibri"> </td><td width="25%" height="20px" align="right">&nbsp;<apex:outputfield value="{!Quote.Price_Before_Discount__c}"/>&nbsp;</td>
+</tr>
+
+
+<tr >
+    <td width="25%" height="20px" style="border-right:1px solid black;font-family:Calibri"><center>Discount (%)</center></td> <td width="15%" height="20px" style="border-right:1px solid black;font-family:Calibri"></td> <td width="35%" height="20px" style="border-right:0.5px solid black;font-family:Calibri"> </td><td width="25%" height="20px" align="right">&nbsp;{!Quote.Discount_Corp__c}&nbsp;</td>
+</tr>
+
+<tr >
+    <td width="25%" height="20px" style="border-right:1px solid black;font-family:Calibri"><center>Final Value</center></td> <td width="15%" height="20px" style="border-right:1px solid black;font-family:Calibri"></td> <td width="35%" height="20px" style="border-right:0.5px solid black;font-family:Calibri"> </td><td width="25%" height="20px" align="right">&nbsp;<apex:outputfield value="{!Quote.TotalPrice}" />&nbsp;</td>
+</tr>
+</table>
+
+
+ <table style="border:1px solid black" width="100%" cellspacing="0" >
+  <tr>
+     <td width="100%" height="250px"  >
+    <table style="margin-top:-50px">
+    <br/>
+    <table>
+    <tr/><tr/><tr/>
+    <tr><td style="font-family:Calibri"><u><b>Terms &amp; conditions</b></u></td></tr>
+  <tr/><tr/><tr/><tr/><tr/><tr/><tr/><tr/><tr/><tr/>
+    <tr><td style="font-family:Calibri"> 1) Validity: Gift Vouchers will be valid for 6 months from the date of issue. </td></tr>
+    <tr><td style="font-family:Calibri"> 2) Payment: 100% advance along with purchase order, through Cheque / Demand draft drawn in favour of “Titan Company Limited”.</td></tr>
+    <tr><td style="font-family:Calibri"> 3) Delivery: {!Quote.Delivery_for_GV__c}</td></tr>
+    <tr><td style="font-family:Calibri"> 4) Description: {!Quote.Description_for_Proforma__c}</td></tr>
+    </table>
+    <br/>
+    <br/>
+    <table>
+    <tr><td width="65%" style="font-family:Calibri">E.&amp; O.E.</td><td align="right" style="font-family:Calibri">FOR Titan Company Limited.,</td></tr></table>
+    </table>
+    
+     </td>
+ </tr>
+ </table>
+ <br/>
+
+</apex:panelgroup></apex:panelgroup>
+</apex:pageBlock></apex:page>

@@ -1,0 +1,10 @@
+   th, td {
+        white-space:normal;
+        }
+img {
+	width:60px!important;
+}
+@page {
+	size: A4 landscape;
+
+}

@@ -1,0 +1,260 @@
+<apex:page renderas="pdf" controller="QC_MetalStrapDetailedReport"  standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" showHeader="false" doctype="html-5.0" id="pge">
+   <head>
+   <style>
+    @page{
+    margin-left:1.00in;margin-right:0.10in;
+    margin-top:0.50in;
+    }
+</style>
+</head>  
+     <c:StylingPdfContent type="header" >  
+        <div style="page-break-after:always;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;text-align:right;">Page <span class="pagenumber" /> of <span class="pagecount"/></div>       
+    </c:StylingPdfContent>
+    <div style="display:{!if(component.Sample_Category__c != 'Competitor Products','block','none')}">
+    <c:StylingPdfContent type="footer">
+     <table>
+            <tr>
+               <td width="30%"><div align="center" style="color:black;font-size:10pt;"><b>Product Approval</b></div> </td>
+               <td width="23%"><div align="center" style="color:black;font-size:10pt;"><b>Inspected </b></div></td>
+               <td width="23%"><div align="center" style="color:black;font-size:10pt;"><b>Checked </b> </div></td>
+               <td width="24%"><div align="center" style="color:black;font-size:10pt;"><b>Approved </b> </div></td>
+            </tr>
+            <tr>
+                <td>
+             <div align="center">   <apex:outputtext value="{!component.Final_Verdict__c}"  style="font-size:16pt;color:{!IF(component.Final_Verdict__c == 'Accept', 'green', 'red')}"/></div>
+                </td>
+              <td>
+              <div align="center"> <apex:outputtext value="{!component.Owner.name}"  style="font-size:10pt;color:{!IF(component.Final_Verdict__c != '', 'black', '')}"/></div>
+              </td>
+              <td>
+             <div align="center"> <apex:outputtext value="{!firstActorName}"  style="font-size:10pt;color:black;"/> </div>
+              </td>      
+              <td>
+              <div align="center"> <apex:outputtext value="{!secondActorName}"  style="font-size:10pt;color:black;"/> </div>
+              </td>
+            </tr>
+        </table>  
+    </c:StylingPdfContent>
+    </div>
+    <!--
+    <c:StylingPdfContent type="footer1">
+          <div align="center" style="color:#585858;font-size:10pt;"><br></br>Checked : {!lst.Name}</div>
+    </c:StylingPdfContent>
+    
+     <c:StylingPdfContent type="footer2">
+         <div align="center" style="color:#585858;font-size:10pt;"><br></br>Approved : {!lst1.Name}</div>
+    </c:StylingPdfContent>
+    -->
+     <div align="Left">
+        <apex:image value="{!component.imageurl__c}" url="{!component.imageurl__c}"  width="10%" height="10%" rendered="{!If(component.imageurl__c!=null ,True,False)}" /> 
+        <apex:image value="{!component.imageurl2__c}" url="{!component.imageurl2__c}"  width="10%" height="10%" rendered="{!If(component.imageurl2__c!=null ,True,False)}" /> 
+        <apex:image value="{!component.imageurl3__c}" url="{!component.imageurl3__c}"  width="10%" height="10%" rendered="{!If(component.imageurl3__c!=null ,True,False)}" /> 
+     </div>
+    <div style="display:{!if(component.Sample_Category__c != 'Competitor Products','block','none')}">
+        <div align="center" style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:18px;">Detailed Test Report - {!component.Name__c}</div>    <br/>
+    </div> 
+    <div style="display:{!if(component.Sample_Category__c == 'Competitor Products','block','none')}">
+        <div align="center" style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:18px;">Competitor Product Evaluation report - {!component.Name__c}</div>    <br/>
+    </div>       
+           <apex:pageMessages />   
+            <table width="100%" cellspacing="0"  border="1" align="left" style=" border-bottom-style: none;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">
+               
+                 <tr style="line-height: 25px;">
+                    <td>Report Date</td> 
+                    <td><apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                            <!--<apex:param value="{!Today()}" /> -->
+                            <apex:param value="{!component.Published_Date__c}" />
+                        </apex:outputText> </td>
+                    <td>Report Ref. No.</td>
+                    <td><apex:outputLabel value="{!component.Report_Ref_Number__c}"></apex:outputLabel></td>
+                  </tr>
+                   <tr style="line-height: 25px;">  
+            <td class="fieldLabel">Model Ref.</td>
+            <td><apex:outputLabel value="{!component.Model__c}"></apex:outputLabel></td>
+            <td class="fieldLabel">Watch Variant Ref.</td>
+            <td><apex:outputLabel value="{!component.Watch_variant__c}"></apex:outputLabel></td>
+        </tr>
+                  <tr style="line-height: 25px;">    
+                     <td class="fieldLabel">Vendor</td>
+                     <td><apex:outputtext value="{!component.Vendor__r.Name}"  /></td>
+                     <td class="fieldLabel">Brand</td>
+                     <td><apex:outputtext value="{!component.Brand__r.Name}"  /></td>           
+                 </tr>
+                  <tr style="line-height: 25px;">    
+                     <td class="fieldLabel">SKU</td>
+                     <td>
+                        <apex:outputtext value="{!component.SKU_Reference__c}"  />
+                     </td>
+                     <td class="fieldLabel">Sample Source</td>
+                     <td><apex:outputLabel value="{!component.Sample_Department__c}">&nbsp;</apex:outputLabel></td>
+                 </tr>
+                  <tr style="line-height: 25px;">      
+                     <td class="fieldLabel">Sample Date</td>
+                      <td> 
+                        <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                            <apex:param value="{!component.Sample_Date__c}" /> 
+                        </apex:outputText>                  
+                    </td>
+                     <td class="fieldLabel">Sample Type</td>
+                     <td><apex:outputfield value="{!component.Sample_Category__c}"  /></td>
+                    
+                </tr>
+                <tr style="line-height: 25px;">   
+                     <!--<td class="fieldLabel">Publish Date</td>
+                     <td>
+                        <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                            <apex:param value="{!component.Published_Date__c}" />
+                        </apex:outputText>
+                     </td>-->
+                     <td class="fieldLabel">Test Background</td>
+                     <td ><apex:outputfield value="{!component.Test_Back_Ground__c}"  /></td>
+                     <td class="fieldLabel">Watch Variant</td>
+                     <td ><apex:outputfield value="{!component.Watch_variant__c}" /></td>
+                </tr>
+                <apex:variable var="v" value="" rendered="{!NOT(ISBLANK(component.General_Observation__c))}">
+                    <tr style="line-height: 25px;">
+                         <td class="fieldLabel" colspan="4">
+                             <div >General Observation</div>
+                         </td>
+                    </tr>
+                    
+                    <tr style="line-height: 25px;">
+                         <td colspan="4" ><apex:outputfield value="{!component.General_Observation__c}"/></td>
+                    </tr>
+                </apex:variable>              
+        </table>
+    <br /><br />
+           
+        <table width="1280" cellspacing="0" align="left" border="1" style=" border-top-style: none; border-bottom-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#585858;">
+             <td align="center" style="color:black;"><b>Note: Values marked with red are deviation from standard</b></td>              
+        </table>
+    <table width="100%" cellspacing="0" align="left" border="1" style=" border-top-style: none; border-bottom-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">       
+            <tr style="background:#eeffcc;font-weight:bold;font-size:16px;font-family:Arial,Helvetica,sans-serif;">
+         <td colspan = "3" align="center" style="color:#2e5cb8">Product Information</td></tr>   
+         
+            <tr style="background:#FFFFCC;">
+                <td colspan="3" style="color:#0000FF;">
+                    <apex:outputText value="Metal-Strap" ></apex:outputText>
+                </td>                    
+            </tr>
+            
+            <apex:repeat value="{!metalStrapIPList}" var="metalStrapIP">
+                 <tr>                 
+                    <td width="35%"><apex:outputText value="{!metalStrapIP.inputParam}" /></td>
+                     <td width="30%"><apex:outputText value="{!metalStrapIP.value}" style="color:{!metalStrapIP.color}"/></td>
+                     <td width="30%"><apex:outputText value="{!metalStrapIP.comment}"/></td>
+                </tr>
+            </apex:repeat>            
+      </table>
+    <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1" style=" border-top-style: none;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">       
+              <td colspan="6" style="font-family:Arial,Helvetica,sans-serif;background:#f7ffe6;font-weight:bold;font-size:16px; color:#2e5cb8;"><div align="center"><b>Reliability Test Certificate</b></div></td>
+              
+                <tr style="background:#F0F8FF;">
+                     <td width="50%" colspan="3" style="color:#0000FF;font-weight:bold;font-size:16px;"><b>Metal-Strap</b></td>
+                    <td colspan="3" style="color:#0000FF;font-weight:bold;font-size:16px;"><apex:outputText value="{!component.Final_Verdict__c}" style="color:{!if(component.Final_Verdict__c == 'Accept','Green','red')};"></apex:outputText></td>
+                </tr>
+                <tr style=" display:{!if(metalTestParamList.size != 0,'inline','none')};color:#000;">
+                    <td width="25%" style="background:#D3D3D3;"><b>Test Name</b></td>
+                    <td width="20%" style="background:#D3D3D3;"><b>Specification</b></td>
+                    <td width="15%" style="background:#D3D3D3;"><b>UOM</b></td>
+                    <td width="20%" style="background:#D3D3D3;"><b>Observation</b></td>
+                    <td width="15%" style="background:#D3D3D3;"><b>Remarks</b></td>
+                    <td width="5%" style="background:#D3D3D3;"><b>Conclusion</b></td>
+                    
+                </tr>
+               
+                <apex:repeat value="{!metalTestParamList}" var="metalDis">
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!metalDis.testName}" />
+                        </td>
+                        
+                        <td>
+                            <apex:outputText value="{!metalDis.specification}" />
+                        </td>
+                         <td>
+                            <apex:outputText value="{!metalDis.uom}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!metalDis.observation}" />
+                        </td>
+                        <td>    
+                            <apex:outputText value="{!metalDis.commentAndRemarks}" />
+                        </td> 
+                          <td style="font-weight:{!if(metalDis.verdict == 'Reject','bold','Standard')}">    
+                            <apex:outputText value="{!metalDis.verdict}" />
+                       </td>
+                   </tr>
+                </apex:repeat>
+    </table> 
+       <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1" style=" border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">       
+        <td colspan="6" style="font-family:Arial,Helvetica,sans-serif;background:#eeffcc;font-weight:bold;font-size:16px; color:#2e5cb8;"><div align="center"><b>Confirmation to Specification</b></div></td>
+             
+                 <tr style="display:{!if(metalTestParamListM.size != 0,'inline','none')};color:#000;">
+                    <td width="25%" style="background:#D3D3D3;"><b>Test Name</b></td>
+                    <td width="20%" style="background:#D3D3D3;"><b>Specification</b></td>
+                    <td width="15%" style="background:#D3D3D3;"><b>UOM</b></td>
+                    <td width="20%" style="background:#D3D3D3;"><b>Observation</b></td>
+                    <td width="15%" style="background:#D3D3D3;"><b>Remarks</b></td>
+                    <td width="5%" style="background:#D3D3D3;"><b>Conclusion</b></td>
+                    
+                </tr>
+                  <tr style="background:#FFFFCC;">
+                    <td colspan="6"><b>Metal Strap-Material Composition</b></td>
+                 <!--   <td colspan="3"><apex:outputText value="{!metalCom.Final_Verdict__c}" style="color:{!if(metalCom.Final_Verdict__c == 'Accept','Green',if(metalCom.Final_Verdict__c == 'Reject','red','blue'))};font-size:11pt; font-weight: bold;"></apex:outputText></td> -->
+                </tr>
+                    <apex:repeat value="{!metalTestParamListM}" var="metal">
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!metal.testName}" />
+                        </td>
+                        
+                        <td>
+                            <apex:outputText value="{!metal.specification}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!metal.uom}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!metal.observation}" />
+                        </td>
+                        
+                         <td>    
+                            <apex:outputText value="{!metal.commentAndRemarks}" />
+                        </td>
+                       <td style="font-weight:{!if(metal.verdict == 'Reject','bold','Standard')}">    
+                            <apex:outputText value="{!metal.verdict}" />
+                       </td>
+                   </tr>
+                </apex:repeat> 
+              <tr style="background:#FFFFCC;">
+                    <td colspan="6"><b>Metal Strap-Plating Layer</b></td>
+                   <!-- <td colspan="3"><apex:outputText value="{!metalCom.Final_Verdict__c}" style="color:{!if(metalCom.Final_Verdict__c == 'Accept','Green',if(metalCom.Final_Verdict__c == 'Reject','red','blue'))};font-size:11pt; font-weight: bold;"></apex:outputText></td>-->
+                </tr>
+                    <apex:repeat value="{!metalTestParamListp}" var="metal">
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!metal.testName}" />
+                        </td>
+                        
+                        <td>
+                            <apex:outputText value="{!metal.specification}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!metal.uom}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!metal.observation}" />
+                        </td>
+                        
+                         <td>    
+                            <apex:outputText value="{!metal.commentAndRemarks}" />
+                        </td>
+                        <td>    
+                            <apex:outputText value="{!metal.verdict}" />
+                        </td>
+                   </tr>
+                </apex:repeat> 
+                </table>       
+      
+</apex:page>

@@ -1,0 +1,209 @@
+<aura:component controller="SkinnProcessUploadController"
+        implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+        access="global">
+        <!--Attribute-->
+        <aura:attribute name="skinnModelItemList" type="List" />
+        <aura:attribute name="attachment" type="Object[]" />
+        <aura:attribute name="attachmentObject" type="Object" />
+        <aura:attribute name="Spinner" type="boolean" default="false" />
+        <!--Handler-->
+        <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+        <!--loading spinner start... style=Brand Medium (blue dots)-->
+   
+        <lightning:card title="Upload CSV File" class="slds-p-around_large">
+                        <aura:if isTrue="{!v.Spinner}">
+                                        <div aura:id="spinnerId" class="slds-spinner_container" style="position: fixed;">
+                                            <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                                                <span class="slds-assistive-text">Loading</span>
+                                                <div class="slds-spinner__dot-a"></div>
+                                                <div class="slds-spinner__dot-b"></div>
+                                            </div>
+                                        </div>
+                                    </aura:if>
+                <div class="slds-m-around--xx-large">
+                        <table>
+                                <tr>
+                                        <td colspan="2">
+                                                <div class="slds-box">
+                                                        <p>Notes.</p>
+                                                        <p>1. For downloading Skinn Process of system, please click on
+                                                                Download "Skinn Process CSV button"</p>
+                                                        <p style="color: red;font-weight: bold;">2. Before Uploading
+                                                                new CSV file in System, please remove all commas from
+                                                                CSV file</p>
+                                                        <p>3. For Uploading , please upload file below</p>
+                                                </div>
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td colspan="2">
+                                                <br />
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td colspan="3">
+                                                <button class="slds-button slds-button--brand"
+                                                        onclick="{!c.downloadCsv}">Download Skinn Process CSV
+                                                        File</button> <br /><br />
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td colspan="2">
+                                                <lightning:input name="file1" type="file" files="{!v.attachment}"
+                                                        label="Select CSV File" multiple="true" accept=".csv"
+                                                        onchange="{!c.handleFilesChange }" />
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td colspan="2">
+                                                <br />
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td colspan="2">
+                                                <aura:if isTrue="{!v.attachmentObject!=undefined}">
+                                                        File Name:
+                                                        <ui:outputText value="{!v.attachmentObject.filename}" />
+                                                </aura:if>
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td colspan="2">
+                                                <br />
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td>
+                                                <aura:if isTrue="{!v.attachmentObject!=undefined}">
+                                                        <lightning:button variant="brand" aura:id="saveAttacId"
+                                                                label="Upload" onclick="{!c.uploadMethod}" />
+                                                </aura:if>
+
+                                                <aura:if isTrue="{!v.attachmentObject!=undefined}">
+                                                        <lightning:button variant="brand" aura:id="clearAttacId"
+                                                                label="ClearFile"
+                                                                onclick="{!c.clearAttachmentMethod}" />
+                                                </aura:if>
+                                        </td>
+                                </tr>
+                                <tr>
+                                        <td colspan="2">
+                                                <br />
+                                        </td>
+                                </tr>
+                        </table>
+                        <!--HTML tabel for display Contact Records-->
+                        <div class="slds-scrollable" style="height: auto;width: auto;box-shadow: 0px 2px 5px darkgrey;">
+                                <table border="1" class="slds-table slds-table--bordered slds-table--cell-buffer">
+                                        <thead>
+                                                <tr class="slds-text-title--caps">
+                                                        <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                                                <span class="slds-truncate" title="Id">Id</span>
+                                                        </th>
+                                                        <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                                                <span class="slds-truncate" title="Serial Number">Serial
+                                                                        Number</span>
+                                                        </th>
+                                                        <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                                                        <span class="slds-truncate" title="Order Number">Order
+                                                                                Number</span>
+                                                                </th>
+                                                                <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                                                        <span class="slds-truncate"
+                                                                                title="Parent Order Number">Parent
+                                                                                Order Number</span>
+                                                                </th>
+                                                        <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                                                <span class="slds-truncate" title="Process Name">Process
+                                                                        Name</span>
+                                                        </th>
+                                                        <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                                                <span class="slds-truncate" title="Type">Type</span>
+                                                        </th>
+                                                        
+                                                        <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                                                <span class="slds-truncate"
+                                                                        title="Responsible Team">Responsible
+                                                                        Team</span>
+                                                        </th>
+                                                        <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                                                <span class="slds-truncate"
+                                                                        title="Planned Lead Time">Planned
+                                                                        Lead Time</span>
+                                                        </th>
+                                                        <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                                                <span class="slds-truncate"
+                                                                        title="Template Name">Template
+                                                                        Name</span>
+                                                        </th>
+                                                        <th class="slds-is-sortable slds-text-title--caps" scope="col">
+                                                                <span class="slds-truncate"
+                                                                        title="Approval Required(true/false)">Approval
+                                                                        Required(true/false)</span>
+                                                        </th>
+                                                </tr>
+                                        </thead>
+                                        <tbody>
+                                                <aura:iteration items="{!v.skinnModelItemList}" var="eachRecord">
+                                                        <tr>
+                                                                <th scope="row">
+                                                                        <div class="slds-truncate"
+                                                                                title="{!eachRecord.Id}">
+                                                                                {!eachRecord.Id}</div>
+                                                                </th>
+                                                                <th scope="row">
+                                                                        <div class="slds-truncate"
+                                                                                title="{!eachRecord.Serial_No__c}">
+                                                                                {!eachRecord.Serial_No__c}</div>
+                                                                </th>
+                                                                <th scope="row">
+                                                                                <div class="slds-truncate"
+                                                                                        title="{!eachRecord.Order_No__c}">
+                                                                                        {!eachRecord.Order_No__c}</div>
+                                                                        </th>
+                                                                        <th scope="row">
+                                                                                <div class="slds-truncate"
+                                                                                        title="{!eachRecord.Parent_Order_No__c}">
+                                                                                        {!eachRecord.Parent_Order_No__c}</div>
+                                                                        </th>
+                                                                <th scope="row">
+                                                                        <div class="slds-truncate"
+                                                                                title="{!eachRecord.Item_Name__c}">
+                                                                                {!eachRecord.Item_Name__c}</div>
+                                                                </th>
+                                                                <th scope="row">
+                                                                        <div class="slds-truncate"
+                                                                                title="{!eachRecord.Type__c}">
+                                                                                {!eachRecord.Type__c}</div>
+                                                                </th>
+                                                                
+                                                                <th scope="row">
+                                                                        <div class="slds-truncate"
+                                                                                title="{!eachRecord.Assigned_Team__c}">
+                                                                                {!eachRecord.Assigned_Team__c}</div>
+                                                                </th>
+                                                                <th scope="row">
+                                                                        <div class="slds-truncate"
+                                                                                title="{!eachRecord.Planned_Lead_Time__c}">
+                                                                                {!eachRecord.Planned_Lead_Time__c}</div>
+                                                                </th>
+                                                                <th scope="row">
+                                                                        <div class="slds-truncate"
+                                                                                title="{!eachRecord.TemplateType__c}">
+                                                                                {!eachRecord.TemplateType__c}</div>
+                                                                </th>
+                                                                <th scope="row">
+                                                                        <div class="slds-truncate"
+                                                                                title="{!eachRecord.Approval_required__c}">
+                                                                                {!eachRecord.Approval_required__c}</div>
+                                                                </th>
+                                                        </tr>
+
+                                                </aura:iteration>
+
+                                        </tbody>
+                                </table>
+                        </div>
+                </div>
+        </lightning:card>
+</aura:component>

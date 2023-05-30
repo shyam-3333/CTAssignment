@@ -1,0 +1,217 @@
+<apex:page controller="QC_Acc_DetailConstr_PdfCtrl" renderAs="Pdf" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" showHeader="false" doctype="html-5.0" id="pge">
+ <head>
+<style>
+@page{
+margin-left:1.00in;margin-right:0.10in;
+margin-top:0.50in;
+}
+tr.false {
+    display : none;
+    }
+    
+    div.footer{
+    position: running(footer);
+    }
+    
+    td,th{
+              border:1px solid black;padding: 7px;
+              word-wrap: break-word;
+          }
+          
+          table tr, table td{
+                page-break-inside: avoid;
+          }
+          
+          table{
+                -fs-table-paginate: paginate;
+                border-collapse: collapse;
+                border-spacing: 0;
+          }
+</style>
+</head>      
+<c:StylingPdfContent type="header" >  
+        <div style="page-break-after:always;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;text-align:right;">Page <span class="pagenumber" /> of <span class="pagecount"/></div>
+        
+    </c:StylingPdfContent>
+
+    <table width="100%" style="border-collapse:collapse; table-layout:auto;border:1px solid black;" >
+        <tr>
+            <td style="border:1px solid black;text-align:center;font-size:20px; width:100px;hieght:100px;"  rowspan="2" ><apex:image width="100" height="100" url="{!$Resource.TitanCompanyLogo}"  alt="Description of image here"/></td>
+            <td style="border:1px solid black;text-align:center;color:black;font-size:20px;font-weight:bold;padding:15px;" colspan="2"  >TITAN COMPANY LIMITED </td>
+            <td style="border:1px solid black;text-align:center;color:black;font-size:15px;font-weight:bold;width:100px;hieght:100px;"   rowspan="2">QUALITY ASSURANCE</td>
+        </tr>
+        <tr>
+            <td style="border:1px solid black;text-align:center;color:black;font-size:20px;font-weight:bold;padding:15px;" colspan="2" >{!switchTestingName} Report - {!qcAccCompObj.Sample_Category__c}</td>
+        </tr>
+    </table>
+
+<!--    <div align="center" style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:18px;"><b>{!switchTestingName} Report - {!qcAccCompObj.Sample_Category__c}</b></div><br/> -->
+        <apex:pageMessages /> 
+            <table width="100%" cellspacing="0" border="1" align="left" style="border-bottom-style: none; font-family:Arial,Helvetica,sans-serif; font-size:10pt;color:#000;">
+                <tr style="line-height: 25px;">                    
+                    <td class="fieldLabel">Report Ref Number</td>
+                    <td>
+                        <apex:outputLabel value="{!qcAccCompObj.Report_Ref_Number__c}"></apex:outputLabel>
+                    </td>
+                    <td class="fieldLabel">Brand</td>
+                    <td width="25%">
+                        <apex:outputLabel value="{!qcAccCompObj.Brand__r.Name}"></apex:outputLabel> 
+                    </td>   
+                </tr>
+                <tr class="{!IF(switchTestingName == 'Reliability Testing','redColor','false')}">
+                    <td class="fieldLabel">Construction Reference Number</td>
+                    <td colspan = "3"> 
+                        <apex:outputLabel value="{!qcAccCompObj.Construction_Refer_Number__r.Report_Ref_Number__c}"></apex:outputLabel> 
+                    </td>
+                </tr>
+                <tr style="line-height: 25px;">  
+                    <td class="fieldLabel">SKU Reference</td>
+                    <td><apex:outputLabel value="{!qcAccCompObj.SKU_Reference__c}"></apex:outputLabel></td>
+                    <td class="fieldLabel">No.Of Sample Received</td>
+                    <td><apex:outputLabel value="{!qcAccCompObj.No_Of_Sample_Received__c}"></apex:outputLabel></td>
+                </tr>
+                <tr style="line-height: 25px;">  
+                    <td class="fieldLabel">Sample Received From</td>
+                    <td><apex:outputLabel value="{!qcAccCompObj.Sample_Received_From__c}"></apex:outputLabel></td>
+                    <td class="fieldLabel">Sample Received Date</td>
+                    <td>
+                        <apex:outputText value="{0,date,dd'/'MM'/'yyyy}"><apex:param value="{!qcAccCompObj.Sample_Received_Date__c}" /></apex:outputText>
+                    </td>
+                </tr> 
+                <tr style="line-height: 25px;">  
+                    <td class="fieldLabel">Record Status</td>
+                    <td><apex:outputLabel value="{!qcAccCompObj.Record_Status__c}"></apex:outputLabel></td>
+                    <td class="fieldLabel">Document Status</td>
+                    <td><apex:outputLabel value="{!qcAccCompObj.Document_Status__c}"></apex:outputLabel></td>
+                </tr>
+                <tr style="line-height: 25px;">  
+                    <td class="fieldLabel">Sample Category</td>
+                    <td><apex:outputLabel value="{!qcAccCompObj.Sample_Category__c}"></apex:outputLabel></td>
+                    <td class="fieldLabel">Sub Category</td>
+                    <td><apex:outputLabel value="{!qcAccCompObj.Sub_Category__c}"></apex:outputLabel></td>
+                </tr>
+                <tr style="line-height: 25px;">  
+                    <td class="fieldLabel">Sample Type</td>
+                    <td><apex:outputLabel value="{!qcAccCompObj.Sample_Type__c}"></apex:outputLabel></td>
+                    <td class="fieldLabel">Vendor</td>
+                    <td><apex:outputLabel value="{!qcAccCompObj.Vendor__r.Name}"></apex:outputLabel></td>
+                </tr>
+                <tr style="line-height: 25px;">  
+                    <td class="fieldLabel">Gender</td>
+                    <td><apex:outputLabel value="{!qcAccCompObj.Gender__c}"></apex:outputLabel></td>
+                    <td class="fieldLabel">Vendor Reference</td>
+                    <td><apex:outputLabel value="{!qcAccCompObj.Vendor_Reference__c}"></apex:outputLabel></td>
+                </tr>
+                <apex:variable var="v" value="" rendered="{!NOT(ISBLANK(qcAccCompObj.General_Observation__c))}">
+                <tr>
+                    <td class="fieldLabel"><div >General Observation</div></td>
+                    <td colspan="3" ><apex:outputfield value="{!qcAccCompObj.General_Observation__c}"/></td>
+                
+                </tr>
+                </apex:variable> 
+            </table> 
+            <table width="1280" cellspacing="0" align="left" border="1" style=" border-top-style: none; border-bottom-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#585858;">
+                <td align="center" style="color:black;"><b>Note: Values marked with red are deviation from standard</b></td>              
+            </table>
+            <table width="100%" cellspacing="0" align="left" border="1" style=" border-top-style: none; border-bottom-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">       
+                
+                <tr style="background:#eeffcc;font-weight:bold;font-size:16px;font-family:Arial,Helvetica,sans-serif;">
+                    <td colspan = "3" align="center" style="color:#2e5cb8">Product Information</td>
+                </tr>   
+                        <tr style="background:#FFFFCC;">
+                            <td colspan="3" style="color:#0000FF;">
+                                <apex:outputText value="{!qcAccCompObj.Sample_Category__c}" ></apex:outputText>
+                            </td>                    
+                        </tr>
+            
+                
+                <apex:repeat value="{!qcAccRespList}" var="questResponse"> 
+                    <tr>                 
+                    <td width="35%"><apex:outputText value="{!questResponse.QC_Access_Questions__r.Questions__c}" /></td>
+                     <td width="30%"><apex:outputText value="{!questResponse.Response_Values__c}"/></td>
+                     <td width="30%"><apex:outputText value="{!questResponse.Remarks__c}"/></td>
+                </tr>    
+                </apex:repeat>
+    
+            </table>
+    		<table cellspacing="0" cellpadding="3" align="left" border="1"  width="100%" style="border-top-style: none; border-bottom-style: none;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">  
+                
+                <tr>
+                    <td colspan="2" style="font-family:Arial,Helvetica,sans-serif;background:#f7ffe6;font-weight:bold;font-size:16px; color:#2e5cb8;"><div align="center"><b>Construction Testing Certificate</b></div></td>
+                </tr>
+                <tr style="background:#F0F8FF;">
+                    <td width="50%"  style="color:#0000FF;font-weight:bold;font-size:16px;"><b>{!qcAccCompObj.Sample_Category__c}</b></td>
+                    <td  style="color:#0000FF;font-weight:bold;font-size:16px;"><apex:outputText value="{!qcAccCompObj.Final_Verdict__c}" style="color:{!if(qcAccCompObj.Final_Verdict__c == 'Accept','Green','red')};"></apex:outputText></td>
+                </tr> 
+    		</table>
+            <table cellspacing="0" cellpadding="3" align="left" border="1"  width="100%" style="border-top-style: none; border-bottom-style: none;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">  
+                
+                <thead> 
+                    <tr>
+                        <td width="25%" style="background:#D3D3D3;"><b>Test Name</b></td>
+                        <td colspan="2" width="20%" style="background:#D3D3D3;"><b>Acceptance Criteria</b></td>
+                        <td colspan="2" width="15%" style="background:#D3D3D3;"><b>Product Specification</b></td>
+                        <td width="15%" style="background:#D3D3D3;"><b>Observation</b></td>
+                        <td width="20%" style="background:#D3D3D3;"><b>Verdict</b></td>
+                        <td width="25%" style="background:#D3D3D3;"><b>Remarks</b></td>
+                    </tr>
+                </thead> 
+                <tbody>     
+                    <apex:repeat value="{!qcAccQstnRespList}" var="responseLst" >
+                        <tr >
+                            <td>
+                                <b><apex:outputText value="{!responseLst.QC_Access_Questions__r.Test_Name__c}" /></b>
+                            </td>
+                            <td colspan="2">
+                                <apex:outputText value="{!responseLst.QC_Access_Questions__r.Acceptance_Criteria__c}" /> 
+                            </td>
+                            <td colspan="2">
+                                <apex:outputText value="{!responseLst.QC_Access_Questions__r.Product_Specification__c}" /> 
+                            </td>
+                            <td  >
+                                <apex:outputText value="{!responseLst.Observation__c}" />
+                            </td>
+                            <td>
+                                <apex:outputText value="{!responseLst.Verdict__c}" style="color:{!if(responseLst.Verdict__c == 'Reject','red','black')};"/>
+                            </td>
+                            <td>
+                                <apex:outputText value="{!responseLst.Remarks__c}" />
+                            </td>
+                        </tr> 
+                    </apex:repeat>  
+                </tbody>
+            </table>
+            
+            <br/><br/>
+          <div style="clear:both;height:50px;"> </div> 
+            <table cellspacing="0" cellpadding="3" align="left" border="1"  width="100%" style="border-top-style: none; border-bottom-style: none;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">  
+                
+         
+            <tr>
+               <td width="30%"><div align="center" style="color:black;font-size:10pt;"><b>Product Approval</b></div> </td>
+               <td width="23%"><div align="center" style="color:black;font-size:10pt;"><b>Evaluated by </b></div></td>
+               <td width="23%"><div align="center" style="color:black;font-size:10pt;"><b>Verified by </b> </div></td>
+               <td width="24%"><div align="center" style="color:black;font-size:10pt;"><b>Approved by</b> </div></td>
+            </tr>
+            <tr>
+                <td>
+             <div align="center">   <apex:outputtext value="{!qcAccCompObj.Final_Verdict__c}"  style="font-size:16pt;color:{!IF(qcAccCompObj.Final_Verdict__c == 'Accept', 'green', 'red')}"/></div>
+                </td>
+              <td>
+              <div align="center"> <apex:outputtext value="{!qcAccCompObj.Owner.name}"  style="font-size:10pt;color:{!IF(qcAccCompObj.Final_Verdict__c != '', 'black', '')}"/></div>
+              </td>
+              <td>
+             <div align="center"> <apex:outputtext value="{!firstApprover}"  style="font-size:10pt;color:black;"/> </div>
+              </td>      
+              <td>
+              <div align="center"> <apex:outputtext value="{!secondApprover}"  style="font-size:10pt;color:black;"/> </div>
+              </td>
+            </tr>
+      
+        </table>
+    <div class="footer" style="text-align:right;color:black;font-size:10pt;">
+        Quality Assurance - Accessories <br/>
+        Titan Company Limited
+    </div>
+    
+</apex:page>

@@ -1,0 +1,143 @@
+<aura:component controller="QC_AccConstrInputTestOverrideClass" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" >
+    <aura:attribute name="inpData" type="list"/> <!-- it is input wrapper object -->
+    <aura:attribute name="testParamListReliabConst" type="object" /> <!-- used to display the reliability construction testing test parameters -->
+    <aura:attribute name="multiSelectList" type="list"/>
+    <aura:attribute name="qCAccessComponentId" type="String" />
+    <aura:attribute name="countSaveAccInput" type="Integer" default="0" />
+    <aura:attribute name="passMutipickValCount" type="Integer" default="0" />
+    <aura:attribute name="cat" type="String"/>
+    <aura:attribute name="referencedConstructionId" type="sObject" /> <!-- used to store the construction reference Id from the raliablity page -->
+    <aura:attribute name="subChildSampleType" type="String" />
+    <aura:attribute name="isReadonly" type="boolean" default="false" />
+    <aura:attribute name="isQcResponseSaved" type="boolean" default="true"/>
+    <aura:attribute name="qcAccRespList" type="List" />
+    <aura:attribute name="countValidateAccInput" type="Integer" default="0" />
+    <aura:attribute name="countTestParamLength" type="Integer" default="0" /><!-- used to store length of test parameter which will be used for indexing -->
+    <aura:attribute name="testParameterList" type="List" /> <!-- this list is to create a new instance while adding a new row -->
+    <aura:attribute name="verdict" type="List" default="[{'label': 'None', 'value': 'None', 'selected': true},
+                                                            {'label': 'Accept', 'value': 'Accept', 'selected': false},
+                                                            {'label': 'Reject', 'value': 'Reject', 'selected': false},
+                                                            {'label': 'Conditional Accept', 'value': 'Conditional Accept', 'selected': false},
+															{'label': 'Clearance for Pilot', 'value': 'Clearance for Pilot', 'selected': false}]"/>
+    <!-- handlers -->
+    <aura:registerEvent name="passDataToReliab" type="c:PassConstrPickListValuesToReliabEvnt"/>
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="change" value="{!v.cat}" action="{!c.reInit}"/>
+    <aura:handler name="change" value="{!v.passMutipickValCount}" action="{!c.passMultiPickListValues}"/>
+    <aura:handler name="change" value="{!v.countSaveAccInput}" action="{!c.saveAccInputData}"/>
+     <aura:handler name="change" value="{!v.countValidateAccInput}" action="{!c.validateInput}"/>
+    <aura:registerEvent name="ObservatnDataEvnt" type="c:ObservationParamValidation"/>
+    
+        <div class="slds-section slds-is-open">
+           <h3 class="slds-section__title slds-theme_success">
+               <span class="slds-truncate slds-p-horizontal_small" title="Section Title" style="font-weight: bold;">Input Parameters</span>
+           </h3>
+           <div aria-hidden="false" class="slds-section__content">
+       		<!-- <p>this is the iteration of input questions= "{!v.cat}"</p> -->
+               <table class="t_design table table-striped slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered">
+                   <thead>
+                       <tr>
+                           <th scope="col"><div class="slds-truncate" Style="font-weight: bold;">Questions</div></th>
+                           <th scope="col"><div class="slds-truncate" Style="font-weight: bold;">Option Values</div></th>
+                       </tr>
+                   </thead>
+                   <tbody>
+                       
+                           <aura:if isTrue="{!!empty(v.multiSelectList)}">
+                               <aura:iteration items="{!v.multiSelectList}" var="input">
+                                   <aura:if isTrue="{!input.questionType=='Multi-select'}">
+                                       <tr>
+                                           <td scope="row" data-label="Select"><ui:outputText value="{!input.label}"/></td>
+                                           
+                                           <td scope="row" data-label="Select">
+                                               <c:MultiSelectPicklistCmp isDisable ="{!v.isReadonly}" aura:id="my-multi-select" picklistId="{!input.picklistCompId}" questionId="{!input.questId}" options="{!input.qstnOptionList}" callselectChange="{!c.handleSelectChangeEvent}" selectedItems="{!input.selectedOptions}" />
+                                           </td>
+                                       </tr>
+                                   </aura:if>
+                               </aura:iteration>
+                           </aura:if>
+                   </tbody>
+               </table>
+            </div>
+        </div>
+        <div class="slds-section slds-is-open">
+           <h3 class="slds-section__title slds-theme_success">
+               <span class="slds-truncate slds-p-horizontal_small" title="Section Title" style="font-weight: bold;">Test Parameters</span>
+           </h3>
+           <div aria-hidden="false" class="slds-section__content">
+               <table class="t_design table table-striped slds-table slds-table--bordered slds-table--cell-buffer slds-table--col-bordered slds-table_resizable-cols slds-table_fixed-layout slds-max-medium-table_stacked-horizontal" >
+                   <thead>
+                       <tr>
+                           <th scope="col"><div class="slds-truncate">Test Name</div></th>
+                           <th scope="col"><div class="slds-truncate">Product Specification</div></th>
+                           <th scope="col"><div class="slds-truncate">Acceptance Criteria</div></th>
+                           <th scope="col"><div class="slds-truncate">Observation</div></th>
+                           <th scope="col"><div class="slds-truncate">Verdict</div></th>
+                       </tr>
+                   </thead>
+                   <tbody>
+                       
+                       
+                       <aura:if isTrue="{!and(v.testParamListReliabConst !=null,v.referencedConstructionId != null,v.subChildSampleType !='Re-Submission')}" >
+                           		
+                           <aura:iteration items="{!v.testParamListReliabConst}" var="test" indexVar="index">
+                               <tr>
+                                   <td scope="row" data-label="Select"><ui:outputText value="{!test.testNameForDisplay}" /></td>
+                                   <td scope="row" data-label="Select"><ui:outputText value="{!test.testParamProdSpec}"/></td>
+                                   <td scope="row" data-label="Select"><ui:outputText value="{!test.testParamAccep}"/></td>
+                                   <td scope="row" data-label="Select"><ui:inputText value="{!test.testParamObservation}" disabled="{!v.isReadonly}"/></td>
+                                   <td scope="row" data-label="Select" class="verdict_content">
+                                       <lightning:select class="{!(test.testParamVerdict == 'Reject')?'redColor':''}" name="verdicts" aura:id="verdictId" value="{!test.testParamVerdict}" disabled="{!v.isReadonly}">
+                                           <aura:iteration items="{!v.verdict}" var="finalVerd">
+                                               <option text="{!finalVerd.label}" value="{!finalVerd.value}" selected="{!finalVerd.selected}"></option>
+                                           </aura:iteration>
+                                       </lightning:select>	
+                                   </td>
+                                   <td>
+                                       <aura:if isTrue = "{!and(v.countTestParamLength == index +1,!v.isReadonly) }">
+                                           <a onclick="{!c.addRow}">
+                                               <lightning:icon iconName="utility:add" class="slds-icon slds-icon_small" size="small" alternativeText="add"/>
+                                               <span class="slds-assistive-text">Add Icon</span>
+                                           </a>    
+                                       </aura:if>
+                                   </td>
+                               </tr>
+                           </aura:iteration>
+                           <aura:iteration items="{!v.testParameterList}" var="test" indexVar="index">
+                               <tr>
+                                   
+                                   <td scope="row" data-label="Select"><ui:inputText value="{!test.testNameForDisplay}" disabled="{!v.isReadonly}"/></td>
+                                   <td scope="row" data-label="Select"><ui:inputText value="{!test.testParamProdSpec}" disabled="{!v.isReadonly}"/></td>
+                                   <td scope="row" data-label="Select"><ui:inputText value="{!test.testParamAccep}" disabled="{!v.isReadonly}"/></td>
+                                   <td scope="row" data-label="Select"><ui:inputText value="{!test.testParamObservation}" disabled="{!v.isReadonly}"/></td>
+                                   <td scope="row" data-label="Select" class="verdict_content">
+                                       <lightning:select class="{!(test.testParamVerdict == 'Reject')?'redColor':''}" name="verdicts" aura:id="verdictId" value="{!test.testParamVerdict}" disabled="{!v.isReadonly}">
+                                           <aura:iteration items="{!v.verdict}" var="finalVerd">
+                                               <option text="{!finalVerd.label}" value="{!finalVerd.value}" selected="{!finalVerd.selected}"></option>
+                                           </aura:iteration>
+                                       </lightning:select>	
+                                   </td>
+
+                                   <td scope="row" data-label="Select">
+                                       <aura:if isTrue = "{!!v.isReadonly }">
+                                           <a onclick="{!c.removeDeletedRow}" disabled="{!v.isReadonly}" aura:id="{!index}" id="{!index}" >
+                                               <lightning:icon variant="error" iconName="utility:delete" class="slds-icon slds-icon_small" size="small" alternativeText="delete"/>
+                                               <span class="slds-assistive-text">Delete Icon</span>
+                                           </a>
+                                       </aura:if>
+                                   </td>
+                                   </tr>
+                                
+                           </aura:iteration>
+                       </aura:if> 
+                   </tbody>
+               </table>
+              
+            </div>
+            
+        </div>
+        
+        
+    
+   
+</aura:component>

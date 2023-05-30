@@ -1,0 +1,959 @@
+<apex:page Controller="NPDApprovalController" sidebar="false"> 
+
+<apex:stylesheet value="{!URLFOR($Resource.JqueryTree1, 'Boots/css/jquery.treegrid.css')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.JqueryTree1, 'Boots/js/jquery.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.JqueryTree1, 'Boots/js/jquery.treegrid.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.JqueryTree1, 'Boots/js/jquery.treegrid.bootstrap3.js')}"/>
+        <apex:includescript value="{!URLFOR($Resource.JqueryTree1,'Boots/js/jquery.cookie.js')}"/>
+        <apex:stylesheet value="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"/>
+         <apex:stylesheet value="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+         <link href='https://fonts.googleapis.com/css?family=Mako' rel='stylesheet' type='text/css'/>
+
+    <style>
+    
+
+    
+    .btn {
+    background-color: #095d80 !important;
+    background-image: none !important;
+    border: medium none !important;
+    color: #fff !important;
+    padding: 5px 10px !important;
+}
+  .pbSubheader{margin-top:0!important;}
+  .marginbottom15 {
+    margin-bottom: 15px;
+}
+.clearfix{clear:both;}
+  .bPageBlock .detailList tr td, .bPageBlock .detailList tr th, .hoverDetail .bPageBlock .detailList tr td, .hoverDetail .bPageBlock .detailList tr th {
+    border-bottom: none;
+}
+  .project_bg{background: #cae5e4 none repeat scroll 0 0;border: 1px solid #00B6B0;}
+  
+  .homeTab .tertiaryPalette, .individualPalette .homeBlock .tertiaryPalette, .layoutEdit .individualPalette .homeBlock .tertiaryPalette {
+    background-color: #00b6b0;
+    border-color:#00b6b0;
+}
+    
+    
+        .custPopup {
+            background-color: white;
+            border-width: 2px;
+            border-style: solid;
+            z-index: 900;
+            left: 20%;
+            top:50%;
+            position: absolute;
+            width: 60%;
+            height: 400px;
+            margin-left: 242px;
+            overflow-y: scroll;
+            overflow-x: scroll;
+            margin: auto auto;
+              
+        }
+        
+        .popupBackground{
+            background-color:black;
+            opacity: 0.20;
+            filter: alpha(opacity = 70);
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 899;
+        }
+        .project_bg .bPageBlock,.project_bg .bPageBlock .pbBody, .project_bg .bPageBlock .pbBottomButtons {
+  background-color: #cae5e4;
+  background-image: none;
+  margin: 0;
+}
+.project_bg .bPageBlock .pbHeader {
+  background-color: #cae5e4;
+  margin: 0;
+  padding: 0;
+}
+body .bPageBlock .pbHeader {
+  background-color: #cae5e4;
+  margin: 0;
+  padding: 0;
+}
+body .bPageBlock, body #bodyCell .bResource .secondaryPalette, body .secondaryPalette.bPageBlock, body .individualPalette .secondaryPalette.bPageBlock, body .bodyDiv .genericTable, body .genericPageBlockTable, body .bodyDiv .bSubBlock, body .bComponentBlock .bPageBlock, body .bMyDashboard .bPageBlock, body.rlHoverFrame .bPageBlock, body.subjectSelectionPopup div.choicesBox, body.lookupTab .secondaryPalette.bPageBlock, body.popupTab .secondaryPalette.bPageBlock, body.UserTagStatsPage .secondaryPalette.bPageBlock {
+  background-color: #cae5e4;
+  border-bottom: 1px solid #00B6B0;
+  border-left: 1px solid #00B6B0;
+  border-radius: 4px;
+  border-right: 1px solid #00B6B0;
+}
+.marginbottom15{margin-bottom:15px;}
+
+.clearfix{clear:both;}
+
+    </style>
+    
+    
+    
+     <style type="text/css">
+         .popupBackground {
+  background: rgba(0, 0, 0, 0.8) none repeat scroll 0 0;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 9998;
+}
+    .customPopup {
+  background-color: white;
+
+  height: 400px;
+  left: 20%;
+  padding: 10px;
+  position: absolute;
+  top: 50%;
+  width: 60%;
+  z-index: 9999;border-radius: 10px;
+}
+    
+    .disabledTextBox {
+        background-color: white;
+        border: 1px solid;
+        color: black;
+        cursor: default;
+        width: 90px;
+        display: table;
+        padding: 2px 1px;
+        text-align:right;
+    }   
+    
+    .closeButton {
+        float: right;
+    }
+    
+    
+    
+    
+    
+    </style>
+    
+        <style>
+        .lookupimg{position: absolute;
+        top: 3px;
+        right: 5px;}
+        .bordernone{border:none!important;}
+        .homeTab .tertiaryPalette, .individualPalette .homeBlock .tertiaryPalette, .layoutEdit .individualPalette .homeBlock .tertiaryPalette {
+        background-color: #00b6b0!important;
+        border-color:#00b6b0!important;
+    }
+        .customnotabTab .tertiaryPalette, .individualPalette .customnotabBlock .tertiaryPalette, .layoutEdit .individualPalette .customnotabBlock .tertiaryPalette {
+      background-color: #00b6b0!important;
+      border-color: #00b6b0!important;
+      font-family: 'Mako', sans-serif!important; font-size:14px;
+    }.marginbottom15{margin-bottom:0px;}
+        
+        .btn {
+      background-color: #095d80 !important;
+      background-image: none !important;
+      border: medium none !important;
+      color: #fff !important;
+      padding: 5px 10px !important;
+    }
+    .top-title {
+        background-color: #09807c;
+        border-radius: 5px 5px 0 0;
+        color: #fff;
+        font-size: 16px;
+        margin-bottom: 2px;
+        padding: 0px 0 0px 5px;
+        font-family: 'Mako', sans-serif;
+    }
+        .top-titlewatch {
+          background-color: #09807c;
+          border-radius: 5px 5px 0 0;
+          color: #fff;
+          font-size: 20px;
+          margin-bottom: 5px;
+          padding: 5px 0 5px 10px;
+          
+          font-family: 'Mako', sans-serif;
+        }
+       .date-design {
+          background: #cae5e4 none repeat scroll 0 0;
+          border: 1px solid #00B6B0;
+          display: inline-block;
+          
+          width: 100%;
+          font-family: 'Mako', sans-serif;
+        }
+         .date-design label{
+         font-size: 13px; 
+         padding: 0;
+         font-family: 'Mako', sans-serif;
+         font-weight: normal;
+         }
+         .date-design .text {
+          background-color: #fff;
+          border-radius: 5px;
+          color: #444;
+         
+          min-height: 25px;
+          padding: 2px 5px;
+          
+          font-family: 'Mako', sans-serif;
+        }
+        .heading-title {
+          background-color: #00b6b0;
+          color: #fff;
+          font-size: 14px;
+          padding: 0px 10px; margin-bottom: 10px;
+        }
+        .datePicker{
+         z-index: 1000  !important;
+        }
+            .bg-Activity{background-color:#E6E6E6!important;}
+            .bg-SubActivity{background-color:#F2F2F2!important;}
+            .bg-SubStage{background-color:#ccc!important;}
+            .bg-Stage{background-color:#a6cccb!important;}
+            .op-Activity{background-color:#F8E0E0!important; }
+            #blockbckanim{
+                background-color:rgba(0, 14, 44, 0.7);
+                width:100%;
+                height:100%;
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                z-index: 1000;
+                rgba(0, 0, 0, 0.71);
+                cursor: wait;
+            }
+             .treegrid{
+                 background-color: #F3F3EC !important;
+            }
+            .table.tree-2{
+                font-size:12px !important;
+                background-color:#607d8b blue-grey !important;
+                border : 1px;
+                width:100%;
+            }
+            table.table-design{border-color:#ccc!important; }
+            .table-design td, .table-design td{border-color:#ccc!important;}
+            table.table-design tr:hover{background-color:#f2f2f2;   }
+            table.table-design tr{background-color:#E0E6E8; }
+            table.table-design th{
+                background-color:#00b6b0;   
+                color:#fff!important;
+            }
+            table.table-design:hover {
+            box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+                transition: background-color .25s ease;
+            }
+            
+            .errormsgId{
+                background-color: #f9f9f9 !important;;
+            }
+             .successmsgId{
+                background-color: #f9f9f9!important;;
+            }
+        </style>
+           <script> onload(); 
+        function showimage(){
+            
+            var et= document.getElementsByClassName("popup21")
+            et[0].style.display="block";
+        }
+        
+        function hideimage(){
+             var et= document.getElementsByClassName("popup21")
+             et[0].style.display="none";
+             
+        }
+        
+        </script>
+    <apex:form rendered="{!NOT(ISNULL(activity))}" id="ActivityForm"> 
+        <apex:sectionHeader title="Activity" subtitle="{!activity.Name__c}"/> 
+        <apex:pageBlock title="Activity -  {!activity.Collection_reference__c}" id="activity"> 
+            <apex:pageblockbuttons >
+                <apex:commandbutton value="Approve" action="{!ApproveRecord}" rerender="activity" rendered="{!AND(activity.Approval_Required__c,NOT(activity.Line_Item_Approval_Required__c),(activity.Approval_Status__c == 'Pending'))}"/>
+                <apex:commandbutton value="Reject" action="{!RejectRecord}" rerender="activity" rendered="{!AND(activity.Approval_Required__c,NOT(activity.Line_Item_Approval_Required__c),(activity.Approval_Status__c == 'Pending'))}"/>
+           <!--     <apex:commandbutton value="View Project" action="{!redirectDetailView}"/> -->
+                  <apex:commandbutton value="View Model" action="{!redirectDetailView}" rendered="{!if(projectType == "otherstage", true, false) }"/>
+                <apex:commandbutton value="View Project" action="{!redirectDetailView}" rendered="{!if(projectType == "marketingstage", true, false) }"/>
+            </apex:pageblockbuttons>
+            <div class="clearfix marginbottom15"></div>
+                                <div class="">
+                                    <div class="date-design design-edit">
+                                        <div class="heading-title">Schedule/Status Activity</div>
+                                        <div class="col-md-3">
+                                            <div class="form-group clearfix">
+                                                <label class="col-md-6">Actual Start Date</label>
+                                                <div class="col-md-6 text"><apex:outputField value="{!activity.Actual_Start_Date__c}" /></div>
+                                            </div>
+                                            
+                                             <div class="form-group clearfix">
+                                                <label class="col-md-6">Actual End Date</label>
+                                                <div class="col-md-6 text"><apex:outputField value="{!activity.Actual_End_Date__c}"/>   </div>
+                                            </div> 
+                    
+                                        </div>
+                                        
+                                        <div class="col-md-3">
+                                            <div class="form-group clearfix">
+                                                <label class="col-md-6">Status</label>
+                                                <div class="col-md-6 text"><apex:outputField value="{!activity.Status__c}"  /> </div>
+                                            </div>
+                                             
+                                         
+                                        
+                                        <div class="form-group clearfix">
+                                               <label class="col-md-6">Approval Status</label>
+                                                <div class="col-md-6 text"><apex:outputField value="{!activity.Approval_Status__c}" /></div>
+                                            </div>   
+                                            
+                                            </div>  
+                                                               
+                                        <div class="col-md-3">
+                                            
+                                                <div class="form-group clearfix">
+                                                   <label class="col-md-6">Approval Required</label>
+                                                <div class="col-md-6 text"><apex:outputField value="{!activity.Approval_Required__c}" /> </div>
+                                                </div>
+                                            
+                                            
+                                        </div>
+                                        
+             </div>
+                                    
+                                <div class="clearfix marginbottom15"></div>
+                                <div class="">
+                                    <div class="date-design design-edit">
+                                        <div class="heading-title">Brand and Market Information Activity</div>
+                                        <div class="col-md-3">
+                                           
+                                                <div class="form-group clearfix">
+                                                 <label class="col-md-6">Brand</label>
+                                                <div class="col-md-6 text"><apex:outputField value="{!activity.Brand1__c}"/> </div>
+                                                    
+                                                </div>
+                                           
+                                            
+                                            <div class="form-group clearfix">
+                                            <label class="col-md-6">Sub-Brand</label>
+                                                <div class="col-md-6 text"><apex:outputField value="{!activity.Sub_Brand1__c}"/> </div>
+                                               
+                                            </div>
+                                          
+                                            
+                                       
+                                        </div>
+                                        
+                                        
+                                            
+                                        
+                                        <div class="col-md-3">                            
+                                            <div class="form-group clearfix">
+                                            <label class="col-md-6">Collection reference</label>
+                                                    <div class="col-md-6 text"><apex:outputField value="{!activity.Collection_reference__c}" /></div>
+                                                
+                                            </div>
+                                            
+                                 
+                                
+                                    <div class="form-group clearfix">
+                                    <label class="col-md-6">Source </label>
+                                        <div class="col-md-6 text"><apex:outputField value="{!activity.Source__c}"  label="Marketing Brief Concept Reference Number" /></div>
+                                        
+                                      
+                                   </div> 
+                                            
+                                          
+                                            
+                                                                       
+                                        </div>
+                                        <div class="col-md-3">                            
+                                            <div class="form-group clearfix">
+                                            <label class="col-md-6">Market</label>
+                                                <div class="col-md-6 text"><apex:outputField value="{!activity.Market__c}" /> </div>
+                                               
+                                            </div> 
+                                            
+                                            
+                                             <div class="form-group clearfix">
+                                                <label class="col-md-6" title="Marketing Brief Reference Number">MB Ref Number </label>
+                                        <div class="col-md-6 text"><apex:outputField value="{!activity.Marketing_Brief_Reference_No__c}"  label="Marketing Brief Concept Reference Number" /></div>
+                                            </div>
+                                            
+                                            
+                                            
+                                          
+                                           
+                                            
+                                                                      
+                                        </div>
+                                        
+                                        <div class="col-md-3">                            
+                                            <div class="form-group clearfix">
+                                                 <label class="col-md-6">Phase</label>
+                                                <div class="col-md-6 text"><apex:outputField value="{!activity.Phase__c}" /></div>
+                                            </div> 
+                           
+                                            
+                                           
+                                          
+                                            
+                                                                       
+                                        </div>
+                                        
+                                          
+                                            
+                       
+                                        
+                                    </div>
+                                </div>               
+                             <div class="clearfix marginbottom15"></div>
+                                <apex:outputPanel >
+                             <div class="">
+                                    <div class="date-design design-edit">
+                                        <div class="heading-title">Lead Times save</div>
+                                       
+                                        <div class="col-md-3">
+                                            <div class="form-group clearfix">
+                                                <label class="col-md-6"> Complexity Type</label>
+                                                <div class="col-md-6 text"><apex:outputField value="{!activity.Complexity_Typess__c}"  styleClass="bordernone" id="comType2">
+                                                  </apex:outputField></div>
+                                               
+                                               
+                                            
+                                        </div>
+                                        </div>
+                                        
+                                        
+                                                                    
+                                        <apex:outputPanel rendered="{!activity.Type__c=='Activity' && activity.Name__c = 'Case Development - INH'}" >
+                                            <div class="col-md-3">
+                                                <div class="form-group clearfix">  
+                                                    <label class="col-md-6"> Complexity Category</label>
+                                                    <div class="col-md-6 text"><apex:inputField value="{!activity.Complexity_Category__c}"  styleClass="bordernone" id="comCat2" > </apex:inputField></div>
+                                                    <script>document.getElementById('{!$Component.comCat2}').disabled = true;</script> 
+                                                    <apex:image url="{!$Resource.LookupIcon}"  styleClass="lookupimg" width="20" height="20" onclick="openComplexityPopup('{!$Component.comType2}','{!$Component.comCat2}','{!$Component.lead2}','{!activity.Name__c}','{!activity.Type__c}')" />
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                            
+                                        
+                                        <div class="col-md-3">
+                                            <div class="form-group clearfix">
+                                                <label class="col-md-6"> Planned Lead Time</label>
+                                                <div class="col-md-6 text"><apex:outputField id="Lead2" value="{!activity.Planned_Lead_Time__c}" >  
+                                                 </apex:outputField></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group clearfix">
+                                                <label class="col-md-6"> Lead Time</label>
+                                                <div class="col-md-6 text"><apex:outputField value="{!activity.Lead_Time__c}"/></div>
+                                            </div> 
+                                        </div>
+                                        
+                                      
+                                   
+                               
+                                <div class="clearfix marginbottom15"></div>
+                                           <div >
+                                       
+                                    </div> 
+                                </div>  
+                                 </div>  
+                                 </apex:outputPanel>
+                                  
+                              <div class="clearfix marginbottom15"></div>
+                                <div class="">
+                                    <div class="date-design design-edit">
+                                        <div class="heading-title">Description</div>
+                                        <div class="col-md-3">                            
+                                            <div class="form-group clearfix">
+                                                <label class="col-md-6">Comments/Remarks</label>
+                                              <!--  <div class="col-md-6 text"><apex:outputField value="{!activity.Comments_Remarks__c}" /></div> -->
+                                              <div class="col-md-6 text"><apex:inputfield value="{!activity1.Comments_Remarks__c}" /></div>
+                                              
+                                            </div>                            
+                                        </div>
+                                        
+                                          <apex:outputPanel >
+                                         <div class="col-md-3">                            
+                                            <div class="form-group clearfix">
+                                                <label class="col-md-6">Owner</label>
+                                                <div class="col-md-6 text"><apex:outputField value="{!activity.Ownerid}" /></div>
+                                            </div>                            
+                                        </div>
+                                        </apex:outputPanel>
+                                        
+                                         <apex:outputPanel >
+                                        <div class="col-md-3">                            
+                                            <div class="form-group clearfix">
+                                                <label class="col-md-6">Owner</label>
+                                                <div class="col-md-6 text"><apex:outputField value="{!activity.NPD_User__c}" /></div>
+                                            </div>                            
+                                        </div>
+                                         </apex:outputPanel>
+                                        
+                                    </div>
+                               </div>
+                                </div>
+                                
+                
+             
+      <div class="clearfix marginbottom15"></div>
+      
+       <div class="heading-title">Attachments</div>
+        <div>
+      <apex:repeat value="{!allatts}" var="attch" >                   
+                       
+                            <div class="col-md-12">
+                                <div class="form-group clearfix">
+                                    <label>File Name:</label>
+                                    <div>{!attch.name} &nbsp;&nbsp;&nbsp;  <u><apex:outputlabel value="View File" style="cursor:pointer;" onClick="downLoadAttac('{!attch.Id}');"/> </u></div>  
+                                </div>
+                             </div> 
+                        </apex:repeat>  </div>
+                       
+        
+      
+        </apex:pageBlock>
+            <div class="project_bg" coloum="4">  
+        <apex:pageblock title="Check Lists" id="CheckListPblk"  >
+           <apex:pageBlockButtons rendered="{!activity.Line_Item_Approval_Required__c == true}" >
+                <apex:commandButton value="Edit CheckLists" action="{!editCheckList}" rerender="CheckListPblk" rendered="{!AND((activity.Approval_Status__c != 'Approved'),(activity.Approval_Status__c != 'Rejected'),NOT(isEditMode),(sobjList.size>0))}"/>
+                <apex:commandButton value="Save" action="{!saveCheckList}" rerender="ActivityForm" rendered="{!isEditMode}" />
+                <apex:commandButton value="Cancel" action="{!CancelCheckList}" reRender="ActivityForm" rendered="{!isEditMode}"/>
+            </apex:pageBlockButtons>
+            
+            
+            <apex:pageBlockTable value="{!sobjList}" var="sobj" rendered="{!sobjList.size>0}">
+                <apex:repeat value="{!displaymap}" var="key">
+                   <apex:column headerValue="{!$ObjectType.NPD_Checklist__c.Fields[key].Label}">
+                        <apex:outputField value="{!sobj[key]}" rendered="{!Not(isEditMode)}"/>
+                        <apex:inputField value="{!sobj[key]}" rendered="{!isEditMode}"/>
+                   </apex:column>
+                </apex:repeat>
+                <apex:column headervalue="Approval Staus History">
+                        <apex:commandlink value="View History" style="color:blue;" action="{!viewFieldHistory}" rerender="popUp">
+                            <apex:param name="checkId" value="{!sobj['id']}" assignTo="{!checkId}"/>
+                        </apex:commandlink>
+                 </apex:column>
+                 
+                 
+                 <apex:column headervalue=" " rendered="{!AND(ApprovalActionsVisible,($User.Id == CASESAFEID(sobj['Current_Approver__c'])),(sobj['Approval_Status__c'] == 'Pending'))}">
+                    
+                    <apex:commandlink value="Approve" action="{!approveCheckList}" rerender="CheckListPblk" style="color:blue;" >
+                            <apex:param name="checkId" value="{!sobj['id']}" assignTo="{!checkId}"/>
+                    </apex:commandlink>&nbsp;|&nbsp;
+                    <apex:commandlink value="Reject" action="{!rejectCheckList}" rerender="CheckListPblk" style="color:blue;" >
+                            <apex:param name="checkId" value="{!sobj['id']}" assignTo="{!checkId}"/>
+                    </apex:commandlink>&nbsp;|&nbsp;
+                    <apex:commandlink value="Dropped" action="{!droppedCheckList}" rerender="CheckListPblk" style="color:blue;" >
+                            <apex:param name="checkId" value="{!sobj['id']}" assignTo="{!checkId}"/>
+                    </apex:commandlink>
+                 </apex:column>  
+            </apex:pageBlockTable>
+            <b><apex:outputlabel value="There are no check lists." rendered="{!sobjList.size==0}"/></b>
+            
+              
+        </apex:pageblock>
+       </div>    
+       
+      <!-- <div class="clearfix marginbottom15"></div>
+        <apex:pageblock title="Related tasks" > 
+                <apex:pageblocktable value="{!taskList}" var="tsk" rendered="{!taskList.size>0}">
+                        <apex:column headervalue="Subject" width="15%">
+                            <apex:outputfield value="{!tsk.Subject}" />
+                       </apex:column>     
+                       <apex:column headervalue="Status" >
+                            <apex:outputfield value="{!tsk.Status}" />
+                       </apex:column>
+                       <apex:column headervalue="Priority">
+                            <apex:outputfield value="{!tsk.Priority}"/>
+                       </apex:column>
+                       <apex:column headervalue="OwnerId">
+                            <apex:outputfield value="{!tsk.OwnerId}" />
+                       </apex:column>
+                       <apex:column headervalue="ActivityDate">
+                            <apex:outputfield value="{!tsk.ActivityDate}" />
+                       </apex:column>
+                </apex:pageblocktable>
+                <b><apex:outputlabel value="There are no tasks." rendered="{!taskList.size==0}"/></b>
+                  
+            </apex:pageblock> -->
+           
+            
+            <apex:pageblock title="Approval History" rendered="{!(sobjList.size = 0)}">
+                <apex:pageblocktable value="{!processSteps}" var="item">
+                    <apex:column headervalue="Date">
+                        <apex:outputfield value="{!item.createddate}"/>
+                    </apex:column>
+                    <apex:column value="{!item.StepStatus}"/>
+                    <apex:column headervalue="Assigned To">
+                        <apex:outputfield value="{!item.createdbyid}"/>
+                    </apex:column>
+                    <apex:column headervalue="Actual Approver">
+                        <apex:outputfield value="{!item.ActorId}"/>
+                    </apex:column>
+                    <apex:column value="{!item.Comments}"/>
+                    
+                </apex:pageblocktable>
+                
+            </apex:pageblock>
+        
+    </apex:form> 
+   <apex:form id="popUp">
+        <apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayPopUp}"/>
+        <apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayPopUp}">
+                <apex:pageblock title="Approval Status History">
+                    <apex:pageblockbuttons >
+                        <apex:commandbutton value="Cancel" action="{!closepopup}" rerender="popUp"/>
+                    </apex:pageblockbuttons>
+                    <apex:pageblocktable value="{!fieldHistoy}" var="History" rendered="{!fieldHistoy.size>0}"> 
+                        <apex:column headervalue="Date">
+                            <apex:outputfield value="{!History.createddate}"/>
+                        </apex:column>
+                        <apex:column headervalue="Related User">
+                            <apex:outputfield value="{!History.createdbyid}"/>
+                        </apex:column>
+                        <apex:column headervalue="Action">
+                            Changed <b> Approval Status </b> from {!History.oldvalue} to <b> {!History.newvalue}</b>.
+                        </apex:column> 
+                        
+                    </apex:pageblocktable>
+                    <apex:outputlabel value="There is no Approval Status history." rendered="{!fieldHistoy.size=0}"/>
+                </apex:pageblock>
+        </apex:outputPanel>
+    </apex:form>
+    
+    <apex:form rendered="{!NOT(ISNULL(stage))}" id="StageForm"> 
+        <apex:sectionHeader title="Stage" subtitle="{!Stage.Name__c}"/> 
+     <!--   <apex:pageBlock title="Stage" id="Stage">  -->
+     <apex:pageBlock title="Stage" id="Stage">
+              <apex:pageblockbuttons >
+                <apex:commandbutton value="Approve" action="{!ApproveRecordstage}" rerender="Stage" rendered="{!AND(Stage.Approval_Required__c,NOT(Stage.Line_Item_Approval_Required__c),(sobjList.size==0),(Stage.Approval_Status__c == 'Pending'))}"/>
+                <apex:commandbutton value="Reject" action="{!RejectRecordstage}" rerender="Stage" rendered="{!AND(Stage.Approval_Required__c,NOT(Stage.Line_Item_Approval_Required__c),(sobjList.size==0),(Stage.Approval_Status__c == 'Pending'))}"/>
+                <apex:commandbutton value="View Model" action="{!redirectDetailViewstage}" rendered="{!if(projectType == "otherstage", true, false) }"/>
+                <apex:commandbutton value="View Project" action="{!redirectDetailViewstage}" rendered="{!if(projectType == "marketingstage", true, false) }"/>
+            </apex:pageblockbuttons>
+           
+            <div class="">
+                        <div class="date-design">
+                          <div class="heading-title">Schedule/Status Stage</div>
+      
+                        <div class="col-md-3">  
+                            <div class="form-group clearfix">
+                            <label class="col-md-6"> Planned Start Date</label>
+                            <div class="col-md-6 text"><apex:outputtext value="{0,date,dd'/'MMM'/'yy}"> <apex:param value="{!Stage.Planned_Start_Date__c}" /> </apex:outputText></div>                
+                        </div> 
+                        <div class="form-group clearfix">
+                            <label class="col-md-6"> Planned End Date</label>
+                            
+                            <div class="col-md-6 text"><apex:outputtext value="{0,date,dd'/'MMM'/'yy}"> <apex:param value="{!Stage.Planned_End_Date__c}" /> </apex:outputText></div>
+                            </div>
+                           <!-- <div class="form-group clearfix">
+                            <label class="col-md-6"> Planned Lead Time</label>
+                            
+                            <div class="col-md-6 text"><apex:outputField value="{!Stage.Planned_Lead_Time__c}" /> </div>
+                        </div>-->
+                         
+                                    <div class="form-group clearfix">
+                                        <label class="col-md-6">Tentative Launch Plan</label>
+                                       
+                                        <div class="col-md-6 text"> <apex:outputtext value="{0,date,MMM'/'yy}"> <apex:param value="{!Stage.Tentative_Launch_Plan__c}" /> </apex:outputtext> </div>
+                                    </div>
+                               
+                        
+                        </div>
+                        
+                        <div class="col-md-3">
+                       
+                      
+                  <div class="form-group clearfix">
+                            <label class="col-md-6">Actual Start Date </label>
+                            
+                            <div class="col-md-6 text"><apex:outputtext value="{0,date,dd'/'MMM'/'yy}"> <apex:param value="{!Stage.Actual_Start_Date__c}" /> </apex:outputText></div>
+                        </div>
+                         
+                        <div class="form-group clearfix">
+                            <label class="col-md-6">  Actual End Date</label>
+                            
+                            <div class="col-md-6 text"><apex:outputtext value="{0,date,dd'/'MMM'/'yy}"> <apex:param value="{!Stage.Actual_End_Date__c}"/></apex:outputText></div>
+                        </div>
+                     <!--  <div class="form-group clearfix">
+                            <label class="col-md-6"> Actual Lead Time</label>
+                            <div class="col-md-6 text"> <apex:outputField value="{!Stage.Actual_Lead_Time__c}"/> </div>
+                        </div> -->
+                        </div> 
+                        
+                        
+                        <div class="col-md-3">
+                        <div class="form-group clearfix">
+                            <label class="col-md-6">  Revised Start Date</label>
+                            
+                            <div class="col-md-6 text"><apex:outputtext value="{0,date,dd'/'MMM'/'yy}"> <apex:param value="{!Stage.Revised_Start_Date__c}" /> </apex:outputText></div>
+                        </div>
+                        <div class="form-group clearfix">
+                            <label class="col-md-6">Revised End Date</label>
+                            
+                            <div class="col-md-6 text"><apex:outputtext value="{0,date,dd'/'MMM'/'yy}"> <apex:param value="{!Stage.Revised_End_Date__c}" /> </apex:outputText></div>
+                        </div>  
+                       
+                        </div>
+                        
+                        
+                        <div class="col-md-3">
+                        <div class="form-group clearfix">
+                            <label class="col-md-6"> Status</label>                  
+                            <div class="col-md-6 text"><apex:outputField value="{!Stage.Revised_End_Date__c}"/></div>
+                        </div>
+                        <div class="form-group clearfix">
+                            <label class="col-md-6">Approval Status </label>
+                            <div class="col-md-6 text"><apex:outputField value="{!Stage.Approval_Status__c}" /></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix marginbottom15"></div>
+                 <div class="">
+                        <div class="date-design design-edit">
+                            <div class="heading-title">Lead Times and Delivery Stage</div>
+                        
+                            
+                                                        
+                           
+                            
+                            <div class="col-md-3">
+                                <div class="form-group clearfix">
+                                    <label class="col-md-6"> Planned Lead Time</label>
+                                    <div class="col-md-6 text"><apex:outputField id="Lead2" value="{!Stage.Planned_Lead_Time__c}" /></div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-3">
+                                <div class="form-group clearfix">
+                                    <label class="col-md-6"> Actual Lead Time</label>
+                                    <div class="col-md-6 text"><apex:outputField id="Lead1" value="{!Stage.Actual_Lead_Time__c}"/></div>
+                                </div> 
+                            </div>
+                             </div>
+                              </div>
+    
+            <div class="clearfix marginbottom15"></div>
+                <div class="">
+                    <div class="date-design">
+                        <div class="heading-title">Brand And Marketing Information </div>
+                        <div class="col-md-3">
+                        <div class="form-group clearfix">
+                            <label class="col-md-6"> Brand </label>
+                            <div class="col-md-6 text"><apex:outputField value="{!Stage.Brand1__c}" /> </div>
+                        </div>
+                        </div>  
+                        
+                        <div class="col-md-3">
+                        <div class="form-group clearfix">
+                            <label class="col-md-6"> Collection reference</label>
+                            <div class="col-md-6 text"><apex:outputField value="{!Stage.Collection_reference__c}"/></div>
+                        </div>
+                        </div>
+                        
+                        <div class="col-md-3">
+                        <div class="form-group clearfix">
+                            <label class="col-md-6"> Market</label>
+                            <div class="col-md-6 text"> <apex:outputField value="{!Stage.Market__c}" /> </div>
+                        </div>  
+                          </div>
+                    
+                    <div class="col-md-3">
+                        <div class="form-group clearfix">
+                            <label class="col-md-6">Phase </label>
+                            <div class="col-md-6 text"><apex:outputField value="{!Stage.Phase__c}"  label="Marketing Brief Concept Reference Number" /></div>
+                        </div>   
+                       </div>  
+                     
+                       
+                       
+                        <div class="col-md-3"> 
+                        <div class="form-group clearfix">
+                            <label class="col-md-6"> Sub Brand</label>
+                            <div class="col-md-6 text"><apex:outputField value="{!Stage.Sub_Brand1__c}" /></div>
+                        </div>
+                        </div>
+                        
+                     <!--  <apex:outputPanel rendered="{!if((!activity.Name__c']='Marketing Brief/Concept' ||record['Name__c']='Briefing' || record['Name__c']='Concept Finalization' || record['Name__c']='Concept  Briefing to ISCM' ),false,true)}" >
+                       <div class="col-md-3">  
+                        <div class="form-group clearfix">
+                            <label class="col-md-6"> Model No </label>
+                            <div class="col-md-6 text"> <apex:outputField value="{!Stage.Model_Name__c}" style="width:80%;  padding-left: 20px;" rendered="{!if((record['Name__c']='Marketing Brief/Concept' ||record['Name__c']='Briefing' || record['Name__c']='Concept Finalization' || record['Name__c']='Concept  Briefing to ISCM' ),false,true)}" /></div>
+                        </div>   
+                          </div> 
+                      </apex:outputPanel> -->
+                      
+                      <div class="col-md-3">  
+                        <div class="form-group clearfix">
+                            <label class="col-md-6"> Source </label>
+                            <div class="col-md-6 text"> <apex:outputField value="{!Stage.Source__c}" style="width:80%;  padding-left: 20px;"  /></div>
+                        </div>   
+                          </div> 
+                    
+                <div class="col-md-3">
+                    <div class="form-group clearfix">
+                        <label class="col-md-6"> MB Ref Number</label>
+                        <div class="col-md-6 text"><apex:outputField value="{!Stage.Marketing_brief_concept_reference_number__c}"/></div>
+                    </div>
+                </div>
+                 
+                   
+                  <div class="col-md-3">
+                    <div class="form-group clearfix">
+                        <label class="col-md-6"> Design Manager</label>
+                        <div class="col-md-6 text"><apex:outputField value="{!Stage.Design_Manager__c}"/></div>
+                    </div>
+                </div>
+               
+                  </div>
+         </div>
+                 <div class="clearfix marginbottom15"></div>
+                    <div class="">
+                        <div class="date-design design-edit">
+                            <div class="heading-title">Description</div>
+                            <div class="col-md-3">
+                                <div class="form-group clearfix">
+                                    <label class="col-md-6">Comments/Remarks</label>
+                                 <!--   <div class="col-md-6 text"><apex:outputField value="{!Stage.Comments_Remarks__c}" /></div>  --> 
+                                     <div class="col-md-6 text"><apex:inputfield value="{!Stage1.Comments_Remarks__c}" /></div>
+                                  
+                                </div>
+                            </div>
+                            
+                           
+                             <div class="col-md-3">
+                                <div class="form-group clearfix">
+                                    <label class="col-md-6">Owner</label>
+                                    <div class="col-md-6 text"><apex:outputField id="OwnerId" value="{!Stage.NPD_User__c}" >
+                                    <script>document.getElementById('{!$Component.ownerId}').disabled = true;</script></apex:outputField></div>
+                                </div>
+                            </div>
+                            
+                            
+                       <!--      <apex:outputPanel rendered="{!if(record['Name__c']='Marketing Brief/Concept',true,false)}"  >
+                             <div class="col-md-3">
+                                <div class="form-group clearfix">
+                                    <label class="col-md-6">Design Manager</label>
+                                    <div class="col-md-6 text"><apex:outputField id="designman" value="{!Stage.Design_Manager__c}" >
+                                    </apex:outputField></div>
+                                </div>
+                            </div>
+                            </apex:outputPanel>-->
+                            
+                     <!--  <apex:outputPanel rendered="{!if(record['Name__c']='Marketing Brief/Concept' ,true,false)}"  >
+                            <div class="col-md-3">
+                                <div class="form-group clearfix">
+                                    <label class="col-md-6">Owner</label>
+                                    <div class="col-md-6 text"><apex:outputField id="OwnerId1" value="{!Stage.ownerId}" >
+                                    <script>document.getElementById('{!$Component.ownerId1}').disabled = true;</script></apex:outputField></div>
+                                </div>
+                            </div>
+                              </apex:outputPanel> -->
+                              
+                               
+                               <div class="col-md-3">
+                                <div class="form-group clearfix">
+                                    <label class="col-md-6">Owner</label>
+                                    <div class="col-md-6 text"><apex:outputField id="OwnerId2" value="{!Stage.ownerId}" >
+                                    <script>document.getElementById('{!$Component.ownerId2}').disabled = true;</script></apex:outputField></div>
+                                </div>
+                            </div>
+                            
+                            </div>
+                            </div>
+                
+          
+        
+            
+             <!--     <apex:pageblocksection title="Attachments" >
+                        <apex:pageblocktable value="{!allatts}" var="attch" >
+                        <apex:column value="{!attch.name}" />
+                        
+                        <apex:column value="{!attch.Description}" />
+                        
+                        <apex:column>
+                        <u><apex:outputlabel value="View File" style="cursor:pointer;" onClick="downLoadAttac('{!attch.Id}');"/> </u>
+                        </apex:column>
+                        
+                        </apex:pageblocktable>
+                   
+                   </apex:pageblocksection>   -->
+                   
+                 
+                    
+                     <div class="heading-title">Attachments.</div>
+                <div>    <apex:repeat value="{!allatts}" var="attch" >                   
+                       
+                            <div class="col-md-12">
+                                <div class="form-group clearfix">
+                                    <label>File Name:</label>
+                                 <div>{!attch.name} &nbsp;&nbsp;&nbsp;  <u><apex:outputlabel value="View File" style="cursor:pointer;" onClick="downLoadAttac('{!attch.Id}');"/> </u></div>
+                                </div>
+                            </div>
+                        </apex:repeat>  </div>
+                
+        </apex:pageBlock> 
+        
+        
+       </apex:form> 
+       
+       <apex:form enctype="multipart/form-data">
+       
+     <!--  <apex:pageblock title="new attachment section" >
+        <apex:commandlink value="new attachment"   action="{!showAttachment}"/>
+        
+        </apex:pageblock>   -->
+        
+       
+    <apex:pageMessages />
+    <apex:pageBlock title="Upload a Attachment">
+
+      <apex:pageBlockButtons >
+        <apex:commandButton action="{!upload}" value="Save"/>
+      </apex:pageBlockButtons>
+
+      <apex:pageBlockSection showHeader="false" columns="2" id="block1">
+
+        <apex:pageBlockSectionItem >
+          <apex:outputLabel value="File Name" for="fileName"/>
+          <apex:inputText value="{!attachment.name}" id="fileName"/>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+          <apex:outputLabel value="File" for="file"/>
+          <apex:inputFile value="{!attachment.body}" filename="{!attachment.name}" id="file"/>
+        </apex:pageBlockSectionItem>
+
+        <apex:pageBlockSectionItem >
+          <apex:outputLabel value="Description" for="description"/>
+          <apex:inputTextarea value="{!attachment.description}" id="description"/>
+        </apex:pageBlockSectionItem>
+
+      </apex:pageBlockSection>
+
+    </apex:pageBlock>
+  </apex:form>
+       
+       
+    
+    <script>
+    function downLoadAttac(attId) {
+                var urlAtt = '/servlet/servlet.FileDownload?file='+attId;
+                window.open(urlAtt, 'Popup6','height=500,width=600,left=100,top=100,resizable=no,scrollbars=yes,toolbar=no,status=no');
+            }
+    
+    </script>
+    
+
+     
+
+</apex:page>

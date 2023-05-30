@@ -1,0 +1,163 @@
+<apex:page controller="QC_custom_report_controller" id="page1" sidebar="false" showHeader="false" action="{!getDownloadComps}"  contentType="application/vnd.ms-excel#SalesForceExport.xls" cache="true" standardStylesheets="false">
+     
+        <head>
+            <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+        </head>
+      
+    <table id="accTable" border="1" cellpadding="5" cellspacing="1">
+            <tr>
+                <th> Master </th>
+                <th >Components No</th>
+                <th >Component Type</th>
+                <th >Report Ref Number</th>
+                <th >Watch variant</th>
+                <th >Model</th>
+                <th >SKU Reference</th>
+                <th >Vendor</th>
+                <th >General Observation</th>
+                <th >Final verdict</th>
+                <th >Created Date</th>
+                <th> Pending Days</th>
+                <th > Test Name</th>
+                <th>Observation</th>
+                <th> Verdict</th>
+            </tr>
+            <apex:repeat value="{!toVF}" var="rec" >
+                <apex:variable var="rowspanCount" value="{!0}"/>
+                <apex:repeat value="{!rec.testResults}" var="inc">
+                	<apex:variable var="rowspanCount" value="{! rowspanCount + 1}"/>
+                </apex:repeat>
+                
+                <apex:variable var="Count" value="{!1}"/>
+                <apex:repeat value="{!rec.testResults}" var="tests">
+                    <tr>
+                        <apex:outputPanel rendered="{!Count == 1}">
+                            <apex:outputPanel rendered="{!isBlank(rec.comp.Parent__c)}">
+                            <td rowspan="{!rowspanCount}">
+                                Master
+                            </td>
+                            </apex:outputPanel>
+                            <apex:outputPanel rendered="{!!isBlank(rec.comp.Parent__c)}">
+                            <td rowspan="{!rowspanCount}">
+                                Child
+                            </td>
+                            </apex:outputPanel>
+                            <td rowspan="{!rowspanCount}">
+                                <apex:outputField value="{!rec.comp.Name}"></apex:outputField>
+                            </td>
+                            <td rowspan="{!rowspanCount}">
+                                <apex:outputField value="{!rec.comp.Name__c}"></apex:outputField>
+                            </td >
+                            <td rowspan="{!rowspanCount}">
+                                <apex:outputField value="{!rec.comp.Report_Ref_Number__c}" />
+                            </td >
+                            <td rowspan="{!rowspanCount}">
+                                <apex:outputField value="{!rec.comp.Watch_variant__c}" />
+                            </td>
+                            <td rowspan="{!rowspanCount}">
+                                <apex:outputField value="{!rec.comp.Model__c}" />
+                            </td>
+                            <td rowspan="{!rowspanCount}">
+                                <apex:outputField value="{!rec.comp.SKU_Reference__c}" />
+                            </td>
+                             <td rowspan="{!rowspanCount}">
+                                <apex:outputField value="{!rec.comp.Pending_lead_time__c}" />
+                            </td>
+                            <td rowspan="{!rowspanCount}">
+                                <apex:outputField value="{!rec.comp.Vendor__c}" />
+                            </td>
+                            <td rowspan="{!rowspanCount}">
+                                <apex:outputField value="{!rec.comp.General_Observation__c}" />
+                            </td>
+                            <td rowspan="{!rowspanCount}">
+                                <apex:outputField value="{!rec.comp.Final_Verdict__c}" />
+                            </td>
+                            <td rowspan="{!rowspanCount}">
+                                <apex:outputField value="{!rec.comp.createdDate}" />
+                            </td>
+                        </apex:outputPanel>
+                        <td>
+                        	{!tests.testName}
+                        </td>
+                        <td>
+                            {!tests.Observation}
+                        </td>
+                        
+                        <td>
+                            {!tests.verdict}
+                        </td>
+                    </tr>
+                    <apex:variable var="Count" value="{!Count+1}"/>
+                </apex:repeat>
+                
+                <apex:outputPanel rendered="{!rec.comp.Name__c == 'Full-Watch' && rec.comp.Master__c  }">
+                    <apex:repeat value="{!childCompMap[rec.comp.Id]}" var="childRec" >
+                        
+                        <apex:variable var="childrowspanCount" value="{!0}"/>
+                        <apex:repeat value="{!childRec.QC_Test_Datas__r}" var="inc">
+                            <apex:variable var="childrowspanCount" value="{! childrowspanCount + 1}"/>
+                        </apex:repeat>
+                        
+                        <apex:variable var="childCount" value="{!1}"/>
+                        <apex:repeat value="{!childRec.QC_Test_Datas__r}" var="childTests">
+                            <tr>
+                                <apex:outputPanel rendered="{!childCount == 1}">
+                                    <td rowspan="{!childrowspanCount}">
+                                        Child
+                                    </td>
+                                    <td rowspan="{!childrowspanCount}">
+                                        <apex:outputField value="{!childRec.Name}"></apex:outputField>
+                                    </td>
+                                    <td rowspan="{!childrowspanCount}">
+                                        <apex:outputField value="{!childRec.Name__c}"></apex:outputField>
+                                    </td >
+                                    <td rowspan="{!childrowspanCount}">
+                                        <apex:outputField value="{!childRec.Report_Ref_Number__c}" />
+                                    </td >
+                                    <td rowspan="{!childrowspanCount}">
+                                        <apex:outputField value="{!childRec.Watch_variant__c}" />
+                                    </td>
+                                    <td rowspan="{!childrowspanCount}">
+                                        <apex:outputField value="{!childRec.Model__c}" />
+                                    </td>
+                                    <td rowspan="{!childrowspanCount}">
+                                        <apex:outputField value="{!childRec.SKU_Reference__c}" />
+                                    </td>
+                                     <td rowspan="{!rowspanCount}">
+                                <apex:outputField value="{!rec.comp.Pending_lead_time__c}" />
+                            </td>
+                                    <td rowspan="{!childrowspanCount}">
+                                        <apex:outputField value="{!childRec.Vendor__c}" />
+                                    </td>
+                                    <td rowspan="{!childrowspanCount}">
+                                        <apex:outputField value="{!childRec.General_Observation__c}" />
+                                    </td>
+                                    <td rowspan="{!childrowspanCount}">
+                                        <apex:outputField value="{!childRec.Final_Verdict__c}" />
+                                    </td>
+                                    <td rowspan="{!childrowspanCount}">
+                                        <apex:outputField value="{!childRec.createdDate}" />
+                                    </td>
+                                </apex:outputPanel>
+                                <td>
+                                    {!childTests.Test_Name__c}
+                                </td>
+                                <td>
+                                    {!childTests.Observation__c}
+                                </td>
+                                
+                                <td>
+                                    {!childTests.Conclusion__c}
+                                </td>
+                            </tr>
+                            <apex:variable var="childCount" value="{!childCount+1}"/>
+                        </apex:repeat>
+                        
+                        
+                        
+                    </apex:repeat>
+                </apex:outputPanel>
+                    
+            </apex:repeat>
+        </table>
+</apex:page>

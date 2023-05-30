@@ -1,0 +1,277 @@
+<apex:page standardController="Quote" sidebar="false" showHeader="false" renderAs="PDF">
+<head>
+<style>
+ @page {
+        
+        @top-center { 
+      
+            content : element(header);
+         }
+    
+        @bottom-right {
+            content : element(footer);
+            
+        }
+    
+    }
+    
+    div.header {
+        position : running(header) ;
+    }
+    
+    div.footer {
+        position : running(footer) ;
+    }
+    
+           
+</style>
+</head>
+<apex:pageBlock >
+ <div class="footer"> 
+      
+     <div > 
+     <table width="100%" border="0" cellspacing="0" cellpadding="0">
+          <tr>
+           <td align="left">
+            <apex:outputText value="(*This is a system generated document & therefore does not require any signature.)" /> 
+          </td>
+           <tr><td style="font-family:Calibri"><b>{!$User.Street},{!$User.City},{!$User.State},{!$User.PostalCode}</b></td></tr>
+          </tr>         
+     </table>
+     </div>      
+  </div> 
+<apex:image value="{!$Resource.Tanishq}" width="10%" height="10%"/>
+
+<apex:Panelgroup rendered="{!Quote.Approval_Status_Quote__c!='Approved'}">
+<h1>This quote is not approved </h1>
+</apex:panelgroup>
+
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName!='Received PO/Order Won'}">
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName!='Payment/Delivery'}">
+<h3>Indent can be generated only when Opportunity Stage is Received PO/Order Won or Payment/Delivery</h3>
+</apex:panelgroup>
+</apex:panelgroup>
+
+<apex:Panelgroup rendered="{!OR(Quote.Opportunity.StageName=='Received PO/Order Won',Quote.Opportunity.StageName=='Payment/Delivery')}">
+
+
+   <table border='0' cellspacing="0" width='100%'>
+    <tr  >
+        <td align='left' width='20%'>
+            
+       </td>
+       <td width='50%' align='center' >
+            <h><b>INSTITUTION  ORDER FORMAT</b></h>
+       </td>
+       <td width='30%'>
+            <table border="1" cellspacing="0">
+            <tr>
+                 <td><b>INSTI Order  Ref.:</b></td>
+                 <td> {!Quote.Insti_ref__c} </td>
+           </tr>
+           <tr>
+               <td>Order Date</td>
+               <td><apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                     <apex:param value="{!Quote.PO_Date__c}" />
+                        </apex:outputText>  </td>
+           </tr>
+           <tr>
+               <td>PO Copy</td>
+               <td><apex:outputText value="">
+                 <apex:param value="{!Quote.PO_No__c}" /></apex:outputText></td>
+           </tr>
+           </table>
+       </td>
+    </tr>
+   </table> 
+   <br/>
+   
+      <table border='1' cellspacing="0" width='100%'>
+    <tr align='center' > <td width ='50%'><b>Customer Details</b></td> <td width ='50%'><b>Order Details</b></td></tr>
+    <tr>
+        <td>Institution:<u>{!Quote.Contact.Account.Name} </u></td>
+       
+        <td>Total Order Value :<u>{!Quote.Opportunity.Amount} </u></td>
+        
+    </tr>    
+    <tr>
+       <td>Address: <u><br/> {!Quote.Contact.MailingStreet},<br/>{!Quote.Contact.MailingCity},<br/>{!Quote.Contact.MailingState} </u></td>
+       
+       <td> Payment Terms : {!Quote.Payment_Term_Corporate__c}</td>
+       
+    </tr>
+    <tr>
+       <td>LST No  : <u>{!Quote.Opportunity.Account.LST_No__c} </u></td>
+       
+       <td>Advance Recd  Rs: <u> <apex:outputText value="{0,number,###,###,###,###}">
+ <apex:param value="{!Quote.Advance_Received__c}" /></apex:outputText></u></td>
+       
+     </tr>
+     <tr>
+        <td>CST No : <u>{!Quote.CST_No__c}</u></td>
+        
+         <td>% of Total Ord Val : <u>{!Quote.Percent_of_Order__c} </u></td>
+        
+     </tr>
+     <tr>
+     <td></td>
+     
+     <td>Delivery from factory: <u>{!Quote.Delivery_from_Factory__c} </u></td>
+     
+     </tr>
+  </table>
+     
+  <br/>
+  
+ <table border='1' cellspacing="0" width='100%'>
+    <tr align='center' > <td width='50%'><b>Customization Details</b></td> <td width='50%'><b>Advance Payment Details</b></td></tr>
+    <tr>
+        <td>Oneside :<u>{!Quote.One_Side__c} </u></td>
+         <td>Cheque Number :
+             {!Quote.Cheque_No__c} </td>
+    </tr>
+    <tr>
+       <td>Otherside :<u> {!Quote.Other_Side__c} </u></td>
+       <td>Amount: <u><apex:outputText value="{0,number,###,###,###,###.##}">
+ <apex:param value="{!Quote.Advance_Received__c}" /></apex:outputText></u></td>
+    </tr>
+    <tr>
+       <td>Gold rate per gm :  <u> {!Quote.Gold_Rate__c} </u></td>
+       <td>Name of the bank :<u>{!Quote.Bank_Name__c} </u></td>    
+    </tr>
+    <tr>
+        <td>Gold rate fixed date as on - <u> <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                                     <apex:param value="{!Today()}" />
+                                                    </apex:outputText> </u></td>
+        <td>Receipt Dt:<u><apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                 <apex:param value="{!Quote.Cheque_Date__c}" />
+                                    </apex:outputText>   </u></td>
+    </tr>
+    <tr>
+       <td>Tool Cost Charged Rs : <u>{!Quote.Tool_Cost_Charges__c} </u></td>
+       <td>Location(Bank):<u>{!Quote.Location_of_The_Bank__c} </u></td>
+    </tr>
+    <tr>
+        <td>Coin Req Std Wt / Actual Wt , Specify :<u>{!Quote.Coin_weight_Required__c} </u></td>
+         <td></td>
+    </tr>
+</table>
+<br/>
+<table border='1' cellspacing="0" width='100%'>
+        <tr>
+            <td>Si.No </td>
+            <td>Product Code </td>
+            <td>Purity </td>
+            <td>Unit Wt. </td>
+            <td>Qty </td>
+            <td>Cost \ coin</td>
+            <td>Value</td>
+        </tr>
+     
+         <apex:variable var="rowNum" value="{!0}"></apex:variable>
+         <apex:repeat value="{!Quote.QuoteLineItems}" var="Qlt">
+           
+         <tr>
+            
+                <td><apex:variable var="rowNum" value="{!rowNum+1}"/>
+                    <apex:outputText value="{!rowNum}"/></td>
+                <td>{!Qlt.PricebookEntry.Product2.Name} </td>
+                <td style="Text-align:right">{!Qlt.Purity__c}</td>
+                
+                <td style="Text-align:right">{!Qlt.Weight_of_the_product__c}</td>
+                
+                <td style="Text-align:right"> <apex:outputText value="{0,number,###,###,###,###}"  style="font-align:right"> <apex:param value="{!Qlt.Quantity}"/></apex:outputText></td>
+              <td style="Text-align:right">{!Qlt.Price_Per_Unit_After_Discount__c}</td>
+                <td style="Text-align:right"> <apex:outputText value="{0,number,###,###,###,###.##}"  style="font-align:right"> <apex:param value="{!Qlt.TotalPrice}"/></apex:outputText></td>
+                
+     
+            </tr>
+        </apex:repeat>
+        
+          <tr align='right' width='100%'>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td>&nbsp;</td>
+            <td></td>
+          </tr>
+        
+    
+          
+      
+        
+        <tr align='right' width='100%'>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td><b>Total</b></td>
+            <td style="Text-align:right"> <apex:outputText value="{0,number,###,###,###,###.##}"  style="font-align:right"> <apex:param value="{!Quote.Total_Price_Qli__c}"/></apex:outputText></td>
+            
+
+        </tr>
+        
+</table>
+  
+<br/>
+        
+
+    
+<table border='1' cellspacing="0" width='100%'>
+    <tr align='center' > <td width='50%'><b>Delivery Location</b></td> <td width='50%'><b>Packaging Details</b></td></tr>
+    <tr>
+        <td></td>
+        <td>Pouch and GC :<u>{!Quote.Pouch_GC__c}</u></td>
+    </tr>
+    <tr>
+       <td>Directly to customer:<u> {!Quote.Directly_to_Customer__c} </u></td>
+       <td>Coin Folder :<u> {!Quote.Coin_Folder__c} </u></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Lamination :<u>{!Quote.Lamination__c} </u></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>Others ( specify ):<u>{!Quote.Others__c} </u></td>
+    </tr>
+                
+</table>
+        
+<br/>
+    
+    
+
+<table border='0' cellspacing='0' width='100%'> 
+<tr>
+<td>
+ <table border='1' cellspacing='0' width='300'>
+     <tr align='center' ><td><b> Plannig Use </b> <br/><br/></td> </tr>
+     <tr><td>Delivery committed dt :<apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                 <apex:param value="{!Quote.Delivery_Committed_Date__c}" />
+                                    </apex:outputText>    </td></tr>
+     <tr><td> <br/></td></tr>
+     <tr><td>Reamrks  :{!Quote.Remarks__c} </td></tr>
+</table>
+</td>
+<td>  
+<table border ='1' cellspacing='0' width='300'>
+                <tr align='center'>
+                    <td><br/><br/><br/>{!Quote.Opportunity.Owner.name} </td>
+                </tr>
+               
+                <tr>
+                    <td align='center'>Name / Signature</td>
+                </tr>              
+</table>
+</td>
+</tr>
+</table>
+
+
+</apex:panelgroup>   
+</apex:pageBlock>
+</apex:page>

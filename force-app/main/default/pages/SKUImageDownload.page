@@ -1,0 +1,57 @@
+<apex:page controller="SKUImageDownloadController" sidebar="false" showHeader="false" renderAs="PDF">
+
+           
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered" style="text-align:center;border: 1px solid black;" border="1px solid black" width="100%" >
+                
+                <thead>
+                    <tr class="slds-line-height_reset">
+                        <th class="" scope="col">
+                            <div class="slds-truncate"  title="SKU">SKU</div>
+                        </th>
+                        
+                        <th class="" scope="col">
+                            <div class="slds-truncate"  title="SKU">PO Num</div>
+                        </th>
+            
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Photo">Photo</div>
+                        </th>
+                        
+                        <th class="" scope="col">
+                            <div class="slds-truncate" title="Cost">Cost</div>
+                        </th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    <apex:repeat value="{!listWrap}" var="pro">
+                        <tr class="slds-hint-parent">
+                            <td data-label="SKU" scope="row">
+                                <div class="slds-truncate" title="Cloudhub">
+                                    {!pro.SKU}
+                                </div>
+                            </td>
+                             <td data-label="PO Num" scope="row">
+                                <div class="slds-truncate" title="Cloudhub">
+                                    {!pro.poNum}
+                                </div>
+                            </td>
+              
+                            <td data-label="Photo" scope="row">
+                                <div class="slds-truncate" title="Cloudhub">
+                                    <apex:image value="{!pro.imgLink}" height="450px" width="450px" />
+                                </div>
+                            </td>
+                            <td data-label="cost" scope="row">
+                                <div class="slds-truncate" title="Cloudhub">
+                                    {!pro.cost}
+                                </div>
+                            </td>
+                            
+                        </tr>
+                    </apex:repeat>
+                </tbody>
+                
+            </table>
+            
+</apex:page>

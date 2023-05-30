@@ -1,0 +1,836 @@
+<apex:page controller="RTWProductViewController" cache="true" readOnly="true" contentType="text/csv#{!param}.csv">
+    <apex:outputPanel rendered="{!ProdType != 'MASK'  && ProdType != 'DRPDSAREE'  && ProdType != 'LEHENGA' && ProdType != 'BLOUSE' && ProdType != 'KURTA' && ProdType != 'SHORT TOP' && ProdType != 'DRESS' && ProdType != 'TROUSER' && ProdType != 'USKD' && ProdType != 'KURTA SET' && ProdType != 'SLIP' && ProdType != 'TUNIC' }" layout="none">
+        
+        <apex:outputText value="ITEM NO"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Name"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Code"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PACK NO"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SKU"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PO NUMBER"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PRODUCT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BASE COLOUR"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COLLECTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CRAFT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="DESCRIPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FABRICS"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FORM"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="QUANTITY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SEASON"/><apex:outputText value="{!COMMA}"/>
+    </apex:outputPanel>
+    
+    <apex:outputPanel rendered="{!!OR(ProdType == 'LEHENGA' ,ProdType == 'DRPDSAREE',ProdType == 'BLOUSE',ProdType == 'MASK',ProdType == 'KURTA' , ProdType == 'SHORT TOP' , ProdType == 'DRESS' , ProdType == 'TROUSER', ProdType == 'USKD' ,ProdType == 'KURTA SET',ProdType == 'SLIP',ProdType == 'TUNIC')}" layout="none">
+        
+        <apex:outputText value="OKHAI_SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ECOM SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="E-Com Material"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STYLE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STYLECODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YEAR OF DESIGN"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Remarks"/><apex:outputText value="{!COMMA}"/>
+    </apex:outputPanel>
+    
+    <apex:outputPanel rendered="{!ProdType == 'DRPDSAREE'}" layout="none">
+        
+        <apex:outputText value="ITEM NO"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Name"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Code"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PACK NO"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SKU"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PO NUMBER"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PRODUCT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BASE COLOUR"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COLLECTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CRAFT"/><apex:outputText value="{!COMMA}"/>
+         <apex:outputText value="WARP"/><apex:outputText value="{!COMMA}"/>
+         <apex:outputText value="WEFT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="DESCRIPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FABRICS"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FORM"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="QUANTITY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SEASON"/><apex:outputText value="{!COMMA}"/>   
+        <!--apex:outputText value="OKHAI_SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ECOM SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="E-Com Material"/><apex:outputText value="{!COMMA}"/-->
+        <apex:outputText value="SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STYLE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STYLECODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YEAR OF DESIGN"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Remarks"/><apex:outputText value="{!COMMA}"/>
+    </apex:outputPanel>
+    
+    <apex:outputPanel rendered="{!ProdType == 'LEHENGA'}" layout="none">                <!--Lehenga-->
+        
+        <apex:outputText value="ITEM NO"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Name"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Code"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SKU"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PO NUMBER"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PRODUCT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BASE COLOUR"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COLLECTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CRAFT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SEASON"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FORM"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="QUANTITY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="TOP FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BOTTOM FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STYLE CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="VENDOR STYLE CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BLOUSE TYPE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BLOUSE FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BLOUSE COLOUR"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="DUPATTA FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="DUPPATTA COLOUR"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SIZE-LCD"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ECOM SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="E-Com Material"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SOURCE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE SKU CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="TOTAL COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ORDER ID"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="REMARKS"/><apex:outputText value="{!COMMA}"/>
+        
+        
+    </apex:outputPanel>
+    
+    <apex:outputPanel rendered="{!ProdType == 'BLOUSE' }" layout="none">
+        
+        <apex:outputText value="ITEM NO"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Name"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Code"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SKU"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PO NUMBER"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PRODUCT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BASE COLOUR"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COLLECTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CRAFT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SEASON"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FORM"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="QUANTITY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="TOP FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BOTTOM FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SOURCE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE SKU CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="TOTAL COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="LOOM"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="RTW_SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ECOM SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="E-Com Material"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STYLECODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ZARI"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="DESCRIPTION" /><apex:outputText value="{!COMMA}" />
+        <apex:outputText value="ORDER ID"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="REMARKS"/><apex:outputText value="{!COMMA}"/>
+    </apex:outputPanel>
+    
+    <apex:outputPanel rendered="{! ProdType == 'DRESS' }" layout="none">
+        
+        <apex:outputText value="ITEM NO"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Name"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Code"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SKU"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PO NUMBER"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PRODUCT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BASE COLOUR"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COLLECTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CRAFT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SEASON"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="TOP FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BOTTOM FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FORM"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="QUANTITY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SOURCE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE SKU CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="TOTAL COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="LOOM"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="RTW_SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ECOM SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="E-Com Material"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STYLECODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="VENDOR STYLE CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ZARI"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="DESCRIPTION" /><apex:outputText value="{!COMMA}" />
+        <apex:outputText value="ORDER ID"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="REMARKS"/><apex:outputText value="{!COMMA}"/>
+    </apex:outputPanel>
+    
+    <apex:outputPanel rendered="{! ProdType == 'SHORT TOP' }" layout="none">
+        
+        <apex:outputText value="ITEM NO"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Name"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Code"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SKU"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PO NUMBER"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PRODUCT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BASE COLOUR"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COLLECTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CRAFT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SEASON"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="TOP FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BOTTOM FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FORM"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="QUANTITY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SOURCE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE SKU CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="TOTAL COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="LOOM"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="RTW_SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ECOM SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="E-Com Material"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STYLE NAME"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STYLECODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="VENDOR STYLE CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ZARI"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="DESCRIPTION" /><apex:outputText value="{!COMMA}" />
+        <apex:outputText value="ORDER ID"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="REMARKS"/><apex:outputText value="{!COMMA}"/>
+    </apex:outputPanel>
+    
+    <apex:outputPanel rendered="{! ProdType == 'TROUSER'}" layout="none">
+        
+        <apex:outputText value="ITEM NO"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Name"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Code"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SKU"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PO NUMBER"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PRODUCT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BASE COLOUR"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COLLECTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CRAFT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SEASON"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="TOP FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BOTTOM FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FORM"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="QUANTITY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SOURCE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE SKU CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="TOTAL COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="LOOM"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="RTW_SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ECOM SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="E-Com Material"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STYLE NAME"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STYLE CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="VENDOR STYLE CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ZARI"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ORDER ID"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="REMARKS"/><apex:outputText value="{!COMMA}"/>
+    </apex:outputPanel>
+    
+   <apex:outputPanel rendered="{!showSlipfield == True ||showDuppattafield == True ||showTrouserfield == True ||showKurtafield == True ||showJacketfield == True || showSlipfieldforKurtaSet == True && (ProdType == 'KURTA SET' || ProdType == 'KURTA' || ProdType == 'TUNIC' || ProdType == 'SLIP') }" layout="none">
+        
+        <apex:outputText value="ITEM NO"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Name"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Code"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SKU"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PO NUMBER"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PRODUCT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SLIP"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="DUPATTA"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="TROUSER"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="KURTA"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="JACKET"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BASE COLOUR"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COLLECTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CRAFT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SEASON"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="TOP FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BOTTOM FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FORM"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="QUANTITY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="No of Pcs"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SOURCE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE SKU CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="TOTAL COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="LOOM"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="RTW_SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ECOM SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="E-Com Material"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STYLE NAME"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STYLE CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="VENDOR STYLE CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ZARI"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="KURTA DESCRIPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ORDER ID"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="REMARKS"/><apex:outputText value="{!COMMA}"/>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!showSlipfield == false ||showDuppattafield == false ||showTrouserfield == false ||showKurtafield == false ||showJacketfield == false|| showSlipfieldforKurtaSet == false && (ProdType == 'KURTA SET' || ProdType == 'KURTA' || ProdType == 'TUNIC' || ProdType == 'SLIP') }" layout="none">
+        <apex:outputText value="ITEM NO"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Name"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Code"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SKU"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PO NUMBER"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PRODUCT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BASE COLOUR"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COLLECTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CRAFT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SEASON"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="TOP FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BOTTOM FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FORM"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="QUANTITY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="No of Pcs"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SOURCE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE SKU CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE CONSUMPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="YARDAGE COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="TOTAL COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="LOOM"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="RTW_SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ECOM SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="E-Com Material"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STYLE NAME"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STYLE CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="VENDOR STYLE CODE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ZARI"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="KURTA DESCRIPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ORDER ID"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="REMARKS"/><apex:outputText value="{!COMMA}"/>
+    </apex:outputPanel>
+    
+    <apex:outputPanel rendered="{!ProdType == 'USKD'}" layout="none">
+        
+        <apex:outputText value="ITEM NO"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Name"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Code"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PRODUCT CATEGARY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SKU"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PO NUMBER"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Loom"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Proc-Type"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Quantity"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Kurta Fabric"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Dupatta Fabric"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Salwar Fabric"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ORIGIN"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PO NUMBER "/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BASE COLOUR"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SUGGESTED MRP"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="DETAILED COLOR"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="DESIGN STORY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STORY 1"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STORY 2"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="DESIGN DESCRIPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FABRIC"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ZARI TYPE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="OCCASION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="CRAFT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COLLECTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BODY PATTERN"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BODY DES ELEMENT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BODY DES MATERIAL"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BODY DES DENSITY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BORDER PATTERN"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BORDER DES ELEMENT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BORDER DES MATERIAL"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BORDER SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PALLU PATTERN "/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PALLU DESIGN"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PALLU DES MATERIAL"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PALLU DES DENSITY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PALLU SIZE"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="WAREHOUSE STOCK"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SOLD STOCK"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STORE STOCK "/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="ORDER ID"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COMMENTS"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Created By "/><apex:outputText value="{!COMMA}"/>
+    </apex:outputPanel>
+    
+    <apex:outputPanel rendered="{!ProdType == 'MASK'}" layout="none">
+        
+        <apex:outputText value="ITEM NO"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Name"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Vendor Code"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PACK NO"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="SKU"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PO NUMBER"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PRODUCT"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="BASE COLOUR"/><apex:outputText value="{!COMMA}"/>
+        
+        <apex:outputText value="FABRICS"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="STYLE NAME"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="GENDER"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="DESIGN"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PLEATS"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="PLY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="QUANTITY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="COST"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FABRIC 1"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FABRIC 1 QUANTITY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FABRIC 2"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="FABRIC 2 QUANTITY"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="MASK DESCRIPTION"/><apex:outputText value="{!COMMA}"/>
+        <apex:outputText value="Remarks"/><apex:outputText value="{!COMMA}"/>
+    </apex:outputPanel>
+    <apex:outputText value="{!CRLF}"/>
+    
+    <apex:repeat value="{!proViewList}" var="pro">
+        
+        
+        
+        <apex:outputPanel rendered="{!ProdType != 'MASK' && ProdType != 'DRPDSAREE' && ProdType != 'LEHENGA' && ProdType != 'BLOUSE' && ProdType != 'KURTA' && ProdType != 'SHORT TOP' && ProdType != 'DRESS' && ProdType != 'TROUSER' && ProdType != 'USKD' && ProdType != 'KURTA SET' && ProdType != 'SLIP' && ProdType != 'TUNIC'}" layout="none">
+            
+            <apex:outputText value="{!pro.Item_no__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Name}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Vendor_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Pack_no__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.SKU__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.PO_Number__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Product__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Base_Colour__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Collection__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Craft__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Description__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MFabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Form__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MRP_Pc__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Quantity__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Season__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Warp__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Weft__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Remarks__c}"/><apex:outputText value="{!COMMA}"/>
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!!OR(ProdType == 'LEHENGA',ProdType == 'DRPDSAREE',ProdType == 'BLOUSE',ProdType == 'MASK',ProdType == 'KURTA' , ProdType == 'SHORT TOP' , ProdType == 'DRESS' , ProdType == 'TROUSER' , ProdType == 'USKD' ,ProdType == 'KURTA SET' ,ProdType == 'SLIP' ,ProdType == 'TUNIC')}" layout="none">
+            
+            
+            <apex:outputText value="{!pro.Gender__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Okhai_Size__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Ecom_Size__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.E_Com_Material__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Size__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.STYLE__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Style_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Year_of_Design__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Remarks__c}"/><apex:outputText value="{!COMMA}"/>
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!ProdType == 'DRPDSAREE'}" layout="none">
+            <apex:outputText value="{!pro.Item_no__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Name}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Vendor_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Pack_no__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.SKU__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.PO_Number__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Product__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Base_Colour__c}"/><apex:outputText value="{!COMMA}"/>           
+            <apex:outputText value="{!pro.Collection__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Craft__c}"/><apex:outputText value="{!COMMA}"/>
+             <apex:outputText value="{!pro.Warp__c}"/><apex:outputText value="{!COMMA}"/>
+             <apex:outputText value="{!pro.Weft__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Description__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MFabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Form__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MRP_Pc__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Quantity__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Season__c}"/><apex:outputText value="{!COMMA}"/>
+            
+           <!--apex:outputText value="{!pro.Ecom_Size__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Okhai_Size__c}"/><apex:outputText value="{!COMMA}"/>
+apex:outputText value="{!pro.Warp__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Weft__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Remarks__c}"/><apex:outputText value="{!COMMA}"/>     
+            <apex:outputText value="{!pro.Gender__c}"/><apex:outputText value="{!COMMA}"/
+            
+            
+            <apex:outputText value="{!pro.E_Com_Material__c}"/><apex:outputText value="{!COMMA}"/-->
+            <apex:outputText value="{!pro.Size__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.STYLE__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Style_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Year_of_Design__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Remarks__c}"/><apex:outputText value="{!COMMA}"/>
+        </apex:outputPanel>
+        
+        
+        <apex:outputPanel rendered="{!ProdType == 'LEHENGA' }" layout="none">
+            
+            <apex:outputText value="{!pro.Item_no__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Name}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Vendor_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.SKU__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.PO_Number__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Product__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Base_Colour__c}"/><apex:outputText value="{!COMMA}"/> 
+            <apex:outputText value="{!pro.Collection__c}"/><apex:outputText value="{!COMMA}"/>   
+            <apex:outputText value="{!pro.Craft__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Season__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MFabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Form__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MRP_Pc__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Quantity__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Top_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Consumtion__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Bottom_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Consumtion1__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Style_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Vendot_style_code__c}"/><apex:outputText value="{!COMMA}"/>                 
+            
+            <apex:outputText value="{!pro.Blouse_Type__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Blouse_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Blouse_Color__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.DupattaFabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Dupatta_Color__c}"/><apex:outputText value="{!COMMA}"/>
+            
+            
+            <apex:outputText value="{!pro.Size_LCD__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Ecom_Size__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.E_Com_Material__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Source__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Yardage_SKU_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Yardage_Consumption__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Yardage_Cost__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Total_Costs__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Order_ID__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Remarks__c}"/><apex:outputText value="{!COMMA}"/>
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!ProdType == 'BLOUSE' }" layout="none">
+            <apex:outputText value="{!pro.Item_no__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Name}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Vendor_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.SKU__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.PO_Number__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Product__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Base_Colour__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Collection__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Craft__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Season__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MFabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Form__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MRP_Pc__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Quantity__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Top_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Consumtion__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Bottom_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Source__c}"/><apex:outputText value="{!COMMA}"/>
+             <apex:outputText value="{!pro.Yardage_SKU_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Yardage_Consumption__c}"/><apex:outputText value="{!COMMA}"/>
+             <apex:outputText value="{!pro.Yardage_Cost__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Total_Costs__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Loom__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.RTW_SIZE__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Ecom_Size__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.E_Com_Material__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Style_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Zari__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Description__c}" /><apex:outputText value="{!COMMA}" />
+            <apex:outputText value="{!pro.Order_ID__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Remarks__c}"/><apex:outputText value="{!COMMA}"/>
+        </apex:outputPanel>   
+        
+        <apex:outputPanel rendered="{!ProdType == 'DRESS' }" layout="none">
+            <apex:outputText value="{!pro.Item_no__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Name}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Vendor_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.SKU__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.PO_Number__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Product__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Base_Colour__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Collection__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Craft__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Season__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MFabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Top_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Consumtion__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Bottom_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Consumtion1__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Form__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MRP_Pc__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Quantity__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Source__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Yardage_SKU_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Yardage_Consumption__c}"/><apex:outputText value="{!COMMA}"/>
+             <apex:outputText value="{!pro.Yardage_Cost__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Total_Costs__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Loom__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.RTW_SIZE__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Ecom_Size__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.E_Com_Material__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Style_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Vendot_style_code__c}"/><apex:outputText value="{!COMMA}"/>                 
+            <apex:outputText value="{!pro.Zari__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Description__c}" /><apex:outputText value="{!COMMA}" />
+            <apex:outputText value="{!pro.Order_ID__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Remarks__c}"/><apex:outputText value="{!COMMA}"/>
+        </apex:outputPanel> 
+        
+        
+        <apex:outputPanel rendered="{!ProdType == 'SHORT TOP' }" layout="none">
+            <apex:outputText value="{!pro.Item_no__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Name}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Vendor_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.SKU__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.PO_Number__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Product__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Base_Colour__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Collection__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Craft__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Season__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MFabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Top_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Consumtion__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Bottom_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Consumtion1__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Form__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MRP_Pc__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Quantity__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Source__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Yardage_SKU_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Yardage_Consumption__c}"/><apex:outputText value="{!COMMA}"/>
+             <apex:outputText value="{!pro.Yardage_Cost__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Total_Costs__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Loom__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.RTW_SIZE__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Ecom_Size__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.E_Com_Material__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Style_Name__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Style_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Vendot_style_code__c}"/><apex:outputText value="{!COMMA}"/>                 
+            <apex:outputText value="{!pro.Zari__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Description__c}" /><apex:outputText value="{!COMMA}" />
+            <apex:outputText value="{!pro.Order_ID__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Remarks__c}"/><apex:outputText value="{!COMMA}"/>
+        </apex:outputPanel> 
+        
+        <apex:outputPanel rendered="{! ProdType == 'TROUSER'}" layout="none">
+            <apex:outputText value="{!pro.Item_no__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Name}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Vendor_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.SKU__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.PO_Number__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Product__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Base_Colour__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Collection__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Craft__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Season__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MFabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Top_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Consumtion__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Bottom_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Consumtion1__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Form__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MRP_Pc__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Quantity__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Source__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Yardage_SKU_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Yardage_Consumption__c}"/><apex:outputText value="{!COMMA}"/>
+             <apex:outputText value="{!pro.Yardage_Cost__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Total_Costs__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Loom__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.RTW_SIZE__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Ecom_Size__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.E_Com_Material__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Style_Name__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Style_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Vendot_style_code__c}"/><apex:outputText value="{!COMMA}"/>                 
+            <apex:outputText value="{!pro.Zari__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Order_ID__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Remarks__c}"/><apex:outputText value="{!COMMA}"/>
+        </apex:outputPanel> 
+        
+       <apex:outputPanel rendered="{!showSlipfield == True ||showDuppattafield == True ||showTrouserfield == True ||showKurtafield == True ||showJacketfield == True|| showSlipfieldforKurtaSet == True && (ProdType == 'KURTA SET' || ProdType == 'KURTA' || ProdType == 'TUNIC' || ProdType == 'SLIP') }" layout="none">
+    
+            <apex:outputText value="{!pro.Item_no__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Name}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Vendor_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.SKU__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.PO_Number__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Product__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.SLIP__c}"/><apex:outputText value="{!COMMA}"/>
+           <apex:outputText value="{!pro.Duppatta__c}"/><apex:outputText value="{!COMMA}"/>
+           <apex:outputText value="{!pro.Trouser__c}"/><apex:outputText value="{!COMMA}"/>
+           <apex:outputText value="{!pro.Kurta__c}"/><apex:outputText value="{!COMMA}"/>
+           <apex:outputText value="{!pro.Jacket__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Base_Colour__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Collection__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Craft__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Season__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MFabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Top_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Consumtion__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Bottom_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Consumtion1__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Form__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MRP_Pc__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Quantity__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.X1_SET__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Source__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Yardage_SKU_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Yardage_Consumption__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Yardage_Cost__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Total_Costs__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Loom__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.RTW_SIZE__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Ecom_Size__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.E_Com_Material__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Style_Name__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Style_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Vendot_style_code__c}"/><apex:outputText value="{!COMMA}"/>                 
+            <apex:outputText value="{!pro.Zari__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Kurta_Description__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Order_ID__c}"/><apex:outputText value="{!COMMA}"/>
+           <apex:outputText value="{!pro.Remarks__c}"/><apex:outputText value="{!COMMA}"/>
+        </apex:outputPanel>  
+         <apex:outputPanel rendered="{!showSlipfield == False ||showDuppattafield == false ||showTrouserfield == false ||showKurtafield == false ||showJacketfield == false|| showSlipfieldforKurtaSet == false && (ProdType == 'KURTA SET' || ProdType == 'KURTA' || ProdType == 'TUNIC' || ProdType == 'SLIP') }" layout="none">
+    
+            <apex:outputText value="{!pro.Item_no__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Name}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Vendor_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.SKU__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.PO_Number__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Product__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Base_Colour__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Collection__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Craft__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Season__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MFabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Top_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Consumtion__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Bottom_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Consumtion1__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Form__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MRP_Pc__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Quantity__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.X1_SET__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Source__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Yardage_SKU_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Yardage_Consumption__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Yardage_Cost__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Total_Costs__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Loom__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.RTW_SIZE__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Ecom_Size__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.E_Com_Material__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Style_Name__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Style_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Vendot_style_code__c}"/><apex:outputText value="{!COMMA}"/>                 
+            <apex:outputText value="{!pro.Zari__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Kurta_Description__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Order_ID__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Remarks__c}"/><apex:outputText value="{!COMMA}"/>
+        </apex:outputPanel>        
+        
+        
+        <apex:outputPanel rendered="{!ProdType == 'USKD'}" layout="none">
+            
+            <apex:outputText value="{!pro.Item_no__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Name}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Vendor_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Product__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.SKU__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.PO_Number__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Loom__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Proc_Type__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Quantity__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Kurta_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.DupattaFabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Salwar_Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Origin__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.PO_Number__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MRP_Pc__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Base_Colour__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Suggested_MRP__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Detailed_Colour__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Design_Story__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Story_1__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Story_2__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Description__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Fabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Zari_Type__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Occasion__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Craft__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Collection__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Body_Pattern__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Body_Des_Element__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Body_Des_Material__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Body_Des_Density__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Border_Pattern__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Border_Des_Element__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Border_Des_Material__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Border_Size__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Pallu_Pattern__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Pallu_Design__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Pallu_Des_Material__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Pallu_Des_Density__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Pallu_Size__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Warehouse_Stock__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Sold_Stock__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Store_Stock__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Order_ID__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Remarks__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.CreatedBy.Name}"/><apex:outputText value="{!COMMA}"/>
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!ProdType == 'MASK'}" layout="none">
+            
+            <apex:outputText value="{!pro.Item_no__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Name}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.vendor_custom__r.Vendor_Code__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Pack_no__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.SKU__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Product__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Base_Colour__c}"/><apex:outputText value="{!COMMA}"/>
+            
+            <apex:outputText value="{!pro.MFabric__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MStyle_name__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Gender__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MDesign__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MPleats__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MPly__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Quantity__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MCost__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Fabric_1__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Fabric_1_Quantity__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Fabric_2__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Fabric_2_Quantity__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.MASK_DESCRIPTION__c}"/><apex:outputText value="{!COMMA}"/>
+            <apex:outputText value="{!pro.Remarks__c}"/><apex:outputText value="{!COMMA}"/>
+        </apex:outputPanel>
+        
+        <apex:outputText value="{!CRLF}"/>
+    </apex:repeat>
+</apex:page>

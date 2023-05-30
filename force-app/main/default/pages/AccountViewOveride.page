@@ -1,0 +1,12 @@
+<apex:page standardController="Account" extensions="AccountViewOverideController" action="{!redirect}">
+  <!--<script>
+      var recName = '{!strRecTypeName}' ;
+          //  console.log('---Vendor12---'+recType);
+         if(recName != "Vendor") {
+             window.top.location.href='/{!accId}?nooverride=1';
+         } 
+         else{
+             window.top.location.href='/apex/VendorDetailPage?id={!accId}';
+         } 
+  </script> -->
+</apex:page>

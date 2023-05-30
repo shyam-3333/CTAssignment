@@ -1,0 +1,15 @@
+<apex:page showChat="false" sidebar="false" >
+    <apex:includeLightning />    
+    <div id="LightningComponentid" />    
+    <script>
+    $Lightning.use("c:RangeplanApp", function() {
+        $Lightning.createComponent("c:rangeplanLWC",
+                                   { 
+                                   },
+                                   "LightningComponentid",
+                                   function(cmp) {
+                                       console.log('LWC Componenet added in VF page');
+                                   });
+    });
+    </script>
+</apex:page>

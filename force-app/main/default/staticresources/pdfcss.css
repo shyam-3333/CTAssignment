@@ -1,0 +1,20 @@
+/*
+	Created by: Greg Hacic
+	Last Update: 5 August 2015 by Greg Hacic
+	Questions?: greg@interactiveties.com
+	
+	Notes:
+		- this file is stored as a static resource in Salesforce and referenced in Visualforce pages with the <apex:stylesheet> tag
+*/
+body {
+	font-family: Arial, Helvetica, sans-serif;
+}
+@page {
+	size: landscape; /*landscape orientation*/
+	/*page numbers in the bottom center of each page in the pdf document*/
+	margin-top: 2cm;
+	margin-bottom: 2cm;
+	margin-left: 3cm;
+	margin-right: 3cm;
+
+}

@@ -1,0 +1,655 @@
+<aura:component controller="JwlComponentController" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doinit}" />
+    <aura:attribute name="JWL_Component" type="JWL_Component__c" default="{'sobjectType':'JWL_Component__c',
+                                                                           'QA_User_Email_Id__c':'', 
+                                                                           'Additional_Emails__c':'',
+                                                                           'Sample_Type__c':'',
+                                                                           'Product_Category__c':'',
+                                                                           'Submitted_By__c':'',
+                                                                            'Vendor__c':'',
+                                                                          	'No_of_samples__c':'',
+                                                                           'Process__c':'',
+                                                                          'Submitted_by_Name__c':''}" />
+    
+    <aura:attribute name="filetype" type="List" default="['.png', '.jpg', '.jpeg']" />
+    <aura:attribute name="imgUploadFlagInNewType" type="Boolean" default="false"/>
+    <aura:attribute name="Userlist" type="List"/>
+    <aura:attribute name="jwltestList" type="List"  />
+    <aura:attribute name="jwltestListSize" type="Integer"  />
+    <aura:attribute name="checkedJwltestList" type="List" default='[]' />
+    <aura:attribute name="JWL_Response" type="JWL_Response__c" default="{'sobjectType':'JWL_Response__c',
+                                                                        'If_Others__c':'',
+                                                                        'isChecked__c':'false',
+                                                                        'Jwellery_Test__c':''}" />
+    <aura:attribute name="jwlResponseList" type="List" />
+    <aura:attribute name="checkedJwlResponseList" type="List" />
+    <aura:attribute name="othersTests" type="String" />
+    
+    
+    <!-- ######## These Below attributes are Used for Picklist Values ############-->
+    <aura:attribute name="TestTypeList" type="List" />
+    <aura:attribute name="SampleTypeList" type="List" />
+    <aura:attribute name="ProductTypeList" type="List" />
+    
+  <!--  <aura:attribute name="collectionList" type="List" /> -->
+    <aura:attribute name="karatageList" type="List" />
+    <aura:attribute name="routeOfManufactureList" type="List" />
+    <aura:attribute name="locationList" type="List" />
+    
+    <aura:attribute name="editFlag" type="boolean" default="true" />
+    <aura:attribute name="othercheckflag" type="boolean" default="false" />
+    <!-- ##################### Vendor Lookup attributes #####################-->
+    <aura:attribute name="openVendModal" type="boolean" default="false" />
+    <aura:attribute name="jwlVendorList" type="List" />
+    <aura:attribute name="searchVendor" type="String" default=""/>
+    
+    <!-- ##################### Jwl component Resubmission Lookup attributes #####################-->
+    <aura:attribute name="openJwlResubModal" type="boolean" default="false" />
+    <aura:attribute name="jwlCompResubmisionList" type="List"  />
+    <aura:attribute name="searchJwlComp" type="string" default=""/>
+    
+    <aura:attribute name="flag" type="boolean" default="true" />
+    <aura:attribute name="afterSubmitflag" type="boolean" default="false" />
+    <!-- #####################  QA EmailId List  #####################-->
+    <aura:attribute name="QaEmailIdList" type="List" />
+    
+    <!-- ######### Spinner handler and element######### -->
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+    <lightning:spinner aura:id="Spinner" size="medium" variant="brand"/>
+    
+    <!-- ######### ######### -->
+    <div class="slds-card slds-show" aura:id="selectTypesPage">
+        <div class="slds-align_absolute-left slds-p-left_xx-large" style="Background-color: #E8E5E4;font-size:20px;">
+            QC Input User
+        </div>
+        <div class="slds-align_absolute-center " >
+            <ul class="slds-size_1-of-5">
+                <li>
+                    <lightning:select name="Test Type" label="Select Test Type" value="{!v.JWL_Component.Test_Type__c}" required="true" onchange="{!c.showNextButtonOntestType}" >
+                        <aura:iteration items="{!v.TestTypeList}" var="testType">
+                            <option text="{!testType.label}" value="{!testType.value}" ></option>
+                        </aura:iteration>
+                    </lightning:select>
+                </li> 
+                <aura:if isTrue="{!equals(v.JWL_Component.Test_Type__c, 'New')}" >
+                    <li>
+                        <lightning:select name="Sample Type" aura:id="SampleType" label="Select Samlpe Type" value="{!v.JWL_Component.Sample_Type__c}" required="true" onchange="{!c.showNextButtonSampleType}" >
+                            <aura:iteration items="{!v.SampleTypeList}" var="sampleType">
+                                <option text="{!sampleType.label}" value="{!sampleType.value}" ></option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </li> 
+                    <li>
+                        <lightning:select name="Sample Type" label="Select Product Category" value="{!v.JWL_Component.Product_Category__c}" required="true" onchange="{!c.showNextButtonProductCat}" >
+                            <aura:iteration items="{!v.ProductTypeList}" var="productType">
+                                <option text="{!productType.label}" value="{!productType.value}" ></option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </li>
+                    <aura:set attribute="else">
+                        <aura:if isTrue="{!equals(v.JWL_Component.Test_Type__c, 'Resubmission')}" >
+                            <lightning:input name="Resub"
+                                             label="Select JWL Report Ref Number"
+                                             aura:id="ResubJwlReprtRefNum"
+                                             type="Search"
+                                             value="{!v.searchJwlComp}" 
+                                             onchange="{!c.openResubModal}"
+                                             onclick="{!c.openResubModal}"  
+                                             
+                                             required = "true"
+                                             placeholder="Search JWL Components..."/>
+                            <aura:if isTrue="{!v.openJwlResubModal}" >
+                                <section role="dialog" >
+                                    <div class="slds-box slds-box_xx-small">
+                                        <div class="slds-p-around_medium" id="modal-content-id-1">
+                                            <aura:iteration items="{!v.jwlCompResubmisionList}" var="jwlCompReSub" indexVar="resubIndex">
+                                                <div id="{!resubIndex}" class=" " onclick = "{!c.selectResubJwlComp}"> <span class="slds-icon-standard-Account"></span> {!jwlCompReSub.Report_Reference_Number__c} </div>
+                                            </aura:iteration>
+                                        </div>
+                                    </div>
+                                </section>
+                            </aura:if>
+                        </aura:if>
+                    </aura:set>
+                </aura:if>
+                
+                <li class="slds-align_absolute-center slds-m-top_small  slds-hide" aura:id="viewNext">
+                    <lightning:button class="slds-align_absolute-center" variant="brand" label="Next" onclick="{! c.clickNextButton }" />
+                </li>
+                
+            </ul>
+            
+        </div>
+    </div>
+    
+    <!-- ######### ######### -->
+    <div class="slds-card slds-hide" aura:id="selectInformationPage">
+        <div class="slds-show" aura:id="ShowEdit">
+            <aura:if isTrue="{!equals(v.JWL_Component.Test_Type__c, 'New')}" >
+                <div aura:id="Edit" class="slds-show"> 
+                    <li class="slds-align_absolute-center slds-m-top_small " >
+                        <lightning:button class="slds-m-left_xx-large" variant="brand" label="Edit" onclick="{!c.OnEdit}" />
+                    </li>
+                </div>
+                <div aura:id="Cancel" class="slds-hide"> 
+                    <li class="slds-align_absolute-center slds-m-top_small " >
+                        <lightning:button class="slds-m-left_xx-large" variant="brand" label="Submit" onclick="{!c.submitRec}" />
+                            <lightning:button class="slds-m-left_xx-large" variant="brand" label="Save" onclick="{!c.SaveRec}" />
+                    <lightning:button class="slds-m-left_xx-large" variant="brand" label="Cancel" onclick="{!c.OnCancel}" />
+                    </li>
+                </div>
+                <aura:set attribute="else">
+                    <aura:if isTrue="{!equals(v.JWL_Component.Test_Type__c, 'Resubmission')}" >
+                        <div aura:id="ResubEdit" class="slds-show"> 
+                            <li class="slds-align_absolute-center slds-m-top_small " >
+                                <lightning:button class="slds-m-left_xx-large" variant="brand" label="Edit" onclick="{!c.OnResubEdit}" />
+                            </li>
+                        </div>
+                        <div aura:id="ResubCancel" class="slds-hide"> 
+                            <li class="slds-align_absolute-center slds-m-top_small " >
+                                <lightning:button class="slds-m-left_xx-large" variant="brand" label="Submit" onclick="{!c.submitResubRec}" />
+                                <!--       <lightning:button class="slds-m-left_xx-large" variant="brand" label="Save" onclick="{!c.SaveResubRec}" />
+                        -->    <lightning:button class="slds-m-left_xx-large" variant="brand" label="Cancel" onclick="{!c.OnResubCancel}" />
+                            </li>
+                        </div>
+                    </aura:if>
+                </aura:set>
+            </aura:if>
+        </div>
+        <div>
+        <div class="slds-align_absolute-left slds-p-left_xx-large" style="Background-color: #E8E5E4;font-size:20px;">
+            Jewellery Type Details
+        </div>
+        
+        <div class="slds-card slds-p-around_x-large ">
+            <ul class="slds-grid slds-wrap">
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label">Report Reference No</span>
+                    <span class="slds-form-element__static">{!v.JWL_Component.Report_Reference_Number__c}</span>
+                </li>
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label">Test Type </span>
+                    <span class="slds-form-element__static">{!v.JWL_Component.Test_Type__c}</span>          
+                </li>
+                
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2"> 
+                    <span class="slds-form-element__label">Sample Type</span>
+                    <span class="slds-form-element__static">{!v.JWL_Component.Sample_Type__c}</span>
+                </li>
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label">Product Category </span>
+                    <span class="slds-form-element__static">{!v.JWL_Component.Product_Category__c}</span>          
+                </li>
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label">Record Status </span>
+                    <span class="slds-form-element__static">{!v.JWL_Component.Record_Status__c}</span>          
+                </li>
+            </ul>
+        </div>
+        
+        
+        <div class="slds-align_absolute-left slds-p-left_xx-large" style="Background-color: #E8E5E4;font-size:20px;">
+            Jewellery Test Information
+        </div>
+        <form>
+        <div class="slds-card slds-p-around_x-large" >
+            <ul class="slds-grid slds-wrap  ">
+                
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2 "> 
+                    <span class="slds-form-element__label">  QA Email ID <abbr class="slds-required" title="required">* </abbr></span>
+                    <span class="slds-form-element__static">
+                        
+                        <lightning:select name="QAEmail"  value="{!v.JWL_Component.QA_User_Email_Id__c}"  aura:id="QAEmail" messageWhenValueMissing ="select" disabled="{!v.editFlag}">
+                            
+                            <option value="" label="--None--">
+                            </option>
+                            <aura:iteration items="{!v.QaEmailIdList}" var="item" >
+                                <option value="{!item.QA_Email_Id__c}" label="{!item.QA_Email_Id__c}" >
+                                    
+                                </option>
+                            </aura:iteration>
+                        </lightning:select>
+                        
+                        
+                    </span>
+                </li>
+                
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label">  Submitted By( Name) </span>
+                    <span class="slds-form-element__static">
+                        <lightning:input type="text"  
+                                         aura:id="submittedByName"
+                                         value="{!v.JWL_Component.Submitted_by_Name__c}"
+                                         placeholder="Enter Submitted By Name" 
+                                         disabled="{!v.editFlag}"/>
+                    </span>          
+                </li>
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label">  Submitted By( Email Id) <abbr class="slds-required" title="required">* </abbr></span>
+                    <span class="slds-form-element__static">
+                        <lightning:input type="Email"  
+                                         name="Sample Details" 
+                                         aura:id="submittedByEmail"
+                                         value="{!v.JWL_Component.Submitted_By__c}"
+                                         placeholder="Enter Email Id" 
+                                         required="True"
+                                         messageWhenBadInput="Please Enter valid Email Id"
+                                         disabled="{!v.editFlag}"/>
+                    </span>          
+                </li>
+                
+                
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label ">Additional Email </span>
+                    <span class="slds-form-element__static">
+                        <lightning:textarea name="Additional Email "
+                                            aura:id="additionalEmail"
+                                            value="{!v.JWL_Component.Additional_Emails__c}"
+                                            placeholder="Additional Email "
+                                            disabled="{!v.editFlag}" />
+                    </span>          
+                </li>
+                
+                
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2"> 
+                    <span class="slds-form-element__label">No of Sample <abbr class="slds-required" title="required">* </abbr> </span>
+                    <span class="slds-form-element__static">
+                        <lightning:input type="Integer" name="SampleSubmittedDate" 
+                                         aura:id="NoOfSample"
+                                         value="{!v.JWL_Component.No_of_samples__c}" 
+                                         placeholder="Enter No of samples"
+                                         messageWhenBadInput="Please Enter Number"
+                                         messageWhenTypeMismatch="Please Enter Number"
+                                         disabled="{!v.editFlag}" />
+                    </span>
+                </li>
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2"> 
+                    <span class="slds-form-element__label">Vendor/Dept</span>
+                    <span class="slds-form-element__static">
+                        <!-- Vendor Lookup -->
+                        <Lightning:input name="vendor" type="Search" value="{!v.searchVendor}"  onchange="{!c.openVendorModal}" onclick="{!c.openVendorModal}"  placeholder="Search Vendors..." disabled="{!v.editFlag}"/>
+                        <aura:if isTrue="{!v.openVendModal}" >
+                            <section role="dialog" id="vendSection">
+                                <div class="slds-box slds-box_xx-small">
+                                    <div class="slds-p-around_medium" id="modal-content-id-1">
+                                        <aura:iteration items="{!v.jwlVendorList}" var="jwlVend" indexVar="vindex">
+                                            <div id="{!vindex}" onclick="{!c.selectVendor}"> {!jwlVend.Name} </div>
+                                        </aura:iteration>
+                                    </div>
+                                </div>
+                            </section>
+                        </aura:if>
+                    </span>
+                </li>
+                
+                
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label">Product Code </span>
+                    <span class="slds-form-element__static">
+                        <Lightning:input name="ProductCode" type="Integer"
+                                         aura:id="ProductCodefield"
+                                         placeholder="Enter Product Code"
+                                         value="{!v.JWL_Component.Product_Code__c}"
+                                         disabled="{!v.editFlag}" /> 
+                    </span>          
+                </li>
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label">Lot No </span>
+                    <span class="slds-form-element__static">
+                        <lightning:input type="text" name="SampleSubmittedDate" 
+                                         value="{!v.JWL_Component.Lot_no__c}" 
+                                         placeholder="Enter Lot No"
+                                         disabled="{!v.editFlag}" />
+                    </span>          
+                </li>
+                <!--
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label">Collection </span>
+                    <span class="slds-form-element__static">
+                        <lightning:select name="collection"  value="{!v.JWL_Component.Collection__c}"  disabled="{!v.editFlag}" >
+                            <aura:iteration items="{!v.collectionList}" var="collection">
+                                <option text="{!collection.label}" value="{!collection.value}" ></option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </span>          
+                </li> -->
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label">Collection </span>
+                    <span class="slds-form-element__static">
+                        <lightning:input name="collection" type="text" value="{!v.JWL_Component.Collection__c}" placeholder="Enter Collection " disabled="{!v.editFlag}" /> 
+                    </span>          
+                </li> 
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label"> Karatage </span>
+                    <span class="slds-form-element__static">
+                        <lightning:select name="Karetage" value="{!v.JWL_Component.Karatage__c}"  disabled="{!v.editFlag}" >
+                            <aura:iteration items="{!v.karatageList}" var="karatage">
+                                <option text="{!karatage.label}" value="{!karatage.value}" ></option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </span>          
+                </li>
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label">Route of Manufacturing </span>
+                    <span class="slds-form-element__static">
+                        <lightning:select name="Route of Manufacture"  value="{!v.JWL_Component.Route_of_Manufacturing__c}"   disabled="{!v.editFlag}" >
+                            <aura:iteration items="{!v.routeOfManufactureList}" var="routeOfManufacture">
+                                <option text="{!routeOfManufacture.label}" value="{!routeOfManufacture.value}" ></option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </span>          
+                </li>
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label">Location </span>
+                    <span class="slds-form-element__static">
+                        <lightning:select name="Location"  value="{!v.JWL_Component.Location__c}"  disabled="{!v.editFlag}" >
+                            <aura:iteration items="{!v.locationList}" var="location">
+                                <option text="{!location.label}" value="{!location.value}" ></option>
+                            </aura:iteration>
+                        </lightning:select>
+                    </span>          
+                </li>
+                
+                                
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2"> 
+                    <span class="slds-form-element__label">Sample Submitted Date</span>
+                    <span class="slds-form-element__static">
+                       <lightning:input type="Date" name="SampleSubmittedDate"
+                                         value="{!v.JWL_Component.Sample_Submission_Date__c}"
+                                         aura:id = "sampleDate"
+                                         placeholder="Enter Submitted Date"
+                                         messageWhenBadInput="Invalid Date format"
+                                         disabled="{!v.editFlag}"
+                                         /> 
+                    </span>
+                </li>
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label">Sample Submitted Time </span>
+                    <span class="slds-form-element__static">
+                        <lightning:input type="Time" name="SampleSubmittedTime"
+                                         value="{!v.JWL_Component.Sample_Submission_time__c}" 
+                                         aura:id = "sampleTime"
+                                         placeholder="Enter Submitted Time"
+                                         disabled="{!v.editFlag}"
+                                         messageWhenBadInput=""
+                                         />
+                    </span>          
+                </li>
+                
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label">Process Change/Concept <abbr class="slds-required" title="required">* </abbr> </span>
+                    <span class="slds-form-element__static">
+                        <lightning:textarea name="Process" 
+                                            value="{!v.JWL_Component.Process__c}"
+                                            aura:id="processField"
+                                            placeholder="Enter Process"
+                                            disabled="{!v.editFlag}"
+                                            />
+                    </span>          
+                </li>
+                <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label">Additional Information </span>
+                    <span class="slds-form-element__static">
+                        <lightning:textarea name="Additional Information" 
+                                            value="{!v.JWL_Component.Additional_Info__c}"
+                                            placeholder="Enter Additional Information" 
+                                            disabled="{!v.editFlag}"/>
+                    </span>          
+                </li>
+         <!--       <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                    <span class="slds-form-element__label">Sample Details </span>
+                    <span class="slds-form-element__static">
+                        <lightning:textarea name="Sample Details" 
+                                            value="{!v.JWL_Component.Sample_Details__c}"
+                                            placeholder="Enter Sample Details" disabled="{!v.editFlag}"/>
+                    </span>          
+                </li>
+           -->     
+                
+            </ul>
+            
+        </div>
+            </form>
+            <aura:if isTrue="{!equals(v.JWL_Component.Test_Type__c, 'New')}" >
+                <div class="slds-align_absolute-left slds-p-left_xx-large" style="Background-color: #E8E5E4;font-size:20px;">
+                    Predefined Tests
+                </div>
+                <div class="slds-card slds-p-around_x-large">
+                    
+                    <div class="slds-grid slds-wrap ">
+                        <aura:iteration items="{!v.jwltestList}" var="jwlTest" indexVar="testIndex"> 
+                            <aura:if isTrue="{!jwlTest.Name != 'Others'}" >
+                                <ul  class="slds-grid slds-wrap slds-size_1-of-4">
+                                    <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-10">
+                                        <input type="Checkbox"
+                                               id="{!testIndex}"
+                                               value="true"
+                                               onchange="{!c.checkTest}"
+                                               disabled="{!v.editFlag}"/>
+                                    </li>
+                                    <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                                        <span class="slds-form-element__static"><H1>{!jwlTest.Name}</H1> </span>
+                                    </li>
+                                </ul> 
+                            </aura:if>
+                        </aura:iteration>
+                        <ul  class="slds-grid slds-wrap slds-size_1-of-4">
+                            <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-10">
+                                <input type="Checkbox"
+                                       id="othertest"
+                                       value="{!v.othercheckflag}"
+                                       onchange="{!c.otherCheck}"
+                                       disabled="{!v.editFlag}"/>   
+                            </li>
+                            <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                                <span class="slds-form-element__static"><H1>Others</H1> </span>
+                            </li>
+                            <li class=" slds-col slds-size_1-of-1 slds-hide" aura:id="otherSpec"> 
+                                <Lightning:textarea type="text" name="If Others Specification"
+                                                 aura:id="If-Others"
+                                                 label="If Others"
+                                                 required="true"
+                                                 value="{!v.JWL_Response.If_Others__c}"
+                                                 disabled="{!v.editFlag}"/>  
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="slds-hide" aura:id="imhUploadInNew">
+                        <div class="slds-align_absolute-left slds-p-left_xx-large" style="Background-color: #E8E5E4;font-size:20px;">
+                            Image Upload
+                        </div>    
+                        
+                        <div class="slds-align_absolute-center slds-grid slds-wrap" >
+                            <div class="slds-p-around_xx-large ">
+                                <lightning:fileUpload  name="fileUploader"
+                                                      label= "Image 1"
+                                                      accept="{!v.filetype}" 
+                                                      recordId="{!v.JWL_Component.Id}"
+                                                      onuploadfinished="{! c.handleUploadFinished }"
+                                                      />
+                            </div>
+                            <div class="slds-p-around_xx-large ">
+                                <lightning:fileUpload  name="fileUploader"
+                                                      label= "Image 2"
+                                                      accept="{!v.filetype}" 
+                                                      recordId="{!v.JWL_Component.Id}"
+                                                      onuploadfinished="{! c.handleUploadFinished2 }"
+                                                      />
+                            </div>
+                            <div class="slds-p-around_xx-large ">
+                                <lightning:fileUpload  name="fileUploader"
+                                                      label= "Image 3"
+                                                      accept="{!v.filetype}" 
+                                                      recordId="{!v.JWL_Component.Id}"
+                                                      onuploadfinished="{! c.handleUploadFinished3 }"
+                                                      />
+                            </div>
+                        </div>
+                        <div class="slds-grid slds-wrap"  style = "margin-left:10%;">
+                            <div class="slds-has-flexi-truncate slds-p-vertical_medium full forcePageBlockItem forcePageBlockItemEdit" role="listitem" style="">
+                                <div class="slds-form-element slds-form-element_edit slds-hint-parent slds-p-horizontal_xx-small">
+                                    <div class="slds-form-element__control">
+                                        
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__control">
+                                                <img src="{!v.JWL_Component.Image_1__c}"  alt="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-has-flexi-truncate slds-p-vertical_medium full forcePageBlockItem forcePageBlockItemEdit" role="listitem" style="">
+                                <div class="slds-form-element slds-form-element_edit slds-hint-parent slds-p-horizontal_xx-small">
+                                    <div class="slds-form-element__control">
+                                        
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__control">
+                                                <img src="{!v.JWL_Component.Image_2__c}"  alt="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="slds-has-flexi-truncate slds-p-vertical_medium full forcePageBlockItem forcePageBlockItemEdit" role="listitem" style="">
+                                <div class="slds-form-element slds-form-element_edit slds-hint-parent slds-p-horizontal_xx-small">
+                                    <div class="slds-form-element__control">
+                                        
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-form-element__control">
+                                                <img src="{!v.JWL_Component.Image_3__c}"  alt="" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div>
+                        <li class="slds-align_absolute-center slds-m-top_small " >
+                            <lightning:button class="" variant="brand" label="Submit" onclick="{!c.submitRec}" />
+                            <lightning:button class="slds-m-left_xx-large" variant="brand" label="Save" onclick="{!c.SaveRec}" /> 
+                        </li>
+                    </div>
+                    
+                </div>
+                <aura:set attribute="else">
+                    <div class="slds-align_absolute-center slds-grid slds-wrap" >
+                    	<div class="slds-p-around_xx-large ">
+                            <lightning:fileUpload  name="fileUploader"
+                                                  label= "Image 1"
+                                                  accept="{!v.filetype}" disabled="{!v.editFlag}"
+                                                  recordId="{!v.JWL_Component.Id}"
+                                                  onuploadfinished="{! c.handleUploadFinished }"/>
+                        </div>
+                        <div class="slds-p-around_xx-large ">
+                            <lightning:fileUpload  name="fileUploader"
+                                                  label= "Image 2"
+                                                  accept="{!v.filetype}" disabled="{!v.editFlag}"
+                                                  recordId="{!v.JWL_Component.Id}"
+                                                  onuploadfinished="{! c.handleUploadFinished2 }"/>
+                        </div>
+                        <div class="slds-p-around_xx-large ">
+                            <lightning:fileUpload  name="fileUploader"
+                                                  label= "Image 3"
+                                                  accept="{!v.filetype}" disabled="{!v.editFlag}"
+                                                  recordId="{!v.JWL_Component.Id}"
+                                                  onuploadfinished="{! c.handleUploadFinished3 }"/>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-wrap"  style = "margin-left:10%;">
+                        <div class="slds-has-flexi-truncate slds-p-vertical_medium full forcePageBlockItem forcePageBlockItemEdit" role="listitem" style="">
+                            <div class="slds-form-element slds-form-element_edit slds-hint-parent slds-p-horizontal_xx-small">
+                                <div class="slds-form-element__control">
+                                    
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__control">
+                                            <img src="{!v.JWL_Component.Image_1__c}"  alt="" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-has-flexi-truncate slds-p-vertical_medium full forcePageBlockItem forcePageBlockItemEdit" role="listitem" style="">
+                            <div class="slds-form-element slds-form-element_edit slds-hint-parent slds-p-horizontal_xx-small">
+                                <div class="slds-form-element__control">
+                                    
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__control">
+                                            <img src="{!v.JWL_Component.Image_2__c}"  alt="" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-has-flexi-truncate slds-p-vertical_medium full forcePageBlockItem forcePageBlockItemEdit" role="listitem" style="">
+                            <div class="slds-form-element slds-form-element_edit slds-hint-parent slds-p-horizontal_xx-small">
+                                <div class="slds-form-element__control">
+                                    
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__control">
+                                            <img src="{!v.JWL_Component.Image_3__c}"  alt="" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-left slds-p-left_xx-large" style="Background-color: #E8E5E4;font-size:20px;">
+                        Applied Tests
+                    </div>
+                    <div class="slds-card slds-p-around_x-large">
+                        
+                        <div class="slds-grid slds-wrap ">
+                            <aura:iteration items="{!v.jwlResponseList}" var="jwlResp" indexVar="respIndex"> 
+                                    <ul  class="slds-grid slds-wrap slds-size_1-of-4">
+                                        <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-10">
+                                            <ui:inputCheckbox class="checkbox" value="{!jwlResp.isChecked__c}" disabled="{!v.editFlag}"/>
+                                        </li>
+                                        <li class="slds-col_padded slds-p-vertical_xx-small slds-col slds-size_1-of-2">
+                                            <span class="slds-form-element__static"><H1>{!jwlResp.Test_Name__c}</H1> </span>
+                                        </li>
+                                    </ul> 
+                            </aura:iteration>
+                        </div>
+                    </div>
+                    <div class="slds-align_absolute-left slds-p-left_xx-large" style="Background-color: #E8E5E4;font-size:20px;">
+                        Applied Tests Details
+                    </div>
+                    <div class="slds-p-horizontal_xx-large slds-m-vertical_x-large">
+                        <table>
+                            <tr style="background-color: #F5F5F5; font-size: 15px;">
+                                <th class="slds-size_1-of-20 slds-box slds-box_small" >SL No </th>
+                                <th class="slds-size_1-of-7 slds-box slds-box_small">Test Name </th>
+                                <th class="slds-size_1-of-5 slds-box slds-box_small"> Dimensional Parameters </th>
+                                <th class="slds-size_1-of-5 slds-box slds-box_small">Specification </th>
+                                <th class="slds-size_1-of-5 slds-box slds-box_small">Observation </th>
+                                <th class="slds-size_1-of-5 slds-box slds-box_small"> Conclusion </th>
+                            </tr>
+                            
+                            <aura:iteration items="{!v.checkedJwlResponseList}" var="chResp" indexVar="ind">
+                                    <tr>
+                                        <td class="slds-size_1-of-20 slds-box slds-box_small"><h1>{!ind + 1}</h1></td>
+                                        <td class="slds-size_1-of-7 slds-box slds-box_small">{!chResp.Test_Name__c}</td>
+                                        <td class="slds-size_1-of-5 slds-box slds-box_small">{!chResp.Dimension_Mannual_test__c}</td>
+                                        <td class="slds-size_1-of-5 slds-box slds-box_small">{!chResp.Specification_mannual_test__c}</td>
+                                        <td class="slds-size_1-of-5 slds-box slds-box_small"> <lightning:formattedRichText value="{!chResp.Observation__c}" /></td>
+                                        <td class="slds-size_1-of-5 slds-box slds-box_small">{!chResp.Conclusion__c}</td>
+                                    </tr>
+                            </aura:iteration>
+                        </table>
+                    </div>
+                    <div> 
+                        <li class="slds-align_absolute-center slds-m-top_small " >
+                            <lightning:button class="slds-m-left_xx-large" variant="brand" label="Submit" onclick="{!c.submitResubRec}" />
+                     <!--       <lightning:button class="slds-m-left_xx-large" variant="brand" label="Save" onclick="{!c.SaveResubRec}" />  -->
+                        </li>
+                    </div>
+                </aura:set>
+            </aura:if>
+        </div>
+    </div>
+        
+</aura:component>

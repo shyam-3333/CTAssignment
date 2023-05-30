@@ -1,0 +1,361 @@
+<!--
+  @description       : 
+  @author            : Mutturaj heroor
+  @last modified on  : 06-07-2021
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+  Modifications Log 
+  Ver   Date         Author                               Modification
+  1.0   04-22-2021   Mutturaj Heroor   Initial Version
+-->
+<aura:component controller="QcInputComponentClass" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction" access="global" >
+  <!--  <aura:handler name="init" value="{!this}" action = "{!c.doinit}" /> 
+    
+    <aura:attribute name="QcQuestionMList" type="List" />
+    <aura:attribute name="QcConditionMList" type="List" />
+    <aura:attribute name="QcResponseMList" type="List" />
+    <aura:attribute name="QcMasterMList" type="List" />
+    <aura:attribute name = "QcComp" type="QC_Components__c" default="{'sobjectType':'QC_Components__c','Master__c':false}" />
+    <aura:attribute name="SubCategoryList" type="List" default="[{'label': 'New', 'value': 'New'},
+                                                             {'label': 'New Material', 'value': 'New Material'},
+                                                             {'label': 'New Design', 'value': 'New Design'},
+                                                             {'label': 'New Construction', 'value': 'New Construction'},
+                                                             {'label': 'New Vendor', 'value': 'New Vendor'},
+                                                             {'label': 'New Color', 'value': 'New Color'},
+                                                             {'label': 'Bulk lot confirmation', 'value': 'Bulk lot confirmation'},
+                                                             {'label': 'Competitor Products', 'value': 'Competitor Products'},
+                                                             {'label': 'Update', 'value': 'Update'},
+                                                             {'label': 'Re-Submission', 'value': 'Re-Submission'},
+                                                             {'label': 'Re-Certification', 'value': 'Re-Certification'}]"/>
+
+    <aura:attribute name="SampleTypeList" type="List" default="[{ 'label': 'Full-Watch', 'value': 'Full-Watch'},
+                                                                { 'label': 'Watch-Head', 'value': 'Watch-Head'},
+                                                                { 'label': 'Watch-Component', 'value': 'Watch-Component'}]"/>
+     <aura:attribute name="watchComponentList" type="List" default="[{'label': 'Case', 'value': 'Case'},
+                                                                     {'label': 'Dial', 'value': 'Dial'},
+                                                                     {'label': 'Module', 'value': 'Module'},
+                                                                     {'label': 'Battery', 'value': 'Battery'},
+                                                                     {'label': 'Metal-Strap', 'value': 'Metal-Strap'},
+                                                                     {'label': 'Leather-Strap', 'value': 'Leather-Strap'},
+                                                                     {'label': 'Special-Strap', 'value': 'Special-Strap'},
+                                                                     {'label': 'Packaging', 'value': 'Packaging'}]"/>
+                                                                    
+    <aura:attribute name="watchComp" type="String"  />
+    <aura:attribute name="nameCondition" type="String" default=" Name__c = '' "/>
+    <aura:attribute name="sampleDeptList" type="List"  />
+    <aura:attribute name="brandsList" type="List"  />
+    <aura:attribute name="clustertList" type="List"  />
+    <aura:attribute name="childCompNamelist" type="List" />
+    <aura:attribute name="seletedRecForUpdateOrResub" type="sObject" />
+    <aura:attribute name="savedData" type="Object" default="{ parentDetail:{ qcComp: {}, inputParam : []  }, childsDetail :[] }" />
+    <aura:attribute name="allCompList" type="List"  />
+    <aura:attribute name="masterVarientCompList" type="list"  />
+    <aura:attribute name="masterVarientComp" type="object"  />
+    <aura:attribute name="displayMstrVarientChildCompList" type="list"  />
+    <aura:attribute name="copyMstrVarientChildCompList" type="list"  />
+    <aura:attribute name="isRecordLock" type="Boolean" default="false" />
+    
+    <aura:handler name="selectedRecordEvent" event="c:LookUpEvent" action="{!c.selectLookupRec}" />
+    <aura:handler name="sendAllQcCompRecord" event="c:QcChildCompUpdateEvent" action="{!c.parentRecordSave}" />
+
+    
+
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+    <lightning:spinner aura:id="Spinner" size="medium" variant="brand"/>
+    
+
+    <div class="slds-card slds-show" aura:id="selectTypesPage"  >--> <!-- style="Background-color:#dbe9ef;" -->
+      <!--  <div class="slds-align_absolute-center slds-p-horizontal_large" style="Background-color: #596d90; font-size: 20px; color: white; height: 40px;">
+            Sample Category and Type
+        </div>
+        <div class="slds-align_absolute-center slds-m-bottom_x-large" >
+            <ul>
+                <li>
+                    <lightning:combobox placeholder="Select an Option" label="Sample Category" options="{! v.SubCategoryList }" value = "{!v.QcComp.Sample_Category__c}" onchange="{!c.changeSampleCat}" />
+                </li>-->
+                <!-- equals(v.QcComp.Sample_Category__c, 'New') || equals(v.QcComp.Sample_Category__c, 'New') || equals(v.QcComp.Sample_Category__c, 'New') || equals(v.QcComp.Sample_Category__c, 'New')  -->
+                
+             <!--   <li aura:id="sampletype" class = "slds-hide">
+                    <lightning:combobox placeholder="Select an Option" label="Sample Type" options="{! v.SampleTypeList }" value = "{!v.QcComp.Name__c}"  onchange="{!c.changeSampleType}" />
+                </li>
+                
+                    <li> 
+                      <div aura:id="refNumLookup" class = "slds-hide">
+                        <aura:renderif isTrue="{! and( v.QcComp.Name__c != '' , (equals(v.QcComp.Sample_Category__c,'Update') || equals(v.QcComp.Sample_Category__c,'Re-Submission')) )   }" > 
+                          <label class="slds-form-element__label">Report Number  </label>
+                        <div class="slds-form-element">
+                            <c:LookupfieldComponent objectName="QC_Components__c" label="ReportReferenceNumber" whereCondition="{!v.nameCondition + ' ' }" selectedRecord="{!v.seletedRecForUpdateOrResub}" searchFieldName = "Name" />
+                          </div>
+                          <div class="slds-align_absolute-center slds-m-top_large" >
+                            <lightning:button variant="brand" label="Next" title="Next" onclick="{! c.resubNext }"/>
+                          </div>
+                        </aura:renderif>
+                      </div>
+                    </li>
+            </ul>
+        </div>
+        <div class="slds-card slds-hide" aura:id="newFullWatchRec">
+            <aura:if isTrue="{! and((equals(v.QcComp.Name__c, 'Full-Watch')||   equals(v.QcComp.Name__c, 'Watch-Head')) , not ( equals(v.QcComp.Sample_Category__c, 'Update')  ||  equals(v.QcComp.Sample_Category__c, 'Re-Submission') ) ) }" >
+                <div class="slds-align_absolute-left slds-p-left_xx-large slds-m-top_xx-large" style="Background-color: #596d90; font-size: 20px; color: white; height: 40px;margin-top: 5%;">
+                    <h1> Reliability Testing - {!v.QcComp.Name__c} </h1>
+                </div>
+                <lightning:recordEditForm objectApiName="QC_Components__c"  >  
+                <div class="slds-p-horizontal_xx-large slds-p-vertical_xx-large" >-->  <!--   style="Background-color:#dbe9ef; " -->
+                   <!-- <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                          <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                            <lightning:inputField fieldName="Model__c" value="{!v.QcComp.Model__c}" /> 
+                          </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                          <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                            <lightning:inputField fieldName="Sample_Date__c" value="{!v.QcComp.Sample_Date__c}" /> 
+                          </div>
+                        </div>
+                    </div> 
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                          <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                            
+                            <lightning:inputField fieldName="PSY_Reference__c" value="{!v.QcComp.PSY_Reference__c}" /> 
+                          </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                          <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                            <lightning:inputField fieldName="Vendor__c" value="{!v.QcComp.Vendor__c}" /> 
+                          </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__row">
+                        <div class="slds-form__item" role="listitem">
+                          <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                            
+                            <lightning:inputField fieldName="Brand__c" value="{!v.QcComp.Brand__c}" onchange="{!c.changeBrand}" />
+                            <lightning:inputField fieldName="Brands__c" value="{!v.QcComp.Brands__c}" class="slds-hide" />
+                          </div>
+                        </div>-->
+                       <!-- <div class="slds-form__item" role="listitem">
+                          <div class="slds-form-element slds-form-element_horizontal slds-is-editing">-->
+                            <!-- <label class="slds-form-element__label" for="single-form-element-id-03">Sample Received From</label>
+                            <div class="slds-form-element__control">
+                                <lightning:combobox placeholder="Select an Option"  options="{! v.sampleDeptList }" value="{!v.QcComp.Sample_Department__c}"  />
+                            </div> -->
+                       <!--     <lightning:inputField fieldName="Sample_Department__c" value="{!v.QcComp.Sample_Department__c}" />
+                          </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__row ">
+                        <div class="slds-form__item" role="listitem">
+                          <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                            
+                            <lightning:inputField fieldName="Watch_variant__c" value="{!v.QcComp.Watch_variant__c}" />
+                          </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                          <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                            <lightning:inputField fieldName="No_Of_Sample_Received__c" value="{!v.QcComp.No_Of_Sample_Received__c}" />
+                          </div>
+                        </div>
+                    </div>
+                
+                    <div class="slds-form__row ">
+                        <div class="slds-form__item" role="listitem">
+                          <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                            <lightning:inputField fieldName="Test_Back_Ground__c" value="{!v.QcComp.Test_Back_Ground__c}" />
+                          </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                          <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                            <lightning:inputField fieldName="Master_Variant__c" value="{!v.QcComp.Master_Variant__c}" aura:id="masterVariant" class="slds-show" onchange ="{!c.changeMasterVarient}"  />
+                          </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__row ">
+                        <div class="slds-form__item" role="listitem">
+                          <div class="slds-form-element slds-form-element_horizontal slds-is-editing">-->
+                           <!-- <lightning:inputField fieldName="Master__c" value="{!v.QcComp.Master__c}" aura:id="master" class="slds-show" onchange ="{!c.changeMaster}" /> -->
+                               <!-- <div class="slds=show" aura:id="masterDiv">
+                                    <label class="slds-form-element__label" for="single-form-element-id-03">Master</label>
+                                    <div class="slds-form-element__control">
+                                        <input type="Checkbox"
+                                                    id="{!master}"
+                                                    value="true"
+                                                    onchange="{!c.changeMaster}"/>
+                                </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                          <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                            <lightning:inputField fieldName="Sample_Received_From__c" value="{!v.QcComp.Sample_Received_From__c}" />
+                          </div>
+                        </div>
+                    </div>
+                    <div class="slds-form__row ">
+                        <div class="slds-form__item" role="listitem">
+                          <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+                            <lightning:inputField fieldName="Cluster__c" value="{!v.QcComp.Cluster__c}" />
+                          </div>
+                        </div>
+                        <div class="slds-form__item" role="listitem">
+                            <div class="slds-form-element slds-form-element_horizontal slds-is-editing">
+
+                            </div>
+                          </div>
+                    </div>
+                    <div class=" slds-m-vertical_xx-large" style="Background-color:#e3eeed;">
+                        <div class="slds-align_absolute-center" style="Background-color: #596d90; font-size: 20px; color: white;" >
+                          <div style=" font-size:15px;">
+                            Select Child Components
+                          </div>
+                        </div>
+                        <div  class="slds-align_absolute-center " style="padding: 4% 0% 4% 4% ;" >
+                          <div class="c-container">
+                            <lightning:layout >
+                                <lightning:layoutItem padding="around-small">
+                                    <div class="header-column">
+                                      <div class=" slds-col ">
+                                        <label class="slds-form-element__label" >Case</label>
+                                        
+                                            <input type="Checkbox"
+                                                                id="Case"
+                                                                value="true"
+                                                                onchange="{!c.selectChild}"/>
+                                        
+                                      </div>
+                                    </div>
+                                </lightning:layoutItem>
+
+                                <lightning:layoutItem padding="around-small">
+                                    <div class="header-column">
+                                      <div class=" slds-col">
+                                        <label class="slds-form-element__label" >Dial</label>
+                                        
+                                            <input type="Checkbox"
+                                                                id="Dial"
+                                                                value="true"
+                                                                onchange="{!c.selectChild}"/>
+                                        
+                                      </div>
+                                    </div>
+                                </lightning:layoutItem>
+                                <aura:if isTrue="{!equals(v.QcComp.Name__c,'Full-Watch') }"> 
+                                <lightning:layoutItem padding="around-small">
+                                    <div class="header-column">
+                                      <div class=" slds-col ">
+                                        <label class="slds-form-element__label" >Metal-Strap</label>
+                                        
+                                            <input type="Checkbox"
+                                                                id="Metal-Strap"
+                                                                value="true"
+                                                                onchange="{!c.selectChild}"/>
+                                        
+                                        </div>
+                                    </div>
+                                </lightning:layoutItem>
+
+                                <lightning:layoutItem padding="around-small">
+                                    <div class="header-column">
+                                      <div class=" slds-col ">
+                                        <label class="slds-form-element__label" >Leather-Strap</label>
+                                           <input type="Checkbox"
+                                                                id="Leather-Strap"
+                                                                value="true"
+                                                                onchange="{!c.selectChild}"/>
+                                        
+                                        </div>
+                                    </div>
+                                </lightning:layoutItem>
+
+                                <lightning:layoutItem padding="around-small">
+                                    <div class="header-column">
+                                      <div class=" slds-col  ">
+                                        <label class="slds-form-element__label" >Special-Strap </label>
+                                            <input type="Checkbox"
+                                                                id="Special-Strap"
+                                                                value="true"
+                                                                onchange="{!c.selectChild}"/>
+                                        </div>
+                                    </div>
+                                </lightning:layoutItem>
+                                </aura:if>
+                            </lightning:layout>
+                          </div>
+                        </div>
+                        <div aura:id="mvChildComp" class="slds-hide" >
+                             <div class="slds-align_absolute-center" style="Background-color: #596d90; font-size: 20px; color: white;" >
+                                <div style=" font-size:15px;">
+                                  Select Master Varient Child Components
+                                </div>
+                              </div>
+                              <div  class="slds-align_absolute-center " style="padding: 4% 0% 4% 4% ;" role="listitem">
+                                <div class="c-container">
+                                  <lightning:layout >
+                                    <aura:iteration items="{!v.displayMstrVarientChildCompList}" var="childMV">
+                                      <lightning:layoutItem padding="around-small">
+                                          <div class="header-column">
+                                            <div class=" slds-col  ">
+                                              <label class="slds-form-element__label" > {!childMV} </label>
+                                            
+                                                <input type="Checkbox"
+                                                                    id="{!childMV + '-MV'}"
+                                                                    value="true"
+                                                                    onchange="{!c.selectMVChild}"/>
+        
+                                            </div>
+                                          </div>
+                                      </lightning:layoutItem>
+                                    </aura:iteration>
+                                  </lightning:layout>
+                                </div>
+                                
+                                  
+                                
+                              </div>
+                            </div>
+                      </div>
+                      <div class="slds-align_absolute-center slds-p-left_xx-large" style="font-size:20px;">
+                        <lightning:button variant="brand" label="Next" title="Next" onclick="{! c.newFW_OR_WHsaveAndNext }"/>
+                    </div>
+
+                    </div>
+                </lightning:recordEditForm>
+                
+            </aura:if>
+            
+        </div>
+        <aura:if isTrue="{! and((equals(v.QcComp.Name__c, 'Watch-Component')) , not ( equals(v.QcComp.Sample_Category__c, 'Update')  ||  equals(v.QcComp.Sample_Category__c, 'Re-Submission') ) ) }" >
+              <div class="slds-card slds-hide" aura:id="newWatchCompRec"   >
+                <div class=" slds-m-vertical_xx-large">
+                    <span  class="slds-align_absolute-center slds-grid slds-gutters" role="listitem" style="Background-color:#ecddec;font-size:20px;">
+                        <lightning:radioGroup   options="{! v.watchComponentList }"
+                                                value="{! v.watchComp }"
+                                                type="radio"
+                                                class="customRadioCls"
+                                                />
+                    </span>
+                </div>
+              </div>
+              <div class="slds-align_absolute-center slds-p-left_xx-large" style="font-size:20px;">
+                <lightning:button variant="brand" label="Next" title="Next" onclick="{! c.newWatchCompSave }"/>
+            </div>
+        </aura:if>
+    </div>
+    
+
+    <div class="slds-card slds-hide" aura:id="selectRecordPage" >
+        
+         <div >--> <!--  style="width: max-content;" -->
+         <!-- <lightning:tabset variant="vertical" class = "slds-tabs_default__content">
+            <aura:iteration items="{!v.allCompList}" var="item">
+              <lightning:tab id="{!item.Name__c}" label="{!item.Name__c}"      >
+                <aura:renderif isTrue="{!item.Id != null }">
+                  <c:Qc_Input_Details_Comp qcComponent = "{!item}" allQcCompList="{!v.allCompList}"  QcQuestionMList="{!v.QcQuestionMList}" QcConditionMList="{!v.QcConditionMList}" QcResponseMList="{!v.QcResponseMList}" QcMasterMList="{!v.QcMasterMList}" isRecordLock="{!v.isRecordLock}" showApprovalHistroy="false" />
+                </aura:renderif>
+              </lightning:tab>
+            </aura:iteration>
+          </lightning:tabset>
+        </div>
+      
+    </div>-->
+</aura:component>

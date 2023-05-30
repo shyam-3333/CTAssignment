@@ -1,0 +1,10 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction"
+access="global">
+<aura:attribute name="toggle" type="boolean" default="false" />
+<aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+<aura:if isTrue="{!v.toggle}">
+
+        <c:skinnPDMSViewOnly />
+</aura:if>
+
+</aura:component>

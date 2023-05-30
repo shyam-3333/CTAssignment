@@ -1,0 +1,103 @@
+<apex:page controller="NPD_AlbumScreen2_Report_Class" sidebar="false" id="mypage" docType="HTML-5.0">
+    <apex:form id="myForm">
+        <table  class="table_design1" border="0" align="center" width="1000" style="background-color:#ECF0DF;">
+             <tr align="center">
+                 <td colspan="3" style="color:#49514A;font-weight:bold;font-size:16px;"><b>New Product Album</b></td>
+            </tr>
+            <tr >
+                <td colspan="3" style="color:#49514A;font-weight:bold;font-size:16px;background-color: #B9CDE5;" ><b>Enter Model No.</b><br/><br/>
+                    <apex:inputText style="padding: 8px;" value="{!searchModel}"></apex:inputText> 
+                    <!-- <input type="text" name="Model No"></input> -->
+                    
+                    <apex:commandButton style="background:#A392BC;" value="Go" action="{!displayModel}" reRender="outerPanelId,errorId" status="searchStatus"/>
+                    <apex:actionStatus id="searchStatus">
+                        <apex:facet name="start" >
+                          <img src="/img/loading.gif" />                    
+                        </apex:facet>
+                    </apex:actionStatus>
+                    
+                </td>
+            </tr>
+            <tr>
+                 
+               <td  style="color:#FFF;font-weight:bold;font-size:16px;">
+                   <apex:outputPanel id="errorId">
+                            <apex:pageMessages />
+                        </apex:outputPanel>
+                    <apex:outputPanel id="outerPanelId">
+                    <apex:outputPanel id="recordFound" rendered="{!isDisplayModel}">
+                          
+                            <table border="0" width="500" style="background-color:#ECF0DF;">
+                                <tr >
+                                    <td rowspan="7">
+                                        <apex:outputField value="{!projectItems.ImageUpload__c}" rendered="{!NOT(ISBLANK(projectItems.ImageUpload__c))}"/>
+                                        <apex:image value="{!$Resource.No_Image}" width="300" height="400" rendered="{!ISBLANK(projectItems.ImageUpload__c)}"/>
+                                    </td>
+                                
+                           
+                        
+                        <td style="font-weight:bold;font-size:16px;">
+                            <table border="0" width="500" style="background-color:#ECF0DF;">
+                                <tr>
+                                    <td>
+                                        <apex:outputLabel style="color:#A31807;" value="Brand:" /><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Collection:" /><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Design Source:" /><br/><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="PSY Number:" /><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Model:" /><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Gender:" /><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Movement/Function:" /><br/><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Case Source:" /><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Case Material:" /><br/><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Strap Src:" /><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Strap Type:" /><br/><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Marketing Manager:" /><br/><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Concept Designer:" /><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Engineer Designer:" /><br/><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Development Manager:" /><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Development Owner:" /><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Tech Design Manager:" /><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Tech Designer:" /><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Tech Designer:" /><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Planned Delivery date:" /><br/><br/>
+                                        <apex:outputLabel style="color:#A31807;" value="Actual Delivery Date:" />
+                                        
+                                    </td>
+                                    <td valign="top">
+                                        <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Brand1__c}" /><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Collection_Names__c}"/><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Collection_Names__c}"/><br/><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4" value="{!projectItems.PSY_No__c}"/><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Model_No__c}"/><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Gender__c}"/><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Momentfuntionvalue__c}"/><br/><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4"  value="{!supplyAgency}"/><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Case_Material__r.Name}" /><br/><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Strap_Source__c}"/><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4" value="{!projectItems.Strap_Type__r.Name}"/><br/><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4" value="{!projectItems.NPD_Collections__r.Owner.Email}" /><br/><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4" value="{!productionDesnr}" /><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4" value="{!EngineerDesgnr}" /><br/><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4" value="{!projectItems.NPD_Collections__r.Team_Leader2__r.UserID__c}" /><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4" value="{!projectItems.NPD_Collections__r.SF_Project_Owner__r.UserID__c}" /><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4" value="{!techDesgnrAlln}"/><br/><br/>
+                                        <apex:outputLabel style="color:#2A35E4" value="{!TechApprover}" /><br/><br/><br/><br/>
+                                        <apex:outputText style="color:#2A35E4" value="{0,date,dd'-'MM'-'yyyy}">
+                                        <apex:param value="{!watchDepositionASD}" /></apex:outputText><br/><br/>
+                                        <apex:outputText style="color:#2A35E4" value="{0,date,dd'-'MM'-'yyyy}">
+                                        <apex:param value="{!watchDepositionAED}" /></apex:outputText> 
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                        </tr>
+                        </table>
+                     </apex:outputPanel>
+                        
+                </apex:outputPanel>
+                   
+                </td>
+            </tr>
+        </table>
+    </apex:form>
+</apex:page>

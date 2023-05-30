@@ -1,0 +1,196 @@
+<apex:page controller="RTWProductViewController" cache="true" readOnly="true" renderAs="pdf">
+    <apex:stylesheet value="{!$Resource.TaneraTable}" />
+        <apex:stylesheet value="{!$Resource.pdfdownloadCSS}" />
+    <html>
+        
+        <head>
+            <style>
+                @page{
+                size: A4 landscape;
+                }
+                
+            </style>  
+            
+        </head>
+        <body>
+            
+            <form>
+                <table border="1" style="font-size:7px;margin-left:0px;margin-right:0px;width:100%;maxwidth:100% !important;">
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>PRODUCT</th>
+                            <th>BASE COLOUR</th>
+                            <th>PHOTO</th>
+                            <apex:outputPanel rendered="{!ProdType != 'MASK'}" layout="none">
+                                <th>COLLECTION</th>
+                                <th>CRAFT</th>
+                                <th>DESCRIPTION</th>
+                                <th>FABRICS</th>
+                                <th>FORM</th>
+                                <th>MRP/PC</th>
+                                <th>QUANTITY</th>
+                                <th>SEASON</th>
+                                <th>WARP</th>
+                                <th>WEFT</th>
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel rendered="{!!OR(ProdType == 'LEHENGA',ProdType == 'BLOUSE',ProdType == 'MASK')}" layout="none">
+                                <th>GENDER</th>
+                                <th>OKHAI_SIZE</th>
+                                <th>SIZE</th>
+                                <th>STYLE</th>
+                                <th>STYLECODE</th>
+                                <th>YEAR OF DESIGN</th>
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel rendered="{!prodType == 'LEHENGA'}" layout="none">
+                                <th>BLOUSE TYPE</th>
+                                <th>BLOUSESIZE-LCD</th>
+                                <th>DIMENSIONS</th>
+                                <th>DUPATTADIMENSION</th>
+                                <th>DUPATTAFABRIC</th>
+                                <th>DUPATTATYPE</th>
+                                <th>GENDER</th>
+                                <th>OCCASION</th>
+                                <th>ORIGIN</th>
+                                <th>READYGHERA-MT</th>
+                                <th>READYHIP_INCH</th>
+                                <th>READYLENGTH_INCH</th>
+                                <th>READYWAIST_INCH</th>
+                                <th>SILHOUETTE</th>
+                                <th>SIZE-LCD</th>
+                                <th>SKIRTPANELS</th>
+                                <th>SOURCE</th>
+                                <th>TOTAL</th>
+                                <th>YEAR OF DESIGN</th>
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel rendered="{!prodType == 'BLOUSE'}" layout="none">
+                                <th>HANDWORK PLACEMENT</th>
+                                <th>BODY LENGTH</th>
+                                <th>CLOSURE OPTION</th>
+                                <th>HAND WORK DENSITY</th>
+                                <th>HEM BACK</th>
+                                <th>HEM FRONT</th>
+                                <th>LOOM</th>
+                                <th>NECK TYPE BACK</th>
+                                <th>NECK TYPE FRONT</th>
+                                <th>OPENING TYPE</th>
+                                <th>PADDING</th>
+                                <th>RTW_SIZE</th>
+                                <th>SLEEVE FIT</th>
+                                <th>SLEEVE LENGTH</th>
+                                <th>SLEEVE TYPE</th>
+                                <th>STYLE</th>
+                                <th>STYLECODE</th>
+                                <th>YEAR OF DESIGN</th>
+                                <th>ZARI</th>
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel rendered="{!ProdType =='MASK'}" layout="none">
+                                <th>FABRICS</th>
+                                <th>STYLE NAME</th>
+                                <th>GENDER</th>
+                                <th>DESIGN</th>
+                                <th>PLEATS</th>
+                                <th>PLY</th>
+                                <th>QUANTITY</th>
+                                <th>COST</th>
+                            </apex:outputPanel> 
+                            
+                            <th>{!CRLF}</th>
+                        </tr>  
+                    </thead>
+                    <tbody>
+                        <apex:repeat value="{!proViewList}" var="pro">
+                            <tr>
+                                <td>{!pro.SKU__c}</td>
+                                <td>{!pro.Product__c}</td>
+                                <td>{!pro.Base_Colour__c}</td>
+                                <td styleClass="img_width" style="text-align:center">{!pro.Photo__c}</td>
+                                
+                                <apex:outputPanel rendered="{!ProdType != 'MASK'}" layout="none">
+                                    <td>{!pro.Collection__c}</td>
+                                    <td>{!pro.Craft__c}</td>
+                                    <td>{!pro.Description__c}</td>
+                                    <td>{!pro.Fabrics__c}</td>
+                                    <td>{!pro.Form__c}</td>
+                                    <td>{!pro.MRP_Pc__c}</td>
+                                    <td>{!pro.Quantity__c}</td>
+                                    <td>{!pro.Season__c}</td>
+                                    <td>{!pro.Warp__c}</td>
+                                    <td>{!pro.Weft__c}</td>
+                                </apex:outputPanel>
+                                
+                                <apex:outputPanel rendered="{!!OR(ProdType == 'LEHENGA',ProdType == 'BLOUSE',ProdType == 'MASK')}" layout="none">
+                                    <td>{!pro.Gender__c}</td>
+                                    <td>{!pro.Okhai_Size__c}</td>
+                                    <td>{!pro.Size__c}</td>
+                                    <td>{!pro.STYLE__c}</td>
+                                    <td>{!pro.Style_Code__c}</td>
+                                    <td>{!pro.Year_of_Design__c}</td>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!prodType == 'LEHENGA'}" layout="none">
+                                    <td>{!pro.Blouse_Type__c}</td>
+                                    <td>{!pro.BlouseSize_LCD__c}</td>
+                                    <td>{!pro.Dimensions__c}</td>
+                                    <td>{!pro.DupattaDimensions__c}</td>
+                                    
+                                    <td>{!pro.Dupatta_Type__c}</td>
+                                    <td>{!pro.Gender__c}</td>
+                                    <td>{!pro.Occasion__c}</td>
+                                    <td>{!pro.Origin__c}</td>
+                                    <td>{!pro.ReadyGHERA_MT__c}</td>
+                                    <td>{!pro.ReadyHip_Inch__c}</td>
+                                    <td>{!pro.ReadyLength_Inch__c}</td>
+                                    <td>{!pro.ReadyWaist_Inch__c}</td>
+                                    <td>{!pro.Silhouette__c}</td>
+                                    <td>{!pro.Size_LCD__c}</td>
+                                    <td>{!pro.SkirtPanels__c}</td>
+                                    <td>{!pro.Source__c}</td>
+                                    <td>{!pro.Total__c}</td>
+                                    <td>{!pro.Year_of_Design__c}</td>
+                                </apex:outputPanel>
+                                
+                                <apex:outputPanel rendered="{!prodType == 'BLOUSE'}" layout="none">
+                                    <td>{!pro.Handwork_Placement__c}</td>
+                                    <td>{!pro.Body_Length__c}</td>
+                                    <td>{!pro.Closure_Option__c}</td>
+                                    <td>{!pro.Handwork__c}</td>
+                                    <td>{!pro.Hem_Back__c}</td>
+                                    <td>{!pro.Hem_Front__c}</td>
+                                    <td>{!pro.Loom__c}</td>
+                                    <td>{!pro.Neck_Type_Back__c}</td>
+                                    <td>{!pro.Neck_Type_Front__c}</td>
+                                    <td>{!pro.Opening_Type__c}</td>
+                                    <td>{!pro.Padding__c}</td>
+                                    <td>{!pro.RTW_SIZE__c}</td>
+                                    <td>{!pro.Sleeve_Fit__c}</td>
+                                    <td>{!pro.Sleeve_Length__c}</td>
+                                    <td>{!pro.SLEEVE_TYPE__c}</td>
+                                    <td>{!pro.Style_Code__c}</td>
+                                    <td>{!pro.Year_of_Design__c}</td>
+                                    <td>{!pro.Zari__c}</td>
+                                </apex:outputPanel>
+                                
+                                <apex:outputPanel rendered="{!ProdType == 'MASK'}" layout="none">
+                                    <td>{!pro.MFabric__c}</td>
+                                    <td>{!pro.MStyle_name__c}</td>
+                                    <td>{!pro.Gender__c}</td>
+                                    <td>{!pro.MDesign__c}</td>
+                                    <td>{!pro.MPleats__c}</td>
+                                    <td>{!pro.MPly__c}</td>
+                                    <td>{!pro.Quantity__c}</td>
+                                    <td>{!pro.MCost__c}</td>
+                                </apex:outputPanel>
+                                <td>{!CRLF}</td>
+                            </tr>
+                        </apex:repeat>
+                    </tbody>
+                </table>
+            </form>
+        </body>
+        
+    </html>
+</apex:page>

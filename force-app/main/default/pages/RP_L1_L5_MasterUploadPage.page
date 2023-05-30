@@ -1,0 +1,16 @@
+<apex:page showChat="false" sidebar="false" standardController="L1_L5_Master__c"> 
+
+    <apex:includeLightning />    
+    <div id="LightningComponentid" />    
+    <script>
+    $Lightning.use("c:RangeplanSummary", function() {
+        $Lightning.createComponent("c:L1_L4_Master_Component",
+          { 
+          },
+          "LightningComponentid",
+          function(cmp) {
+             console.log('LWC Componenet added in VF page');
+          });
+    });
+    </script>
+</apex:page>

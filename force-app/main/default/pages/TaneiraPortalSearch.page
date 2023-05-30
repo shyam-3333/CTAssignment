@@ -1,0 +1,532 @@
+<apex:page controller="TaneiraPortalSearch"  docType="html-5.0"   showHeader="false" sidebar="false" id="MainPage" standardStylesheets="false" action="{!sessionManagement}" >
+    <head>
+            <title> Search </title>
+            <meta charset="utf-8"/>
+           
+        <apex:stylesheet value="{!URLFOR($Resource.SidebarPlugin, 'jquery.mb.extruder-2.5.5/css/mbExtruder.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.common.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.rtl.min.css')}"/>
+        <apex:stylesheet value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/styles/kendo.blueopal.min.css')}"/>
+        
+        <apex:includeScript value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/js/jquery.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/js/kendo.web.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.KendoMetroLibrary, 'kendoui.web.open-source/js/kendo.all.min.js')}"/>
+        
+        
+        <apex:includeScript value="{!URLFOR($Resource.SidebarPlugin, 'jquery.mb.extruder-2.5.5/inc/jquery.hoverIntent.min.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.SidebarPlugin, 'jquery.mb.extruder-2.5.5/inc/jquery.mb.flipText.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.SidebarPlugin, 'jquery.mb.extruder-2.5.5/inc/mbExtruder.js')}"/>
+           
+    </head>
+     <style>
+
+        #LoginBackgroundPopup{  
+        
+            display:none;  
+            position:fixed;  
+            _position:absolute; /* hack for internet explorer 6*/  
+            height:100%;  
+            width:100%;  
+            top:0;  
+            left:0;  
+            background:#000000;  
+            border:1px solid #cecece;  
+            z-index:1;  
+            
+        } 
+        
+        #popupLogin{  
+        
+            display:none;  
+            position:relative;  
+            _position:absolute; /* hack for internet explorer 6*/  
+            height:500px;  
+            width:408px; 
+            top:50%;
+            left:50%;      
+            background:#FFFFFF;  
+            border:2px solid #cecece;  
+            z-index:2;  
+            padding:12px;  
+            font-size:13px;  
+            font-family:Arial;
+            overflow : scroll;
+            
+        }  
+        #bgFade_plan {
+              display: none;
+              left: 0;
+              top: 0;
+              width: 100%;
+              height: 100%;
+              position: fixed;
+              opacity: 0.5;
+              filter:alpha(opacity=50);
+              background: #000;
+              text-align: center;
+              vertical-align: middle;
+              z-index: 1000;
+          }
+        #Preloader {
+            display: none;
+            position: fixed;
+            z-index: 221;
+            width: 32px;
+            height: 32px;
+            top: 120px;
+            left: 50%;
+            margin-left: -16px; 
+        }  
+        #Preloader img {
+            width: 32px;
+            height: 32px;
+        }  
+    </style> 
+     <style type="text/css">    
+        .content a{
+            text-decoration: none;
+        }
+        
+        .popup{
+        
+            font-family:'Arial';
+            width: 100%;
+            margin-top: 18%;
+            display: none;
+            position: fixed;
+            z-index: 101;
+        }
+        .content{
+        
+            min-width: 600px;
+            width: 600px;
+            min-height: 150px;
+            margin: 2% auto;
+            background: white solid;
+            position: relative;
+            z-index: 103;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px #000;
+            
+        }
+        
+        .content p a{
+            color: #d91900;
+            font-weight: bold;
+        }   
+        .searchtextbox{
+        
+          width:400px;
+         //padding: 10px 0px; 
+         border-radius:5px; 
+         margin-bottom:1%;
+         // margin-top: -2%;
+          
+        }
+        
+        .k-button,.seachbutton,.AdvancesearchButton{
+        
+            font-family: 'Arial';
+            font-weight: 300;
+            font-size: 16px;
+            color: #fff;
+            background: #56c2e1;
+            border: 1px solid #46b3d3;
+            cursor: pointer;
+        }
+        body { 
+        
+          background: url('{!$Resource.TaneiraPortalBack}') no-repeat center center fixed; 
+          -webkit-background-size: cover;
+          -moz-background-size: cover;
+          -o-background-size: cover;
+          background-size: cover;
+          
+        }
+            
+        #centersearch{
+        
+             position:absolute;
+             top:45%;
+             left:35%;
+            
+        }   
+        .logoutbutton {
+        
+            background-color:#050505;
+            -moz-border-radius:42px;
+            -webkit-border-radius:42px;
+            border-radius:42px;
+            display:inline-block;
+            cursor:pointer;
+            color:#ffffff;
+            font-family:Arial;
+            font-size:12px;
+            font-weight:bold;
+            padding:22px 10px;
+            text-decoration:none;
+            
+        }
+        
+        .logoutbutton:hover {
+        
+            background-color:#d11414;
+            
+        }
+        
+        .logoutbutton:active {
+        
+            position:relative;
+            top:1px;
+        }
+        .myButton {
+    
+        font-family: 'Arial';
+        font-weight: 300;
+        font-size: 16px;
+        color: #fff;
+        background: #56c2e1;
+        border: 1px solid #46b3d3;
+        cursor: pointer;
+        padding:1px 10px !important;
+        width: 75%;
+        text-align:center;
+
+    }
+    #loading-img {
+        background: url(http://preloaders.net/preloaders/360/Velocity.gif) center center no-repeat;
+        height: 100%;
+        z-index: 20;
+    }
+    
+    .overlay {
+        background: #e9e9e9;
+         display: none;
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        opacity: 0.5;
+    }
+    </style>
+    <script>  
+         $(document).ready(function() {
+            autocompleteSearch();
+            var popupStatus = 0;
+            $("#Login_PopUp_Link").click(function() {
+
+                //Aligning our box in the middle
+                var windowWidth = document.documentElement.clientWidth;
+                var windowHeight = document.documentElement.clientHeight;
+                var popupHeight = $("#popupLogin").height();
+                var popupWidth = $("#popupLogin").width();
+                
+                //centering
+                $("#popupLogin").css({
+                    "position": "absolute",
+                    "top": windowHeight / 2 - popupHeight / 2,
+                    "left": windowWidth / 2 - popupWidth / 2,
+                    
+                });
+
+                //aligning our full bg 
+                $("#LoginBackgroundPopup").css({
+                    "height": windowHeight
+                });
+
+                // Pop up the div and Bg
+                if (popupStatus == 0) {
+                    $("#LoginBackgroundPopup").css({
+                        "opacity": "0.7"
+                    });
+                    $("#LoginBackgroundPopup").fadeIn("slow");
+                    $("#popupLogin").fadeIn("slow");
+                    popupStatus = 1;
+                }
+            });
+
+
+            //Close Them
+            $("#popupLoginClose").click(function() {
+                if (popupStatus == 1) {
+                    $("#LoginBackgroundPopup").fadeOut("slow");
+                    $("#popupLogin").fadeOut("slow");
+                    popupStatus = 0;
+                }
+            });            
+           
+             var allVen = false;
+           $('[id$=AllVendor]').click(function() {
+              if (this.checked) {
+                $("input.vendorNameClass").attr('disabled', true);
+                  allVen = true;
+              } else {
+                $("input.vendorNameClass").removeAttr("disabled");
+                allVen = false;
+              }
+          });
+          var vendorCount = 0;
+          $(".vendorNameClass").click(function() {
+            if(vendorCount >= 5){
+                alert('You can select only 5 vendor');
+                this.checked = false;
+                return;
+            }
+            if (this.checked)
+                vendorCount++;
+            else
+                vendorCount--;
+             
+          });
+        var allOrigin = false;
+       $('[id$=AllOrigin]').click(function() {
+           if (this.checked) {
+               $("input.OriginNameClass").attr('disabled', true);
+               allOrigin = true;
+           } else {
+               $("input.OriginNameClass").removeAttr("disabled");
+               allOrigin = false;
+           }
+        });
+        var originCount = 0;
+        $(".OriginNameClass").click(function() {
+            if(originCount >= 5){
+                alert('You can select only 5 Origin');
+                this.checked = false;
+                return;
+            }
+            if (this.checked)
+                originCount++;
+            else
+                originCount--;             
+        });
+         var allCat = false;
+         $('[id$=AllCat]').click(function() {
+           if (this.checked) {
+               $("input.CatNameClass").attr('disabled', true);
+               allCat = true;
+           } else {
+               $("input.CatNameClass").removeAttr("disabled");
+               allCat = false;
+           }
+        });
+        var catCount = 0;
+        $(".CatNameClass").click(function() {
+            if(catCount >= 5){
+                alert('You can select only 5 Origin');
+                this.checked = false;
+                return;
+            }
+            if (this.checked)
+                catCount++;
+            else
+                catCount--;             
+        });
+        $('[id$=goBtn]').click(function() {
+           if(allVen == false && vendorCount <= 0 && allOrigin == false && originCount <= 0 && allCat == false && catCount <= 0)
+               alert('Please select atleast one search criteria');
+            else
+                callAdvanceSearch();
+        });
+    });
+    function textBoxKeyPress(pressedElement){
+        
+            var key;
+            if(window.event){ 
+                           
+                key = window.event.keyCode;     //IE    
+                 
+            }else{            
+                    
+                key =window.event.which;     //firefox
+                
+            }       
+            
+            if(key == 13){ 
+            
+                var ele='';
+                if( pressedElement == 'advancesearch'){  
+                                       
+                    ele=document.getElementById('MainPage:form1:pblk:Login_PopUp_Link'); 
+                    
+                }else{
+                     
+                      
+                        ele=advanceSearchDisplay?document.getElementById('MainPage:form1:pblk:seachbuttonId'):document.getElementById('MainPage:form1:pblk:seachbuttonId1');
+                                        
+                }     
+                    window.event.preventDefault();                                                     
+                    ele.click(); 
+                
+            } 
+        }  
+       function ValidateSearch(){
+       
+       }
+       function chengeSearchCategory(){
+           //$(".overlay").show();
+           callAutoFill();
+       }
+       function click1(){
+            $('#bgFade_plan').css('display','block');
+            $('#Preloader').css('display','block');            
+        }
+        function click2(){
+           
+            $('#bgFade_plan').css('display','none');
+            $('#Preloader').css('display','none');            
+        } 
+    </script>
+    <div id="Preloader" style="display:none;position:fixed;width:100%;height:100%;top:49%;left:49%"><img src="{!$Resource.Preloader}"/></div>
+     <div id = "bgFade_plan"></div>
+     <apex:form id="form1" >
+       <apex:actionFunction name="callAutoFill" status="actStatusId" action="{!getautoFillDataList}" reRender="form1" oncomplete="autocompleteSearch();click2();" />
+        <body>
+            <apex:pageBlock id="pblk"  >                
+                <table  width="100%">
+                    <tr>
+                        <td algn="left">
+                            <apex:image value="{!$Resource.New_titan_logo}"  height="80px" width="80px"/>                        
+                        </td>
+                        <td align="right" colspan="3" padding-top="50px" valign="top">                        
+                               <apex:commandLink title="Click to sign out" action="{!logout}">
+                                      <apex:image value="{!$Resource.LogOut}"  height="32px" width="32px" />                     
+                               </apex:commandlink>                               
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center">
+                            <div id="centersearch"> 
+                                <script>
+                                    function autocompleteSearch(){
+                                         $( ".searchtextbox" ).kendoAutoComplete({
+                                          autoWidth: true,
+                                          dataSource: {
+                                            data: {!autoFillData}
+                                          },
+                                           animation: {
+                                               close: {
+                                                 effects: "fadeOut zoom:out",
+                                                 duration: 300
+                                               },
+                                               open: {
+                                                 effects: "fadeIn zoom:in",
+                                                 duration: 300
+                                               }
+                                            }
+                            
+                                        });
+                                    }             
+                                </script>
+                                <center>
+                                    <apex:selectRadio value="{!searchCategory}" layout="lineDirection" id="theRadio" onchange="click1();chengeSearchCategory();" >
+                                        <apex:selectOption itemValue="SKU" itemlabel="SKU"  />
+                                        <apex:selectOption itemValue="Model" itemlabel="Vendor Prod Code"/>                                     
+                                    </apex:selectRadio>
+                                </center>
+                                <apex:inputText id="SearchWord" html-placeholder="Search with SKU/Vendor Prod Code"  value="{!seachKeyWord}" styleclass="k-textbox searchtextbox"/>
+                                <br/>
+                                <table width="100%">
+                                    <tr  width="100%">
+                                        <td  width="100%" >
+                                          <apex:panelGroup rendered="{!advanceSearchDisplay}">
+                                                 <apex:commandButton value="Search"   id="seachbuttonId" onkeypress="textBoxKeyPress('search');"   Action="{!searchProduct}" styleClass="seachbutton" style="width:45%;margin-left:1%;"/>
+                                                 <div id="Login_PopUp_Link" style="margin-top:-5.4%;margin-left:47%;width:45%; "  class="myButton">Advanced Search</div>
+                                           </apex:panelGroup>
+                                           <apex:panelGroup rendered="{!if(advanceSearchDisplay,false,true)}">
+                                                <apex:commandButton value="Search"   id="seachbuttonId1" Action="{!searchProduct}" styleClass="seachbutton" style="width:80%;margin-left:10%;"/>
+                                            </apex:panelGroup>
+                                            
+                                        </td>
+                                    </tr>
+                                </table>
+                            
+                            </div> 
+                        </td>
+                    </tr>
+                </table>
+                
+                
+            </apex:pageblock>
+            
+        </body>
+        
+    </apex:form> 
+    <div id="popupLogin">
+        <apex:form id="Filterspop" >
+             <apex:actionFunction name="callAdvanceSearch" action="{!searchProduct}"/>
+            <table    style="background-color:#FFFFFF" width="100%" height="100%">
+                
+                <tr>
+                    <td >
+                         <div  >
+                            <table width="100%" height="100%">
+                                <tr>
+                                    <td width="50%" align="left">
+                                        <b><apex:outputtext value="Advanced Search"  style="font-size:15px"/></b>
+                                    </td>
+                                    <td width="50%" align="right">
+                                          <a href="#" id="popupLoginClose"> <apex:image value="{!$Resource.Close}" styleClass="k-button1" style="cursor:pointer;" height="20px" width="20px"/> </a> 
+                                    </td>
+                                </tr>
+                            </table>
+                          </div> 
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="center">
+                        <table width="100%">
+                            <tr  width="100%">
+                                <td  width="40%" align="center" valign="top">
+                                    <table>
+                                        <tr><td><b>Vendor</b><br/></td></tr>
+                                        <tr><td></td></tr>
+                                        <tr align="Left"> <td><apex:inputcheckbox id="AllVendor" value="{!vendorList[0].isSelected}" styleclass="advancesearch"/>{!vendorList[0].Name}</td></tr>
+                                        <apex:repeat value="{!vendorList}" var="venVal" first="1">
+                                            <tr align="Left"> <td><apex:inputcheckbox value="{!venVal.isSelected}" styleclass="advancesearch vendorNameClass"/>{!venVal.Name}</td></tr>
+                                        </apex:repeat>
+                                       
+                                    </table>
+                                </td>
+                                <td  width="30%" valign="top">
+                                    <table>
+                                        <tr><td><b>Origin</b></td></tr>
+                                        <tr><td></td></tr>
+                                        <tr align="Left"> <td><apex:inputcheckbox id="AllOrigin" value="{!originList[0].isSelected}" styleclass="advancesearch"/>{!originList[0].Name}</td></tr>
+                                        <apex:repeat value="{!originList}" var="orgVal" first="1">
+                                            <tr align="Left"> <td><apex:inputcheckbox value="{!orgVal.isSelected}" styleclass="advancesearch OriginNameClass"/>{!orgVal.Name}</td></tr>
+                                        </apex:repeat>
+                                    </table>     
+                                </td>
+                                 <td  width="30%" valign="top">
+                                    <table> 
+                                        <tr><td><b>Product Category</b></td></tr>
+                                        <tr><td></td></tr>
+                                        <tr align="Left"> <td><apex:inputcheckbox id="AllCat" value="{!proCatList[0].isSelected}" styleclass="advancesearch"/>{!proCatList[0].Name}</td></tr>
+                                        <apex:repeat value="{!proCatList}" var="catVal" first="1">
+                                            <tr align="Left"> <td><apex:inputcheckbox value="{!catVal.isSelected}" styleclass="advancesearch CatNameClass"/>{!catVal.Name}</td></tr>
+                                        </apex:repeat>
+                                    </table>     
+                                </td>
+                            </tr>  
+                            <tr>
+                                <td align="center" colspan="3">
+                                    <input type="button" id="goBtn" value="Go" class="k-button" style="border-radius:2px;padding-left:12px;padding-right:12px;"/>
+                                    
+                                </td>   
+                            </tr>
+                        </table>  
+                    </td>
+                </tr>
+            </table> 
+
+        </apex:form> 
+    </div>
+    <div id="LoginBackgroundPopup"></div>
+    <div style="position: relative">
+      <p style="position: fixed; bottom: 0; width:100%; text-align: center;font-family:Arial;font-size:12px;"> Copyright © 2014 Under Titan Company. All Rights Reserved. No imagery or logos contained within this site may be used without the express permission of Titan Company</p>
+    </div>
+</apex:page>

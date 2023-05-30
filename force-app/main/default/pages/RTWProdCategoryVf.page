@@ -1,0 +1,364 @@
+<apex:page controller="RTWProdCategoryController" showHeader="false" sidebar="false" standardStylesheets="false" id="pg" readOnly="false" docType="html-5.0">
+    <script>
+    function navigate()
+    {
+        window.location.href='/apex/UploadProductData';
+    }
+    
+    function onchnagemultiplier(){
+        
+        chnagemultiplieraction();
+    }
+    function onchnageActualMrp(){
+        
+        chnageactualMrpaction();
+    }
+    
+    </script>
+    <style>
+        
+        .headerTitle{
+        
+        font-family: arial, sans-serif;
+        
+        font-size: 16px;
+        
+        font-weight: 600;
+        
+        color: #fff!important;
+        
+        text-align: left;
+        
+        text-transform: uppercase;
+        
+        background: #4e75a3;
+        
+        display: block;
+        
+        padding: 25px;
+       
+        
+        margin:0;
+        
+        }
+        .spinnerBg{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background-color: #000;
+            opacity: 0.1;
+            z-index: 999999;
+            }
+            .spinner{
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background-image: url("/loading32.gif");
+            background-size: 56px;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+            z-index: 9999999;
+            opacity: 1;
+        }
+        
+        
+    </style>
+   
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        
+        <head></head>
+        <apex:stylesheet value="{!$Resource.Slds215}" />
+        
+        <body>
+            <apex:form id="fm1" styleClass="">
+                
+                <apex:actionStatus id="spinnerStatus">
+                    <apex:facet name="start">
+                        <div class="spinnerBg" />
+                        <div class="spinner" />
+                    </apex:facet>
+                </apex:actionStatus>
+                
+                <apex:outputPanel styleClass="dataTable">
+                    <apex:outputPanel id="panelId"></apex:outputPanel>
+                    <div class="slds-grid slds-wrap " >
+                        <!--  <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-2 slds-large-size--1-of-2 col--padded"> --->
+                        <div class="slds-col slds-p-horizontal--small">
+                            <div class="slds-col" style="padding-top:20px;">
+                                <table class="slds-table slds-table--bordered slds-resizable pt20" id="tableId">
+                                   
+                                    <div class="headerTitle ">
+                                        <!--apex:outputPanel onclick="moveBack();" style="cursor:pointer;">
+<apex:image value="{!$Resource.BackIcon_Taneira}" height="32px" width="32"/> 
+</apex:outputPanel-->
+                                        <apex:outputLabel value="RTW Category Product View" style=" position: fixed;margin-top:-10px; " />
+                                    </div><br/>
+                                    <thead>
+                                        <tr class="slds-text-heading--label" bgcolor="#DEDEDE" >
+                                            <th focusable="true" class="slds-resizable" scope="col" >
+                                                <span class="slds-truncate" title="SKU">SKU</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                <span class="slds-truncate" title="VendorName">Vendor Name</span>
+                                            </th>
+                                            
+                                            <!--th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+<span class="slds-truncate" title="Product Category">Product Category</span>
+</th-->
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="PONumber">PO Number</span>
+                                            </th>
+                                            <th focusable="true" class="slds-is-resizable" scope="col">
+                                                <span class="slds-truncate" title="BaseColour">Base Colour</span>
+                                            </th>
+                                            <th focusable="true" class="slds-is-resizable" scope="col">
+                                                <span class="slds-truncate" title="Collection">Collection</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="Craft">Craft</span>
+                                            </th>
+                                            <!--th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+<span class="slds-truncate" title="SeasonFabric">Season Fabric</span>
+</th-->
+                                              <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="WARP">WARP</span>
+                                            </th>
+                                             <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="WEFT">WEFT</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col" style="white-space: nowrap!important;">
+                                                <span class="slds-truncate" title="Form">Form</span>
+                                            </th>
+                                            <!--th focusable="true" class="slds-is-resizable" scope="col">
+<span class="slds-truncate" title="VendorCost">Vendor Cost</span>
+</th-->
+                                            
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="Quantity">Quantity</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="TopFabric">Top Fabric</span>
+                                            </th>
+                                            <!--th focusable="true" class="slds-resizable" scope="col">
+<span class="slds-truncate" title="Consumption">Consumption</span>
+</th-->
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="BottomFabric">Bottom Fabric</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="Source">Source</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="YardageSKUCode">Yardage SKU Code</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="YardageConsumption">Yardage Consumption</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="YardageCost">Yardage Cost</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="TotalCost">Total Cost</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="Loom">Loom</span>
+                                            </th>
+                                            <!--th focusable="true" class="slds-resizable" scope="col">
+<span class="slds-truncate" title="RTWSize">RTW Size</span>
+</th-->
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="EcomSize">E-com Size</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="EcomMaterial">E-com Material</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="StyleCode">Style Code</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="Zari">Zari</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="Description">Description</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="OrderID">Order ID</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="Remarks">Remarks</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="CreatedBy">Created By</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="SuggestedMRP">Suggested MRP</span>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="Actual MRP">Actual MRP</span>&nbsp;
+                                                <u><abbr title="Copy all the actual MRP field values with first row value"> 
+                                                    <apex:commandButton value="Copy All"  action="{!copyAll}"  rendered="{!checkCategoryUser}" reRender="ActualMRPField,MultiplierField" style="background-color:#4e75a3; color:white;" >
+                                                        <apex:param value="Actual_MRP_Update__c" assignTo="{!copyValue}" name="copyValue"/>
+                                                    </apex:commandButton>
+                                                    </abbr>
+                                                </u>
+                                            </th>
+                                            <th focusable="true" class="slds-resizable" scope="col">
+                                                <span class="slds-truncate" title="Multiplier">Multiplier</span> &nbsp;
+                                                <u><abbr title="Copy all the Multiplier value values with first row value"> 
+                                                    <apex:commandButton value="Copy All" action="{!copyAll}" rendered="{!checkCategoryUser}" reRender="ActualMRPField,MultiplierField" style="background-color:#4e75a3; color:white;" >
+                                                        <apex:param value="Multiplier__c" assignTo="{!copyValue}" name="copyValue"/> 
+                                                    </apex:commandButton>
+                                                    </abbr>
+                                                </u>
+                                            </th>                                        
+                                            <!--th focusable="true" class="slds-resizable" scope="col">
+<span class="slds-truncate" title="RTWPricingCompletedDate">RTW Pricing Completed Date</span><br/>                                            
+</th-->
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <apex:variable value="{!0}" var="indexval" id="varid" />
+                                        <apex:repeat value="{!RTWproductWrraperMap}" var="pro" id="theRepeat">
+                                            <apex:variable value="{!indexval+1}" var="indexval" />
+                                            <tr class="slds-hint-parent" data-label="SKU">
+                                                <td role="gridcell" data-label="SKU">
+                                                    <apex:commandLink value="{!RTWproductWrraperMap[pro].RTWproductRec.SKU__c}" onclick="openRecordView('{!RTWproductWrraperMap[pro].RTWproductRec.Id}')" reRender="null"/></td>
+                                                <td role="gridcell" data-label="VendorName">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Vendor_custom__r.Name}
+                                                </td>
+                                                <td role="gridcell" data-label="PONumber">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.PO_Number__c}
+                                                </td>
+                                                <td role="gridcell" data-label="BaseColour">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Base_Colour__c}
+                                                </td>
+                                                <td role="gridcell" data-label="Collection">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Collection__c}
+                                                </td>
+                                                <td role="gridcell" data-label="Craft">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Craft__c}
+                                                </td>
+                                                <td role="gridcell" data-label="WARP">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.warp__c}
+                                                </td>
+                                                <td role="gridcell" data-label="WEFT">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.weft__c}
+                                                </td>
+                                                <td role="gridcell" data-label="Form">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Form__c}
+                                                </td>
+                                                <td role="gridcell" data-label="Quantity">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Quantity__c}
+                                                </td>
+                                                <td role="gridcell" data-label="TopFabric">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Top_Fabric__c}
+                                                </td>
+                                                <td role="gridcell" data-label="BottomFabric">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Bottom_Fabric__c}
+                                                </td>
+                                                <td role="gridcell" data-label="Source">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Source__c}
+                                                </td>
+                                                <td role="gridcell" data-label="YardageSKUCode">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Yardage_SKU_Code__c}
+                                                </td>
+                                                <td role="gridcell" data-label="YardageConsumption">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Yardage_Consumption__c}
+                                                </td>
+                                                <td role="gridcell" data-label="YardageCost">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Yardage_Cost__c}
+                                                </td>
+                                                <td role="gridcell" data-label="TotalCost">
+                                                    <apex:outputText value="{!RTWproductWrraperMap[pro].RTWproductRec.Total_Costs__c}"  id="totalCostId"/>
+                                                </td>
+                                                <td role="gridcell" data-label="Loom">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Loom__c}
+                                                </td>
+                                                <td role="gridcell" data-label="EcomSize">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Ecom_Size__c}
+                                                </td>
+                                                <td role="gridcell" data-label="EcomMaterial">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.E_com_Material__c}
+                                                </td>
+                                                <td role="gridcell" data-label="StyleCode">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Style_Code__c}
+                                                </td>
+                                                <td role="gridcell" data-label="Zari">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Zari__c}
+                                                </td>
+                                                <td role="gridcell" data-label="Description">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Description__c}
+                                                </td>
+                                                <td role="gridcell" data-label="OrderID">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Order_ID__c}
+                                                </td>
+                                                <td role="gridcell" data-label="Remarks">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.Remarks__c}
+                                                </td>
+                                                <td role="gridcell" data-label="CreatedBy">
+                                                    {!RTWproductWrraperMap[pro].RTWproductRec.CreatedBy.Name}
+                                                </td>
+                                                <td role="gridcell" data-label="SuggestedMRP">
+                                                    {!RTWproductWrraperMap[pro].SuggestedMRP}
+                                                </td>
+                                                <td role="gridcell" data-label="ActualMRP">
+                                                    <p id="demo" >
+                                                        <apex:inputText id="ActualMRPField" styleClass="slds-input"  value="{!RTWproductWrraperMap[pro].ActualMRP}"     onkeyup="onchnageActualMrp();"
+                                                                        style="{!if(AND(OR(RTWproductWrraperMap[pro].ActualMRP==null, RTWproductWrraperMap[pro].ActualMRP==0)) ,'border-color:#ff3f34','')}" >
+                                                        </apex:inputText>
+                                                    </p>
+                                                </td>
+                                                <td role="gridcell" data-label="Multiplier">
+                                                    <p id="demo" >
+                                                        <apex:input value="{!RTWproductWrraperMap[pro].Multiplier}" styleClass="slds-input" id="MultiplierField" onkeyup="onchnagemultiplier();" />                                                                                                        
+                                                    </p>
+                                                </td>                                            
+                                            </tr>
+                                        </apex:repeat>
+                                        <apex:actionFunction name="chnagemultiplieraction" action="{!onchangemultiplier}" reRender="ActualMRPField" />
+                                        <apex:actionFunction name="chnageactualMrpaction" action="{!onchangeActualMrp}" reRender="MultiplierField" />
+                                        
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </apex:outputPanel>
+                <div class="slds-docked-form-footer" style="background-color: #fff!important;">
+                  <!--  <apex:commandButton value="Assign Back" action="{!doassignback}" disabled="{!NOT(checkCategoryUser)}" status="spinnerStatus" styleClass="slds-button slds-button--neutral slds-not-selected" /> -->
+                    <apex:commandButton value="Save" action="{!doSave}" disabled="{!NOT(checkCategoryUser)}" status="spinnerStatus" styleClass="slds-button slds-button--neutral slds-not-selected" />
+                    <apex:commandButton value="Submit" action="{!doSubmit}" disabled="{!NOT(checkCategoryUser)}" status="spinnerStatus" styleClass="slds-button slds-button--neutral slds-not-selected" reRender="fm1,pgmsg" />
+                </div>
+            </apex:form>
+            
+        </body>
+    </html>
+    <script>
+    
+    var j$ = jQuery.noConflict();
+    j$(document).ready(function() {
+        paginationTable();
+        <!--var prodTable = j$('[id$="tableId"]').DataTable({});-->
+    });
+        function openRecordView(proId) {
+            if ((typeof sforce != 'undefined') && sforce && (!!sforce.one)) {
+                sforce.one.navigateToSObject(proId);
+            } else {
+                window.open('/' + proId);
+            }
+        }
+        function moveBack(){
+            
+            if ((typeof sforce != 'undefined') && sforce && (!!sforce.one)){ 
+                
+                sforce.one.navigateToURL("/apex/RTWProductUpdateView");
+            }
+            else{
+                window.open('/apex/RTWProductUpdateView','_self');
+                
+            }
+        }    
+        </script>
+</apex:page>

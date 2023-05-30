@@ -1,0 +1,213 @@
+<template>
+<c-custom-toast-message-component auto-close-time="10000"></c-custom-toast-message-component>
+<lightning-card>
+<lightning-card   icon-name="custom:custom40" style="align-items:center;font-weight:Bold;">
+<h1 slot="title" style="font-weight: bold;">L1-L5 Master Upload Format</h1>
+</lightning-card>
+<div class="exampleHolder">
+<template if:false={loaded}>
+<lightning-spinner alternative-text="Loading"></lightning-spinner>
+</template>
+</div>
+
+<lightning-layout multiple-rows="true" vertical-align="end" class="slds-m-top_xx-large slds-align_absolute-center">
+  <lightning-layout-item padding="around-small">
+    <lightning-input  label="" name="file uploader" variant="label-hidden" onchange   ={uploadFileHandler} type="file" accept=".csv"  ></lightning-input>
+      </lightning-layout-item>
+      <lightning-layout-item padding="around-small">
+        <button  class="slds-button slds-button_outline-brand slds-p-right_small"  aria-label="Click here To Upload CSV" onclick={handleSave} disabled={isTrue}> {UploadFile}
+          
+        </button>
+      </lightning-layout-item>
+      <lightning-layout-item padding="around-small">
+      <!-- <lightning-button class="slds-p-right_small" title="uploadFile" label="Upload File" onclick={handleSave} variant="brand-outline" disabled={isTrue}></lightning-button> -->
+      <button class="slds-button slds-button_outline-brand slds-p-right_small" aria-label="Download CSV file" onclick={downloadCSV} > Download CSV
+          
+      </button>
+      </lightning-layout-item>
+</lightning-layout>
+<br/>
+<div class="slds-text-body_small slds-text-color_success slds-text-align_center" style="font-size: 13px;"> {fileName}
+</div>
+<div class="slds-text-body_small slds-text-color_success slds-text-align_center"> {errormessage}
+</div>
+
+<div class= "slds-box slds-theme_default slds-m-top_xx-large ">
+<table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered slds-border_right   slds-border_left slds-table_fixed-layout "  >
+<thead>
+<tr class="slds-line-height_reset" style="height: 5rem; ">
+<th class="" scope="col">
+  <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center outputFont"  title="Rule">Rule</div>
+</th>
+<th class="" scope="col">
+  <div  class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont"  title="Product Category 1">Product Category 1</div>
+</th>
+<th class="" scope="col">
+  <div  class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont"  title="Product Category Values 1" >Product Category Values 1</div>
+</th>
+<th class="" scope="col">
+  <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont" title="Product Category 2">Product Category 2</div>
+</th>
+<th class="" scope="col">
+  <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont"  title="Product Category Values 2">Product Category Values 2</div>
+</th>
+<th class="" scope="col">
+  <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont"   title="Product Category 3">Product Category 3</div>
+</th>
+<th class="" scope="col">
+  <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont"  title="Product Category Values 3">Product Category Values 3</div>
+</th>
+<th class="" scope="col">
+    <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont"  title="Product Category 4">Product Category 4</div>
+  </th>
+  <th class="" scope="col">
+    <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont"  title="Product Category Values 4">Product Category Values 4</div>
+  </th>
+  <th class="" scope="col">
+    <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center outputFont"  title="L1">L1</div>
+  </th>
+  <th class="" scope="col">
+    <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center outputFont"  title="L2">L2</div>
+  </th>
+  <th class="" scope="col">
+    <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center outputFont"  title="L3">L3</div>
+  </th>
+  <th class="" scope="col">
+    <div class="sslds-m-left_medium slds-m-around_x-small slds-text-align_center outputFont"  title="L4">L4</div>
+  </th>
+  <th class="" scope="col">
+    <div class="sslds-m-left_medium slds-m-around_x-small slds-text-align_center outputFont"  title="L4">L5</div>
+  </th>   
+</tr>
+</thead>
+</table>
+</div>
+<c-confirmation-box-component title='CSV File Errors'
+message='Do you want to proceed?'
+confirm-label='Close'
+cancel-label='Close'
+visible={isDialogVisible}
+original-message={originalMessage}
+name="confirmModal"
+onclick={handleClick}>
+</c-confirmation-box-component>
+
+</lightning-card>
+<div class="slds-m-bottom_xx-large">
+<lightning-card style="margin-bottom:50px">
+  <lightning-card   icon-name="custom:custom40" style="align-items:center;font-weight:Bold;">
+    <h1 slot="title" style="font-weight: bold;">L1-L5 Master Delete Format</h1>
+    </lightning-card>
+
+    <lightning-layout multiple-rows="true" vertical-align="end" class="slds-m-top_xx-large slds-align_absolute-center">
+      <lightning-layout-item padding="around-small">
+        <lightning-input  label="" name="file uploader" variant="label-hidden" onchange   ={uploadFileHandlerforDelete} type="file" accept=".csv"  ></lightning-input>
+          </lightning-layout-item>
+          <lightning-layout-item padding="around-small">
+            <button  class="slds-button slds-button_outline-brand slds-p-right_small"  aria-label="Click here To Upload CSV"  onclick={handledelete} disabled={isTrue}> Delete
+              
+            </button>
+          </lightning-layout-item>
+         
+          <lightning-layout-item padding="around-small">
+          <!-- <lightning-button class="slds-p-right_small" title="uploadFile" label="Upload File" onclick={handleSave} variant="brand-outline" disabled={isTrue}></lightning-button> -->
+          <button class="slds-button slds-button_outline-brand slds-p-right_small" aria-label="Download Data" onclick={viewReport} > Download data
+              
+          </button>
+          </lightning-layout-item>
+          
+    </lightning-layout>
+    <div class="slds-text-body_small slds-text-color_success slds-text-align_center" style="font-size: 13px;"> {showmessage}
+    </div>
+    <div class= "slds-box slds-theme_default slds-m-top_xx-large ">
+      <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered slds-border_right   slds-border_left slds-table_fixed-layout "  >
+      <thead>
+      <tr class="slds-line-height_reset" style="height: 5rem; ">
+      <th class="" scope="col">
+        <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont outputFont"  title="L1-L5 Master: ID">L1-L5 Master: ID</div>
+      </th>
+      <th class="" scope="col">
+        <div  class=" slds-text-align_center slds-cell-wrap outputFont"  title="Rule">Rule</div>
+      </th>
+      <th class="" scope="col">
+        <div  class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont"  title="Product Category 1" >Product Category 1</div>
+      </th>
+      <th class="" scope="col">
+        <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont" title="Product Category Value 1">Product Category Value 1</div>
+      </th>
+      <th class="" scope="col">
+        <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont"  title="Product Category 2">Product Category 2</div>
+      </th>
+      <th class="" scope="col">
+        <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont"   title="Product Category Value 2">Product Category Value 2</div>
+      </th>
+      <th class="" scope="col">
+        <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont"  title="Product Category 3">Product Category 3</div>
+      </th>
+      <th class="" scope="col">
+          <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont"  title="Product Category Value 3">Product Category Value 3</div>
+        </th>
+        <th class="" scope="col">
+          <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont"  title="Product Category 4">Product Category 4</div>
+        </th>
+        
+        <th class="" scope="col">
+          <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center slds-cell-wrap outputFont"  title="Product Category Value 4">Product Category Value 4</div>
+        </th>
+        <th class="" scope="col">
+          <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center outputFont"  title="L1">L1</div>
+        </th>
+        <th class="" scope="col">
+          <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center outputFont"  title="L2">L2</div>
+        </th>
+        <th class="" scope="col">
+          <div class="slds-m-left_medium slds-m-around_x-small slds-text-align_center outputFont"  title="L3">L3</div>
+        </th>
+        <th class="" scope="col">
+          <div class="sslds-m-left_medium slds-m-around_x-small slds-text-align_center outputFont"  title="L4">L4</div>
+        </th>
+        <th class="" scope="col">
+          <div class="sslds-m-left_medium slds-m-around_x-small slds-text-align_center outputFont"  title="L4">L5</div>
+        </th>   
+      </tr>
+      </thead>
+      </table>
+      </div>
+      <c-confirmation-box-component title='CSV File Errors'
+message='Do you want to proceed?'
+confirm-label='Close'
+cancel-label='Close'
+visible={isDialogVisible}
+original-message={originalMessage}
+name="confirmModal"
+onclick={handleClick}>
+</c-confirmation-box-component>
+
+<template if:true={isModalOpen}>
+  <!-- Modal/Popup Box LWC starts here -->
+
+  <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+      <div class="slds-modal__container">
+          <!-- Modal/Popup Box LWC header here -->
+          <header class="slds-modal__header">
+  
+             
+              <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Warning info </h2>
+          </header>
+          <!-- Modal/Popup Box LWC body starts here -->
+  <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+       <h1> Precedence is already exists in Master . Do you want to proceed?</h1>
+   </div>
+          <footer class="slds-modal__footer">
+           <button class="slds-button slds-button_success" onclick={handleyes} title="Yes">Yes</button>
+              <button class="slds-button slds-button_neutral" onclick={handleno} title="Close">No</button>                    
+          </footer>
+      </div>
+  </section>
+  <div class="slds-backdrop slds-backdrop_open"></div>
+</template>
+</lightning-card>
+
+</div>
+
+</template>

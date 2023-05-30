@@ -1,0 +1,99 @@
+<!--This Component build for display initial criteria when IDI User chick on "IDI Material Testing" Tab
+    This Component is Parent component of "QC_MTL_InputForm" component.  -->
+<aura:component controller="QC_MTL_Testing_Controller" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    
+    <!-- attribute-->
+    <aura:attribute name="SelectedTestingTypeValue" type="String"/> <!-- This Attribute Store Selected Value of Testing Type Pick List -->
+    <aura:attribute name="SelectedMaterialTypeValue" type="String"/> <!-- This Attribute Store Selected Value of Raw Material Pick List -->
+    <aura:attribute name="testingTypePickList" type="List"/> <!-- This Attribute Store Testing Type PickList Field Value -->
+    <aura:attribute name="rawMaterialPickList" type="List"/> <!-- This Attribute Store Raw Material Type PickList Field Value -->
+    <aura:attribute name="departmentPickList" type="List"/> <!--This Attribute Holds Department Pick List Value under "IDI Input Form" Object-->
+    <aura:attribute name="togglePlatingTesting" type="boolean" default="false" />
+    <aura:attribute name="selectedSampleTypeValue" type="String" /><!-- selected sample type i.e New OR Re-submission -->
+    <aura:attribute name="parentTestingTypeValue" type="String" /> <!-- hold the selected value of testing type to pass the value to custom lookup in case of re-submission-->
+    <aura:attribute name="toggleGer" type="boolean" default="false"/>
+    <aura:attribute name="toggleTest" type="boolean" default="false"/>
+    <aura:attribute name="isReSubmission" type="boolean" default="false"/>
+    <aura:attribute name="toggleSec1" type="boolean" default="true"/> <!--This Attribute use for Rendering Entry Criteria Form -->
+    <aura:attribute name="toggleInputForm" type="boolean" default="false"/> <!--This Attribute use for Rendering Input Form for IDE User -->
+    <aura:attribute name="callSaveFromParent" type="integer" default="0" />
+    <aura:attribute name="isReadonly" type="Boolean" default="true"/>
+    <aura:attribute name="SelectedMaterialSampleType" type="String" default="New"/> <!-- This Attribute Store Selected Value of Material Sample Type Pick List -->
+    <aura:attribute name="pickListMaterialSampleType" type="List"/> <!-- This Attribute Store Material Sample Type PickList Field Value -->
+    <aura:attribute name="selectedLookUpRecordForReSub" type="sObject" default="{}"/>
+    
+    
+    <!-- handlers -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="oSelectedRecordEvent" event="c:LookUpEvent" action="{!c.handleLookupComponentEvent}"/>
+    
+    <aura:if isTrue="{!v.toggleSec1}">
+        <lightning:card title="" class="slds-p-around_large" >
+            <div class="slds-section slds-is-open ">
+                <h3 class="slds-section__title slds-theme_info">
+                    <span class="slds-truncate slds-p-horizontal_small" title="Testing Tab">IDI Material Testing Tab</span>
+                </h3>
+                <div aria-hidden="false" class="slds-section__content">
+                    
+                    <form class="slds-form_stacked slds-align_absolute-center">
+                        <div class="slds-form-element__control">
+                            <div class="slds-form-element ">
+                                <lightning:select name="MSampleType" aura:id="materialPicklistId" label="Select Material Sample Type" required="true" value="{!v.SelectedMaterialSampleType}" onchange="{!c.toggleSampleMethod}">
+                                    <aura:iteration items="{!v.pickListMaterialSampleType}" var="value">
+                                        <option text="{!value}" value="{!value}" ></option>
+                                    </aura:iteration>
+                                </lightning:select>
+                            </div>
+                    <!--        <aura:if isTrue="{!v.toggleTest}"> -->
+                                <div class="slds-form-element ">
+                                    <lightning:select name="mySelect" aura:id="mySelect" label="Select Testing Type" required="true" value="{!v.SelectedTestingTypeValue}" onchange="{!c.toggleMethod}">
+                                        <aura:iteration items="{!v.testingTypePickList}" var="value">
+                                            <option text="{!value}" value="{!value}" ></option>
+                                        </aura:iteration>
+                                    </lightning:select>	
+                                </div>
+                    <!--        </aura:if>   -->
+                            <aura:if isTrue="{!v.toggleGer}">
+                                <div class="slds-form-element slds-align_absolute-center">
+                                    <lightning:select name="selectType"  aura:id="samCat" label="Select Material Type" required="true" value="{!v.SelectedMaterialTypeValue}" >
+                                        <aura:iteration items="{!v.rawMaterialPickList}" var="value">
+                                            <option text="{!value}" value="{!value}" ></option>
+                                        </aura:iteration>
+                                    </lightning:select>	
+                                </div>
+                               <!-- <div class="slds-form-element">
+                                    <lightning:button variant="brand" aura:id="saveId" label ="Next" onclick="{!c.nextPage}"/>  
+                                </div>-->
+                            </aura:if>
+                            <aura:if isTrue="{!v.isReSubmission}">
+                            <div class="slds-form-element">
+                                 <c:CustomLookupComponentParent aura:id="lookupId" customId = "qCMtlComponentNumber"  objectAPIName="QC_MTL_Component__c" whereCondition="{!'Testing_Type__c = \'' + v.parentTestingTypeValue+'\' AND Record_Status__c = \'Active\' AND Document_Status__c = \'Published\' AND Final_Verdict__c = \'Reject\''}" IconName="standard:account" selectedRecord="{!v.selectedLookUpRecordForReSub}" label="Report Reference Number"/>   
+                            </div>
+                        </aura:if>
+                            <aura:if isTrue="{!v.togglePlatingTesting}">
+                                <div class="slds-form-element">
+                                    <lightning:button variant="brand" aura:id="saveId" label ="Next" onclick="{!c.nextPagePlatingTesting}"/>  
+                                </div>
+                            </aura:if>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </lightning:card> 
+    </aura:if>
+    <aura:if isTrue="{!v.toggleInputForm}">
+        <lightning:card title="" class="slds-p-around_large" >
+            <center>
+                    <aura:if isTrue="{!v.isReadonly}">
+                    <lightning:button variant="brand" aura:id="editDataId" label ="Edit" onclick="{!c.enableSaveMode}"/>
+                
+                    </aura:if>
+                        <aura:if isTrue="{!!v.isReadonly}">
+                            <lightning:button variant="brand" aura:id="cancelId" label ="Cancel" onclick="{!c.cancelMethod}"/>  
+                            <lightning:button variant="brand" aura:id="saveId" label ="Save" onclick="{!c.saveDataFromParent}"/>  
+                    </aura:if>
+            	</center>
+            <c:QC_MTL_InputForm callSaveFromParent="{!v.callSaveFromParent}" parentSampleType = "{!v.selectedSampleTypeValue}" parentTestingType="{!v.SelectedTestingTypeValue}" parentMaterialType="{!v.SelectedMaterialTypeValue}" isReadonly="{!v.isReadonly}" referencedReSubReportId="{!v.selectedLookUpRecordForReSub}"/>
+        </lightning:card>
+    </aura:if>
+</aura:component>

@@ -1,0 +1,187 @@
+<aura:component controller="QC_SelectionOptionClass" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,force:lightningQuickAction,lightning:actionOverride" access="global" >
+	<aura:attribute name="SampleType" type="List" default="[{'label': 'None', 'value': 'None', 'selected': true},
+                                                             {'label': 'New', 'value': 'New', 'selected': false},
+                                                             {'label': 'Competitor Products', 'value': 'Competitor Products', 'selected': false},
+                                                             {'label': 'Alternate Development', 'value': 'Alternate Development', 'selected': false},
+															 {'label': 'Re-Submission', 'value': 'Re-Submission', 'selected': false},
+															 {'label': 'Re-Certification', 'value': 'Re-Certification', 'selected': false}]"/>
+	
+    <aura:attribute name="isConstructionTesting" type="boolean" default="false" /> <!-- to display the construction testing/reliability testing record based on check box value from backend -->
+    <aura:attribute name="isReliabilityTesting" type="boolean" default="false" /> <!-- to display the construction testing/reliability testing record based on check box value from backend -->
+    <aura:attribute name="sampleTypeValue" type="String" />
+    <aura:attribute name="SampleCategoryValue" type="String" /> 
+    <aura:attribute name="selectedSubType" type="String"/>
+    <aura:attribute name="SampleCat" type="list" />  
+    <aura:attribute name="subType" type="String[]"/>
+    <aura:attribute name="parentSampleCategory" type="String"/>
+    <aura:attribute name="parentSubCategory" type="String"/>
+    <aura:attribute name="selectedLookUpRecordForConstr" type="Object" default="{}"/>
+    <aura:attribute name="isReadonly" type="Boolean" default="true"/>
+    <aura:attribute name="isReadonlyForConstr" type="Boolean" default="true"/>
+    <aura:attribute name="callSaveFromParent" type="integer" default="0" />
+    <aura:attribute name="callConstrSaveFromParent" type="integer" default="0" />
+    <aura:attribute name="countSaveAccInput" type="Integer" default="0" />
+    <aura:attribute name="countConstrSaveAccInput" type="Integer" default="0" /> <!-- counter variable to save reliablity input and test parameter -->
+    <aura:attribute name="qCAccessComponentId" type="String" />
+    <aura:attribute name="passMutipickValCount" type="Integer" default="0" />
+    <aura:attribute name="showApprovalHistoryCmp" type="boolean" default="false" />
+    <aura:attribute name="showApprovalHistoryForConstrCmp" type="boolean" default="false" />
+    <aura:attribute name ="labelSwitch" type="String"/>
+    <aura:attribute name="finalverCounter" type ="Integer" default="0" />
+    <aura:attribute name="countValidateAccInput" type="Integer" default="0" />
+    <aura:attribute name="countValidateAccInputForConstr" type="Integer" default="0" /> <!-- for construction tabset -->
+    <aura:attribute name="qCAccessComponentIdForConstr" type="String" /> <!-- for construction tabset -->
+    <aura:attribute name="finalVerdCounterConstr" type ="Integer" default="0" /><!-- for construction tabset -->
+    <aura:attribute name="constrRefNo" type="sObject" />
+    <aura:attribute name="displayTabset" type="boolean" default="false" />
+    <aura:attribute name="displayReliabTabset" type="boolean" default="false" />
+    <aura:attribute name="disableApprovalButton" type="boolean" default="true" />
+    <aura:attribute name="disableApprovalButtonConstr" type="boolean" default="true" />
+    
+    <aura:attribute name="cloneRecButton" type="Boolean" default="false" />
+
+    <aura:attribute name="constrReferenceNumber" type="sObject" />
+    <aura:attribute name="masterChkVal" type="boolean" default="false" /> <!-- send this value to QC_ConstrReliabProdInfoOveride component for the master checkbox value -->
+    <aura:attribute name="ObsrvtnEvntList" type ="String" description="This list will hold the value from Evnt which will help us to rollback the save if data is not undefined/blank"/>
+    
+    
+    <!-- handler starts here -->
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler name="QcAccessComponentSavedEvent" event="c:QcAccessComponentSaved" action="{!c.callAccInputSave}"/>
+    <aura:handler name="ObservatnDataEvnt" event="c:ObservationParamValidation" action="{!c.fetchObservatnEvntValue}"/>
+    <aura:handler name ="FinalVerdStatEvnt" event ="c:QC_Acc_FinalVerdictValEvnt" action="{!c.validateApproval}"/>
+    <aura:handler name="QcAccessComponentRelaibSavedEvnt" event="c:QcAccessCompReliabilitytSavedEvent" action="{!c.callAccInputSaveForConstr}"/> <!-- the handler event name should be same as the like the registered event name -->
+    <aura:handler name ="FinalVerdEvntForReliab" event ="c:QcAccFinalVerdForReliabEvnt" action="{!c.validateApprovalForConstr}"/>
+    
+  	<!--<aura:if isTrue="{!v.isConstructionTesting}">-->
+        <lightning:card title="" class=" c-container slds-p-around_large">
+            <aura:if isTrue ="{!v.displayTabset}" >
+                <lightning:tabset variant="scoped">
+                <aura:if isTrue ="{!v.labelSwitch =='Construction Testing'}"> 
+                    <lightning:tab label="{!v.labelSwitch}" aura:id="constructionTesting" >
+                        <aura:if isTrue="{!!v.cloneRecButton}">
+                            <div class="slds-m-bottom_x-small">
+                                <center>
+                                    <lightning:button variant="brand" aura:id="reliabilityPdfId" label ="Construction Report" onclick="{!c.showReliabilityReport}" />
+                                    <lightning:button variant="brand" aura:id="detailedPdfId" label ="Detailed Report" onclick="{!c.showDetailedReport}"/>
+                                </center>
+                            </div>
+                        </aura:if>
+                        <center>
+                        
+                            <aura:if isTrue="{!v.isReadonly}">
+                                <lightning:button variant="brand" aura:id="editDataId" label ="Edit" onclick="{!c.enableSaveMode}"/>
+                                <lightning:button variant="brand" aura:id="cloneDataId" label="Clone"  onclick="{! c.CloneRec }"/>
+                            </aura:if>
+                            <aura:if isTrue="{!!v.isReadonly}">
+                                <lightning:button variant="brand" aura:id="saveDataId" label ="Save" onclick="{!c.saveDataFromParent}"/>  
+                                <lightning:button variant="brand" aura:id="cancelDataId" label ="Cancel" onclick="{!c.cancelData}"/>
+                            </aura:if>
+                        
+                        </center>
+                            <aura:if isTrue="{!v.cloneRecButton}">
+                                <!--  <c:QC_SOptionConstrTesting callSaveFromParent="{!v.callSaveFromParent}" isReadonly="{!v.isReadonly}" childSampleType="{!v.sampleTypeValue}" childSampleCategory="{!v.SampleCategoryValue}" childSubCategory="{!v.selectedSubType}"  documentStatusValue ="" referencedConstructionId="{!v.selectedLookUpRecordForConstr}" />  -->
+                                <c:QC_SOptionConstrTesting callSaveFromParent="{!v.callSaveFromParent}" isReadonly="{!v.isReadonly}" childSampleType="{!v.sampleTypeValue}" childSampleCategory="{!v.parentSampleCategory}" referenceComponentNo="{!v.selectedLookUpRecordForConstr}" cloneFlag="{!v.cloneRecButton}" observatnComments="" />
+                                <c:QC_AccOverrideComponent passMutipickValCount="{!v.passMutipickValCount}" countSaveAccInput="{!v.countSaveAccInput}" qCAccessComponentId = "{!v.qCAccessComponentId}" isReadonly="{!v.isReadonly}" cat="{!v.parentSampleCategory}" referencedConstructionId="{!v.selectedLookUpRecordForConstr}" subChildSampleType="{!v.sampleTypeValue}" countValidateAccInput="{!v.countValidateAccInput}"/>
+                                <aura:set attribute="else">
+                                    <c:QC_ConstrProdInfoOverride callSaveFromParent="{!v.callSaveFromParent}" isReadonly="{!v.isReadonly}" referencedConstructionId="{!v.selectedLookUpRecordForConstr}" finalverCounter="{!v.finalverCounter}"/>
+                                    <c:QC_AccOverrideComponent passMutipickValCount="{!v.passMutipickValCount}" countSaveAccInput="{!v.countSaveAccInput}" qCAccessComponentId = "{!v.qCAccessComponentId}" isReadonly="{!v.isReadonly}" cat="{!v.parentSampleCategory}" referencedConstructionId="{!v.selectedLookUpRecordForConstr}" subChildSampleType="{!v.sampleTypeValue}" countValidateAccInput="{!v.countValidateAccInput}"/>
+                                </aura:set>
+                            </aura:if>
+                            
+                        </lightning:tab>
+                    </aura:if>
+                    <center> 
+                        <aura:if isTrue="{!v.disableApprovalButton}">
+                        	<lightning:button variant="brand" aura:id="submitForAppId" label ="Submit For Approval" onclick="{!c.submitRecordForApproval}"/>
+                        </aura:if>
+                        <lightning:button variant="brand" aura:id="goToAppHistoryListId" label ="Approve/Reject" onclick="{!c.gotoRelatedList}"/>
+                        
+                        <aura:if isTrue="{!v.showApprovalHistoryCmp}">
+                            <c:ApprovalHistoryComponent recordId="{!v.recordId}"/>
+                        </aura:if>
+                    </center>
+                </lightning:tabset>
+            </aura:if>
+            <aura:if isTrue = "{!v.displayReliabTabset}" >
+                <lightning:tabset variant="scoped">
+                    <aura:if isTrue ="{!v.labelSwitch =='Reliability Testing'}">
+                        <lightning:tab label="{!v.labelSwitch}" aura:id="reliabilityTesting" >
+                            <div class="slds-m-bottom_x-small">
+                                <center>
+                                    <lightning:button variant="brand" aura:id="reliabilityPdfId" label ="Reliability Report" onclick="{!c.showReliabilityReport}" />
+                                    <lightning:button variant="brand" aura:id="detailedPdfId" label ="Detailed Report" onclick="{!c.showDetailedReport}"/>
+                                </center>
+                            </div>
+                            <center>
+                                
+                                <aura:if isTrue="{!v.isReadonlyForConstr}">
+                                    <lightning:button variant="brand" aura:id="editDataId" label ="Edit" onclick="{!c.enableSaveModeForConstr}"/>
+                                    
+                                </aura:if>
+                                <aura:if isTrue="{!!v.isReadonlyForConstr}">
+                                    <lightning:button variant="brand" aura:id="saveDataId" label ="Save" onclick="{!c.saveDataFromParentForConstr}"/>  
+                                    <lightning:button variant="brand" aura:id="cancelDataId" label ="Cancel" onclick="{!c.cancelDataForConstr}"/>
+                                </aura:if>
+                            </center>
+                            <c:QC_RliabConstProdOverride callSaveFromParent="{!v.callConstrSaveFromParent}" isReadonly="{!v.isReadonlyForConstr}" referencedConstructionId="{!v.selectedLookUpRecordForConstr}" finalverCounter="{!v.finalVerdCounterConstr}" constructRefNo="{!v.constrRefNo}" />
+							<c:QC_AccConstrInputTestOverride passMutipickValCount="{!v.passMutipickValCount}" countSaveAccInput="{!v.countConstrSaveAccInput}" qCAccessComponentId = "{!v.qCAccessComponentIdForConstr}" isReadonly="{!v.isReadonlyForConstr}" cat="{!v.parentSampleCategory}" referencedConstructionId="{!v.selectedLookUpRecordForConstr}" subChildSampleType="{!v.sampleTypeValue}" />
+                            
+                           <!-- <c:QC_ConstrProdInfoOverride callSaveFromParent="{!v.callSaveFromParent}" isReadonly="{!v.isReadonly}" referencedConstructionId="{!v.selectedLookUpRecordForConstr}" finalverCounter="{!v.finalverCounter}" />
+                            <c:QC_AccOverrideComponent passMutipickValCount="{!v.passMutipickValCount}" countSaveAccInput="{!v.countSaveAccInput}" qCAccessComponentId = "{!v.qCAccessComponentId}" isReadonly="{!v.isReadonly}" cat="{!v.parentSampleCategory}" referencedConstructionId="{!v.selectedLookUpRecordForConstr}" subChildSampleType="{!v.sampleTypeValue}" countValidateAccInput="{!v.countValidateAccInput}"/>-->
+                            <center> 
+                                <aura:if isTrue="{!v.disableApprovalButtonConstr}">
+                                	<lightning:button variant="brand" aura:id="submitForAppId1" label ="Submit For Approval" onclick="{!c.submitReliabConstrRecForApproval}"/>
+                                </aura:if>
+                                    <lightning:button variant="brand" aura:id="goToAppHistoryListId" label ="Approve/Reject" onclick="{!c.constrGotoRelatedList}"/>
+                                
+                                <aura:if isTrue="{!v.showApprovalHistoryForConstrCmp}">
+                                    <c:ApprovalHistoryComponent recordId="{!v.recordId}"/>
+                                </aura:if>
+                            </center>
+                        </lightning:tab>
+                        
+                        <lightning:tab label="Construction Testing" aura:id="constructionTesting" >
+                            <div class="slds-m-bottom_x-small">
+                                <center>
+                                    <lightning:button variant="brand" aura:id="reliabilityPdfId" label ="Construction Report" onclick="{!c.showReliabilityReportConstr}" />
+                                    <lightning:button variant="brand" aura:id="detailedPdfId" label ="Detailed Report" onclick="{!c.showDetailedReportConstr}"/>
+                                </center>
+                            </div>
+                            <center>
+                                
+                                <aura:if isTrue="{!v.isReadonly}">
+                                    <lightning:button variant="brand" aura:id="editDataId" label ="Edit" onclick="{!c.enableSaveModeReliabConstr}"/>
+                                    
+                                </aura:if>
+                                <aura:if isTrue="{!!v.isReadonly}">
+                                    <lightning:button variant="brand" aura:id="saveDataId" label ="Save" onclick="{!c.saveDataFromParent}"/>  
+                                    <lightning:button variant="brand" aura:id="cancelDataId" label ="Cancel" onclick="{!c.cancelData}"/>
+                                </aura:if>
+                            </center>
+                            
+                            <c:QC_ConstrReliabProdInfoOveride callSaveFromParent="{!v.callSaveFromParent}" isReadonly="{!v.isReadonly}" referencedConstructionId="{!v.constrRefNo}" finalverCounter="{!v.finalverCounter}"  masterChkVal = "{!v.masterChkVal}"/>
+							<c:QC_ConstrReliabAccInpTstOveride passMutipickValCount="{!v.passMutipickValCount}" countSaveAccInput="{!v.countSaveAccInput}" qCAccessComponentId = "{!v.qCAccessComponentId}" isReadonly="{!v.isReadonly}" cat="{!v.parentSampleCategory}" referencedConstructionId="{!v.constrRefNo}" subChildSampleType="{!v.sampleTypeValue}" countValidateAccInput="{!v.countValidateAccInput}"/>
+                        	
+                            <center>
+                            <!--<aura:if isTrue="{!v.disableApprovalButton}"> -->
+                                <lightning:button variant="brand" aura:id="submitForAppId" label ="Submit For Approval" onclick="{!c.submitRecordForApproval}"/>
+                           <!-- </aura:if> -->
+                                <lightning:button variant="brand" aura:id="goToAppHistoryListId" label ="Approve/Reject" onclick="{!c.gotoRelatedList}"/>
+                                
+                                <aura:if isTrue="{!v.showApprovalHistoryCmp}">
+                                    <c:ApprovalHistoryComponent recordId="{!v.constrRefNo.Id}"/>
+                                </aura:if>
+                            </center>
+                        </lightning:tab>
+                    </aura:if> 
+                    
+                </lightning:tabset> 
+            </aura:if>  
+        </lightning:card>
+   <!-- </aura:if>-->
+        
+       
+       
+    
+</aura:component>

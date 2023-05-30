@@ -1,0 +1,17 @@
+<apex:component controller="successorActivityName" access="global">
+ 
+  <apex:attribute name="ComponentId" type="Id" description="Id of activity" assignTo="{!activityId}"/>
+  {!msg} <br/><br/>
+  
+  
+  
+ <table>
+    <apex:repeat value="{!lActivity}" var="activity">
+    <tr>
+    <td>
+           <apex:outputText value="{!activity.Act_Name__c}"/>
+    </td>
+    </tr>
+    </apex:repeat>  
+ </table>
+</apex:component>

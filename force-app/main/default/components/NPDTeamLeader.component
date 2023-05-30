@@ -1,0 +1,7 @@
+<apex:component controller="NPDemailattachment" access="global">
+
+<apex:attribute name="emailLink1" description="VisualforceURL" access="global" type="String" assignTo="{!collactid}"/>
+
+<apex:outputLink value="{!linkcoll1}" id="link1"> Click Here collection </apex:outputLink> 
+
+</apex:component>

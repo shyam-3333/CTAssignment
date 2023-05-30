@@ -1,0 +1,756 @@
+<apex:page standardController="Quote" extensions="fetchlineitem" renderAs="pdf" showheader="false" sidebar="false" >
+<head>
+ <style type="text/css">     
+tr:nth-child(even) {background: #CCC}
+tr:nth-child(odd) {background: #FFF}
+</style>
+<style type="text/css">
+@page {
+    size: A4 landscape;
+}  
+
+.tableStyle
+{
+width: 100%;
+-fs-table-paginate: paginate;
+}
+
+@media print
+        {           
+            thead
+            {
+                display:  table-header-group;    
+            }
+            tr
+            { 
+                page-break-inside:avoid
+            }
+        }
+        
+        
+tr:nth-child(even) {background: #CCC}
+tr:nth-child(odd) {background: #FFF}
+</style>
+
+</head>
+<apex:panelGroup rendered="{!Quote.Opportunity.Approval_Status__c == 'Approval required' || Quote.Opportunity.Approval_Status__c == 'Pending'}">
+<p style="color:red; font-style:italic">Indicative Quote</p>
+</apex:panelGroup>
+
+<table width = "100%">
+<tr>
+<td align = "left"><apex:image value="{!$Resource.New_titan_logo}" width="1500%" height="1500%"/></td>
+<td align = "center" style="font-size:22px;color:blue;font-family:Calibri"><center><b>Titan Company Limited</b></center></td></tr>
+</table>
+
+<apex:panelGroup rendered="{!Quote.Quote_Currency__c == 'INR'}">
+<p style="text-align:right">All values are in INR <br/> All quantities are in numbers</p>
+</apex:panelGroup>
+
+<apex:panelGroup rendered="{!Quote.Quote_Currency__c == 'USD'}">
+<p style="text-align:right">All values are in USD <br/> All quantities are in numbers</p>
+</apex:panelGroup>
+
+<apex:panelGroup rendered="{!Quote.Quote_Currency__c == 'EURO'}">
+<p style="text-align:right">All values are in EURO <br/> All quantities are in numbers</p>
+</apex:panelGroup>
+
+<apex:panelGroup rendered="{!Quote.Quote_Currency__c == 'JPY'}">
+<p style="text-align:right">All values are in JPY <br/> All quantities are in numbers</p>
+</apex:panelGroup>
+
+<apex:panelGroup rendered="{!Quote.Quote_Currency__c == 'CHF'}">
+<p style="text-align:right">All values are in CHF <br/> All quantities are in numbers</p>
+</apex:panelGroup>
+
+<apex:panelGroup rendered="{!Quote.Quote_Currency__c == 'SGD'}">
+<p style="text-align:right">All values are in SGD <br/> All quantities are in numbers</p>
+</apex:panelGroup>
+
+<apex:panelGroup rendered="{!Quote.Quote_Currency__c == 'GBP'}">
+<p style="text-align:right">All values are in GBP <br/> All quantities are in numbers</p>
+</apex:panelGroup>
+
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName=='Under-Study'||
+     Quote.Opportunity.StageName=='Order_Won'|| Quote.Opportunity.StageName=='PO Received'|| Quote.Opportunity.StageName=='On Hold'
+     || Quote.Opportunity.StageName=='Opportunity Regret'|| Quote.Opportunity.StageName=='Opportunity Lost'}">
+     
+    <h1>Opportunity Stage should be Await Customer Feedback </h1>
+</apex:panelgroup>
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName=='Quotation Submission'||Quote.Opportunity.StageName=='Revised Quotation' ||Quote.Opportunity.StageName=='Await Customer Feedback'&& 
+        Quote.Opportunity.Approval_Status__c=='Approved'||Quote.Opportunity.Approval_Status__c!='Approved'}">
+        
+<apex:Panelgroup rendered="{!Quote.Opportunity.StageName=='Quotation Submission'||Quote.Opportunity.StageName=='Revised Quotation'||Quote.Opportunity.StageName=='Await Customer Feedback'}">
+     <!--First Table-->    
+      <b> Quotation No. :</b> {!Quote.Quotation_No__c}  
+    <apex:Panelgroup rendered="{!((Quote.Breakup__c=='No') || (Quote.Breakup__c=='Yes')) && Quote.Batch_Quantity__c==false && Quote.Total_Value_chkbox__c==false && Quote.FAI_Cost_pc_chkbox__c==false && Quote.One_Time_Dev_Cost_NRE_chkbox__c ==false}">
+        <apex:variable value="{!0}" var="rowNum"/>
+       
+        <center><b>ANNEXURE - I</b></center><br/>
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part Description" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Grade" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Specification" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="EAU" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Unit-Price" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item"  >
+        <tbody>
+        <tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Part_Description__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Grade__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Specification__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.EAU_in_no_s__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.SYS_Unit_Price_For_Bulk_new__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+        </tr>
+        </tbody>
+        </apex:repeat>
+        </table>
+    </apex:panelgroup>
+    
+    <!--Second table-->
+    <apex:Panelgroup rendered="{!((Quote.Breakup__c=='No') || (Quote.Breakup__c=='Yes')) && Quote.Batch_Quantity__c==true && Quote.Total_Value_chkbox__c==true && Quote.FAI_Cost_pc_chkbox__c==true && Quote.One_Time_Dev_Cost_NRE_chkbox__c==true}">
+        <apex:variable value="{!0}" var="rowNum"/>
+        <center><b>ANNEXURE - I</b></center><br/>
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part Description" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Grade" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Specification" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Batch Qty" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="EAU" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Unit-Price" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Total Value" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="FAI Cost / Pc" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="One Time Dev Cost (NRE)" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item">
+        <tbody><tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Part_Description__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Grade__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Specification__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Batch_Quantity__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.EAU_in_no_s__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.SYS_Unit_Price_For_Bulk_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.Total_value_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.FAI_Cost_Pc_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.One_Time_Dev_Cost_NRE_new__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+        </tr>
+        </tbody>
+        </apex:repeat>
+        </table>    
+    </apex:panelgroup>
+    
+    <!--Third Table-->
+    <apex:Panelgroup rendered="{!((Quote.Breakup__c=='No') || (Quote.Breakup__c=='Yes')) && Quote.Batch_Quantity__c==false && Quote.Total_Value_chkbox__c==true && Quote.FAI_Cost_pc_chkbox__c==false && Quote.One_Time_Dev_Cost_NRE_chkbox__c ==false}">
+        <apex:variable value="{!0}" var="rowNum"/>
+        <center><b>ANNEXURE - I</b></center><br/>
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part Description" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Grade" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Specification" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="EAU" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Unit-Price" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Total Value" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item"  >
+        <tbody><tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Part_Description__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Grade__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Specification__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.EAU_in_no_s__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.SYS_Unit_Price_For_Bulk_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.Total_value_new__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+        </tr>
+        </tbody>
+        </apex:repeat>
+        </table>  
+    </apex:panelgroup>
+    
+     <!--Fourth Table-->
+     <apex:Panelgroup rendered="{!((Quote.Breakup__c=='No') || (Quote.Breakup__c=='Yes')) && Quote.Batch_Quantity__c==false && Quote.Total_Value_chkbox__c==false && Quote.FAI_Cost_pc_chkbox__c==true && Quote.One_Time_Dev_Cost_NRE_chkbox__c==false}">
+        <apex:variable value="{!0}" var="rowNum"/>
+        <center><b>ANNEXURE - I</b></center><br/>
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part Description" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Grade" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Specification" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="EAU" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Unit-Price" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="FAI Cost / Pc" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item"  >
+        <tbody><tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Part_Description__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Grade__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Specification__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.EAU_in_no_s__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.SYS_Unit_Price_For_Bulk_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.FAI_Cost_Pc_new__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+        </tr>
+        </tbody>
+        </apex:repeat>
+        </table> 
+     </apex:panelgroup>
+     
+     <!--Fifth table-->
+     <apex:Panelgroup rendered="{!((Quote.Breakup__c=='No') || (Quote.Breakup__c=='Yes')) && Quote.Batch_Quantity__c==false && Quote.Total_Value_chkbox__c==false && Quote.FAI_Cost_pc_chkbox__c==false && Quote.One_Time_Dev_Cost_NRE_chkbox__c==true}">
+        <apex:variable value="{!0}" var="rowNum"/>
+        <center><b>ANNEXURE - I</b></center><br/>
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part Description" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Grade" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Specification" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="EAU" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Unit-Price" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="One Time Dev Cost(NRE)" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item"  >
+        <tbody><tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Part_Description__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Grade__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Specification__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.EAU_in_no_s__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.SYS_Unit_Price_For_Bulk_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.One_Time_Dev_Cost_NRE_new__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+        </tr>
+        </tbody>
+        </apex:repeat>
+        </table> 
+     </apex:panelgroup>
+     
+     <!--Sixth Table-->
+     <apex:Panelgroup rendered="{!((Quote.Breakup__c=='No') || (Quote.Breakup__c=='Yes')) && Quote.Batch_Quantity__c==true && Quote.Total_Value_chkbox__c==false && Quote.FAI_Cost_pc_chkbox__c==false && Quote.One_Time_Dev_Cost_NRE_chkbox__c==False}">
+        <apex:variable value="{!0}" var="rowNum"/>
+        <center><b>ANNEXURE - I</b></center><br/>
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part Description" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Grade" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Specification" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="EAU" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Unit-Price" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Batch Quantity" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item"  >
+        <tbody><tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Part_Description__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Grade__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Specification__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.EAU_in_no_s__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.SYS_Unit_Price_For_Bulk_new__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Batch_Quantity__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+        </tr>
+        </tbody>
+        </apex:repeat>
+        </table> 
+     </apex:panelgroup>
+     
+     <!--Seventh Table-->
+     <apex:Panelgroup rendered="{!((Quote.Breakup__c=='No') || (Quote.Breakup__c=='Yes')) && Quote.Batch_Quantity__c==false && Quote.Total_Value_chkbox__c==true && Quote.FAI_Cost_pc_chkbox__c==true && Quote.One_Time_Dev_Cost_NRE_chkbox__c==false}">
+        <apex:variable value="{!0}" var="rowNum"/>
+        <center><b>ANNEXURE - I</b></center><br/>
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part Description" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Grade" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Specification" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="EAU" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Unit-Price" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Total Value" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="FAI Cost / Pc" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item"  >
+        <tbody><tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Part_Description__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Grade__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Specification__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.EAU_in_no_s__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.SYS_Unit_Price_For_Bulk_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.Total_value_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.FAI_Cost_Pc_new__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+        </tr>
+        </tbody>
+        </apex:repeat>
+        </table>    
+     </apex:panelgroup>
+     
+     <!--Eighth Table-->
+     <apex:Panelgroup rendered="{!((Quote.Breakup__c=='No') || (Quote.Breakup__c=='Yes')) && Quote.Batch_Quantity__c==false && Quote.Total_Value_chkbox__c==false && Quote.FAI_Cost_pc_chkbox__c==true && Quote.One_Time_Dev_Cost_NRE_chkbox__c==true}">
+        <apex:variable value="{!0}" var="rowNum"/>
+        <center><b>ANNEXURE - I</b></center><br/>
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part Description" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Grade" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Specification" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="EAU" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Unit-Price" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="FAI Cost / Pc" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="One Time Dev Cost (NRE)" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item"  >
+        <tbody><tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Part_Description__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Grade__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Specification__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.EAU_in_no_s__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.SYS_Unit_Price_For_Bulk_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.FAI_Cost_Pc_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.One_Time_Dev_Cost_NRE_new__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+        </tr>
+        </tbody>
+        </apex:repeat>
+        </table>    
+     </apex:panelgroup>
+     
+     <!--Ninth Table-->
+     <apex:Panelgroup rendered="{!((Quote.Breakup__c=='No') || (Quote.Breakup__c=='Yes')) && Quote.Batch_Quantity__c==false && Quote.Total_Value_chkbox__c==true && Quote.FAI_Cost_pc_chkbox__c==false && Quote.One_Time_Dev_Cost_NRE_chkbox__c==true}">
+        <apex:variable value="{!0}" var="rowNum"/>
+        <center><b>ANNEXURE - I</b></center><br/>
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part Description" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Grade" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Specification" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="EAU" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Unit-Price" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Total Value" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="One Time Dev Cost (NRE)" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item"  >
+        <tbody><tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Part_Description__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Grade__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Specification__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.EAU_in_no_s__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.SYS_Unit_Price_For_Bulk_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.Total_value_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.One_Time_Dev_Cost_NRE_new__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+        </tr>
+        </tbody>
+        </apex:repeat>
+        </table>    
+     </apex:panelgroup>
+     
+     <!--Tenth table-->
+     <apex:Panelgroup rendered="{!((Quote.Breakup__c=='No') || (Quote.Breakup__c=='Yes')) && Quote.Batch_Quantity__c==true && Quote.Total_Value_chkbox__c==true && Quote.FAI_Cost_pc_chkbox__c==false && Quote.One_Time_Dev_Cost_NRE_chkbox__c==false}">
+        <apex:variable value="{!0}" var="rowNum"/>
+        <center><b>ANNEXURE - I</b></center><br/>
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part Description" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Grade" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Specification" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="EAU" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Unit-Price" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Total Value" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Batch Quantity" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item"  >
+        <tbody><tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Part_Description__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Grade__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Specification__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.EAU_in_no_s__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.SYS_Unit_Price_For_Bulk_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.Total_value_new__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Batch_Quantity__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+        </tr>
+        </tbody>
+        </apex:repeat>
+        </table>    
+     </apex:panelgroup>
+     
+     <!--Eleventh Table-->
+     <apex:Panelgroup rendered="{!((Quote.Breakup__c=='No') || (Quote.Breakup__c=='Yes')) && Quote.Batch_Quantity__c==true && Quote.Total_Value_chkbox__c==false && Quote.FAI_Cost_pc_chkbox__c==true && Quote.One_Time_Dev_Cost_NRE_chkbox__c==false}">
+        <apex:variable value="{!0}" var="rowNum"/>
+        <center><b>ANNEXURE - I</b></center><br/>
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part Description" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Grade" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Specification" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Batch Qty" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="EAU" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Unit-Price" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="FAI Cost / Pc" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item"  >
+        <tbody><tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Part_Description__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Grade__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Specification__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Batch_Quantity__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.EAU_in_no_s__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.SYS_Unit_Price_For_Bulk_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.FAI_Cost_Pc_new__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+        </tr>
+        </tbody>
+        </apex:repeat>
+        </table>    
+    </apex:panelgroup>
+    
+    <!--Twelth Table-->
+    <apex:Panelgroup rendered="{!((Quote.Breakup__c=='No') || (Quote.Breakup__c=='Yes')) && Quote.Batch_Quantity__c==true && Quote.Total_Value_chkbox__c==false && Quote.FAI_Cost_pc_chkbox__c==false && Quote.One_Time_Dev_Cost_NRE_chkbox__c==true}">
+        <apex:variable value="{!0}" var="rowNum"/>
+        <center><b>ANNEXURE - I</b></center><br/>
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part Description" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Grade" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Specification" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Batch Qty" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="EAU" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Unit-Price" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="One Time Dev Cost (NRE)" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item"  >
+        <tbody><tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Part_Description__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Grade__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Specification__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Batch_Quantity__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.EAU_in_no_s__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.SYS_Unit_Price_For_Bulk_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.One_Time_Dev_Cost_NRE_new__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+        </tr>
+        </tbody>
+        </apex:repeat>
+        </table>    
+    </apex:panelgroup>
+    
+    <!--Thirteenth Table-->
+    <apex:Panelgroup rendered="{!((Quote.Breakup__c=='No') || (Quote.Breakup__c=='Yes')) && Quote.Batch_Quantity__c==false && Quote.Total_Value_chkbox__c==true && Quote.FAI_Cost_pc_chkbox__c==true && Quote.One_Time_Dev_Cost_NRE_chkbox__c==true}">
+        <apex:variable value="{!0}" var="rowNum"/>
+        <center><b>ANNEXURE - I</b></center><br/>
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part Description" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Grade" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Specification" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="EAU" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Unit-Price" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Total Value" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="FAI Cost / Pc" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="One Time Dev Cost (NRE)" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item"  >
+        <tbody><tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Part_Description__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Grade__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Specification__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.EAU_in_no_s__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.SYS_Unit_Price_For_Bulk_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.Total_value_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.FAI_Cost_Pc_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.One_Time_Dev_Cost_NRE_new__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+        </tr>
+        </tbody>
+        </apex:repeat>
+        </table>    
+    </apex:panelgroup>
+    
+    <!--Fourteenth Table-->
+    <apex:Panelgroup rendered="{!((Quote.Breakup__c=='No') || (Quote.Breakup__c=='Yes')) && Quote.Batch_Quantity__c==true && Quote.Total_Value_chkbox__c==false && Quote.FAI_Cost_pc_chkbox__c==true && Quote.One_Time_Dev_Cost_NRE_chkbox__c==true}">
+        <apex:variable value="{!0}" var="rowNum"/>
+        <center><b>ANNEXURE - I</b></center><br/>
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part Description" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Grade" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Specification" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Batch Qty" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="EAU" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Unit-Price" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="FAI Cost / Pc" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="One Time Dev Cost (NRE)" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item"  >
+        <tbody><tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Part_Description__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Grade__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Specification__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Batch_Quantity__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.EAU_in_no_s__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.SYS_Unit_Price_For_Bulk_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.FAI_Cost_Pc_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.One_Time_Dev_Cost_NRE_new__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+        </tr>
+        </tbody>
+        </apex:repeat>
+        </table>    
+    </apex:panelgroup>
+    
+    <!--Fifteenth Table-->
+    <apex:Panelgroup rendered="{!((Quote.Breakup__c=='No') || (Quote.Breakup__c=='Yes')) && Quote.Batch_Quantity__c==true && Quote.Total_Value_chkbox__c==true && Quote.FAI_Cost_pc_chkbox__c==false && Quote.One_Time_Dev_Cost_NRE_chkbox__c==true}">
+        <apex:variable value="{!0}" var="rowNum"/>
+        <center><b>ANNEXURE - I</b></center><br/>
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part Description" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Grade" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Specification" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Batch Qty" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="EAU" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Unit-Price" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Total Value" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="One Time Dev Cost (NRE)" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item"  >
+        <tbody><tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Part_Description__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Grade__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Specification__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Batch_Quantity__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.EAU_in_no_s__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.SYS_Unit_Price_For_Bulk_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.Total_value_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.One_Time_Dev_Cost_NRE_new__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+        </tr>
+        </tbody>
+        </apex:repeat>
+        </table>    
+    </apex:panelgroup>
+    
+    <!--Sixteenth Table-->
+    <apex:Panelgroup rendered="{!((Quote.Breakup__c=='No') || (Quote.Breakup__c=='Yes')) && Quote.Batch_Quantity__c==true && Quote.Total_Value_chkbox__c==true && Quote.FAI_Cost_pc_chkbox__c==true && Quote.One_Time_Dev_Cost_NRE_chkbox__c==false}">
+        <apex:variable value="{!0}" var="rowNum"/>
+        <center><b>ANNEXURE - I</b></center><br/>
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part Description" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Grade" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Raw Material Specification" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Batch Qty" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="EAU" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Unit Price" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Total Value" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="FAI Cost / Pc" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item"  >
+        <tbody><tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Part_Description__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Grade__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Raw_Material_Specification__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Batch_Quantity__c}"/></td>
+        <td style = "text-align:center"><apex:outputField value="{!item.EAU_in_no_s__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.SYS_Unit_Price_For_Bulk_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.Total_value_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.FAI_Cost_Pc_new__c}"/></td>
+        <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+        </tr>
+        </tbody>
+        </apex:repeat>
+        </table>    
+    </apex:panelgroup>
+     
+     <apex:Panelgroup rendered="{!Quote.Breakup__c=='Yes'}"> 
+         <apex:variable value="{!0}" var="rowNum"/> 
+        <center><br/><br/><b>BREAKUP TABLE</b><br/><br/></center>
+        
+        <table class="tableStyle" border = "1" cellspacing = "0" cellpadding = "0" style = "text-align:center">
+        
+        <thead>
+        <tr style = "background-color: #195CCE">
+        <td><b><apex:outputtext value="Sl. No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Part No" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Material Cost / pc" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="BOI Cost / pc" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Spl Process Cost / pc" style="color:White;"/></b></td>
+        <td><b><apex:outputtext value="Processing Cost / pc" style="color:White;"/></b></td>
+         <td><b><apex:outputtext value="Remarks" style="color:White;"/></b></td>
+        </tr>
+        </thead>
+        
+        <apex:repeat value="{!QLineItem}" var="item" >
+        <tbody>
+        <tr style="background-color:{! if( MOD(rowNum, 2)==0,'White','#D5E5F6')}">
+        <td  style = "text-align:center"><apex:variable var="rowNum" value="{!rowNum + 1}"/>{!rowNum}</td>
+        <td style = "text-align:center"><apex:outputField value="{!item.Part_No__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.Material_Cost_Pc_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.BOI_Cost_Pc_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.Spl_Process_Cost_Pc_new__c}"/></td>
+        <td style = "text-align:right"><apex:outputField value="{!item.Processing_Cost_Pc_new__c}"/></td>
+         <td style = "text-align:left"><apex:outputField value="{!item.Remarks__c}"/></td>
+         </tr>
+        </tbody>
+        </apex:repeat>
+        </table>    
+        <br/><br/><br/>
+        For Titan Company Limited,<br/>
+        {!Quote.Opportunity.SYS_Approver_Name__c}<br/><br/><br/>
+
+        Note: This is a system generated document and hence does not require any signature.
+
+        
+        
+     </apex:panelgroup>
+     
+</apex:panelgroup>
+</apex:panelgroup>
+
+</apex:page>

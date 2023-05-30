@@ -1,0 +1,6 @@
+<apex:page controller="PaymentDetailsUpdate" sidebar="false" action="{!fetchPaymentDetails}"  ContentType="text/plain/#paymentDetails.txt" showHeader="false" readOnly="true">
+ 
+     <apex:repeat value="{!wrapPaymentList}" var="pay">{!pay.instRefNo}|{!pay.year}/{!pay.oppTrackId}|{!pay.wrapHistLst[0].RTGSNo}|{!pay.wrapHistLst[0].chequeNo}|{!pay.paymentTrackNo}|{!pay.wrapHistLst[0].amountRecv}|<apex:outputText value="{0,date,dd'-'MM'-'yyyy}"><apex:param value="{!pay.wrapHistLst[0].chequeDate}" /></apex:outputText>|{!pay.wrapHistLst[0].paymentMode}{!newline}
+     </apex:repeat>
+        
+</apex:page>

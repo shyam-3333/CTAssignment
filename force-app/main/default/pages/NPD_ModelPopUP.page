@@ -1,0 +1,145 @@
+<apex:page controller="PopUpController" title="Search" 
+  showHeader="false" 
+  sideBar="false" 
+  tabStyle="Account" 
+  id="pg">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js">
+    
+    $("input:checkbox").on('click', function() {
+  // in the handler, 'this' refers to the box clicked on
+  var $box = $(this);
+  if ($box.is(":checked")) {
+    // the name of the box is retrieved using the .attr() method
+    // as it is assumed and expected to be immutable
+    var group = "input:checkbox[name='" + $box.attr("name") + "']";
+    // the checked state of the group/box on the other hand will change
+    // and the current value is retrieved using .prop() method
+    $(group).prop("checked", false);
+    $box.prop("checked", true);
+  } else {
+    $box.prop("checked", false);
+  }
+});
+
+</script>
+    <script>
+        function fieldFillIn(Model,ModelComponent,PSY,SRC,VEN,SUPAGENCY,GEN,TAG)
+        {
+            
+              var SRCIO;
+              var winMain=window.opener;
+              if (null==winMain)
+              {
+                 winMain=window.parent.opener;
+              }
+              
+              var elem=winMain.document.getElementById('{!$CurrentPage.parameters.ModelComponent}');    
+               elem.value = Model;
+               
+               var params = window.location.search.substr(1).split('&');
+ 
+              for (var i = 0; i < params.length; i++) {
+                var p=params[i].split('=');
+                
+                if (p[0] === 'SRC') {
+                
+                 SRCIO = decodeURIComponent((p[1]));
+               
+               }
+              }
+               
+              
+               
+              
+               
+               if(SRCIO === 'OSD'){
+               
+                   var elem2 = winMain.document.getElementsByClassName('venno');       
+                   
+                   elem2[0].value = VEN;
+                
+               
+               }
+               
+               else{
+               
+                   var elem4 = winMain.document.getElementsByClassName('psyno');       
+                   elem4[0].value =PSY ;
+                  }
+                  
+               var elem3=winMain.document.getElementsByClassName('casesrc');       
+               elem3[0].value = SRC;
+               
+               var elem7=winMain.document.getElementsByClassName('gender');                   
+               elem7[0].value = GEN;
+               
+               var elem8=winMain.document.getElementsByClassName('tag');                   
+               elem8[0].value = TAG;
+               
+           
+              CloseWindow1();
+             
+           
+        }
+        
+        function CloseWindow1()
+         {
+          var winMain=window.opener; 
+          if (null==winMain) 
+          { 
+          winMain=window.parent.opener; 
+          }
+           winMain.closeComplexitypopup();
+        }
+    </script>
+    
+    <apex:form >
+    <apex:outputPanel id="page" layout="block" style="margin:5px;padding:10px;padding-top:2px;">
+    <apex:tabPanel switchType="client" selectedTab="name1" id="tabbedPanel">
+        <apex:tab label="Search" name="tab1" id="tabOne">    
+        <apex:outputPanel id="pnlSearchResults" style="margin:10px;height:350px;overflow-Y:auto;" layout="block">
+        <apex:pageBlock id="searchResults">
+            <apex:pageMessages id="Err"></apex:pageMessages> 
+            <apex:pageBlockTable value="{!ModelValues}" var="check" id="tblResults" >
+        <!--        <apex:column >
+                <apex:facet name="header">
+                <apex:outputPanel >Check</apex:outputPanel>
+                </apex:facet>
+                <apex:inputCheckbox value="{!check.selected}"/>
+                <!-- <apex:actionSupport event="onclick" rerender="pnlSearchResults" />
+                
+                </apex:column> -->
+                <apex:column >
+                <apex:facet name="header">
+                <apex:outputPanel >Name</apex:outputPanel>
+                </apex:facet>
+               <apex:commandLink value="{!check.com.Model_No__c }"  action="{!doModelSelection}" oncomplete="fieldFillIn('{!Model}','{!strType}','{!PSY}','{!SRC}','{!VEN}','{!SUPAGENCY}','{!GEN}','{!TAG}')">
+                <apex:param name="" value="{!check.com.Model_No__c }"  assignTo="{!strComCat}" />
+                </apex:commandLink>
+                </apex:column>
+                
+                <apex:column >
+                <apex:facet name="header">
+                <apex:outputPanel >Vendor Reference Number</apex:outputPanel>
+                </apex:facet>
+                <apex:outputText value="{!check.com.Vendor_Ref_No__c}"></apex:outputText>
+                </apex:column>
+                
+                <apex:column >
+                <apex:facet name="header">
+                <apex:outputPanel >PSY Number</apex:outputPanel>
+                </apex:facet>
+                <apex:outputText value="{!check.com.PSY_No__c}"></apex:outputText>
+                </apex:column>
+                
+                
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        </apex:outputPanel>            
+            <apex:commandButton value="OK" action="{!doModelSelection}" oncomplete="fieldFillIn('{!Model}','{!strType}','{!PSY}','{!SRC}','{!VEN}','{!SUPAGENCY}','{!GEN}','{!TAG}')"/> 
+            <apex:commandButton value="Cancel"  onclick="CloseWindow1()"/> 
+        </apex:tab>      
+    </apex:tabPanel>
+    </apex:outputPanel>
+    </apex:form> 
+</apex:page>

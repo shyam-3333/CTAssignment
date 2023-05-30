@@ -1,0 +1,3 @@
+<aura:event type="COMPONENT" description="Event template" >
+	<aura:attribute name="qCMTLTestComponentId" type="String"/>
+</aura:event>

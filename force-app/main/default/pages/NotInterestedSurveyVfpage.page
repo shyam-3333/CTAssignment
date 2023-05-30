@@ -1,0 +1,97 @@
+<!--  
+* Class Name   : NotInterestedSurveyVfpage
+* Created By   : Madhushree H J
+* Created Date : 22-01-2023
+* Description  :this vf page is used to display a unsubscribe question to user.  
+-->
+
+<apex:page controller="NotInterestedSurvey" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+    <html>
+        <head>
+            <!-- Import the Design System style sheet -->
+            <apex:slds />
+        </head>
+        <div class="slds-modal__header ">
+            <img src="{!$Resource.TitanCompanyLogo}" width="200px" height="60px" align="left"/>
+          <h1 class="slds-text-heading_medium   "  style="margin-right:188px;font-size:35px;" ><center align="center">Voice of Customer</center></h1>
+        </div>
+    </html><br/><br/>
+   <style>
+            input[type=submit] {
+            width: 15%;
+            background-color: #00b0ab;
+            color: white;
+            padding: 20px 10px;
+            margin: 10px;
+            border: none;
+            border-radius: 7px;
+            cursor: pointer;
+            
+            }
+            
+            div {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            margin: 10px 20px;
+            padding: 20px 20px;
+            text-align: justify;
+            }
+            
+            .radioinput input[type="radio"]{
+            float:right;
+            margin: 0px 0px -15px 35px;
+            }
+            
+            .radioinput label{
+            display:block;
+            }
+        </style>
+    <body>
+        <div>
+            
+            <apex:form id="form" styleClass="slds-scope" rendered="{!showForm=true}">
+       <div class="slds-align_absolute-center slds-text-heading_large "  >
+            <center >
+                <b style="color:black;font-family:nunito light;">THANK YOU!  </b>
+            </center>
+        </div>            
+         <div class="slds-align_absolute-center"  >
+            
+            <img src="{!$Resource.TitanThankYouLogo}" width="170px" height="60px" align="left"/>   
+        </div>
+        <div class="slds-align_absolute-center slds-text-heading_medium" >
+            <center style="color:black;font-family:nunito light;" >
+                Your response has already been captured.<br/>
+                       
+            </center>
+        </div>     
+     </apex:form>
+             <apex:form id="formOne" styleClass="slds-scope"  rendered="{!showForm=false}">
+       
+        <div class="slds-align_absolute-center slds-text-heading_medium" >
+            
+                     
+                
+            <center  style="color:black;font-family:nunito light;">
+                <p style="color:black;font-family:nunito light;font-size:35px;"><center><b>Communication Preference</b></center></p><br/>
+                           <p>Your valuable insights and advice would <br/> help us to improve our services.
+                           <br/>For any support, please connect with us:<br/> harie@titan.co.in / issac@titan.co.in /<br/>infotas@titan.co.in</p>
+                           <br/>
+                           <p>If you still wish to opt out,<br/> Please click on the "Unsubscribe" button below.</p>
+                      
+            </center>
+                 </div> <br/>
+                 
+                 <center>
+                     
+           <div class="slds-align_absolute-center slds-p-top_large" style="text-align:center;font-size:20px;">
+                     <apex:commandButton action="{!submit}" value="Unsubscribe"  />
+               </div>
+                 </center>
+                        
+                    
+     </apex:form>
+        </div>
+   
+         </body>
+</apex:page>

@@ -1,0 +1,10 @@
+<aura:component implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction" access="global" >
+    <aura:attribute name ="rowIndex" type="String"/> 
+    
+    <aura:registerEvent name="MtlDelComEvnt" type="c:QC_MTL_DelComEvnt"/>
+    
+    	<a onclick="{!c.deleteRow}">
+           <lightning:icon variant="error" iconName="utility:delete" class="slds-icon slds-icon_small" size="small" alternativeText="icon"/>
+           <span class="slds-assistive-text">Delete Icon</span>
+       </a>	
+</aura:component>

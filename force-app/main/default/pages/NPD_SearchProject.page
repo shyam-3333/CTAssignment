@@ -1,0 +1,81 @@
+<!-- **************************************************************************************************
+** Created By   : Vijayavardan Reddy.
+** Created Date : 14/7/2015.
+** Description  : This page is used to display the model number based on the given search criteria.
+********************************************************************************************************-->
+
+<apex:page controller="NPD_SearchProjectController">
+
+	<script>
+		var newWin=null;
+		function openLookupPopup(name, id) {
+			var url="/apex/NPD_CollectionDisplayPopUp?namefield=" + name + "&idfield=" + id+"&pageName=Collectionlookup";
+			newWin=window.open(url, 'Popup','height=500,width=600,left=100,top=100,resizable=no,scrollbars=yes,toolbar=no,status=no');
+			if (window.focus) {
+				newWin.focus();
+			}
+		    return false;
+		} 
+		      
+		function closeLookupPopup() {
+			if (null!=newWin) {
+			   newWin.close();
+			}  
+		}
+		 
+		function openLookupPopupModel(name, id)	{
+			var url="/apex/NPD_ModelPopUp?namefield=" + name + "&idfield=" + id+"&pageName=Model";
+			newWin=window.open(url, 'Popup','height=500,width=600,left=100,top=100,resizable=no,scrollbars=yes,toolbar=no,status=no');
+			if (window.focus) {
+				newWin.focus();
+			}
+			return false;
+		} 
+		      
+		function closeLookupPopupModel() {
+			if (null!=newWin) {
+			   newWin.close();
+			}  
+		}
+		
+	</script>
+	<apex:form >
+		<apex:outputPanel >
+		         <apex:inputHidden value="{!strCollectionsId}" id="targetId" />
+		        Collections:    <apex:inputText size="40" value="{!strCollectionsName}" id="targetName" onFocus="this.blur()" disabled="false"/> <a href="#" onclick="openLookupPopup('{!$Component.targetName}', '{!$Component.targetId}'); return false">Lookup</a>
+		</apex:outputPanel>
+		<apex:outputPanel style="padding-left: 100px;">
+		         <apex:inputHidden value="{!strModelid}" id="targetIdModel" />
+		           Models : <apex:inputText size="40" value="{!strModelName}" id="targetNameModel" onFocus="this.blur()" disabled="false"/> <a href="#" onclick="openLookupPopupModel('{!$Component.targetNameModel}', '{!$Component.targetIdModel}'); return false">Lookup</a>
+		</apex:outputPanel>
+	
+	
+	<apex:outputPanel id="pblk">
+	<apex:commandButton action="{!searchProject}" value="Search" id="theButton" rerender="PbTable,pblk,test"/>
+	 
+	    <apex:outputPanel id="PbTable" rendered="{!blnShowTable}">
+	    	<apex:Pageblock >
+		    	<apex:pageblocktable value="{!projectList}" var="proj">
+		    		<apex:column headervalue="Project Name">
+		    				<apex:commandlink value="{!proj.name}" action="{!projectDetaiview}"> 
+		                		<apex:param value="{!proj.id}" assignto="{!projectId}" name="projectId"/> 
+		                	</apex:commandlink>
+		    		</apex:column>
+		    		<apex:column headervalue="Model Number">
+		    			<apex:commandlink value="{!proj.Model_No__c}" action="{!projectDetaiview}"> 
+	 		                		<apex:param value="{!proj.id}" assignto="{!projectId}" name="projectId"/> 
+	                	</apex:commandlink>
+		    		</apex:column>
+		    	</apex:pageblocktable>
+	    	</apex:Pageblock>
+	        
+	    </apex:outputpanel>
+	</apex:outputpanel>
+	
+	
+	
+	
+	
+	
+	</apex:form>
+</apex:page>

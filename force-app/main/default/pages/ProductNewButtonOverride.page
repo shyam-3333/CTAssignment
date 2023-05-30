@@ -1,0 +1,9 @@
+<!----
+     Created By : Shweta kumari
+     Description : page to override new product button to redirect to diffrent page based on record type
+---->
+<apex:page standardController="Product__c" extensions="ProductNewButtonOverride" action="{!if(strRecTypeName==$Label.Custom_page_rectype,urlFor($Page.ProductCategorySelectPage,null,[source='New',AccontId=Product__c.vendor_custom__c]),
+URLFOR($Action.Product__c.Edit,
+$ObjectType.Product__c,[retURL=URLFOR($Action.Product__c.List, $ObjectType.Product__c,null,false)],true))}">
+
+</apex:page>

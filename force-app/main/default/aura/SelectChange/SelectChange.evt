@@ -1,0 +1,7 @@
+<aura:event type="COMPONENT" description="Despatched when a select has changed value" >
+  <aura:attribute name="values" type="String[]" description="Selected values" access="global" />
+  <aura:attribute name="responseIds" type="String[]" description="Selected response ids" access="global" />
+  <aura:attribute name="picklistId" type="integer" description="picklistId" access="global" />
+  <aura:attribute name="questionId" type="String" description="Question Id" access="global" />
+  <aura:attribute name="picklistLabel" type="String" />	
+</aura:event>

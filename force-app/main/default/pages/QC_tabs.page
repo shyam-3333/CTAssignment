@@ -1,0 +1,120 @@
+<!-- 
+    Name:QC_Tabs
+    Created By   : Anand Durga Prasad
+    Created Date :
+    Modified By  :Anand Durga Prasad
+    Last Modified Date:
+    Description: Page to create tabs dynamically based on the selection in the QC_TitanSelectOptions Page.
+ -->
+<apex:page standardController="QC_Components__c" extensions="QC_Tabs" sidebar="false">
+<head>
+            <title> Search </title>
+            <meta charset="utf-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <apex:includeScript value="{!URLFOR($Resource.JqueryA, 'js/jquery-1.6.2.min.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.JqueryA, 'js/jquery-ui-1.8.16.custom.min.js')}"/>
+            <apex:stylesheet value="{!URLFOR($Resource.JqueryA, 'css/ui-lightness/jquery-ui-1.8.16.custom.css')}"/>
+    <apex:stylesheet value="{!$Page.QC_titanStylesSheet}" />        
+    <style type="text/css">
+    
+ .ui-tabs .ui-tabs-panel {
+  background: none repeat scroll 0 0 rgba(0, 0, 0, 0)!important;
+
+  padding: 0 0.3em!important;
+}
+.ui-widget-header {
+  
+  border: 1px solid transparent !important;
+  color: #ffffff;
+  font-weight: bold;
+}
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default
+{
+backgroud:#1b606f!important;
+}
+
+.ui-tabs .ui-tabs-nav li {
+  background: none repeat scroll 0 0 #1b606f;  
+}
+.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited {
+  color: #fff;
+}
+.ui-tabs .ui-tabs-nav li.ui-tabs-selected {
+  background: none repeat scroll 0 0 #fff;
+  border-color:#1b606f;
+}
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus { 
+  border: 1px solid #1b606f;
+}
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited {
+  color: #1b606f;
+}
+
+.ui-widget-header {
+  background:  none repeat scroll 0 0 rgba(0, 0, 0, 0)!important;
+}
+
+        .ui-tabs .ui-tabs-panel {
+            min-height:65em;
+            position:relative;
+        }
+        .ui-tabs .ui-tabs-panel iframe{
+            width:100%;
+            min-height:75em;
+            position:relative;
+        }
+        .ui-widget-header{border-color:; background:#ccc;}
+    </style> 
+ </head>
+   <script>
+    var isSaved = true;
+    var numberofTabs = {!tabWrapList.size};
+    $( document ).ready(function() {
+        $( "#tabs" ).tabs({ heightStyle: 'content'});
+    }); 
+    
+  /*  function dataNotSaved(){
+        if(isSaved == true){ 
+            return true;
+        } else {
+            if(confirm('Do you wish to save the record?')) {
+               return true;
+            }
+            else{
+               return false;
+            }
+        }
+        isSaved = true;
+    } */
+    //$('.ui-tabs .ui-tabs-panel iframe').css("height","auto");
+   
+   
+   function tabLoad(comName){
+    if(isSaved == true){     
+       document.getElementById('iframe-'+comName).src = document.getElementById('iframe-'+comName).src ;
+    }  
+    else{
+      return false;
+    }
+   }
+  </script>
+  
+  <!-- document.getElementById('iframe-{!cVar.comName}').src = document.getElementById('iframe-{!cVar.comName}').src -->
+  <div id="tabs">          
+        <ul>
+               <apex:repeat value="{!tabWrapList}" var="cVar">
+                 <li><a href="#tabs-{!cVar.comName}" onclick=" return tabLoad('{!cVar.comName}');">{!cVar.comName}</a></li>     
+               </apex:repeat> 
+          </ul>         
+          <apex:repeat value="{!tabWrapList}" var="Var">
+               <div id="tabs-{!Var.comName}" > 
+                  <iframe src="/apex/QC_TitanQualityControl?id={!Var.comid}&type={!Var.comName}&show=true" id="iframe-{!Var.comName}" frameborder="0" scrolling="false" ></iframe> 
+               </div>
+          </apex:repeat>
+   </div> 
+   <div style="display:{!if(parentCom.Document_Status__c != 'Draft' || parentCom.Is_Rejected__c ,'block','none')}">
+      <!-- <div class="colorPlainDivGrey marginTB20"><div class="alignLeft paddingT15 marginL15"><h1>{!parentCom.Name__c} Approval History</h1></div></div> -->
+         <apex:relatedList list="ProcessSteps"/>
+   </div>
+    
+</apex:page>

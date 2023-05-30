@@ -1,0 +1,73 @@
+<!--
+  @description       : 
+  @author            : ChangeMeIn@UserSettingsUnder.SFDoc
+  @group             : 
+  @last modified on  : 06-15-2021
+  @last modified by  : ChangeMeIn@UserSettingsUnder.SFDoc
+  Modifications Log 
+  Ver   Date         Author                               Modification
+  1.0   06-15-2021   ChangeMeIn@UserSettingsUnder.SFDoc   Initial Version
+-->
+<aura:component controller="QC_RelaibilityTestingTabCompClass" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickAction,lightning:actionOverride" access="global" >
+   <!-- <aura:handler name='init' value='{!this}' action='{!c.doinit}' />
+    <aura:attribute name="recordId" type="String"/>
+
+    <aura:attribute name="profileName" type="String"  />
+
+    <aura:attribute name="QcQuestionMList" type="List" />
+    <aura:attribute name="QcConditionMList" type="List" />
+    <aura:attribute name="QcResponseMList" type="List" />
+    <aura:attribute name="QcMasterMList" type="List" />
+
+    <aura:attribute name="allCompList" type="List"  />
+    <aura:attribute name="selectedTabRec" type="QC_Components__c" default="{'sobjectType':'QC_Components__c',}" />
+    <aura:attribute name="isShowrecordDetail" type="Boolean" default="false" />
+
+    <aura:handler name="sendAllQcCompRecord" event="c:QcChildCompUpdateEvent" action="{!c.parentRecordSave}" />
+
+    <aura:handler event="aura:waiting" action="{!c.showSpinner}"/>
+    <aura:handler event="aura:doneWaiting" action="{!c.hideSpinner}"/>
+    <lightning:spinner aura:id="Spinner" size="medium" variant="brand"/>
+
+    <div class="slds-card">
+        <aura:if isTrue="{!v.isShowrecordDetail}">-->
+            <!-- <div class="slds-combobox_container" style="align-items: flex-end;">
+                <div>
+                    <lightning:buttonIcon iconName="utility:apps" iconClass="dark" variant="bare" size="large" onclick="{! c.showTab }"  />
+                </div>
+                <div style="position: absolute;float: right;margin: 25px 0px 0px 0px;">
+                    <div class="slds-dropdown-trigger_click slds-is-open slds-size_small" aria-expanded="false" aria-haspopup="listbox" role="combobox">
+                
+                        <div id="compName-box" aura:id="TabNames" onmouseleave="{!c.hideTabDropdown}" class="slds-dropdown slds-dropdown_length-5 slds-dropdown_fluid slds-hide "  role="listbox" >
+                            <ul class="slds-listbox slds-listbox_vertical" role="presentation">
+                                <aura:iteration items="{!v.allCompList}" var="item" indexVar="tabIndex" >
+                                    <li role="presentation" class="slds-listbox__item" onclick="{!c.selectTabDropdown}" id="{!tabIndex}">
+                                        <div id="option1" class="slds-media slds-listbox__option slds-listbox__option_plain slds-media_small" role="option">
+                                            <span class="slds-media__figure slds-listbox__option-icon"></span>
+                                            <span class="slds-media__body">
+                                                <span class="slds-truncate" title="Option A"><b> {!item.Name__c}</b></span>
+                                            </span>
+                                        </div>
+                                    </li>
+                                </aura:iteration>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+            </div> -->
+          <!--  <div>
+                <lightning:tabset variant="" >
+                    <aura:iteration items="{!v.allCompList}" var="item">
+                        <lightning:tab id="{!item.Name__c}" label="{!item.Name__c}"  >
+                            <aura:renderif isTrue="{!item.Id != null }">-->
+                                <!-- <c:Qc_Component_Ovrride_DetailPage allQcCompList = "{!v.allCompList}" QcRecord = "{!item}" QcQuestionMList="{!v.QcQuestionMList}" QcConditionMList="{!v.QcConditionMList}" QcResponseMList="{!v.QcResponseMList}" QcMasterMList="{!v.QcMasterMList}" profileName="{!v.profileName}" /> -->
+                              <!--  <c:Qc_Component_Ovrride_DetailPage allQcCompList = "{!v.allCompList}" QcRecord = "{!item}" QcQuestionMList="{!v.QcQuestionMList}" QcConditionMList="{!v.QcConditionMList}" QcResponseMList="{!v.QcResponseMList}" QcMasterMList="{!v.QcMasterMList}"  />
+                            </aura:renderif>
+                        </lightning:tab>
+                    </aura:iteration>
+                </lightning:tabset>
+            </div> 
+        </aura:if>
+    </div>-->
+</aura:component>

@@ -1,0 +1,21 @@
+<apex:page controller="Upload_QLI_CSV">
+    <apex:form >
+        <apex:PageBlock >
+            <apex:pageBlockSection columns="4">
+                <apex:inputfile value="{!contentFile}" filename="{!CSVDataString}"/>
+                <apex:commandButton value="Import Quote Line Item" action="{!ImportCSVFile}"/>
+            </apex:pageBlockSection>
+        </apex:PageBlock>
+        <apex:PageBlock >
+            <apex:PageBlockTable value="{!QLIList}" var="qli">
+                <apex:column value="{!qli.Product2Id}" />
+                <!--apex:column value="{!qli.PricebookEntryId}" /-->
+                <apex:column value="{!qli.QuoteId}" />
+                <apex:column value="{!qli.Sales_Price_c__c}" />
+                <apex:column value="{!qli.Discount_c__c}" />
+                <apex:column value="{!qli.UnitPrice}" />
+                <apex:column value="{!qli.Quantity}" />
+            </apex:PageBlockTable>
+        </apex:PageBlock>
+    </apex:form>
+</apex:page>

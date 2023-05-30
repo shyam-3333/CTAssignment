@@ -1,0 +1,183 @@
+<apex:component controller="QC_Document_Status_Email_LeatherStrap" access="global">
+<apex:attribute name="ComponentId" type="Id" description="Id of the Quote" assignTo="{!compId }"/>
+        <head>
+      <style>
+      @page{
+      margin-left:1.00in;margin-right:0.10in;
+      margin-top:0.50in;
+      }
+</style>
+</head>   
+   <c:StylingPdfContent type="header" >  
+        <div style="page-break-after:always;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#808080;text-align:right;">Page <span class="pagenumber" /> of <span class="pagecount"/></div>
+        
+    </c:StylingPdfContent>
+<c:StylingPdfContent type="footer" >
+      <table>
+         
+            <tr>
+               <td width="30%"><div align="center" style="color:black;font-size:10pt;"><b>Product Approval</b></div> </td>
+               <td width="23%"><div align="center" style="color:black;font-size:10pt;"><b>Inspected </b></div></td>
+               <td width="23%"><div align="center" style="color:black;font-size:10pt;"><b>Checked </b> </div></td>
+               <td width="24%"><div align="center" style="color:black;font-size:10pt;"><b>Approved </b> </div></td>
+            </tr>
+            <tr>
+                <td>
+             <div align="center">   <apex:outputtext value="{!component.Final_Verdict__c}"  style="font-size:16pt;color:{!IF(component.Final_Verdict__c == 'Accept', 'green', 'red')}"/></div>
+                </td>
+              <td>
+              <div align="center"> <apex:outputtext value="{!component.Owner.name}"  style="font-size:10pt;color:{!IF(component.Final_Verdict__c != '', 'black', '')}"/></div>
+              </td>
+              <td>
+             <div align="center"> <apex:outputtext value="{!firstActorName}"  style="font-size:10pt;color:black;"/> </div>
+              </td>      
+              <td>
+              <div align="center"> <apex:outputtext value="{!secondActorName}"  style="font-size:10pt;color:black;"/> </div>
+              </td>
+            </tr>
+      
+        </table>  
+          
+          
+    </c:StylingPdfContent>
+    <div align="Left">
+         <apex:image value="{!component.imageurl__c}" url="{!component.imageurl__c}"  width="10%" height="10%" rendered="{!If(component.imageurl__c!=null ,True,False)}" /> 
+          <apex:image value="{!component.imageurl2__c}" url="{!component.imageurl2__c}"  width="10%" height="10%" rendered="{!If(component.imageurl2__c!=null ,True,False)}" /> 
+         <apex:image value="{!component.imageurl3__c}" url="{!component.imageurl3__c}"  width="10%" height="10%" rendered="{!If(component.imageurl3__c!=null ,True,False)}" /> 
+
+    </div>
+   <!-- 
+    <c:StylingPdfContent type="footer1">
+          <div align="center" style="color:#585858;font-size:10pt;"><br></br>Checked : {!lst.Name}</div>
+    </c:StylingPdfContent>
+    
+     <c:StylingPdfContent type="footer2">
+        <div align="center" style="color:#585858;font-size:10pt;"><br></br>Approved: {!lst1.Name}</div>
+    </c:StylingPdfContent>
+    -->
+    <div style="font-family:Arial,Helvetica,sans-serif; font-size:18px; font-weight:bold;text-align:center;">Reliability Test Report - {!component.Name__c}</div><br/>
+         <apex:pageMessages />    
+            <table width="100%" border="1" cellspacing="0" align="left" style=" border-bottom-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">
+               
+                 <tr style="line-height: 25px;">
+                    <td>Report Date</td> 
+                    <td><apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                            <!--<apex:param value="{!Today()}" />-->
+                            <apex:param value="{!component.Published_Date__c}" /> 
+                        </apex:outputText> </td>
+                    <td>Report Ref. No.</td>
+                    <td><apex:outputLabel value="{!component.Report_Ref_Number__c}"></apex:outputLabel></td>
+                  </tr>
+                 <tr style="line-height: 25px;">  
+                    <td class="fieldLabel">Model Ref.</td>
+                    <td><apex:outputLabel value="{!component.Model__c}"></apex:outputLabel></td>
+                    <td class="fieldLabel">Watch Variant Ref.</td>
+                    <td><apex:outputLabel value="{!component.Watch_variant__c}"></apex:outputLabel></td>
+                </tr>
+                  <tr style="line-height: 25px;">    
+                     <td class="fieldLabel">Vendor</td>
+                     <td><apex:outputtext value="{!component.Vendor__r.Name}"  /></td>
+                     <td class="fieldLabel">Brand</td>
+                     <td><apex:outputtext value="{!component.Brand__r.Name}"  /></td>           
+                 </tr>
+                  <tr style="line-height: 25px;">    
+                     <td class="fieldLabel">SKU</td>
+                     <td>
+                        <apex:outputtext value="{!component.SKU_Reference__c}"  />
+                     </td>
+                     <td class="fieldLabel">Sample Source</td>
+                     <td><apex:outputLabel value="{!component.Sample_Department__c}">&nbsp;</apex:outputLabel></td>
+                 </tr>
+                  <tr style="line-height: 25px;">      
+                     <td class="fieldLabel">Sample Date</td>
+                      <td> 
+                        <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                            <apex:param value="{!component.Sample_Date__c}" /> 
+                        </apex:outputText>                  
+                    </td>
+                     <td class="fieldLabel">Brand</td>
+                     <td><apex:outputtext value="{!component.Brand__r.Name}"  /></td>
+                    
+                </tr>
+                <tr style="line-height: 25px;">   
+                     <td class="fieldLabel">Sample Type</td>
+                     <td><apex:outputfield value="{!component.Sample_Category__c}"  /></td>
+                     <td class="fieldLabel">Test Background</td>
+                     <td><apex:outputfield value="{!component.Test_Back_Ground__c}"  /></td>
+                </tr>
+                <!--<tr style="line-height: 25px;">
+                    <td class="fieldLabel">Publish Date</td>
+                    <td colspan="3">
+                        <apex:outputText value="{0, date, MMMM d','  yyyy}">
+                            <apex:param value="{!component.Published_Date__c}" />
+                        </apex:outputText>
+                    </td>
+                </tr>-->
+                <apex:variable var="v" value="" rendered="{!NOT(ISBLANK(component.General_Observation__c))}">
+                    <tr>
+                         <td class="fieldLabel">General Observation  </td>                  
+                         <td colspan="3" ><apex:outputfield value="{!component.General_Observation__c}"/></td>
+                    </tr>
+                </apex:variable>               
+        </table>
+    <br /><br />
+  
+    <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1" style="border-top-style: none; font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#000;">    
+        <td colspan="6" style="font-family:Arial,Helvetica,sans-serif;font-weight:bold;background:#f7ffe6;font-size:16px; color:#2e5cb8;"><div align="center"><b>Reliability Test Certificate</b></div></td>
+            
+                <tr style="background:#F0F8FF;">
+                    <td width="50%" colspan="3" style="color:#0000FF;font-weight:bold;font-size:16px;"><b>Leather Strap</b></td>
+                    <td colspan="3" style="color:#0000FF;font-weight:bold;font-size:16px;"><apex:outputText value="{!component.Final_Verdict__c}" style="color:{!if(component.Final_Verdict__c == 'Accept','Green','red')};"></apex:outputText></td>
+                </tr>
+                <tr style=" display:{!if(leatherTestParamList.size != 0,'inline','none')};color:#000;">
+                    <td width="25%" style="background:#D3D3D3;"><b>Test Name</b></td>
+                    <td width="20%" style="background:#D3D3D3;"><b>Specification</b></td>
+                    <td width="15%" style="background:#D3D3D3;"><b>UOM</b></td>
+                    <td width="20%" style="background:#D3D3D3;"><b>Observation</b></td>
+                    <td width="15%" style="background:#D3D3D3;"><b>Remarks</b></td>
+                    <td width="5%" style="background:#D3D3D3;"><b>Conclusion</b></td>
+                    
+                </tr>
+               
+                <apex:repeat value="{!leatherTestParamList}" var="leatherDis">
+                    <tr>
+                        <td>
+                            <apex:outputText value="{!leatherDis.testName}" />
+                        </td>
+                         
+                        <td>
+                            <apex:outputText value="{!leatherDis.specification}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!leatherDis.uom}" />
+                        </td>
+                        <td>
+                            <apex:outputText value="{!leatherDis.observation}" /> 
+                        </td>
+                        <td>    
+                            <apex:outputText value="{!leatherDis.commentAndRemarks}" />
+                        </td>
+                         <td style="font-weight:{!if(leatherDis.verdict == 'Reject','bold','Standard')}">    
+                            <apex:outputText value="{!leatherDis.verdict}" />
+                       </td>
+                          
+                         
+                   </tr>
+                </apex:repeat>
+    </table>    
+    
+    <table width="100%" cellspacing="0" cellpadding="3" align="left" border="1" style="border-top-style: none;font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#585858;">       
+                <tr style="line-height: 25px;">
+                    <td align="center" colspan="6" style="color:#0000FF;" ><b>Exception Approval</b></td>
+                     </tr>
+                     <td style="color:black;">    
+                          <b>Exception Approval Verdict:</b>&nbsp;  <b><apex:outputtext value="{!component.Exception_Verdict__c}"  style="color:{!IF(component.Exception_Verdict__c== 'Accept', 'green', 'red')}"/></b> <br></br>
+                          
+                        </td> 
+                        <td style="color:black;"><b>
+                        Comment and remarks:</b> &nbsp;<b><apex:outputtext style="color:#0000FF;" value="{!component.Comment__c}" /></b>
+                        </td>
+         
+          </table>    
+      
+</apex:component>

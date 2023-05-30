@@ -1,0 +1,11 @@
+.THIS .t_design th{
+background:#ccc!important;white-space: normal!important;}
+.THIS.c-container {
+    border: 1px solid #000;
+    margin: 20px;
+}
+.THIS .t_design td{white-space: normal!important;}
+.THIS .verdict_content label {
+    display:none;
+}
+.THIS .redColor{color:red;}

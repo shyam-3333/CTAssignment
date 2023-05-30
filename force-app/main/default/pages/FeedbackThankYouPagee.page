@@ -1,0 +1,65 @@
+<!--  
+* Class Name   : FeedbackThankYouPagee
+* Created By   : Madhushree H J
+* Created Date : 09-08-2022
+* Description  :this vf page is used to display a thank you message to the customer.
+-->
+
+<apex:page controller="FeedbackClosedLostController" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+<html>
+        <head>
+            <!-- Import the Design System style sheet -->
+            <apex:slds />
+        </head>
+        <div class="slds-modal__header">
+            <img src="{!$Resource.TitanCompanyLogo}" width="200px" height="60px" align="left"/>
+          <h1 class="slds-text-heading_medium "  style="margin-right:148px;font-size:35px;" ><center align="center">Voice of Customer</center></h1>
+        </div>
+    </html><br/><br/>
+    <style>
+            input[type=submit] {
+            width: 20%;
+            background-color: #00b0ab;
+            color: white;
+            padding: 20px 10px;
+            margin: 10px;
+            border: none;
+            border:0px;
+            border-radius: 7px;
+            cursor: pointer;
+            margin-left:400px;
+            }
+            
+            div {
+            border-radius: 5px;
+            background-color: #f2f2f2;
+            border:0px;
+            margin: 4px 5px;
+            padding: 20px 20px;
+            text-align: justify;
+            }
+        </style>
+    <body>
+        <div>
+             <apex:form id="form" styleClass="slds-scope" >
+       <div class="slds-align_absolute-center slds-text-heading_large "  >
+            <center >
+                <b style="color:black;font-family:nunito light;">THANK YOU!  </b>
+            </center>
+        </div>            
+         <div class="slds-align_absolute-center"  >
+            
+            <img src="{!$Resource.TitanThankYouLogo}" width="170px" height="60px" align="left"/>   
+        </div>
+        <div class="slds-align_absolute-center slds-text-heading_medium" >
+            <center style="color:black;font-family:nunito light;" >
+               Thank you for taking your valuable time to fill the feedback survey form.<br/>
+               Your answer will help us to improve our service for you.  <br/><br/><br/>      
+            </center>
+        </div>     
+     </apex:form>
+        </div>
+   
+         </body>
+        
+</apex:page>

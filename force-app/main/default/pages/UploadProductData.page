@@ -1,0 +1,12 @@
+<apex:page controller="UploadUpdatedProdData" >
+<apex:form >
+	<apex:pageBlock id="pgblk1">
+        <apex:pageMessages />
+      <apex:InputFile value="{!contentFile}" filename="{!csvDataString}" />
+          <apex:actionRegion >
+              <apex:commandButton value="Upload File" action="{!uploadOfflineData}"  />
+          </apex:actionRegion>  
+    </apex:pageBlock>
+
+    </apex:form>        
+</apex:page>

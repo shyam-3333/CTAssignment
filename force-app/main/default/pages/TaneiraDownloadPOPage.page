@@ -1,0 +1,37 @@
+<apex:page controller="TaneiraProdAttributionVF" cache="true" readOnly="true" contentType="application/vnd.ms-excel#ZTANPO_{!param}.xls; charset=UTF-8"> 
+    <table class="slds-table slds-table--bordered slds-resizable pt20 ">
+        <tr>
+            <th>Vendor</th>
+            <th>Item No</th>
+            <th>Material</th>
+            <th>PO Quantity</th>
+            <th>Net Price</th>
+            <th>Plant</th>
+            <th>Storage Location</th>
+            <th>Delivery Date</th>
+            <th>TaxCode</th>
+            <th>Reqmt No</th>
+            <th>Requisitioner</th>
+            <th>Purchase Group</th>
+        </tr>
+        
+        <apex:variable var="i" value="{!1}"/>
+        <apex:repeat value="{!poWrapper}" var="po">
+            <tr>
+                <td align="center"> {!po.productRec.Vendor_code__c} </td>
+                <td align="center"> {!i}                            </td>
+                <td align="center"> {!po.productRec.SKU_Code__c}   </td> 
+                <td align="center"> {!po.productRec.Quantity__c}   </td>
+                <td align="center"> {!po.productRec.Procurement_Cost__c}</td>
+                <td align="center"> {!po.plant}     </td>
+                <td align="center"> {!po.storageLocation} </td>
+                <td align="center"> </td>
+                <td align="center"> {!po.productRec.Vendor_TaxCode__c}</td>
+                <td align="center"> {!po.productRec.Cluster__c}</td>
+                <td align="center"> {!po.productRec.Order_Id__c}</td>
+                <td align="center"> {!po.purchaseGroup} </td>
+            </tr>
+            <apex:variable var="i" value="{!i+1}"/>
+        </apex:repeat>
+        </table>
+</apex:page>

@@ -1,0 +1,84 @@
+<apex:page controller="PopUpController" title="Search" 
+  showHeader="false" 
+  sideBar="false" 
+  tabStyle="Account" 
+  id="pg">
+    <script>
+        function fieldFillIn(lead,comCat)
+        {
+                   
+              var winMain=window.opener;
+              if (null==winMain)
+              {
+                 winMain=window.parent.opener;
+                  console.log('Parent Opener');
+              }
+              
+              var elem=winMain.document.getElementById('{!$CurrentPage.parameters.comType}');             
+               elem.value = comCat;
+                          
+               var ele=winMain.document.getElementById('{!$CurrentPage.parameters.leadtime}');             
+              ele.value = lead;
+              
+              
+              
+               
+            try{
+              var ele=winMain.document.getElementById('{!$CurrentPage.parameters.comCat}');     
+                    
+              ele.value = '';
+              }catch(err) {
+                    console.log('Error');
+                }
+               
+              
+              
+              console.log('Kamaal KAr');   
+                  CloseWindowpop()
+              winMain.closeComplexitypopup();
+           
+        }
+        
+        function CloseWindowpop()
+         {
+         console.log('in close window');
+          var winMain=window.opener; 
+          
+          if (null==winMain) 
+          { 
+          winMain=window.parent.opener; 
+          }
+           winMain.closeComplexitypopup();
+        }
+    </script>
+    <apex:form >
+    <apex:outputPanel id="page" layout="block" style="margin:5px;padding:10px;padding-top:2px;">
+    <apex:tabPanel switchType="client" selectedTab="name1" id="tabbedPanel">
+        <apex:tab label="Search" name="tab1" id="tabOne">    
+        <apex:outputPanel id="pnlSearchResults" style="margin:10px;height:350px;overflow-Y:auto;" layout="block">
+        <apex:pageBlock id="searchResults">
+            <apex:pageMessages id="Err"></apex:pageMessages> 
+            <apex:pageBlockTable value="{!complexityTypeValues}" var="check" id="tblResults" >
+                <apex:column >
+                
+                
+                <apex:facet name="header">
+                <apex:outputPanel >Name</apex:outputPanel>
+                </apex:facet>
+                
+                <apex:commandLink value="{!check.com.Name__c}" action="{!doComplexitySelection}" oncomplete="fieldFillIn('{!numLeadTime}','{!strComCat}')">
+                <apex:param value="{!check.com.Name__c}" assignTo="{!strComCat}" name="" />
+                </apex:commandLink>
+                </apex:column>
+                
+                
+              
+                
+            </apex:pageBlockTable>
+        </apex:pageBlock>
+        </apex:outputPanel>
+        </apex:tab>      
+    </apex:tabPanel>
+    </apex:outputPanel>
+    </apex:form> 
+</apex:page>

@@ -1,0 +1,17 @@
+ul {
+    list-style: decimal;
+    }
+td {
+    white-space: normal;
+}
+
+.centertextTabel{
+    font-weight: bold;
+    text-align: center;
+}
+.laumchDateClass{
+    text-align: end;
+    font-weight: bold;
+    text-decoration-line: underline;
+    padding: 1em;
+}

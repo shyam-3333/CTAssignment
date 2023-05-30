@@ -1,0 +1,48 @@
+<apex:page standardController="Account" extensions="accountOpportunityExportClass" sidebar="false" id="mypage" standardStylesheets="false" showHeader="false" cache="true" contentType="application/vnd.ms-excel#ExportAccountFile.xls" language="en-US" readOnly="true">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+    </head>
+    <apex:form id="myForm">
+        <apex:outputPanel id="accountTableId">
+            <table align="center" border="1">
+                <tr style="font-weight: bold; color: White;font-size:15px;background:#A9A9A9;"> 
+                    <td>Account Name</td>
+                    <td>Opportunity Name</td>
+                    <td>Quote Type</td>
+                    <td>Project Type</td>
+                    <td>Stage Name</td>
+                    <td>Amount</td>
+                    <td>Mechanical User</td>
+                    <td>Electrical User</td>
+                    <td>Latest Quote Date</td>
+                    
+                </tr>
+                <apex:repeat value="{!wrapOppList}" var="opp" id="oppTableId">
+                    <tr style="font-family:Arial,Helvetica,sans-serif;background:#E0F7F7;font-size:12px; color:#0B0B0B;">
+                        <td><apex:outputText value="{!opp.accountName}" /> </td>
+                        <td><apex:outputText value="{!opp.oppName}" />  </td>
+                        <td><apex:outputText value="{!opp.quoteType}" />  </td>
+                        <td><apex:outputText value="{!opp.projectType}" />  </td>
+                        <td><apex:outputText value="{!opp.stageName}" />  </td>
+                        <td><apex:outputText value="{!opp.amount}" />  </td>
+                        <td><apex:outputText value="{!opp.mechanical}" />  </td>
+                        <td><apex:outputText value="{!opp.electrical}" />  </td>
+                        <td><table align="center" border="1">
+                            <apex:repeat value="{!opp.wrapQList}" var="q">
+                                <tr>
+                                    <td><apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                        <apex:param value="{!q.quoteDate}" />
+                                        </apex:outputText>
+                                    </td>   
+                                </tr>
+                                
+                            </apex:repeat>
+                            </table>
+                        </td>
+                        
+                    </tr>
+                </apex:repeat>
+            </table>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

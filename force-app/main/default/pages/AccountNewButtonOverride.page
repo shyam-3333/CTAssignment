@@ -1,0 +1,7 @@
+<!----
+     Created By : Shweta kumari
+     Description : page to override new product button to redirect to diffrent page based on record type
+---->
+<apex:page standardController="Account" extensions="AccountNewOverride" action="{!redirect}">
+
+</apex:page>

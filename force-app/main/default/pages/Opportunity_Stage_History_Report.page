@@ -1,0 +1,104 @@
+<apex:page controller="Opportunity_Stage_History_ReportClass" id="page1" sidebar="false" showHeader="false" readOnly="true" docType="html-5.0">
+
+     <apex:includescript value="//code.jquery.com/jquery-1.11.1.min.js"/>
+    <apex:includescript value="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"/>
+    <apex:stylesheet value="//cdn.datatables.net/1.10.4/css/jquery.dataTables.css"/>
+    
+    <apex:includeScript value="{!URLFOR($Resource.jquery, 'js/jquery-1.6.2.min.js')}" />
+    <apex:includeScript value="/support/console/40.0/integration.js" />
+    <apex:includeScript value="{!URLFOR($Resource.jquery, 'js/jquery-ui-1.8.16.custom.min.js')}" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+    <script src="../../soap/ajax/36.0/connection.js" type="text/javascript"></script>
+    <script src="/xdomain/xdomain.js"></script>
+    <script>
+    j$ = jQuery.noConflict();
+    j$(document).ready( function () {
+        //var accTable = j$('[id$="accTable"]').DataTable({
+        
+    });
+    });
+    </script>
+    
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        
+        <head></head>
+        <apex:stylesheet value="{!$Resource.Slds215}" />
+    </html>
+    
+    
+    <apex:pageBlock title="Opportunity Stage History Report" >
+    	<apex:form >
+            <apex:outputLabel > Opportunity Stage</apex:outputLabel> &nbsp;&nbsp;&nbsp;&nbsp;
+            <apex:selectList size="1" value="{!selectedStage}" >
+                <apex:selectOptions value="{!StageName}" rendered="true"></apex:selectOptions>
+            </apex:selectList>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <apex:outputLabel >Start date from</apex:outputLabel>&nbsp;&nbsp;&nbsp;&nbsp;
+            <apex:input value="{!startDate}" type="date" required="true"/>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <apex:outputLabel >End date till</apex:outputLabel>&nbsp;&nbsp;&nbsp;&nbsp;
+            <apex:input value="{!tillDate}" type="date" required="true" />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <apex:commandButton value="Execute" action="{!getOpportunityInfo}" rendered="true" />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <apex:commandButton value="Download" action="{!download}" rendered="true" />
+        </apex:form>
+    </apex:pageBlock>
+	<apex:pageBlock >
+    	<apex:pageBlockTable value="{!oppHistoryList}" var="oppHistory" id="theTable" rowClasses="odd,even" styleClass="tableClass" border="1">
+ 
+        <apex:column >
+            <apex:facet name="header">Opportunity Name</apex:facet>
+            <apex:outputText value="{!oppHistory.Opportunity.Name}"/>
+        </apex:column>
+ 		
+        <apex:column >
+            <apex:facet name="header"> Account Name</apex:facet>
+            <apex:outputText value="{!oppHistory.Opportunity.Account.Name}"/>
+        </apex:column>    
+            
+        <apex:column >
+            <apex:facet name="header">Amount</apex:facet>
+            <apex:outputText value="{!oppHistory.Amount}"/>
+        </apex:column>
+            
+        <apex:column >
+            <apex:facet name="header">Stage</apex:facet>
+            <apex:outputText value="{!oppHistory.StageName}"/>
+        </apex:column>
+        
+        <apex:column >
+            <apex:facet name="header">Machanical User</apex:facet>
+            <apex:outputText value="{!oppHistory.Opportunity.Member1__r.Name}"/>
+        </apex:column>
+ 	<!--	<apex:column >
+            <apex:facet name="header">Machanical User2</apex:facet>
+            <apex:outputText value="{!oppHistory.Opportunity.Mechanical_2__r.Name}"/>
+        </apex:column>
+            <apex:column >
+            <apex:facet name="header">Machanical User3</apex:facet>
+            <apex:outputText value="{!oppHistory.Opportunity.Mechanical_3__r.Name}"/>
+        </apex:column> -->
+        <apex:column >
+            <apex:facet name="header">Electrical User </apex:facet>
+            <apex:outputText value="{!oppHistory.Opportunity.Member2__r.Name}"/>
+        </apex:column>
+            <!--
+            <apex:column >
+            <apex:facet name="header">Electrical User 2</apex:facet>
+            <apex:outputText value="{!oppHistory.Opportunity.Electrical_2__r.Name}"/>
+        </apex:column>
+        <apex:column >
+            <apex:facet name="header">Electrical User 3</apex:facet>
+            <apex:outputText value="{!oppHistory.Opportunity.Electrical_3__r.Name}"/>
+        </apex:column>
+-->
+        <apex:column >
+            <apex:facet name="header">Created date</apex:facet>
+            <apex:outputText value="{!oppHistory.CreatedDate}"/>
+        </apex:column> 
+    </apex:pageBlockTable>
+    </apex:pageBlock>
+    
+
+</apex:page>

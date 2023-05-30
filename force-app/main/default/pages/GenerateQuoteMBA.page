@@ -1,0 +1,128 @@
+<apex:page standardController="Opportunity" renderAs="pdf">
+<!--
+    <table border="0.1" width="100%" columns="3">
+        <tr>
+            <td font-size="medium" width="25%" bgcolor="#00FFFF">PROJECT</td>
+            <td font-size="medium" width="50%" >{!Opportunity.Name}</td>
+            <td font-size="medium" width="25%" bgcolor="#00FFFF">SAP REFERENCE NUMBER</td>
+        </tr>
+        <tr>
+            <td font-size="medium" width="25%" bgcolor="#00FFFF">CUSTOMER</td>
+            <td font-size="medium" width="50%" >{!Opportunity.Account.Name}</td>
+            <td font-size="medium" width="25%" bgcolor="#00FFFF">{!Opportunity.Opportunity_ID__c} / R{!Opportunity.Revision_Number__c}</td>
+        </tr>
+        <tr>
+            <td font-size="medium" width="25%" bgcolor="#00FFFF">CUSTOMER LOCATION</td>
+            <td font-size="medium" width="50%" >{!Opportunity.Place__r.Name}</td>
+            <td font-size="medium" width="25%" bgcolor="#00FFFF">DATE</td>
+        </tr>
+         <tr>
+            <td font-size="medium" width="25%" bgcolor="#00FFFF">COSTING</td>
+            <td font-size="medium" width="50%" bgcolor="#00FFFF">OVERALL</td>
+            <td font-size="medium" width="25%" >{!Opportunity.Todays_Date__c}</td>
+        </tr>
+        <tr>
+            <td font-size="medium" width="25%" bgcolor="#00FFFF">PREPARED BY</td>
+            <td font-size="medium" width="35%" bgcolor="#00FFFF">MECHANICAL</td>
+            <td font-size="medium" width="40%" bgcolor="#00FFFF">ELECTRICAL</td>
+        </tr>
+        <tr>
+            <td font-size="medium" width="25%" bgcolor="#00FFFF">&nbsp;</td>
+            <td font-size="medium" width="35%">{!Opportunity.Mechanical_Prepared_By__r.Name}</td>
+            <td font-size="medium" width="40%">{!Opportunity.Electrical_Prepared_By__r.Name}</td>
+        </tr>
+        <tr>
+            <td font-size="medium" width="25%" bgcolor="#00FFFF">CHECKED BY</td>
+            <td font-size="medium" width="37%" bgcolor="#00FFFF">MECHANICAL</td>
+            <td font-size="medium" width="38%" bgcolor="#00FFFF">ELECTRICAL</td>
+        </tr>
+        <tr>
+            <td font-size="medium" width="25%" bgcolor="#00FFFF">&nbsp;</td>
+            <td font-size="medium" width="37%">{!Opportunity.Mechanical_Checked_By__r.Name}</td>
+            <td font-size="medium" width="38%">{!Opportunity.Electrical_Checked_by__r.Name}</td>
+        </tr>
+         <tr>
+            <td font-size="medium" width="25%" bgcolor="#00FFFF">VALIDATED BY</td>
+            <td font-size="medium" width="37%" bgcolor="#00FFFF">MECHANICAL</td>
+            <td font-size="medium" width="38%" bgcolor="#00FFFF">ELECTRICAL</td>
+        </tr>
+        <tr>
+            <td font-size="medium" width="25%" bgcolor="#00FFFF">&nbsp;</td>
+            <td font-size="medium" width="37%">{!Opportunity.Mechanical_Validated_by__r.Name}</td>
+            <td font-size="medium" width="38%">{!Opportunity.Electrical_Validated_By__r.Name}</td>
+        </tr>
+    </table><br/><br/><br/>
+    <table border="0.1" width="100%" columns="3">
+        <tr>
+            <td font-size="medium" width="30%" bgcolor="#00FFFF"> S.No.</td>
+            <td font-size="medium" width="40%" bgcolor="#00FFFF"> DESCRIPTION </td>
+            <td font-size="medium" width="30%" bgcolor="#00FFFF"> ONE MACHINE </td>
+        </tr>
+        <tr>
+            <td font-size="medium" width="30%" bgcolor="#00FFFF"> A</td>
+            <td font-size="medium" width="40%" bgcolor="#00FFFF"> Material </td>
+            <td font-size="medium" width="30%"> &nbsp;</td>
+        </tr>
+        <tr>
+            <td font-size="medium" width="30%" bgcolor="#00FFFF"> &nbsp;</td>
+            <td font-size="medium" width="40%" bgcolor="#00FFFF"> Mechanical</td>
+            <td font-size="medium" width="30%">{!Opportunity.Mechincal_Items_Value__c}</td>
+        </tr>
+        <tr>
+            <td font-size="medium" width="30%" bgcolor="#00FFFF"> &nbsp;</td>
+            <td font-size="medium" width="40%" bgcolor="#00FFFF"> Electrical</td>
+            <td font-size="medium" width="30%">{!Opportunity.Electrical_Items_Value__c}</td>
+        </tr>
+        <tr>
+            <td font-size="medium" width="30%" bgcolor="#00FFFF"> &nbsp;</td>
+            <td font-size="medium" width="40%" bgcolor="#0099FF"> Sub Total</td>
+            <td font-size="medium" width="30%" bgcolor="#0099FF">{!Opportunity.Sub_Total__c}</td>
+        </tr>
+        <tr>
+            <td font-size="medium" width="30%" bgcolor="#00FFFF"> &nbsp;</td>
+            <td font-size="medium" width="40%" bgcolor="#00FFFF"> &nbsp;</td>
+            <td font-size="medium" width="30%" >&nbsp;</td>
+        </tr>
+         <tr>
+            <td font-size="medium" width="30%" bgcolor="#00FFFF">B</td>
+            <td font-size="medium" width="40%" bgcolor="#0099FF">OverHead Expenses</td>
+            <td font-size="medium" width="30%" bgcolor="#0099FF">{!Opportunity.Overhead_Expenses__c}</td>
+        </tr>
+        <tr>
+            <td font-size="medium" width="30%" bgcolor="#00FFFF"> &nbsp;</td>
+            <td font-size="medium" width="40%" bgcolor="#00FFFF"> &nbsp;</td>
+            <td font-size="medium" width="30%" >&nbsp;</td>
+        </tr>
+         <tr>
+            <td font-size="medium" width="30%" bgcolor="#00FFFF">C</td>
+            <td font-size="medium" width="40%" bgcolor="#0099FF">Total Cost</td>
+            <td font-size="medium" width="30%" bgcolor="#0099FF">{!Opportunity.Total_Cost__c}</td>
+        </tr>
+         <tr>
+            <td font-size="medium" width="30%" bgcolor="#00FFFF"> &nbsp;</td>
+            <td font-size="medium" width="40%" bgcolor="#00FFFF"> &nbsp;</td>
+            <td font-size="medium" width="30%" >&nbsp;</td>
+        </tr>
+        <tr>
+            <td font-size="medium" width="30%" bgcolor="#00FFFF">D</td>
+            <td font-size="medium" width="40%" bgcolor="#0099FF">Price @ 15% profit on Sale</td>
+            <td font-size="medium" width="30%" bgcolor="#0099FF">{!Opportunity.Price_15_Profit_on_Sale__c}</td>
+        </tr>
+   </table><br/><br/><br/>
+
+   <table align = "center" border = "0.1" width="50%" columns="2">
+        <tr>
+            <td font-size="medium" width="30%" bgcolor="#00FF00">FINAL QUOTE VALUE</td>
+            <td font-size="medium" width="30%" bgcolor="yellow">{!Opportunity.Final_Quote_Value__c}</td>
+        </tr>
+        <tr>
+            <td font-size="medium" width="30%" bgcolor="#00FF00">Commissioning Charges</td>
+            <td font-size="medium" width="30%" bgcolor="yellow">{!Opportunity.Commissioning_Charges__c}</td>
+        </tr>
+        <tr>
+            <td font-size="medium" width="30%" bgcolor="#00FF00">Packing and Forwarding</td>
+            <td font-size="medium" width="30%" bgcolor="yellow">{!Opportunity.Packing_Forwarding__c}</td>
+        </tr>
+   </table>
+-->
+</apex:page>
