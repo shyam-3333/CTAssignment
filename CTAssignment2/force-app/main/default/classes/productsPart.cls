@@ -42,6 +42,6 @@ public class productsPart Implements database.Batchable<sobject> {
         
     
     Public void finish(database.batchableContext info){
-        
+        //This is finish method
     }
 }
