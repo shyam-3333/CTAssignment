@@ -8,7 +8,7 @@ public class updatingPartProduct_Test {
         parts.add(new SQX_Part__c(Name = 'Part 2', Part_Number__c = '002', Product__c = null));
         insert parts;
         
-        // Create test Product records
+        // Create test Product records.
         Product2 existingProduct1 = new Product2(Name = 'Part 1', ProductCode = '123');
         Product2 existingProduct2 = new Product2(Name = 'Part 2', ProductCode = '456');
         insert new List<Product2>{existingProduct1, existingProduct2};
@@ -17,7 +17,7 @@ public class updatingPartProduct_Test {
         // Test the updateParts method
         updatingPartProduct_Handler.updateParts(Parts);
         
-        // Update the Part records to trigger the trigger logic
+        // Update the Part records to trigger the trigger logic.
         List<SQX_Part__c> updatedParts = new List<SQX_Part__c>();
         for (SQX_Part__c part : parts) {
             part.Name = 'Updated ' + part.Name;
