@@ -1,0 +1,27 @@
+<div style="background: #ffffff; 
+            padding: 10px; 
+            border: 2px solid #00bdb5; 
+            margin: 10px;
+            max-width: 600px; 
+           margin: 0 auto; 
+            width: 600px">
+            <p>Dear Sir/Mam,</p>
+<p>I am {!Account.OwnerFirstName} {!Account.OwnerLastName} from the Titan Corporate Sales Team. This is to inform you that the recipient email address will be changed for the {!Account.Name}. You will not be receiving any quotes moving forward.</p>
+<p>Previous Email Address: {!Account.Old_Recipient_Email_Address__c}</p>
+<p>New Email Address: {!Account.Recipient_Email_Address__c}</p>
+<div class="logo" style="text-align: left;">
+    <img class="logo1" src="https://tradebrains.in/wp-content/uploads/2021/11/Titan-logo.png" alt="Your Company Logo" style="width:40px;height:40px;"/>
+    <p>Corporate Business Group<br/>
+        Titan Company Limited &quot;INTEGRITY&quot;,<br/>
+        193 Veerasandra <br/>
+        Electronic City P.O,<br/>
+        Hosur Main Road,<br/>
+        Bangalore : 560100</span></span>
+        </p>
+
+        <div clas="Button1">
+            <center style="color: green;font-family: sans-serif;font-weight: bold; font-size: 26px; background-color: transparent !important;">
+                <apex:commandButton value="Click Here" action="{!openNewPage}"/>
+            </center>
+        </div> 
+    </div>

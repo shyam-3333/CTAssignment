@@ -81,15 +81,11 @@
         <type>CustomApplication</type>
     </appMenuItems>
     <appMenuItems>
-        <name>standard__LightningScheduler</name>
-        <type>CustomApplication</type>
-    </appMenuItems>
-    <appMenuItems>
         <name>standard__LightningBolt</name>
         <type>CustomApplication</type>
     </appMenuItems>
     <appMenuItems>
-        <name>tgn__Test_Gen</name>
+        <name>standard__LightningScheduler</name>
         <type>CustomApplication</type>
     </appMenuItems>
 </AppMenu>

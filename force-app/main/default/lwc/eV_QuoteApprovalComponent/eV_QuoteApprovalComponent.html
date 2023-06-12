@@ -1,25 +1,30 @@
 <template>
+
     <lightning-card>
         <h1 slot="title">
             <lightning-icon icon-name="standard:task2" size="small"></lightning-icon>
-            &nbsp;&nbsp;Email Confirmation
+            &nbsp;&nbsp;Email Confirmation for Approval
         </h1>
         <header>
-            <p class="slds-p-horizontal_small"><b>Recipient Email Address : </b>{recipientEmail}
+            <p class="slds-p-horizontal_small slds-text-color_success" if:true={showVerifiedGreenText}>{quoteFields.verified}</p>
+            <p class="slds-p-horizontal_small slds-text-color_error" if:true={showVerifiedRedText}>{quoteFields.verified}</p>
+            <p class="slds-p-horizontal_small"><b>Recipient Email Address : </b>{quoteFields.recipientEmail}
             </br>Please confirm recipient email address in order to submit the quote for approval</p> 
         </header>
     </br>
     <div if:true={showSearchComponent} class="slds-p-horizontal_small">
-        <p style="color:red">{noRecordFound}</p>
-        <lightning-input type="text" label="Change Email Address" value={emailAddress} onchange={handleEmailAddress} placeholder="Type here... ">
+        <p class="slds-text-color_error">{noRecordFound}</p>
+        <lightning-input type="text" label="Change Recipient Email Address" value={emailAddress} onchange={handleEmailAddress} placeholder="Type here... ">
         </lightning-input></br>
-        <button class="slds-button slds-button_neutral" onclick={handleSaveButton} title="Save">Send Email Verification</button>
-        <button class="slds-button slds-button_neutral" onclick={handleCloseButton} title="Close">Close</button>
+        <button class="slds-button slds-button_neutral" onclick={handleSaveButton} title="Save">Save</button>
+        <button class="slds-button slds-button_brand" onclick={handleCloseButton} title="Close">Close</button>
     </div>
 </br>
-        <footer class="slds-modal__footer">
-            <button class="slds-button slds-button_neutral" title="Yes">Yes, Submit for Approval</button>
-            <button class="slds-button slds-button_brand" onclick={showSearch} title="No">No, Change Email Address</button>
-        </footer>
+    <div class="slds-align_absolute-center" style="background-color: rgb(254, 254, 254);">
+        
+            <button class="slds-button slds-button_neutral" onclick={submitForApproval} title="Yes" disabled={buttonDisable}>Submit for Approval</button>
+            <button class="slds-button slds-button_brand" onclick={showSearch} title="No">Change Email Address</button>
+        
+    </div>    
 </lightning-card> 
 </template>

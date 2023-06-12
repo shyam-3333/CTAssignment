@@ -1,0 +1,39 @@
+<div style="background: #ffffff; 
+            padding: 10px; 
+            border: 2px solid #00bdb5; 
+            margin: 10px;
+            max-width: 600px; 
+            margin: 0 auto; 
+            width: 600px
+           ">
+<p>Dear {!Customer_Feedback__c.Name},</p>
+<p>Thank you for giving us an opportunity to work with you on your new requirement.<br/><br/>
+
+I am {!Customer_Feedback__c.Opportunity_Owner__c}  from the Business Development Team of TEAL - Automation Solutions responsible for coordinating as a neutral person to get customer feedback. 
+
+As a part of our continuous improvement, we need your valuable feedback about the technical sales team and processes.<br/><br/>
+
+Requesting you to share your valuable feedback in the below survey link.
+</p>
+   
+<p> It will take only 5 minutes of your time.</p>
+
+<p>Note: The rating is from 1 to 10 in the feedback form.</p></br>
+
+<p style="text-align: center;"> <a href="https://titanlightningapps.my.salesforce-sites.com/ClosedLostFeedback?id={!Customer_Feedback__c.Id}" rel="noopener noreferrer" target="_blank" style="background-color: #00bdb5; border: 2px solid #00bdb5; color: #ffffff; padding: 10px; border-radius: 5px; display: inline-block; text-decoration: none; font-size: 15px;"> Feedback Survey </a> </p></br>
+
+<p>Thanks in advance<br/>
+Have a nice day! <br/>
+Regards, <br/>
+{!Customer_Feedback__c.OwnerFirstName} {!Customer_Feedback__c.OwnerLastName}<br/>
+{!Customer_Feedback__c.Opportunity_Owner_Number__c}</p>
+<br/>
+
+<p><img src="https://titanlightningapps--feedback.sandbox.file.force.com/servlet/servlet.ImageServer?id=0158K0000004reE&amp;oid=00D8K0000008gCI&amp;lastMod=1661346831000" height="20%" width="20%"></p>
+<br/>Titan Engineering &amp; Automation Limited
+<br/>(Wholly Owned Subsidiary Of Titan Company Limited)
+<br/>A TATA Enterprise
+<br/>Office: 28, Sipcot Industrial Complex (Phase-I), Hosur-635126(TN), India
+<br/><br/>
+<p style="font-size:12px;">Please click the unsubscribe link if not interested,  <a href="https://titanlightningapps.my.salesforce-sites.com/UnsuscribeSurvey?id={!Customer_Feedback__c.Id}" rel="noopener noreferrer" target="_blank">Unsubscribe</a></p><br/><br/>
+</div>

@@ -1,11 +1,72 @@
 <template>
-    <c-custom-toast-message-component auto-close-time="8000"></c-custom-toast-message-component>
-    <template if:true={isModalOpen}>
-        <!-- Modal/Popup Box LWC starts here -->
+
+    <lightning-quick-action-panel class="slds-is-relative" header="Email Verification">
+        <div class="slds-m-around_large">
+            <template if:true={spinnerStatus}>
+            <div class="slds-is-relative">
+                <section  class="slds-modal slds-fade-in-open">                
+                        <lightning-spinner variant="brand" alternative-text="Loading..."></lightning-spinner>                
+                </section>
+                <div class="slds-backdrop slds-backdrop_open" style="width:60%; height:50%; margin:auto;"></div>
+            </div>
+            
+        </template>  
+        </div>
+
+
+        
+       <template if:true={isWarning}>
+        <div class="slds-notify slds-notify_alert slds-alert_warning" role="alert">
+
+
+            <span class="slds-assistive-text">warning</span>
+            <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small" title="Description of icon when needed">
+              <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#error"></use>
+              </svg>
+            </span>
+            <h2>{warningMessage}
+            </h2>
+            <div class="slds-notify__close">
+              <button class="slds-button slds-button_icon slds-button_icon-small slds-button_icon-inverse" title="Close">
+                <svg class="slds-button__icon" aria-hidden="true">
+                  <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+                </svg>
+                <span class="slds-assistive-text">Close</span>
+              </button>
+            </div>
+          </div>
+        </template>
+
+        <template if:true={isModalOpen}>
+        <p>Please click on <b>"Send Email"</b> to send verification email to recipient email <b>{accountData.recipientEmail}</b></p>
+        </br>
+        <p style="color:red">{noRecordFound}</p>
+        <lightning-helptext class="slds-m-right_x-small" content="Enter additional email address seperated by comma(,)"></lightning-helptext> 
+        <lightning-input type="text" label="Enter Additional Email" value={emailAddress} 
+        onchange={handleEmailAddress} placeholder="Type here... ">
+        </lightning-input>
+        </template>
+    </lightning-quick-action-panel>
+    <div  class="slds-modal__footer">
+        <lightning-button
+            variant="neutral"
+            label="Cancel"
+            onclick={closeModal}>
+        </lightning-button>
+        <template if:false={isWarning}>
+        <lightning-button
+            variant="brand"
+            label="Send Email"
+            class="slds-m-left_x-small"
+            onclick={handleSendButton}>
+        </lightning-button>
+    </template>
+    </div>
+    <!--<template if:true={isModalOpen}>
     
         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
             <div class="slds-modal__container">
-                <!-- Modal/Popup Box LWC header here -->
                 <header class="slds-modal__header">
                     <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
                         <lightning-icon icon-name="utility:close" alternative-text="close" variant="inverse" ize="small"></lightning-icon>
@@ -13,7 +74,6 @@
                     </button>
                     <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Add Email</h2>
                 </header>
-                <!-- Modal/Popup Box LWC body starts here -->
                 
                 <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
                     <p style="color:red">{noRecordFound}</p>
@@ -22,13 +82,11 @@
                     </lightning-input>
                 </br>
                 </div>
-                <!-- Modal/Popup Box LWC footer starts here -->
                 <footer class="slds-modal__footer">
                     <button class="slds-button slds-button_neutral" onclick={closeModal} title="Cancel">Cancel</button>
                     <button class="slds-button slds-button_brand" title="Send" onclick={handleSendButton}>Send</button>
                 </footer>
             </div>
         </section>
-        <!-- <div class="slds-backdrop slds-backdrop_open"></div> -->
-    </template>
+    </template>-->
 </template>

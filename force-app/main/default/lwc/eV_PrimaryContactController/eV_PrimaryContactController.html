@@ -1,17 +1,26 @@
 <template>
-<lightning-card title="Related Contacts" icon-name="standard:contact">
-     <template if:true={contactData}>  
-        <div class="slds-p-left_small">
+    <lightning-card title="Select Primary Contact" icon-name="standard:contact">
+         <template if:true={contactData}>   
             <template for:each={contactData} for:item="contact">    
-                <div key={contact.Id} >    
-                    <lightning-input type="radio" name="contactRadio" label={contact.Name} value={contact.Id}    
+                <div key={contact.Id} class="slds-p-horizontal_small">  
+                   
+                <div class="slds-grid slds-grid_vertical-align-center">
+                    <lightning-input type="radio" name="contactRadio" value={contact.Id}    
                     checked={contact.Primary_Contact__c} onchange={handleContactSelection}></lightning-input>
-                </div>    
+                    <a href="#" onclick={navigateToRecord} data-record-id={contact.Id}>{contact.Name}:{contact.Title}</a>
+                    <template if:true={contact.Primary_Contact__c}> 
+                        <div class="slds-m-left_x-small slds-m-bottom_xxx-small">
+                            <lightning-helptext class="slds-m-right_x-small" content="This is a primary contact"></lightning-helptext>
+                        </div> 
+                    </template>  
+                </div>
+                </div> 
             </template> 
-        </div> 
-    </template> 
-    <div class="slds-m-top_medium slds-m-left_large">
-        <lightning-button variant="brand" label="Save" onclick={handleSave}></lightning-button>
-    </div>     
-        </lightning-card>
-    </template>
+        </template> 
+                <template if:true={showbutton}>
+                    <div class="slds-m-top_medium slds-m-left_large">
+                        <lightning-button variant="brand" label="Save" onclick={handleSave}></lightning-button>
+                    </div> 
+                </template>
+            </lightning-card>    
+        </template>

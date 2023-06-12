@@ -1,0 +1,44 @@
+<html>
+        <head>
+            <!-- Import the Design System style sheet -->
+            <apex:slds />
+        </head>
+        <div class="slds-modal__header">
+            <img src="{!$Resource.TITANJEWELLOGO}" width="160px" height="120px" align="left"/>
+            <apex:slds />																				          
+        </div><br/><br/><br/><br/>
+    </html><br/><br/><br/><br/>
+    <style>
+        
+        
+        div {
+        border-radius: 5px;            
+        border:0px;
+        margin: 4px 5px;					
+        padding: 28px 20px;
+        text-align: justify;
+        }																																
+    </style>
+    <body>
+        <div>
+            <apex:form id="form" styleClass="slds-scope" >
+                <div class="slds-align_absolute-center slds-text-heading_large "  >
+                    <center >
+                        <b style="color:black;font-family: 'Times New Roman'; font-size: 45px">Oops, this link is expired!</b>
+                    </center>
+                </div>            
+                
+                <div class="slds-align_absolute-center slds-text-heading_medium" >
+                    <center style="color:black;font-family:nunito light; font-size: 30px" >
+                        This URL is not valid anymore. Kindly click on the below link to notify our team in order to receive a new verification email.<br/><br/><br/><br/>      
+                    </center>
+                </div>
+                <div clas="Button1">
+                    <center style="color: rgb(243, 245, 247);padding: 15px 32px; font-family: sans-serif;font-weight: bold; font-size: 25px;"background-color: #00bdb5;">
+                        <apex:commandButton value="Click Here" action="{!openNewPage}"/>
+                    </center>
+                </div>        
+            </apex:form>
+        </div>
+        
+    </body>

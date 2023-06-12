@@ -1,0 +1,19 @@
+<div style="background: #ffffff; 
+            padding: 10px; 
+            border: 2px solid #00bdb5; 
+            margin: 10px;
+            max-width: 600px; 
+           margin: 0 auto; 
+            width: 600px
+           "><p>Dear Sir/Mam,</p>
+<p>I am {!Account.OwnerFirstName} {!Account.OwnerLastName} from the Titan Corporate Sales team. This is to inform you that the verification email has been sent to {!Account.Recipient_Email_Address__c}. Once the user verifies, the gift vouchers will be shared to them from then on.</p><br/><br/>
+
+    <p>Corporate Business Group<br/>
+        Titan Company Limited &quot;INTEGRITY&quot;,<br/>
+        193 Veerasandra <br/>
+        Electronic City P.O,<br/>
+        Hosur Main Road,<br/>
+        Bangalore : 560100</span></span>
+        </p>
+    </div>
+  

@@ -11,13 +11,13 @@ public class updatingPartProduct_Handler {
             }
         }
         
-        // Query existing products based on part names and numbers.
+        // Query existing products based on part names and numbers
         Map<String, Product2> existingProducts = new Map<String, Product2>();
         for (Product2 product : [SELECT Id, Name, ProductCode FROM Product2 WHERE Name IN :partNames AND ProductCode IN :partNumbers]) {
             existingProducts.put(product.Name + '_' + product.ProductCode, product);
         }
         
-        // Iterate through parts again to update product references.
+        // Iterate through parts again to update product references
         for (SQX_Part__c part : listParts) {
             if (String.isBlank(part.Product__c)) {
                 String productKey = part.Name + '_' + part.Part_Number__c;
