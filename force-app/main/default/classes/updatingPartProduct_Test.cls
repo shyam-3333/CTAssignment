@@ -17,7 +17,7 @@ public class updatingPartProduct_Test {
         // Test the updateParts method
         updatingPartProduct_Handler.updateParts(Parts);
         
-        // Update the Part records to trigger the trigger logic.
+        // Update the Part records to trigger the trigger logic..
         List<SQX_Part__c> updatedParts = new List<SQX_Part__c>();
         for (SQX_Part__c part : parts) {
             part.Name = 'Updated ' + part.Name;
