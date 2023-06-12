@@ -11,7 +11,7 @@ public class updatingPartProduct_Handler {
             }
         }
         
-        // Query existing products based on part names and numbers
+        // Query existing products based on part names and numbers.
         Map<String, Product2> existingProducts = new Map<String, Product2>();
         for (Product2 product : [SELECT Id, Name, ProductCode FROM Product2 WHERE Name IN :partNames AND ProductCode IN :partNumbers]) {
             existingProducts.put(product.Name + '_' + product.ProductCode, product);
@@ -25,8 +25,7 @@ public class updatingPartProduct_Handler {
                 
                 if (existingProduct != null) {
                     part.Product__c = existingProduct.Id;
-                    part.name=existingProducts.get(part.ID).name;
-                    part.Part_Number__c=existingProducts.get(part.ID).ProductCode;
+                    
                     
                     
                 } else {
