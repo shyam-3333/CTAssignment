@@ -2,7 +2,7 @@
 public class updatingPartProduct_Test {
  @IsTest
     static void testUpdatePartProductReference() {
-        // Create test Part records.
+        // Create test Part records
         List<SQX_Part__c> parts = new List<SQX_Part__c>();
         parts.add(new SQX_Part__c(Name = 'Part 1', Part_Number__c = '001', Product__c = null));
         parts.add(new SQX_Part__c(Name = 'Part 2', Part_Number__c = '002', Product__c = null));
