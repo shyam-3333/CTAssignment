@@ -17,7 +17,7 @@ public class updatingPartProduct_Handler {
             existingProducts.put(product.Name + '_' + product.ProductCode, product);
         }
         
-        // Iterate through parts again to update product references.
+        // Iterate through parts again to update product references
         for (SQX_Part__c part : listParts) {
             if (String.isBlank(part.Product__c)) {
                 String productKey = part.Name + '_' + part.Part_Number__c;
