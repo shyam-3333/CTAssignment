@@ -20,7 +20,7 @@ public class updatingPartProduct_Test {
         
         Test.startTest();
         system.runAs(U){
-            // Test the updateParts method.
+            // Test the updateParts method
             updatingPartProduct_Handler.updateParts(Parts);
             // Update the Part records to trigger the trigger logic
             List<SQX_Part__c> updatedParts = new List<SQX_Part__c>();
