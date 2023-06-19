@@ -24,13 +24,13 @@ public class AddEmailAddressCont{
             if((acc.Verification_Sent_On__c == null && acc.Recipient_Email_ID_Verified__c == false) || 
               (acc.Verification_Sent_On__c != null && System.now() > acc.Verification_Sent_On__c.addHours(24) && acc.Recipient_Email_ID_Verified__c == false)){
             System.debug('1');
-            acc.Verification_Sent_On__c = System.now();//Field Update
+            acc.Verification_Sent_On__c = System.now();//Field Update.
             acc.Verification_Received_On__c = null;      
             accList.add(acc);
             
             if(string.isNotBlank(acc.Recipient_Email_Address__c)){
                 
-                Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();//Send Email to Recipient Email
+                Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();//Send Email to Recipient Email.
                 mail.setToAddresses(new List<String>{acc.Recipient_Email_Address__c});
                 mail.setTemplateId(emailTemplateId1);
                 mail.setwhatId(acc.Id);
