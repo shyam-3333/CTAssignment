@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>57.0</apiVersion>
+    <environments>Default</environments>
+    <interviewLabel>Update Email And Send Email {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Update Email And Send Email</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>FREE_FORM_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>OriginBuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordUpdates>
+        <name>update_Old_EMail</name>
+        <label>update Old EMail</label>
+        <locationX>713</locationX>
+        <locationY>478</locationY>
+        <inputAssignments>
+            <field>Old_Recipient_Email_Address__c</field>
+            <value>
+                <elementReference>$Record.Recipient_Email_Address__c</elementReference>
+            </value>
+        </inputAssignments>
+        <inputReference>$Record</inputReference>
+    </recordUpdates>
+    <start>
+        <locationX>458</locationX>
+        <locationY>48</locationY>
+        <connector>
+            <targetReference>update_Old_EMail</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Recipient_Email_Address__c</field>
+            <operator>IsChanged</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
+        <object>Account</object>
+        <recordTriggerType>CreateAndUpdate</recordTriggerType>
+        <triggerType>RecordAfterSave</triggerType>
+    </start>
+    <status>Active</status>
+    <textTemplates>
+        <name>Body</name>
+        <isViewedAsPlainText>false</isViewedAsPlainText>
+        <text>&lt;p&gt;&amp;lt;p&amp;gt;Dear Sir/Mam,&amp;lt;/p&amp;gt;&lt;/p&gt;&lt;p&gt;&amp;lt;p&amp;gt;This mail is from the Titan Corporate Sales team. This is to inform you that the recipient email address will be changed for the&amp;nbsp;{!$Record.Name}. You will not be receiving any quotes moving forward.&amp;lt;/p&amp;gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&amp;lt;p&amp;gt;Previous Email Address:&amp;nbsp;{!$Record.Recipient_Email_Address__c}&amp;lt;/p&amp;gt;&lt;/p&gt;&lt;p&gt;&amp;lt;p&amp;gt;New Email Address:&amp;nbsp;{!$Record.Old_Recipient_Email_Address__c}&amp;lt;/p&amp;gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://titanlightningapps--npdskdev.sandbox.file.force.com/file-asset-public/TITANJEWELLOGO?oid=00D7d000008qWZZ&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot;&gt;https://titanlightningapps--npdskdev.sandbox.file.force.com/file-asset-public/TITANJEWELLOGO?oid=00D7d000008qWZZ&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Corporate Business Group&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;strong&gt;Titan Company Limited&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;TITAN COMPANY LIMITED &quot;INTEGRITY&quot;,&lt;/p&gt;&lt;p&gt;193 VEERASANDRA,&lt;/p&gt;&lt;p&gt;ELECTRONICS CITY P.O,&lt;/p&gt;&lt;p&gt;HOSUR MAIN ROAD,&lt;/p&gt;&lt;p&gt;BANGALORE : 560100&lt;/p&gt;</text>
+    </textTemplates>
+    <textTemplates>
+        <name>Subject</name>
+        <isViewedAsPlainText>false</isViewedAsPlainText>
+        <text>&lt;p&gt;This is a subject for trial  EMail&lt;/p&gt;</text>
+    </textTemplates>
+</Flow>
